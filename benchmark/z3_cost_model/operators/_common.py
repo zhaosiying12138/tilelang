@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from typing import Any
 
 SEED = 20261026
-UPSTREAM_REVISION = "3d18a1ea2b8c4cdd8a855ce4e15eedc7b42146b9"
+UPSTREAM_REVISION = "80364b3d9758854a9692cc0f14089025f54d3f3f"
 SPACE_SOURCE = "tilelang/autotuner/space.py"
 
 
