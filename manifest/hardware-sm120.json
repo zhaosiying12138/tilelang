@@ -1,0 +1,216 @@
+{
+  "schema": "tilelang.cuda.hardware-spec",
+  "version": 1,
+  "timestamp": "2026-10-26T16:15:58.035380Z",
+  "device": {
+    "index": 0,
+    "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+    "compute_capability": "12.0",
+    "total_memory_bytes": 25650855936,
+    "multi_processor_count": 82,
+    "warp_size": 32,
+    "max_threads_per_block": 1024,
+    "max_threads_per_multiprocessor": 1536,
+    "max_registers_per_block": 65536,
+    "max_registers_per_multiprocessor": 65536,
+    "max_registers_per_thread": null,
+    "shared_memory_per_block_bytes": 49152,
+    "shared_memory_per_block_optin_bytes": 101376,
+    "shared_memory_per_multiprocessor_bytes": 102400,
+    "reserved_shared_memory_per_block_bytes": 1024,
+    "l2_cache_size_bytes": 67108864,
+    "max_persisting_l2_cache_size_bytes": 41943040,
+    "clock_rate_khz": 1597000,
+    "memory_clock_rate_khz": 14001000,
+    "memory_bus_width_bits": 256,
+    "attribute_metadata": {
+      "name": {
+        "source": "torch.cuda.get_device_properties.name",
+        "reason": null
+      },
+      "compute_capability": {
+        "source": "torch.cuda.get_device_properties.major/minor",
+        "reason": null
+      },
+      "total_memory_bytes": {
+        "source": "torch.cuda.get_device_properties.total_memory",
+        "reason": null
+      },
+      "multi_processor_count": {
+        "source": "torch.cuda.get_device_properties.multi_processor_count",
+        "reason": null
+      },
+      "warp_size": {
+        "source": "torch.cuda.get_device_properties.warp_size",
+        "reason": null
+      },
+      "max_threads_per_block": {
+        "source": "torch.cuda.get_device_properties.max_threads_per_block",
+        "reason": null
+      },
+      "max_threads_per_multiprocessor": {
+        "source": "torch.cuda.get_device_properties.max_threads_per_multi_processor",
+        "reason": null
+      },
+      "max_registers_per_block": {
+        "source": "cuda.bindings.runtime.cudaDevAttrMaxRegistersPerBlock",
+        "reason": null
+      },
+      "max_registers_per_multiprocessor": {
+        "source": "torch.cuda.get_device_properties.regs_per_multiprocessor",
+        "reason": null
+      },
+      "max_registers_per_thread": {
+        "source": null,
+        "reason": "torch.cuda device properties do not expose max_registers_per_thread/regsPerThread; cuda.bindings.runtime does not expose cudaDevAttrMaxRegistersPerThread; no numeric fallback is defined; CUDA Runtime has no stable numeric constant for cudaDevAttrMaxRegistersPerThread"
+      },
+      "shared_memory_per_block_bytes": {
+        "source": "torch.cuda.get_device_properties.shared_memory_per_block",
+        "reason": null
+      },
+      "shared_memory_per_block_optin_bytes": {
+        "source": "torch.cuda.get_device_properties.shared_memory_per_block_optin",
+        "reason": null
+      },
+      "shared_memory_per_multiprocessor_bytes": {
+        "source": "torch.cuda.get_device_properties.shared_memory_per_multi_processor",
+        "reason": null
+      },
+      "reserved_shared_memory_per_block_bytes": {
+        "source": "cuda.bindings.runtime.cudaDevAttrReservedSharedMemoryPerBlock",
+        "reason": null
+      },
+      "l2_cache_size_bytes": {
+        "source": "torch.cuda.get_device_properties.L2_cache_size",
+        "reason": null
+      },
+      "max_persisting_l2_cache_size_bytes": {
+        "source": "cuda.bindings.runtime.cudaDevAttrMaxPersistingL2CacheSize",
+        "reason": null
+      },
+      "clock_rate_khz": {
+        "source": "torch.cuda.get_device_properties.clock_rate",
+        "reason": null
+      },
+      "memory_clock_rate_khz": {
+        "source": "torch.cuda.get_device_properties.memory_clock_rate",
+        "reason": null
+      },
+      "memory_bus_width_bits": {
+        "source": "torch.cuda.get_device_properties.memory_bus_width",
+        "reason": null
+      }
+    }
+  },
+  "software": {
+    "driver_version": "610.74",
+    "cuda_driver_api_version": "13.3",
+    "cuda_runtime_version": "13.3",
+    "pytorch_version": "2.14.1+cu130",
+    "pytorch_cuda_version": "13.0",
+    "nvcc_version": "13.3",
+    "z3_version": "4.15.4",
+    "commands": {
+      "nvcc": {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "--version"
+        ],
+        "started_at": "2026-10-26T16:15:57.974913Z",
+        "finished_at": "2026-10-26T16:15:57.976733Z",
+        "duration_seconds": 0.001817,
+        "timeout_seconds": 10.0,
+        "returncode": 0,
+        "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Tue_Jun_09_02:43:40_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.73\nBuild cuda_13.3.r13.3/compiler.38244171_0\n",
+        "stderr": "",
+        "error": null
+      },
+      "nvidia_smi": {
+        "command": [
+          "/usr/lib/wsl/lib/nvidia-smi",
+          "--id=0",
+          "--query-gpu=driver_version,memory.total,memory.used,memory.free,clocks.current.graphics,clocks.current.memory,power.draw,power.limit,temperature.gpu,pstate",
+          "--format=csv,noheader,nounits"
+        ],
+        "started_at": "2026-10-26T16:15:57.977435Z",
+        "finished_at": "2026-10-26T16:15:58.035331Z",
+        "duration_seconds": 0.057904,
+        "timeout_seconds": 10.0,
+        "returncode": 0,
+        "stdout": "610.74, 24463, 0, 24137, 180, 405, 10.72, [N/A], 51, P8\n",
+        "stderr": "",
+        "error": null,
+        "query_fields": [
+          "driver_version",
+          "memory.total",
+          "memory.used",
+          "memory.free",
+          "clocks.current.graphics",
+          "clocks.current.memory",
+          "power.draw",
+          "power.limit",
+          "temperature.gpu",
+          "pstate"
+        ],
+        "units": {
+          "memory.*": "MiB as reported by nvidia-smi nounits",
+          "clocks.*": "MHz as reported by nvidia-smi nounits",
+          "power.*": "W as reported by nvidia-smi nounits",
+          "temperature.gpu": "degrees Celsius as reported by nvidia-smi nounits"
+        }
+      }
+    },
+    "software_metadata": {
+      "driver_version": {
+        "source": "nvidia-smi --query-gpu=driver_version",
+        "reason": null
+      },
+      "cuda_driver_api_version": {
+        "source": "cuda.bindings.runtime.get_driver_version",
+        "reason": null
+      },
+      "cuda_runtime_version": {
+        "source": "cuda.bindings.runtime.get_runtime_version",
+        "reason": null
+      },
+      "pytorch_version": {
+        "source": "torch.__version__",
+        "reason": null
+      },
+      "pytorch_cuda_version": {
+        "source": "torch.version.cuda",
+        "reason": null
+      },
+      "nvcc_version": {
+        "source": "nvcc --version",
+        "reason": null
+      },
+      "z3_version": {
+        "source": "z3.get_version_string()",
+        "reason": null
+      }
+    }
+  },
+  "calibration": {
+    "status": "not_performed",
+    "memory_bandwidth_bytes_per_second": null,
+    "throughput_by_operation_operations_per_second": null,
+    "reason": "This probe collects reported device attributes only. It did not run memory-bandwidth or compute-throughput microbenchmarks, so these values must not be treated as measured calibration."
+  },
+  "provenance": {
+    "probe": "tilelang.cuda.hardware.probe_cuda_hardware",
+    "collection_started_at": "2026-10-26T16:15:57.106461Z",
+    "collection_finished_at": "2026-10-26T16:15:58.035380Z",
+    "runtime_backends": [
+      "cuda.bindings.runtime",
+      "CUDA Runtime libcudart.so via ctypes"
+    ],
+    "runtime_backend_errors": [],
+    "microbenchmarks_performed": false,
+    "notes": [
+      "Device attributes are hardware/driver-reported capabilities and limits, not measured bandwidth or throughput.",
+      "Null attributes are unavailable from the queried APIs; their reasons are recorded per field.",
+      "Read-only subprocesses use shell=False, explicit timeouts, and an allowlisted environment; environment contents are not collected."
+    ]
+  }
+}
