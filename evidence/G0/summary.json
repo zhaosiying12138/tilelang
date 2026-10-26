@@ -1,0 +1,32 @@
+{
+  "schema": "tilelang-cuda-z3.goal-g0",
+  "status": "completed",
+  "upstream_base": "80364b3d9758854a9692cc0f14089025f54d3f3f",
+  "feature_inventory": {
+    "path": "docs/design/ascend_z3_cost_model_feature_inventory.md",
+    "parity_items": 84,
+    "source_test_functions": 218
+  },
+  "stock_build": {
+    "status": "passed",
+    "evidence": "evidence/G0/stock-build.txt"
+  },
+  "ascend_host_regression": {
+    "command": "ASCEND_NPU_ARCH=dav-3510 python -m pytest testing/ascend/auto_schedule -m 'not ascend' -q",
+    "passed": 706,
+    "deselected": 31,
+    "warnings": 9,
+    "evidence": "evidence/G0/ascend-host-tests.txt"
+  },
+  "cuda_smoke": {
+    "command": "python -m pytest -q testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f16f16f16_nn",
+    "passed": 1,
+    "cache": "fresh run-owned TILELANG_CACHE_DIR, CUDA_CACHE_PATH and XDG_CACHE_HOME",
+    "evidence": "evidence/G0/cuda-gemm-smoke.txt"
+  },
+  "hardware_probe": {
+    "status": "passed",
+    "microbenchmark_calibration": "not_performed",
+    "evidence": "manifest/hardware-sm120.json"
+  }
+}
