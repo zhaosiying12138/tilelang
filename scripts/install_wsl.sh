@@ -33,6 +33,6 @@ done
 "$PYTHON" -m pip install \
   -r "$REPO_ROOT/requirements-dev.txt" \
   -r "$REPO_ROOT/requirements.txt" \
-  pytest pytest-xdist pytest-timeout pytest-durations matplotlib einops ruff
+  pytest pytest-xdist pytest-timeout pytest-durations matplotlib einops ruff markdown-it-py Pygments
 "$PYTHON" -m pip check
 printf 'Dependencies ready. Build with: %s/scripts/build_tilelang.sh\n' "$REPO_ROOT"

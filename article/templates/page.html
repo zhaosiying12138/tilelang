@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="$description">
+  <meta name="generator" content="article/build_html.py">
+  <meta name="katex-version" content="$katex_version">
+  <title>$title</title>
+  <style>
+$inline_css
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#article-content">跳到正文</a>
+  <div class="page-layout">
+    <aside class="sidebar" aria-label="文章目录">
+      <nav id="table-of-contents" class="toc">
+        <h2>目录</h2>
+$toc
+      </nav>
+    </aside>
+    <main id="article-content" class="main-content">
+      <header class="article-header">
+        <h1>$title</h1>
+        <p class="article-description">$description</p>
+      </header>
+      <article class="article-body">
+$content
+      </article>
+    </main>
+  </div>
+  <script>
+$katex_js
+  </script>
+  <script>
+$katex_boot_js
+  </script>
+</body>
+</html>
