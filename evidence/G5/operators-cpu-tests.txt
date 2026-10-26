@@ -1,0 +1,24 @@
+........................                                                 [100%]
+========================================================================== fixture duration top ==========================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.000378 grand total                                                                                                                16 0:00:00.000026 0:00:00.000034
+========================================================================= test call duration top =========================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.644010 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_constraints_do_not_prune_raw_or_obvious_tail_configs        3 0:00:00.213921 0:00:00.216352
+0:00:00.327755 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_gemm_fixed_seed_and_independent_fp32_reference              1 0:00:00.327755 0:00:00.327755
+0:00:00.110337 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_prim_func_factories_construct_on_cpu_without_compilation    1 0:00:00.110337 0:00:00.110337
+0:00:00.040591 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_exact_necessary_shared_memory_lower_bound                   3 0:00:00.013595 0:00:00.014319
+0:00:00.023273 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_raw_counts_exact_domains_and_unique_ids                     1 0:00:00.023273 0:00:00.023273
+0:00:00.021688 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_non_warp_thread_count_is_provably_unsat                     3 0:00:00.007203 0:00:00.007493
+0:00:00.018794 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_target_specific_atom_constraints_are_not_guessed_for_auto   1 0:00:00.018794 0:00:00.018794
+0:00:00.014338 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_no_global_tail_divisibility_or_stage_le_trip_heuristic      1 0:00:00.014338 0:00:00.014338
+0:00:00.008584 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_convolution_nhwc_fp32_reference_with_padding_and_stride     1 0:00:00.008584 0:00:00.008584
+0:00:00.006738 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_solver_unknown_is_retained_not_relabelled_unsat             1 0:00:00.006738 0:00:00.006738
+0:00:01.228877 grand total                                                                                                                24 0:00:00.007894 0:00:00.327755
+======================================================================== test setup duration top =========================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.006683 grand total                                                                                                                24 0:00:00.000039 0:00:00.004598
+======================================================================= test teardown duration top =======================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.001213 grand total                                                                                                                24 0:00:00.000041 0:00:00.000080
+24 passed in 3.18s
