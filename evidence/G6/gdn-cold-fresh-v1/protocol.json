@@ -1,0 +1,27 @@
+{
+  "schema": "tilelang.gdn.cold-fresh-protocol/v1",
+  "directions": [
+    "fwd",
+    "bwd"
+  ],
+  "repetitions": [
+    0,
+    1,
+    2
+  ],
+  "arms": [
+    "stock-raw",
+    "z3-legal-exhaustive",
+    "z3-cm-topk",
+    "budget-raw",
+    "budget-random"
+  ],
+  "cache_track": "cold",
+  "warmup": 10,
+  "repeat": 50,
+  "fresh_process_per_arm_repetition": true,
+  "script_sha256": "aee18ab87ab976e092d260ddcf11a42fcdccc8d24523faa11c5e966bcc0ca314",
+  "created": "2026-10-26T21:49:21.771744+00:00",
+  "git_commit": "0873dab31295dc5ff3c5d65131bc7415ae8cbf8f",
+  "shared_cache_deletion": false
+}

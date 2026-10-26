@@ -1,0 +1,632 @@
+{
+  "schema_version": 1,
+  "plot": "search_time_breakdown",
+  "stacked": false,
+  "parallel_cumulative_runs": [
+    "fwd stock-raw",
+    "fwd z3-legal-exhaustive",
+    "fwd z3-cm-topk",
+    "fwd budget-raw",
+    "fwd budget-random",
+    "bwd stock-raw",
+    "bwd z3-legal-exhaustive",
+    "bwd z3-cm-topk",
+    "bwd budget-raw",
+    "bwd budget-random"
+  ],
+  "warning": "Parallel-cumulative component timings can overlap and must not be summed to end-to-end wall time; all runs are shown as independent bars. Affected runs: fwd stock-raw, fwd z3-legal-exhaustive, fwd z3-cm-topk, fwd budget-raw, fwd budget-random, bwd stock-raw, bwd z3-legal-exhaustive, bwd z3-cm-topk, bwd budget-raw, bwd budget-random",
+  "runs": [
+    {
+      "run": "fwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 32.66421341401292,
+      "times_s": {
+        "solver": 0.0,
+        "model": 0.0,
+        "compile": 30.85281309700804,
+        "validation": 1.7722058490035124,
+        "profile": 1.3608894140343182,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "fwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 24.623643836006522,
+      "times_s": {
+        "solver": 0.007345444988459349,
+        "model": 0.0,
+        "compile": 22.837910203961655,
+        "validation": 1.7575494730263017,
+        "profile": 1.3556074150255881,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "fwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 18.267694372974802,
+      "times_s": {
+        "solver": 0.007353408029302955,
+        "model": 0.0008186650229617953,
+        "compile": 16.460139430011623,
+        "validation": 1.7644926800276153,
+        "profile": 1.3002932390081696,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "fwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 18.184024946996942,
+      "times_s": {
+        "solver": 0.007335521979257464,
+        "model": 0.0,
+        "compile": 16.33603247895371,
+        "validation": 1.7824766979902051,
+        "profile": 1.2938374649966136,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "fwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 18.63977959897602,
+      "times_s": {
+        "solver": 0.00731301901396364,
+        "model": 0.0,
+        "compile": 16.8791834100266,
+        "validation": 1.7209502019686624,
+        "profile": 1.315396704012528,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "bwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 59.301102879981045,
+      "times_s": {
+        "solver": 0.0,
+        "model": 0.0,
+        "compile": 54.645793739997316,
+        "validation": 4.49791685002856,
+        "profile": 4.048027939978056,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "bwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 52.547826219000854,
+      "times_s": {
+        "solver": 0.008529393991921097,
+        "model": 0.0,
+        "compile": 47.93395204999251,
+        "validation": 4.422994877968449,
+        "profile": 4.026441571011674,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "bwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 45.8605868909508,
+      "times_s": {
+        "solver": 0.00850009499117732,
+        "model": 0.0019345059990882874,
+        "compile": 41.91015996900387,
+        "validation": 3.780064255988691,
+        "profile": 3.3959949040436186,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "bwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 46.1945161879994,
+      "times_s": {
+        "solver": 0.008580938971135765,
+        "model": 0.0,
+        "compile": 42.1556503889733,
+        "validation": 3.795505430025514,
+        "profile": 3.3927000999683514,
+        "other": 0.0
+      }
+    },
+    {
+      "run": "bwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "end_to_end_s": 51.73016206501052,
+      "times_s": {
+        "solver": 0.008244169992394745,
+        "model": 0.0,
+        "compile": 47.71332577499561,
+        "validation": 3.8506009170087054,
+        "profile": 3.409430834988598,
+        "other": 0.0
+      }
+    }
+  ],
+  "rows": [
+    {
+      "run": "fwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.0,
+      "end_to_end_s": 32.66421341401292,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0,
+      "end_to_end_s": 32.66421341401292,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 30.85281309700804,
+      "end_to_end_s": 32.66421341401292,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 1.7722058490035124,
+      "end_to_end_s": 32.66421341401292,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 1.3608894140343182,
+      "end_to_end_s": 32.66421341401292,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 32.66421341401292,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.007345444988459349,
+      "end_to_end_s": 24.623643836006522,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0,
+      "end_to_end_s": 24.623643836006522,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 22.837910203961655,
+      "end_to_end_s": 24.623643836006522,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 1.7575494730263017,
+      "end_to_end_s": 24.623643836006522,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 1.3556074150255881,
+      "end_to_end_s": 24.623643836006522,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 24.623643836006522,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.007353408029302955,
+      "end_to_end_s": 18.267694372974802,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0008186650229617953,
+      "end_to_end_s": 18.267694372974802,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 16.460139430011623,
+      "end_to_end_s": 18.267694372974802,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 1.7644926800276153,
+      "end_to_end_s": 18.267694372974802,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 1.3002932390081696,
+      "end_to_end_s": 18.267694372974802,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 18.267694372974802,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.007335521979257464,
+      "end_to_end_s": 18.184024946996942,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0,
+      "end_to_end_s": 18.184024946996942,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 16.33603247895371,
+      "end_to_end_s": 18.184024946996942,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 1.7824766979902051,
+      "end_to_end_s": 18.184024946996942,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 1.2938374649966136,
+      "end_to_end_s": 18.184024946996942,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 18.184024946996942,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.00731301901396364,
+      "end_to_end_s": 18.63977959897602,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0,
+      "end_to_end_s": 18.63977959897602,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 16.8791834100266,
+      "end_to_end_s": 18.63977959897602,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 1.7209502019686624,
+      "end_to_end_s": 18.63977959897602,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 1.315396704012528,
+      "end_to_end_s": 18.63977959897602,
+      "value_origin": "input"
+    },
+    {
+      "run": "fwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 18.63977959897602,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.0,
+      "end_to_end_s": 59.301102879981045,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0,
+      "end_to_end_s": 59.301102879981045,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 54.645793739997316,
+      "end_to_end_s": 59.301102879981045,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 4.49791685002856,
+      "end_to_end_s": 59.301102879981045,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 4.048027939978056,
+      "end_to_end_s": 59.301102879981045,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd stock-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 59.301102879981045,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.008529393991921097,
+      "end_to_end_s": 52.547826219000854,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0,
+      "end_to_end_s": 52.547826219000854,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 47.93395204999251,
+      "end_to_end_s": 52.547826219000854,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 4.422994877968449,
+      "end_to_end_s": 52.547826219000854,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 4.026441571011674,
+      "end_to_end_s": 52.547826219000854,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-legal-exhaustive",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 52.547826219000854,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.00850009499117732,
+      "end_to_end_s": 45.8605868909508,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0019345059990882874,
+      "end_to_end_s": 45.8605868909508,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 41.91015996900387,
+      "end_to_end_s": 45.8605868909508,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 3.780064255988691,
+      "end_to_end_s": 45.8605868909508,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 3.3959949040436186,
+      "end_to_end_s": 45.8605868909508,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd z3-cm-topk",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 45.8605868909508,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.008580938971135765,
+      "end_to_end_s": 46.1945161879994,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0,
+      "end_to_end_s": 46.1945161879994,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 42.1556503889733,
+      "end_to_end_s": 46.1945161879994,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 3.795505430025514,
+      "end_to_end_s": 46.1945161879994,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 3.3927000999683514,
+      "end_to_end_s": 46.1945161879994,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-raw",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 46.1945161879994,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "solver",
+      "seconds": 0.008244169992394745,
+      "end_to_end_s": 51.73016206501052,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "model",
+      "seconds": 0.0,
+      "end_to_end_s": 51.73016206501052,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "compile",
+      "seconds": 47.71332577499561,
+      "end_to_end_s": 51.73016206501052,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "validation",
+      "seconds": 3.8506009170087054,
+      "end_to_end_s": 51.73016206501052,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "profile",
+      "seconds": 3.409430834988598,
+      "end_to_end_s": 51.73016206501052,
+      "value_origin": "input"
+    },
+    {
+      "run": "bwd budget-random",
+      "timing_semantics": "parallel_cumulative",
+      "category": "other",
+      "seconds": 0.0,
+      "end_to_end_s": 51.73016206501052,
+      "value_origin": "input"
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "plot": "prediction_rank",
+  "lower_is_better": true,
+  "tie_rule": "average ranks; top-k ties use prediction input order",
+  "top_k": [
+    1,
+    2,
+    3
+  ],
+  "suites": {
+    "fwd": {
+      "n": 3,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_k_recall": {
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0
+      }
+    },
+    "bwd": {
+      "n": 6,
+      "spearman": 0.7714285714285715,
+      "kendall_tau_b": 0.6,
+      "top_k_recall": {
+        "1": 1.0,
+        "2": 0.5,
+        "3": 1.0
+      }
+    }
+  },
+  "rows": [
+    {
+      "suite": "fwd",
+      "candidate": "fwd:block_DV=16,stage=2,group=16",
+      "predicted": 0.3711799590853939,
+      "measured": 0.1587916761636734,
+      "predicted_rank": 1.0,
+      "actual_rank": 1.0,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0
+    },
+    {
+      "suite": "fwd",
+      "candidate": "fwd:block_DV=32,stage=2,group=16",
+      "predicted": 0.42154349020275267,
+      "measured": 0.188452810049057,
+      "predicted_rank": 2.0,
+      "actual_rank": 2.0,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0
+    },
+    {
+      "suite": "fwd",
+      "candidate": "fwd:block_DV=64,stage=2,group=16",
+      "predicted": 0.5222705524374703,
+      "measured": 0.26803839206695557,
+      "predicted_rank": 3.0,
+      "actual_rank": 3.0,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0
+    },
+    {
+      "suite": "bwd",
+      "candidate": "bwd:block_DV=128,stage=2,group=8",
+      "predicted": 2.297530591537825,
+      "measured": 2.051206350326538,
+      "predicted_rank": 1.0,
+      "actual_rank": 1.0,
+      "spearman": 0.7714285714285715,
+      "kendall_tau_b": 0.6,
+      "top_1_recall": 1.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0
+    },
+    {
+      "suite": "bwd",
+      "candidate": "bwd:block_DV=128,stage=2,group=16",
+      "predicted": 2.2988735443229054,
+      "measured": 2.0522868633270264,
+      "predicted_rank": 2.0,
+      "actual_rank": 3.0,
+      "spearman": 0.7714285714285715,
+      "kendall_tau_b": 0.6,
+      "top_1_recall": 1.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0
+    },
+    {
+      "suite": "bwd",
+      "candidate": "bwd:block_DV=128,stage=2,group=32",
+      "predicted": 2.301559449893066,
+      "measured": 2.051665186882019,
+      "predicted_rank": 3.0,
+      "actual_rank": 2.0,
+      "spearman": 0.7714285714285715,
+      "kendall_tau_b": 0.6,
+      "top_1_recall": 1.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0
+    },
+    {
+      "suite": "bwd",
+      "candidate": "bwd:block_DV=128,stage=1,group=8",
+      "predicted": 2.64523699087142,
+      "measured": 2.1337190866470337,
+      "predicted_rank": 4.0,
+      "actual_rank": 5.0,
+      "spearman": 0.7714285714285715,
+      "kendall_tau_b": 0.6,
+      "top_1_recall": 1.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0
+    },
+    {
+      "suite": "bwd",
+      "candidate": "bwd:block_DV=128,stage=1,group=16",
+      "predicted": 2.6465799436565005,
+      "measured": 2.136399030685425,
+      "predicted_rank": 5.0,
+      "actual_rank": 6.0,
+      "spearman": 0.7714285714285715,
+      "kendall_tau_b": 0.6,
+      "top_1_recall": 1.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0
+    },
+    {
+      "suite": "bwd",
+      "candidate": "bwd:block_DV=128,stage=1,group=32",
+      "predicted": 2.649265849226661,
+      "measured": 2.133098840713501,
+      "predicted_rank": 6.0,
+      "actual_rank": 4.0,
+      "spearman": 0.7714285714285715,
+      "kendall_tau_b": 0.6,
+      "top_1_recall": 1.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+               total        used        free      shared  buff/cache   available
+Mem:              47           8          35           7          11          38
+Swap:             12           8           3
+MemAvailable=39926988 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 25.80, 48, 0, 14001
+START direction=fwd repetition=0 arm=stock-raw cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=0 arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39802072 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.52, 49, 225, 9001
+START direction=fwd repetition=0 arm=z3-legal-exhaustive cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=0 arm=z3-legal-exhaustive
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39358704 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.35, 48, 225, 9001
+START direction=fwd repetition=0 arm=z3-cm-topk cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=0 arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39569648 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.43, 49, 225, 9001
+START direction=fwd repetition=0 arm=budget-raw cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=0 arm=budget-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39607448 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.44, 49, 225, 9001
+START direction=fwd repetition=0 arm=budget-random cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=0 arm=budget-random
+               total        used        free      shared  buff/cache   available
+Mem:              47           8          35           7          11          38
+Swap:             12           8           3
+MemAvailable=39935440 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 25.34, 46, 690, 14001
+START direction=bwd repetition=0 arm=stock-raw cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=0 arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39738204 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.43, 49, 225, 9001
+START direction=bwd repetition=0 arm=z3-legal-exhaustive cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=0 arm=z3-legal-exhaustive
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39623140 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.54, 49, 225, 9001
+START direction=bwd repetition=0 arm=z3-cm-topk cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=0 arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39502056 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.57, 49, 225, 9001
+START direction=bwd repetition=0 arm=budget-raw cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=0 arm=budget-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39603056 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.38, 49, 225, 9001
+START direction=bwd repetition=0 arm=budget-random cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=0 arm=budget-random
+               total        used        free      shared  buff/cache   available
+Mem:              47           8          35           7          11          38
+Swap:             12           8           3
+MemAvailable=39938500 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 23.46, 47, 1590, 14001
+START direction=fwd repetition=1 arm=stock-raw cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=1 arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39658396 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.36, 48, 225, 9001
+START direction=fwd repetition=1 arm=z3-legal-exhaustive cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=1 arm=z3-legal-exhaustive
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39779144 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.36, 48, 225, 9001
+START direction=fwd repetition=1 arm=z3-cm-topk cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=1 arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39703456 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.37, 48, 225, 9001
+START direction=fwd repetition=1 arm=budget-raw cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=1 arm=budget-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39712252 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.59, 48, 225, 9001
+START direction=fwd repetition=1 arm=budget-random cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=1 arm=budget-random
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39340648 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 10.63, 48, 180, 405
+START direction=bwd repetition=1 arm=stock-raw cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=1 arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39490420 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.52, 51, 225, 9001
+START direction=bwd repetition=1 arm=z3-legal-exhaustive cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=1 arm=z3-legal-exhaustive
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39477756 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.63, 50, 225, 9001
+START direction=bwd repetition=1 arm=z3-cm-topk cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=1 arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39723968 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.68, 49, 225, 9001
+START direction=bwd repetition=1 arm=budget-raw cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=1 arm=budget-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           8          35           7          11          38
+Swap:             12           8           3
+MemAvailable=39901620 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.57, 49, 225, 9001
+START direction=bwd repetition=1 arm=budget-random cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=1 arm=budget-random
+               total        used        free      shared  buff/cache   available
+Mem:              47           8          35           7          11          38
+Swap:             12           8           3
+MemAvailable=39939784 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 25.48, 46, 0, 14001
+START direction=fwd repetition=2 arm=stock-raw cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=2 arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39709140 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.34, 47, 225, 9001
+START direction=fwd repetition=2 arm=z3-legal-exhaustive cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=2 arm=z3-legal-exhaustive
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39777232 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.39, 48, 225, 9001
+START direction=fwd repetition=2 arm=z3-cm-topk cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=2 arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39512644 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.52, 48, 225, 9001
+START direction=fwd repetition=2 arm=budget-raw cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=2 arm=budget-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39727228 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.53, 48, 225, 9001
+START direction=fwd repetition=2 arm=budget-random cold fresh-process warmup=10 repeat=50
+DONE direction=fwd repetition=2 arm=budget-random
+               total        used        free      shared  buff/cache   available
+Mem:              47           8          35           7          11          38
+Swap:             12           8           3
+MemAvailable=39935288 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 21.93, 45, 1590, 14001
+START direction=bwd repetition=2 arm=stock-raw cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=2 arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39723524 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.93, 49, 225, 9001
+START direction=bwd repetition=2 arm=z3-legal-exhaustive cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=2 arm=z3-legal-exhaustive
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39289228 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.53, 49, 225, 9001
+START direction=bwd repetition=2 arm=z3-cm-topk cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=2 arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39675612 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.38, 49, 225, 9001
+START direction=bwd repetition=2 arm=budget-raw cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=2 arm=budget-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          37
+Swap:             12           8           3
+MemAvailable=39343740 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.69, 49, 225, 9001
+START direction=bwd repetition=2 arm=budget-random cold fresh-process warmup=10 repeat=50
+DONE direction=bwd repetition=2 arm=budget-random
