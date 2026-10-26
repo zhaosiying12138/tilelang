@@ -1,0 +1,452 @@
+{
+  "schema": "tilelang.cuda.compile-matrix-shard-plan/v1-device",
+  "manifest_sha256": "7cec85ee9b8e6eba793b21dd91b9570644fa1a70a5a263753f71bd8682882954",
+  "tier": "full",
+  "mode": "default",
+  "files": [
+    {
+      "path": "examples/blocksparse_attention/test_example_blocksparse_attention.py",
+      "rows": 4,
+      "requires_device": true,
+      "numeric_rows": 4
+    },
+    {
+      "path": "examples/cast/test_example_cast.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "examples/convolution/test_example_convolution.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "examples/elementwise/test_example_elementwise.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "examples/flash_attention/test_example_flash_attention.py",
+      "rows": 4,
+      "requires_device": true,
+      "numeric_rows": 4
+    },
+    {
+      "path": "examples/gdn/test_example_gdn_compilation.py",
+      "rows": 8,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "examples/gemm/test_example_gemm.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "examples/linear_attention/test_linear_attn.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "examples/norm/test_rms_norm.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/cuda/test_tma_dsmem.py",
+      "rows": 6,
+      "requires_device": true,
+      "numeric_rows": 6
+    },
+    {
+      "path": "testing/python/cuda/test_tma_multicast_demo.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/issue/test_tilelang_issue_pipeline_transitive_copy_dependencies.py",
+      "rows": 5,
+      "requires_device": true,
+      "numeric_rows": 4
+    },
+    {
+      "path": "testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py",
+      "rows": 4,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/issue/test_tilelang_issue_tma_no_ws.py",
+      "rows": 10,
+      "requires_device": true,
+      "numeric_rows": 6
+    },
+    {
+      "path": "testing/python/issue/test_tilelang_issue_ws_simt_copy_full_producer_extent.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/jit/test_tilelang_jit_gemm.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/jit/test_tilelang_jit_gemm_cython.py",
+      "rows": 7,
+      "requires_device": true,
+      "numeric_rows": 5
+    },
+    {
+      "path": "testing/python/jit/test_tilelang_jit_nvrtc.py",
+      "rows": 8,
+      "requires_device": true,
+      "numeric_rows": 6
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_bf16_gemm_tcgen5_ts.py",
+      "rows": 4,
+      "requires_device": true,
+      "numeric_rows": 4
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm.py",
+      "rows": 16,
+      "requires_device": true,
+      "numeric_rows": 16
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_batched.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_simt.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_sliced_operand.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_sm75.py",
+      "rows": 7,
+      "requires_device": true,
+      "numeric_rows": 6
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_with_stride.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_gemv_simt.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_int8_gemm_tcgen5.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_sm70_fragment_copy.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_sm70_gemm_fma.py",
+      "rows": 3,
+      "requires_device": true,
+      "numeric_rows": 3
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_sm75_gemm_fma.py",
+      "rows": 7,
+      "requires_device": true,
+      "numeric_rows": 3
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_alloc.py",
+      "rows": 6,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_async_copy_gemm_sm80.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_atom_mma.py",
+      "rows": 3,
+      "requires_device": true,
+      "numeric_rows": 3
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_atomic.py",
+      "rows": 65,
+      "requires_device": true,
+      "numeric_rows": 41
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_clear.py",
+      "rows": 3,
+      "requires_device": true,
+      "numeric_rows": 3
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_cluster.py",
+      "rows": 5,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_copy.py",
+      "rows": 16,
+      "requires_device": true,
+      "numeric_rows": 12
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_copy_ldmatrix.py",
+      "rows": 6,
+      "requires_device": true,
+      "numeric_rows": 6
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_fastmath.py",
+      "rows": 4,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_float4_e2m1_unpacked_dtype.py",
+      "rows": 7,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_gemm_blockscaled.py",
+      "rows": 16,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_ldg.py",
+      "rows": 9,
+      "requires_device": true,
+      "numeric_rows": 9
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_ldst.py",
+      "rows": 12,
+      "requires_device": true,
+      "numeric_rows": 8
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py",
+      "rows": 30,
+      "requires_device": true,
+      "numeric_rows": 3
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_parallel.py",
+      "rows": 4,
+      "requires_device": true,
+      "numeric_rows": 3
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_pdl.py",
+      "rows": 5,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_pipeline.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_rand.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "rows": 51,
+      "requires_device": true,
+      "numeric_rows": 24
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_reduce_maxmin_nan.py",
+      "rows": 10,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_reducer_v2.py",
+      "rows": 67,
+      "requires_device": true,
+      "numeric_rows": 48
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_scan.py",
+      "rows": 17,
+      "requires_device": true,
+      "numeric_rows": 16
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_symbolic_loop_layout.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_sync_threads.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_tcgen05_gemm.py",
+      "rows": 17,
+      "requires_device": true,
+      "numeric_rows": 9
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_tcgen05_sliced_operands.py",
+      "rows": 10,
+      "requires_device": true,
+      "numeric_rows": 7
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_tma_1d.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_tma_copy.py",
+      "rows": 20,
+      "requires_device": true,
+      "numeric_rows": 11
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_tma_gather_scatter.py",
+      "rows": 5,
+      "requires_device": true,
+      "numeric_rows": 4
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_tma_store.py",
+      "rows": 5,
+      "requires_device": true,
+      "numeric_rows": 3
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_tmem_copy.py",
+      "rows": 8,
+      "requires_device": true,
+      "numeric_rows": 7
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_transpose.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_vectorize.py",
+      "rows": 10,
+      "requires_device": true,
+      "numeric_rows": 4
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_vectorized_cast.py",
+      "rows": 6,
+      "requires_device": true,
+      "numeric_rows": 4
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_view.py",
+      "rows": 7,
+      "requires_device": true,
+      "numeric_rows": 3
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_warp_reduce.py",
+      "rows": 6,
+      "requires_device": true,
+      "numeric_rows": 6
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_warp_sync.py",
+      "rows": 5,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_warp_vote.py",
+      "rows": 14,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_wgmma_gemm.py",
+      "rows": 9,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/profiler/test_tilelang_profiler_dynamic_symbolic.py",
+      "rows": 5,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/quantize/test_tilelang_quantize_fp8.py",
+      "rows": 1,
+      "requires_device": true,
+      "numeric_rows": 1
+    },
+    {
+      "path": "testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py",
+      "rows": 31,
+      "requires_device": true,
+      "numeric_rows": 2
+    },
+    {
+      "path": "testing/python/runtime/test_tilelang_runtime_tma_validation.py",
+      "rows": 2,
+      "requires_device": true,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/tilelibrary/test_tilelang_tilelibrary_gemm_sp.py",
+      "rows": 6,
+      "requires_device": true,
+      "numeric_rows": 6
+    }
+  ]
+}

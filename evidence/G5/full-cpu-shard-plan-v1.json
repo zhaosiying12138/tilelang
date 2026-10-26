@@ -1,0 +1,68 @@
+{
+  "schema": "tilelang.cuda.compile-matrix-shard-plan/v1-cpu",
+  "manifest_sha256": "7cec85ee9b8e6eba793b21dd91b9570644fa1a70a5a263753f71bd8682882954",
+  "tier": "full",
+  "mode": "default",
+  "files": [
+    {
+      "path": "testing/python/analysis/test_tilelang_fragment_loop_checker.py",
+      "rows": 2,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/cuda/test_cuda_latency_model.py",
+      "rows": 27,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py",
+      "rows": 3,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_fp8.py",
+      "rows": 1,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_persistent.py",
+      "rows": 4,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/language/test_tilelang_language_strided_view.py",
+      "rows": 7,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py",
+      "rows": 1,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/transform/test_tilelang_cuda_z3_scheduler.py",
+      "rows": 28,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py",
+      "rows": 20,
+      "requires_device": false,
+      "numeric_rows": 0
+    },
+    {
+      "path": "testing/python/transform/test_tilelang_transform_im2col_fallback.py",
+      "rows": 6,
+      "requires_device": false,
+      "numeric_rows": 0
+    }
+  ]
+}

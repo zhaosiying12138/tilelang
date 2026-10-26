@@ -160,7 +160,18 @@ python benchmark/z3_cost_model/gdn/analyze_results.py \
 
 ## 六、经典 TileLang 算子搜索
 
-固定 suite 为 `gemm_square`、`gemm_short_k`、`conv2d_stride_tail` 和 `flash_attention_causal`。主预算均为 top-10，三次 cold repetition；方形 GEMM 另外执行预注册的 top-1/5/20 敏感性。每次子进程只运行一个 suite/arm/repetition，父进程阻塞等待上一个子进程退出后再启动下一个。
+固定 suite 为 `gemm_square`、`gemm_short_k`、`conv2d_stride_tail` 和 `flash_attention_causal`。主预算均为 top-10，三次 cold repetition；方形 GEMM 另外执行预注册的 top-1/5/20 敏感性。每次子进程只运行一个 suite/arm/repetition，父进程阻塞等待上一个子进程退出后再启动下一个。长批次可以重复 `--arm` 拆成 stock 与 non-stock 两组：
+
+```bash
+python benchmark/z3_cost_model/operators/repeat_search.py \
+  --suite gemm_square \
+  --arm z3-legal-exhaustive --arm z3-cm-topk \
+  --arm budget-raw --arm budget-random \
+  --repetition 0 --top-k 10 --cache-mode cold \
+  --output-dir evidence/G6/classic-nonstock-rep-0
+```
+
+主预算均为 top-10，三次 cold repetition；方形 GEMM 另外执行预注册的 top-1/5/20 敏感性。
 
 ```bash
 CLASSIC=evidence/G6/classic-repro
@@ -208,17 +219,25 @@ bash scripts/run_compile_matrix.sh \
 full 执行可使用 `--only` 指定清单中的精确 row/group/file ID，分批完成后再汇总。当前计划将 728 个默认执行 row 分为 84 个文件、16 个交错批次；每个批次使用独立输出，合并器要求所有 row 恰好执行一次：
 
 ```bash
+# 99 个 CPU-only rows 单独执行，不与设备 shard 重复。
+bash scripts/run_compile_matrix_batch.sh \
+  0 1 \
+  evidence/G5/full-cpu-shard-plan-v1.json \
+  evidence/G5/compile-matrix-full-repro/cpu
+
+# 其余 629 个设备 rows 分 16 批串行执行。
 for index in {0..15}; do
   bash scripts/run_compile_matrix_batch.sh \
     "$index" 16 \
-    evidence/G5/full-default-shard-plan-v1.json \
+    evidence/G5/full-device-shard-plan-v1.json \
     evidence/G5/compile-matrix-full-repro/batches
 done
 
 python benchmark/z3_cost_model/merge_matrix.py \
   --tier full --mode default \
   --output evidence/G5/compile-matrix-full-repro/merged \
-  evidence/G5/compile-matrix-full-repro/batches/batch-{0..15}
+  evidence/G5/compile-matrix-full-repro/batches/batch-{0..15} \
+  evidence/G5/compile-matrix-full-repro/cpu/batch-0
 ```
 
 独立的 opt-in fixture 不混入 default 分母，单独执行：
