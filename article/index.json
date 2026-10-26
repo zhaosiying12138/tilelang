@@ -13,6 +13,7 @@
     "mechanisms/06-gdn-resource-pruning.md",
     "mechanisms/07-gdn-correctness.md",
     "mechanisms/08-calibration.md",
+    "results/implementation-status.md",
     "results/search-protocol.md"
   ],
   "katex": {
