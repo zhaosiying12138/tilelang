@@ -189,6 +189,7 @@ def write_analysis(root, output_dir, make_plots=True, cache_track="cold"):
             "method": row["arm"],
             "best_latency": row["best_latency_ms"],
             "latency_unit": "ms",
+            "latency_scope": "search_observed",
             "compile_count": round(row["compile_attempts"]),
             "profile_count": round(row["profile_attempts"]),
         } for row in aggregates]

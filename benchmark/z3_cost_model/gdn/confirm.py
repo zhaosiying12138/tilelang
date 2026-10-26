@@ -101,15 +101,83 @@ def modal_winners(analysis, direction):
             "votes": counts[canonical],
             "repetitions": len(runs),
             "tie_break": "descending votes, then canonical JSON",
+            "selection_rule": "modal-winner",
         }
     return winners
 
 
-def confirmation_plan(analysis, direction):
+def candidate_median_winners(analysis, direction, num_tokens=None):
+    """Select every arm's best candidate by its cold-trial median."""
+
+    selected = Direction(direction).value
+    grouped = {arm: {} for arm in ARMS}
+    for row in analysis["runs"]:
+        if row.get("direction") != selected or row.get("arm") not in grouped:
+            continue
+        arm = row["arm"]
+        summary_path = row.get("path")
+        if not summary_path:
+            raise ValueError(f"Missing summary path for {selected}/{arm}")
+        events_path = Path(summary_path).parent / "events.jsonl"
+        if not events_path.is_file():
+            raise ValueError(f"Missing cold-trial events for {selected}/{arm}: {events_path}")
+        repetition = row.get("repetition")
+        with events_path.open(encoding="utf-8") as stream:
+            observed_tokens = None
+            for line in stream:
+                event = json.loads(line)
+                if event.get("event") == "run_start":
+                    observed_tokens = event.get("metadata", {}).get("shape", {}).get("T")
+                    if num_tokens is not None and observed_tokens != num_tokens:
+                        raise ValueError(f"Token shape mismatch in {events_path}: expected T={num_tokens}, got {observed_tokens}")
+                if event.get("event") != "trial" or event.get("status") != "ok":
+                    continue
+                config = event.get("config")
+                latency = event.get("latency_ms")
+                if not isinstance(config, dict) or config.get("direction") != selected:
+                    raise ValueError(f"Invalid successful-trial config in {events_path}")
+                if isinstance(latency, bool) or not isinstance(latency, (int, float)) or not math.isfinite(latency) or latency <= 0:
+                    raise ValueError(f"Invalid successful-trial latency in {events_path}: {latency!r}")
+                canonical = _canonical(config)
+                candidate = grouped[arm].setdefault(canonical, {"config": config, "latencies": [], "repetitions": set()})
+                candidate["latencies"].append(float(latency))
+                candidate["repetitions"].add(repetition)
+            if num_tokens is not None and observed_tokens != num_tokens:
+                raise ValueError(f"Missing or mismatched run_start token shape in {events_path}")
+    winners = {}
+    for arm in ARMS:
+        candidates = grouped[arm]
+        if not candidates:
+            raise ValueError(f"No successful cold trials for {selected}/{arm}")
+        ranked = sorted(
+            candidates.items(),
+            key=lambda item: (statistics.median(item[1]["latencies"]), item[0]),
+        )
+        _, candidate = ranked[0]
+        winners[arm] = {
+            "config": candidate["config"],
+            "trial_count": len(candidate["latencies"]),
+            "measurement_repetitions": len(candidate["repetitions"]),
+            "median_latency_ms": statistics.median(candidate["latencies"]),
+            "candidate_count": len(candidates),
+            "tie_break": "lowest candidate median, then canonical JSON",
+            "selection_rule": "candidate-median",
+        }
+    return winners
+
+
+def confirmation_plan(analysis, direction, selection_rule="modal-winner", num_tokens=None):
     """Deduplicate identical configurations and retain every control relation."""
 
     selected = Direction(direction).value
-    winners = modal_winners(analysis, selected)
+    if selection_rule == "modal-winner":
+        winners = modal_winners(analysis, selected)
+        selection_detail = "modal cold-search winner per arm; canonical JSON tie-break; no confirmation measurements used"
+    elif selection_rule == "candidate-median":
+        winners = candidate_median_winners(analysis, selected, num_tokens=num_tokens)
+        selection_detail = "lowest per-candidate cold-trial median per arm; canonical JSON tie-break; no confirmation measurements used"
+    else:
+        raise ValueError(f"Unknown winner selection rule: {selection_rule}")
     groups = {}
     for arm in ARMS:
         canonical = _canonical(winners[arm]["config"])
@@ -139,12 +207,14 @@ def confirmation_plan(analysis, direction):
     return {
         "schema": "tilelang.gdn.confirmation-plan/v1",
         "direction": selected,
+        "num_tokens": num_tokens,
         "guided_arm": GUIDED_ARM,
         "guided_top_k": DEFAULT_TOP_K[Direction(selected)],
         "winners": winners,
         "candidates": candidates,
         "comparisons": comparisons,
-        "selection_rule": "modal cold-search winner per arm; canonical JSON tie-break; no confirmation measurements used",
+        "selection_rule": selection_rule,
+        "selection_rule_detail": selection_detail,
     }
 
 
@@ -322,8 +392,8 @@ def _inventory(root):
     return entries
 
 
-def run_confirmation(direction, analysis_path, output_dir, *, rounds=7, warmup=50, repeat=200, seed=42):
-    for value, name in ((rounds, "rounds"), (warmup, "warmup"), (repeat, "repeat")):
+def run_confirmation(direction, analysis_path, output_dir, *, rounds=7, warmup=50, repeat=200, seed=42, selection_rule="modal-winner", num_tokens=4096):
+    for value, name in ((rounds, "rounds"), (warmup, "warmup"), (repeat, "repeat"), (num_tokens, "num_tokens")):
         if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
             raise ValueError(f"{name} must be a positive integer")
     selected = Direction(direction)
@@ -331,11 +401,12 @@ def run_confirmation(direction, analysis_path, output_dir, *, rounds=7, warmup=5
     if run_dir.exists() and (not run_dir.is_dir() or any(run_dir.iterdir())):
         raise ValueError(f"Refusing a non-empty or non-directory confirmation path: {run_dir}")
     run_dir.mkdir(parents=True, exist_ok=True)
-    plan = confirmation_plan(_read_analysis(analysis_path), selected)
+    plan = confirmation_plan(_read_analysis(analysis_path), selected, selection_rule=selection_rule, num_tokens=num_tokens)
     summary = {
         "schema": "tilelang.gdn.confirmation/v1",
         "status": "running",
         "direction": selected.value,
+        "num_tokens": num_tokens,
         "rounds": rounds,
         "warmup": warmup,
         "repeat": repeat,
@@ -355,7 +426,7 @@ def run_confirmation(direction, analysis_path, output_dir, *, rounds=7, warmup=5
         with _confirmation_cache(run_dir):
             import torch
 
-            pipeline = GDNPipelineAdapter(selected, seed=seed)
+            pipeline = GDNPipelineAdapter(selected, seed=seed, input_kwargs={"num_tokens": num_tokens})
             candidates = {}
             for entry in plan["candidates"]:
                 config = entry["config"]
@@ -435,6 +506,8 @@ def build_parser():
     parser.add_argument("--warmup", type=int, default=50)
     parser.add_argument("--repeat", type=int, default=200)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--selection-rule", choices=("modal-winner", "candidate-median"), default="modal-winner")
+    parser.add_argument("--num-tokens", type=int, default=4096)
     return parser
 
 
@@ -448,6 +521,8 @@ def main(argv=None):
         warmup=args.warmup,
         repeat=args.repeat,
         seed=args.seed,
+        selection_rule=args.selection_rule,
+        num_tokens=args.num_tokens,
     )
     print(json.dumps({"status": summary["status"], "acceptance": summary["acceptance"], "comparisons": summary["comparisons"]}, indent=2, allow_nan=False))
     return 0

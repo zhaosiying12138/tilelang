@@ -1065,6 +1065,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Sequential tracks for --arm all (default: cold warm)",
     )
     parser.add_argument("--repetition", type=int, default=0)
+    parser.add_argument("--num-tokens", type=int, default=None, help="Override only the single-arm input token count (default: 4096)")
     return parser
 
 
@@ -1079,6 +1080,8 @@ def main(argv=None) -> int:
         "timeout": args.timeout,
     }
     if args.arm == "all":
+        if args.num_tokens is not None:
+            raise ValueError("--num-tokens is supported only for a single-arm run")
         if args.top_k is not None:
             raise ValueError("--top-k is direction-fixed for --arm all (fwd=2, bwd=3)")
         results = run_all_arms(
@@ -1100,6 +1103,8 @@ def main(argv=None) -> int:
             ],
         }
     else:
+        if args.num_tokens is not None and args.num_tokens <= 0:
+            raise ValueError("--num-tokens must be positive")
         result = run_gdn_search(
             args.direction,
             args.arm,
@@ -1113,6 +1118,7 @@ def main(argv=None) -> int:
             cache_mode=args.cache_mode,
             repetition=args.repetition,
             timeout=args.timeout,
+            input_kwargs=None if args.num_tokens is None else {"num_tokens": args.num_tokens},
         )
         payload = result.summary
     print(json.dumps(_strict_json(payload), indent=2, sort_keys=True, ensure_ascii=False))

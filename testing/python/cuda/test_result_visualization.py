@@ -284,9 +284,17 @@ def test_gdn_acceptance_has_two_panels_and_exact_input_values(tmp_path):
         ("GDN bwd", "z3-cm", 3.5, 5, 2),
     }
     assert len(rows) == 4
+    assert payload["latency_scope"] == "confirmed"
 
 
-def test_gdn_acceptance_requires_both_directions_without_default_rows(tmp_path):
+def test_gdn_search_observed_scope_is_explicit(tmp_path):
+    records = [dict(record, latency_scope="search_observed") for record in _gdn_records()]
+    payload, _ = _assert_artifacts(vis.plot_gdn_acceptance(records, tmp_path / "search"), tmp_path / "search")
+    assert payload["latency_scope"] == "search_observed"
+    assert {row["latency_scope"] for row in payload["rows"]} == {"search_observed"}
+    mixed = [dict(records[0], latency_scope="confirmed"), *records[1:]]
+    with pytest.raises(ValueError, match="common latency scope"):
+        vis.plot_gdn_acceptance(mixed, tmp_path / "mixed")
     with pytest.raises(ValueError, match="requires non-empty fwd and bwd"):
         vis.plot_gdn_acceptance(_gdn_records()[:2], tmp_path / "bad-gdn")
 

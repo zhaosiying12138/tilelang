@@ -113,6 +113,43 @@ class ConfirmationTest(unittest.TestCase):
         self.assertEqual(result["quality_ratio_guided_over_alternative"], 1.0)
         self.assertTrue(result["passed"])
 
+    def test_candidate_median_uses_all_cold_trials_not_modal_run_winners(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            analysis = _analysis("fwd")
+            for row in analysis["runs"]:
+                repetition = row["repetition"]
+                first = _config("fwd", block=16)
+                second = _config("fwd", block=32)
+                row["best_config"] = first if repetition == 0 else second
+                run_dir = root / row["arm"] / f"rep-{repetition}"
+                run_dir.mkdir(parents=True)
+                row["path"] = str(run_dir / "summary.json")
+                (run_dir / "summary.json").write_text("{}", encoding="utf-8")
+                trials = [
+                    {"event": "trial", "status": "ok", "config": first, "latency_ms": [1.0, 100.0, 2.0][repetition]},
+                    {"event": "trial", "status": "ok", "config": second, "latency_ms": 3.0},
+                ]
+                (run_dir / "events.jsonl").write_text("".join(json.dumps(event) + "\n" for event in trials), encoding="utf-8")
+            self.assertEqual(confirm.modal_winners(analysis, "fwd")[confirm.GUIDED_ARM]["config"]["block_DV"], 32)
+            winners = confirm.candidate_median_winners(analysis, "fwd")
+            for arm in confirm.ARMS:
+                self.assertEqual(winners[arm]["config"]["block_DV"], 16)
+                self.assertEqual(winners[arm]["median_latency_ms"], 2.0)
+                self.assertEqual(winners[arm]["trial_count"], 3)
+                self.assertEqual(winners[arm]["measurement_repetitions"], 3)
+            plan = confirm.confirmation_plan(analysis, "fwd", selection_rule="candidate-median")
+            self.assertEqual(plan["selection_rule"], "candidate-median")
+            self.assertEqual(plan["winners"][confirm.GUIDED_ARM]["config"]["block_DV"], 16)
+
+    def test_candidate_median_requires_complete_trial_evidence(self):
+        analysis = _analysis("fwd")
+        analysis["runs"][0]["path"] = "/definitely/missing/summary.json"
+        with self.assertRaisesRegex(ValueError, "Missing cold-trial events"):
+            confirm.candidate_median_winners(analysis, "fwd")
+
     def test_analysis_and_json_validation(self):
         with self.assertRaises(ValueError):
             confirm.modal_winners({"runs": []}, "fwd")

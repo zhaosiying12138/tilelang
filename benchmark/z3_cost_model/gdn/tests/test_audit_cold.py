@@ -41,7 +41,7 @@ def _make_root(root):
             expected = audit_cold.EXPECTED[direction]
             selected = expected["R"] if arm == "stock-raw" else expected["U"] if arm == "z3-legal-exhaustive" else expected["top_k"]
             _write(run / "summary.json", {
-                "gdn": {"direction": direction, "cache_track": "cold"},
+                "gdn": {"direction": direction, "cache_track": "cold", "shape": {"T": 4096}},
                 "arm": arm,
                 "experiment": {"repetition": 0},
                 "status": "ok",
@@ -54,7 +54,7 @@ def _make_root(root):
                 "end_to_end_wall_seconds": 2.0,
                 "cache": {"pipeline_cache_directory": str(run / "cache")},
             })
-            _write(run / "config.json", {"warmup": 10, "repeat": 50, "repetition": 0, "cache_track": "cold"})
+            _write(run / "config.json", {"warmup": 10, "repeat": 50, "repetition": 0, "cache_track": "cold", "shape": {"T": 4096}})
             _write(run / "environment.json", {
                 "pid": pid,
                 "environment": {
@@ -78,6 +78,32 @@ class ColdAuditTest(unittest.TestCase):
             self.assertTrue(report["passed"], report["errors"])
             self.assertEqual(report["observed_runs"], 10)
             self.assertEqual(report["distinct_pids"], 10)
+
+    def test_t8192_audit_checks_protocol_and_run_shapes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _make_root(root)
+            protocol_path = root / "protocol.json"
+            protocol = json.loads(protocol_path.read_text())
+            protocol["num_tokens"] = 8192
+            _write(protocol_path, protocol)
+            for path in root.rglob("summary.json"):
+                summary = json.loads(path.read_text())
+                summary["gdn"]["shape"]["T"] = 8192
+                _write(path, summary)
+            for path in root.rglob("config.json"):
+                config = json.loads(path.read_text())
+                config["shape"]["T"] = 8192
+                _write(path, config)
+            report = audit_cold.audit_cold_runs(root, repetitions=(0,), num_tokens=8192)
+            self.assertTrue(report["passed"], report["errors"])
+            config_path = next(root.rglob("config.json"))
+            config = json.loads(config_path.read_text())
+            config["shape"]["T"] = 4096
+            _write(config_path, config)
+            report = audit_cold.audit_cold_runs(root, repetitions=(0,), num_tokens=8192)
+            self.assertFalse(report["passed"])
+            self.assertTrue(any("token shape mismatch" in error for error in report["errors"]))
 
     def test_pid_reuse_and_changed_warmup_are_reported_together(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -286,8 +286,7 @@ def _schedule_data(schedule_info: Any) -> tuple[dict[str, Any], list[dict[str, A
         if len(supplied_stages) != count:
             raise ValueError("schedule_info.stages must have one entry per task")
     task_names = info.get("task_names")
-    if task_names is not None:
-        if isinstance(task_names, (str, bytes)) or not isinstance(task_names, Sequence) or len(task_names) != count:
+    if task_names is not None and (isinstance(task_names, (str, bytes)) or not isinstance(task_names, Sequence) or len(task_names) != count):
             raise ValueError("schedule_info.task_names must be an array with one entry per task")
 
     rows = []
@@ -1038,7 +1037,7 @@ def _quality_data(records: Any, x_axis: str, oracle: Any) -> tuple[dict[str, Any
     groups = {}
     for point in points:
         groups.setdefault(point["suite"], []).append(point)
-    for suite, suite_points in groups.items():
+    for _suite, suite_points in groups.items():
         method_spaces = sorted({(point["method"], point["search_space"]) for point in suite_points})
         for method, search_space in method_spaces:
             members = [point for point in suite_points if point["method"] == method and point["search_space"] == search_space]
@@ -1159,6 +1158,7 @@ def _gdn_data(records: Any) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     rows = []
     seen = set()
     units = set()
+    scopes = set()
     for index, record in enumerate(source):
         prefix = f"records[{index}]"
         suite = _text(_pick(record, ("suite", "suite_name", "benchmark"), f"{prefix}.suite"), f"{prefix}.suite")
@@ -1187,6 +1187,10 @@ def _gdn_data(records: Any) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         )
         unit = _text(_pick(record, ("latency_unit", "unit"), f"{prefix}.latency_unit"), f"{prefix}.latency_unit")
         units.add(unit)
+        scope = _text(record.get("latency_scope", "confirmed"), f"{prefix}.latency_scope")
+        if scope not in ("confirmed", "search_observed"):
+            raise ValueError(f"{prefix}.latency_scope must be confirmed or search_observed")
+        scopes.add(scope)
         compile_count = _integer(
             _pick(record, ("compile_count", "compiles"), f"{prefix}.compile_count"),
             f"{prefix}.compile_count",
@@ -1203,6 +1207,7 @@ def _gdn_data(records: Any) -> tuple[dict[str, Any], list[dict[str, Any]]]:
                 "method": method,
                 "best_latency": best_latency,
                 "latency_unit": unit,
+                "latency_scope": scope,
                 "compile_count": compile_count,
                 "profile_count": profile_count,
             }
@@ -1212,7 +1217,9 @@ def _gdn_data(records: Any) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         raise ValueError(f"GDN acceptance requires non-empty fwd and bwd panels; found {sorted(directions)}")
     if len(units) != 1:
         raise ValueError(f"GDN acceptance requires one common latency unit, found {sorted(units)}")
-    metadata = {"latency_unit": next(iter(units))}
+    if len(scopes) != 1:
+        raise ValueError(f"GDN acceptance requires one common latency scope, found {sorted(scopes)}")
+    metadata = {"latency_unit": next(iter(units)), "latency_scope": next(iter(scopes))}
     return metadata, rows
 
 
@@ -1221,6 +1228,7 @@ def plot_gdn_acceptance(records: Any, output: str | os.PathLike[str]) -> dict[st
 
     _output_base(output)
     metadata, rows = _gdn_data(records)
+    latency_label = "Best confirmed latency" if metadata["latency_scope"] == "confirmed" else "Best search-observed latency"
     plt = _pyplot()
     with _rc_context(plt):
         fig, axes = plt.subplots(1, 2, figsize=(15, 6.5), sharey=False)
@@ -1237,7 +1245,7 @@ def plot_gdn_acceptance(records: Any, output: str | os.PathLike[str]) -> dict[st
                 ax.bar_label(bars, labels=[f"{value:.6g}" for value in latencies], padding=3, fontsize=8)
                 ax.set_xticks(x_positions, [row["method"] for row in panel_rows], rotation=15, ha="right")
                 ax.set_title(panel_rows[0]["panel"])
-                ax.set_ylabel(f"Best confirmed latency ({metadata['latency_unit']})")
+                ax.set_ylabel(f"{latency_label} ({metadata['latency_unit']})")
                 ax.set_ylim(0, panel_max_latency * 1.22)
                 ax.grid(axis="y", alpha=0.22)
                 ax.set_axisbelow(True)
@@ -1268,9 +1276,9 @@ def plot_gdn_acceptance(records: Any, output: str | os.PathLike[str]) -> dict[st
                 columnspacing=1.5,
                 handlelength=1.8,
             )
-            fig.suptitle("GDN acceptance: bars = best confirmed latency (left axis); lines = exact input counts (right axis)", y=0.995)
+            fig.suptitle(f"GDN acceptance: bars = {latency_label.lower()} (left axis); lines = exact input counts (right axis)", y=0.995)
             fig.tight_layout(rect=(0, 0, 1, 0.82))
-            fields = ("panel", "direction", "suite", "method", "best_latency", "latency_unit", "compile_count", "profile_count")
+            fields = ("panel", "direction", "suite", "method", "best_latency", "latency_unit", "latency_scope", "compile_count", "profile_count")
             return _emit(fig, plt, output, rows, fields, {"plot": "gdn_acceptance", **metadata})
         finally:
             plt.close(fig)

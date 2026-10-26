@@ -1,0 +1,42 @@
+{
+  "schema": "tilelang.gdn.selection-v2-plan",
+  "created_without_t8192_results": true,
+  "trigger": {
+    "validation_shape_T": 4096,
+    "evidence": "evidence/G6/gdn-confirmation-v2/bwd/summary.json",
+    "fwd_acceptance": "passed",
+    "bwd_acceptance": "failed",
+    "failed_comparison": "guided stage=2/group=32 versus budget-random stage=2/group=16",
+    "quality_ratio_guided_over_control": 1.0006238741053781,
+    "rule": "guided/each equal-budget control <= 1.0"
+  },
+  "selection_revision": {
+    "name": "candidate-median",
+    "applies_to": "all five arms without exception",
+    "rule": "For each arm, compute the median latency of every distinct candidate across all successful cold-search trials at its selected repetitions; choose the smallest median, with canonical JSON tie-break. Do not add candidates, change top-k, or use confirmation measurements for selection.",
+    "previous_rule": "modal per-run winner with canonical JSON tie-break",
+    "reason": "A single-run winner majority is unnecessarily sensitive to profiling noise and does not use all per-candidate measurements when choosing the final configuration."
+  },
+  "model_and_space_frozen": {
+    "cost_model_coefficients_changed": false,
+    "hardware_calibration_changed": false,
+    "raw_space_changed": false,
+    "z3_constraints_changed": false,
+    "top_k_changed": false,
+    "warmup_search": 10,
+    "repeat_search": 50,
+    "cold_repetitions": 3,
+    "fresh_process_per_arm_repetition": true
+  },
+  "heldout": {
+    "new_shape": {"B": 1, "T": 8192, "Hg": 4, "H": 8, "K": 128, "DV": 128, "chunk": 32, "dtype": "bf16"},
+    "reason": "T4096 was used for the selection-rule iteration and is now validation; T8192 has not been used for model fitting or selection-rule design.",
+    "outputs": ["all fwd/bwd outputs required by the original protocol"],
+    "confirmation_rounds": 7,
+    "confirmation_warmup": 50,
+    "confirmation_repeat": 200,
+    "confirmation_order": "ABBA",
+    "quality_rule": "guided/exhaustive <= 1.02 and guided/each equal-budget control <= 1.0; identical configs are exactly equal"
+  },
+  "result_policy": "Run the complete protocol once per arm/repetition, preserve every failure and outlier, and report pass or failure. Do not repeat confirmation until a preferred answer appears."
+}

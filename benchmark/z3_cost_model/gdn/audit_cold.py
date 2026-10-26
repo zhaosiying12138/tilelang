@@ -35,8 +35,10 @@ def _write(path, value):
         os.fsync(stream.fileno())
 
 
-def audit_cold_runs(root, repetitions=(0, 1, 2)):
+def audit_cold_runs(root, repetitions=(0, 1, 2), num_tokens=4096):
     root = Path(root).expanduser().resolve(strict=False)
+    if isinstance(num_tokens, bool) or not isinstance(num_tokens, int) or num_tokens <= 0:
+        raise ValueError("num_tokens must be a positive integer")
     errors = []
     records = []
     pids = {}
@@ -60,6 +62,8 @@ def audit_cold_runs(root, repetitions=(0, 1, 2)):
         for key, value in required.items():
             if protocol.get(key) != value:
                 errors.append(f"protocol {key}: expected {value!r}, got {protocol.get(key)!r}")
+        if (num_tokens != 4096 or "num_tokens" in protocol) and protocol.get("num_tokens") != num_tokens:
+            errors.append(f"protocol num_tokens: expected {num_tokens}, got {protocol.get('num_tokens')!r}")
         if not isinstance(protocol.get("script_sha256"), str) or len(protocol["script_sha256"]) != 64:
             errors.append("protocol script_sha256 is missing or malformed")
 
@@ -101,6 +105,8 @@ def audit_cold_runs(root, repetitions=(0, 1, 2)):
         for field, expected in (("warmup", 10), ("repeat", 50), ("repetition", repetition), ("cache_track", "cold")):
             if config.get(field) != expected:
                 errors.append(f"config {field} for {key}: expected {expected!r}, got {config.get(field)!r}")
+        if config.get("shape", {}).get("T") != num_tokens or gdn.get("shape", {}).get("T") != num_tokens:
+            errors.append(f"token shape mismatch for {key}: expected T={num_tokens}")
         if before.get("empty") is not True or before.get("entries") != [] or before.get("cache_entries") != []:
             errors.append(f"before state is not demonstrably empty for {key}")
         if not isinstance(after.get("entries"), list) or not isinstance(after.get("cache_entries"), list):
@@ -154,6 +160,7 @@ def audit_cold_runs(root, repetitions=(0, 1, 2)):
         "schema": "tilelang.gdn.cold-protocol-audit/v1",
         "root": str(root),
         "repetitions": list(repetitions),
+        "num_tokens": num_tokens,
         "expected_runs": len(expected_keys),
         "observed_runs": len(seen),
         "distinct_pids": len(pids),
@@ -168,9 +175,10 @@ def main(argv=None):
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--repetitions", default="0,1,2")
+    parser.add_argument("--num-tokens", type=int, default=4096)
     args = parser.parse_args(argv)
     repetitions = tuple(int(value) for value in args.repetitions.split(",") if value)
-    report = audit_cold_runs(args.root, repetitions=repetitions)
+    report = audit_cold_runs(args.root, repetitions=repetitions, num_tokens=args.num_tokens)
     _write(args.output, report)
     print(json.dumps({key: value for key, value in report.items() if key != "runs"}, indent=2, ensure_ascii=False))
     return 0 if report["passed"] else 1

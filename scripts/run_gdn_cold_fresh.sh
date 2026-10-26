@@ -29,11 +29,17 @@ case "$OUTPUT_ROOT" in
     exit 2
     ;;
 esac
+export GDN_NUM_TOKENS="${GDN_NUM_TOKENS:-4096}"
+if [[ ! "$GDN_NUM_TOKENS" =~ ^[1-9][0-9]*$ ]]; then
+  printf 'GDN_NUM_TOKENS must be a positive integer: %s\n' "$GDN_NUM_TOKENS" >&2
+  exit 2
+fi
 mkdir -p "$OUTPUT_ROOT/$DIRECTION"
 
 "$TILELANG_PYTHON" - "$REPO_ROOT" "$OUTPUT_ROOT" <<'PY'
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -52,6 +58,7 @@ required = {
     "warmup": 10,
     "repeat": 50,
     "fresh_process_per_arm_repetition": True,
+    "num_tokens": int(os.environ["GDN_NUM_TOKENS"]),
     "script_sha256": script_sha256,
 }
 if path.exists():
@@ -105,6 +112,7 @@ for arm in stock-raw z3-legal-exhaustive z3-cm-topk budget-raw budget-random; do
     --direction "$DIRECTION" \
     --arm "$arm" \
     --cache-mode cold \
+    --num-tokens "$GDN_NUM_TOKENS" \
     --repetition "$REPETITION" \
     --warmup 10 \
     --repeat 50 \
