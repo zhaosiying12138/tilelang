@@ -278,8 +278,10 @@ def z3_pipeline_annotations(
     references the ordered ``buffer_vars``/``buffer_sizes`` entry. Resource,
     pipe-order and stage-order dependencies are pairs, while owner exclusions
     are ``(left, right, latency_lr, latency_rl)``. The current C++ adapter
-    rejects owner exclusions and stage-order dependencies explicitly because
-    downstream CUDA IR cannot yet preserve their full semantics.
+    rejects owner exclusions because downstream CUDA IR cannot preserve their
+    lifetime and wraparound semantics. Stage-order dependencies are forwarded
+    and checked against the solver result when no cross-stage Let clone is
+    required; scheduled Bind cases that require cloning remain explicit errors.
 
     ``buffer_vars`` accepts Buffer objects or their ``.data`` Vars. Its order is
     the solver buffer-id order used by the returned

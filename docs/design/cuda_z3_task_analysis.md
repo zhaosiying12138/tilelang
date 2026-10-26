@@ -79,7 +79,7 @@ cross-iteration distance：
 
 mask 与 `latency_model.Resource` 的七位合同一致：global load/store、shared、tensor core、CUDA core、SFU、scalar。缺失 `resource_deps` 时，对 effective masks 有交集的每对 task 生成一个无序 resource pair。`resource_flags` 显式存在时使用显式值，不用重新估计的值替代。
 
-manual schedule 缺失 `pipe_order_deps` 时按共享 resource mask 补 source-order pairs；自动调度补空列表。`owner_exclusion_deps` 和 `stage_order_deps` 在缺失时也只补空列表；显式非空值仍由原 adapter 拒绝。本 pass 不扩展这两种依赖的 downstream 能力。
+manual schedule 缺失 `pipe_order_deps` 时按共享 resource mask 补 source-order pairs；自动调度补空列表。`owner_exclusion_deps` 和 `stage_order_deps` 在缺失时也只补空列表。owner 的显式非空值仍由 adapter 拒绝；stage-order 的无 Let clone 子集由 adapter 转发并复核 raw stage，需要跨 stage clone 的 scheduled Bind 仍由下游拒绝。本 pass 不扩展 owner runtime 或通用 Let clone。
 
 ## 4. TaskFeatures 和 Python FFI
 
@@ -140,13 +140,13 @@ C++ 对每个需要成本或 mask 的 task 调 FFI，只填写缺失的 latency/
 
 ## 6. Async producer 的 same-stage 边界
 
-当前 solver 没有独立 same-stage constraint，`stage_order_deps` 又仍被 adapter 拒绝。因此本 pass 不伪装支持自动 same-stage 求解：
+当前 automatic async producer/consumer 仍采用保守 same-stage 约束路径，不把 stage-order 的无 clone 子集误当成完整异步 wait 支持：
 
 - 对已有 `software_pipeline_async_producers` / groups，按 producer write 与 direct consumer read 提取 producer/consumer pairs；同一 group 必须有相同且非空的 direct consumer set。
 - `manual_schedule=True` 时要求每对 manual stages 相等，并写 `tl_z3_pipeline_async_same_stage_deps` 审计 pairs。
 - 自动 schedule 遇到需要 same-stage 的显式 async producer/consumer 时直接报错，不返回不兼容结果。
 
-本 pass 不新生成 implicit async producer flags；downstream `PipelinePlanning` 的 implicit async 分类和校验仍保持原状。owner exclusion 和 stage-order 语义没有扩展。
+本 pass 不新生成 implicit async producer flags；downstream `PipelinePlanning` 的 implicit async 分类和校验仍保持原状。owner exclusion 仍明确拒绝；stage-order 仅复用 adapter 的无 Let clone 子集，未扩展通用 clone。
 
 ## 7. Host 测试范围
 
