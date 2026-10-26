@@ -550,6 +550,7 @@ def classify_failure(text: str, *, numeric_gate: bool, default: str | None = Non
         r"invalid launch (configuration|argument)",
         r"launch failure",
         r"an illegal instruction was encountered",
+        r"Failed to set the allowed dynamic shared memory size",
     )
     device_compile_patterns = (
         r"ptxas\s+(fatal|error)",
@@ -561,6 +562,8 @@ def classify_failure(text: str, *, numeric_gate: bool, default: str | None = Non
         r"compilation terminated",
         r"failed to compile.*(CUDA|device|kernel)",
         r"CUDA compilation.*(failed|error)",
+        r"RuntimeError: #include <tl_templates/cuda/nvrtc_std\.h>",
+        r"Compilation error:",
     )
     numeric_patterns = (
         r"assert_(all)?close",

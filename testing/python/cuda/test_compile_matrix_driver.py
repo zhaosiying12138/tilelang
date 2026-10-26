@@ -272,6 +272,8 @@ def test_each_node_gets_distinct_cache_and_no_shared_clear(frozen, tmp_path):
         ("ModuleNotFoundError: No module named 'fla'", False, cm.FAIL_ENV),
         ("ptxas error : illegal register", False, cm.FAIL_DEVICE_COMPILE),
         ("CUDA_ERROR_MISALIGNED_ADDRESS at kernel launch", True, cm.FAIL_LAUNCH),
+        ("Failed to set the allowed dynamic shared memory size to 132352", True, cm.FAIL_LAUNCH),
+        ("RuntimeError: #include <tl_templates/cuda/nvrtc_std.h>\nCompilation error:", True, cm.FAIL_DEVICE_COMPILE),
         ("torch.testing.assert_close: Tensor-likes are not close", True, cm.FAIL_NUMERIC),
         ("tvm.error.InternalError in LowerTileOp", False, cm.FAIL_LOWER),
         ("AssertionError: generated source differs", False, cm.FAIL_LOWER),
