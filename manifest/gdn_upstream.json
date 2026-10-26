@@ -1,0 +1,76 @@
+{
+  "project": "QwenLM/FlashQLA",
+  "remote": "https://github.com/QwenLM/FlashQLA.git",
+  "commit": "da06429d54b0f577de0a638f451ac8f0b395e0ac",
+  "tag": "v0.1.3",
+  "commit_title": "Update version to v0.1.3",
+  "commit_time": "2026-09-30T21:02:35+08:00",
+  "package_version": "0.1.3",
+  "license": {
+    "spdx": "MIT",
+    "copyright": "Copyright (c) 2026 Qwen, Alibaba",
+    "vendored_file": "benchmark/z3_cost_model/gdn/vendor/LICENSE",
+    "sha256": "d0b7a111f48dc0207c7e057c810ae0e2fdbc807ba654eb669ade998b2cdc3438"
+  },
+  "source": {
+    "local_path": "/home/zhaosiying/codebase/FlashQLA",
+    "clean": true,
+    "clean_check": "git status --porcelain returned no entries",
+    "tracked_flash_qla_files": 44
+  },
+  "vendored": {
+    "root": "benchmark/z3_cost_model/gdn/vendor",
+    "package": "flash_qla",
+    "copy_method": "git archive da06429d54b0f577de0a638f451ac8f0b395e0ac -- flash_qla LICENSE",
+    "python_files": 41,
+    "adapted_python_files": 9,
+    "upstream_test_files": [
+      "tests/ref_gdr.py",
+      "tests/gdr_common.py",
+      "tests/test_gdr_unit.py",
+      "tests/arch_utils.py",
+      "tests/conftest.py",
+      "pytest.ini"
+    ]
+  },
+  "core_contract": {
+    "auto_cp": false,
+    "dtype": "bf16",
+    "head_dim_k": 128,
+    "head_dim_v": 128,
+    "chunk_size": 32,
+    "num_tokens": 128,
+    "num_k_heads": 2,
+    "num_v_heads": 4,
+    "threads": 512
+  },
+  "search_space": {
+    "fwd": {
+      "raw_count": 4,
+      "raw_domains": {
+        "block_DV": [16, 32, 64, 128]
+      },
+      "fixed": {
+        "prepare_h_num_stages": 2,
+        "group_reduce_block_size": 16
+      }
+    },
+    "bwd": {
+      "raw_count": 9,
+      "raw_domains": {
+        "prepare_h_num_stages": [1, 2, 3],
+        "group_reduce_block_size": [8, 16, 32]
+      },
+      "fixed": {
+        "block_DV": 128
+      }
+    }
+  },
+  "notes": [
+    "The complete tracked flash_qla package is vendored, including TileLang fwd/bwd, public autograd/orchestration, CP support, and autocp coefficient fixtures.",
+    "Only the nine explicit adaptations listed in benchmark/z3_cost_model/gdn/PORTING.md differ from the locked upstream files.",
+    "The fwd and bwd spaces contain only real direction-specific knobs; fixed fields and semantic de-duplication are not UNSAT decisions.",
+    "Non-default group_reduce_block_size requires num_tokens divisibility; default 16 preserves upstream partial-tile behavior.",
+    "No Triton or MLIR implementation is substituted for the FlashQLA TileLang kernels."
+  ]
+}

@@ -1,0 +1,621 @@
+{
+  "core": {
+    "auto_cp": false,
+    "chunk_size": 32,
+    "dtype": "bf16",
+    "head_dim_k": 128,
+    "head_dim_v": 128,
+    "num_tokens": 128,
+    "threads": 512,
+    "warp_size": 32
+  },
+  "directions": {
+    "bwd": {
+      "configs": [
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 8,
+          "prepare_h_num_stages": 1,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 1,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 32,
+          "prepare_h_num_stages": 1,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 8,
+          "prepare_h_num_stages": 2,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 32,
+          "prepare_h_num_stages": 2,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 8,
+          "prepare_h_num_stages": 3,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 3,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "bwd",
+          "group_reduce_block_size": 32,
+          "prepare_h_num_stages": 3,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        }
+      ],
+      "count": 9,
+      "parameter_consumers": {
+        "block_DV": "fixed at 128; fused_bwd has no block_DV parameter",
+        "group_reduce_block_size": "group_reduce_vector for dq/dk when Hg<H; core GQA uses Hg=2, H=4",
+        "prepare_h_num_stages": "fused_gdr_h and cp_preprocess_bwd"
+      },
+      "raw_domains": {
+        "group_reduce_block_size": [
+          8,
+          16,
+          32
+        ],
+        "prepare_h_num_stages": [
+          1,
+          2,
+          3
+        ]
+      },
+      "status_counts": {
+        "SAT": 0,
+        "UNKNOWN": 9,
+        "UNSAT": 0
+      },
+      "structural_status_counts": {
+        "SAT": 9,
+        "UNKNOWN": 0,
+        "UNSAT": 0
+      }
+    },
+    "fwd": {
+      "configs": [
+        {
+          "block_DV": 16,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=16.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 32,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=32.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 64,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=64.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        },
+        {
+          "block_DV": 128,
+          "checks": [
+            {
+              "name": "fixed_core_contract",
+              "reason": "auto_cp=False, bf16, K=DV=128, chunk=32, and T=128 are fixed.",
+              "status": "SAT"
+            },
+            {
+              "name": "thread_protocol",
+              "reason": "The vendored SM120 warp/mbarrier protocol retains 512 threads (16 warps of 32 threads).",
+              "status": "SAT"
+            },
+            {
+              "name": "block_DV_divisibility",
+              "reason": "DV=128 is divisible by block_DV=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "prepare_h_stage_count",
+              "reason": "prepare_h_num_stages is a positive pipeline-stage count.",
+              "status": "SAT"
+            },
+            {
+              "name": "group_reduce_token_tiling",
+              "reason": "Default 16 preserves upstream behavior, or the non-default block size divides T=128.",
+              "status": "SAT"
+            },
+            {
+              "name": "resource_feasibility",
+              "reason": "No IR/ptxas/device-spec resource evaluator is connected; shared-memory, register, and launch feasibility remain unknown.",
+              "status": "UNKNOWN"
+            }
+          ],
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2,
+          "resource_status": "UNKNOWN",
+          "status": "UNKNOWN",
+          "structural_status": "SAT"
+        }
+      ],
+      "count": 4,
+      "parameter_consumers": {
+        "block_DV": "fused_gdr_fwd",
+        "group_reduce_block_size": "fixed at 16; no forward consumer",
+        "prepare_h_num_stages": "fixed at 2; no-CP public forward has no prepare_h consumer"
+      },
+      "raw_domains": {
+        "block_DV": [
+          16,
+          32,
+          64,
+          128
+        ]
+      },
+      "status_counts": {
+        "SAT": 0,
+        "UNKNOWN": 4,
+        "UNSAT": 0
+      },
+      "structural_status_counts": {
+        "SAT": 4,
+        "UNKNOWN": 0,
+        "UNSAT": 0
+      }
+    }
+  },
+  "fixed_parameters": {
+    "bwd": {
+      "block_DV": 128
+    },
+    "fwd": {
+      "group_reduce_block_size": 16,
+      "prepare_h_num_stages": 2
+    }
+  },
+  "raw_configs_per_direction": {
+    "bwd": 9,
+    "fwd": 4
+  },
+  "resource_policy": "Structural SAT is not resource SAT: without IR/ptxas/device-spec checks, overall feasibility remains UNKNOWN. Fixed fields and semantic de-duplication are not UNSAT decisions."
+}

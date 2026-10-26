@@ -1,0 +1,27 @@
+test_all_raw_configs_are_structurally_sat_and_resource_unknown (test_config.ConfigSpaceTest.test_all_raw_configs_are_structurally_sat_and_resource_unknown) ... ok
+test_autograd_group_default_and_arity (test_config.ConfigSpaceTest.test_autograd_group_default_and_arity) ... ok
+test_backward_space_is_stage_by_group_without_block_dimension (test_config.ConfigSpaceTest.test_backward_space_is_stage_by_group_without_block_dimension) ... ok
+test_block_128_is_not_unsat (test_config.ConfigSpaceTest.test_block_128_is_not_unsat) ... ok
+test_block_divisibility (test_config.ConfigSpaceTest.test_block_divisibility) ... ok
+test_cpu_cli_json_and_direction_counts (test_config.ConfigSpaceTest.test_cpu_cli_json_and_direction_counts) ... ok
+test_defaults_match_upstream (test_config.ConfigSpaceTest.test_defaults_match_upstream) ... ok
+test_direction_applicability_is_explicit (test_config.ConfigSpaceTest.test_direction_applicability_is_explicit) ... ok
+test_direction_specific_domains_and_counts (test_config.ConfigSpaceTest.test_direction_specific_domains_and_counts) ... ok
+test_every_backward_config_has_two_real_consumer_wirings (test_config.ConfigSpaceTest.test_every_backward_config_has_two_real_consumer_wirings) ... ok
+test_fixed_core_contract (test_config.ConfigSpaceTest.test_fixed_core_contract) ... ok
+test_fixed_thread_protocol (test_config.ConfigSpaceTest.test_fixed_thread_protocol) ... ok
+test_forward_space_has_only_block_dimension (test_config.ConfigSpaceTest.test_forward_space_has_only_block_dimension) ... ok
+test_fused_bwd_has_no_block_DV_parameter (test_config.ConfigSpaceTest.test_fused_bwd_has_no_block_DV_parameter) ... ok
+test_group_block_size_must_be_positive_integer (test_config.ConfigSpaceTest.test_group_block_size_must_be_positive_integer) ... ok
+test_group_reduce_default_and_valid_values_reach_factory (test_config.ConfigSpaceTest.test_group_reduce_default_and_valid_values_reach_factory) ... ok
+test_group_token_divisibility_only_constrains_nondefault (test_config.ConfigSpaceTest.test_group_token_divisibility_only_constrains_nondefault) ... ok
+test_nondefault_group_reduce_rejects_nondivisible_tokens (test_config.ConfigSpaceTest.test_nondefault_group_reduce_rejects_nondivisible_tokens) ... ok
+test_resource_checker_extension_point (test_config.ConfigSpaceTest.test_resource_checker_extension_point) ... ok
+test_runner_factory_rejects_wrong_direction_knobs (test_config.ConfigSpaceTest.test_runner_factory_rejects_wrong_direction_knobs) ... ok
+test_stage_count_must_be_positive_integer (test_config.ConfigSpaceTest.test_stage_count_must_be_positive_integer) ... ok
+test_unsat_dominates_unknown (test_config.ConfigSpaceTest.test_unsat_dominates_unknown) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.031s
+
+OK
