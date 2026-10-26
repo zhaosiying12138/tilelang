@@ -1,0 +1,41 @@
+..............................................................s......... [ 77%]
+.............s.......                                                    [100%]
+========================================================================== fixture duration top ==========================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.006409 grand total                                                                                                               115 0:00:00.000038 0:00:00.001341
+========================================================================= test call duration top =========================================================================
+total          name                                                                                                                      num med            max           
+0:00:04.936954 testing/python/autotune/test_pass_configs_tuning.py::test_autotune_with_per_config_pass_configs                             1 0:00:04.936954 0:00:04.936954
+0:00:03.538007 testing/python/autotune/test_tilelang_autotune_with_inputs.py::test_autotune_matmul_symbolic_m                              1 0:00:03.538007 0:00:03.538007
+0:00:03.433890 testing/python/autotune/test_tilelang_autotune_eager_mode.py::test_autotune_matmul                                          1 0:00:03.433890 0:00:03.433890
+0:00:03.109992 testing/python/autotune/test_tilelang_autotune_input_cache.py::test_autotune_refreshes_incompatible_inputs                  3 0:00:01.015643 0:00:01.114885
+0:00:02.985546 testing/python/autotune/test_tilelang_autotune_input_cache.py::test_autotune_refreshes_changed_scalar_dtype                 3 0:00:01.008917 0:00:01.945994
+0:00:02.399487 testing/python/autotune/test_tilelang_autotune_input_cache.py::test_autotune_reuses_compatible_inputs                       4 0:00:00.570395 0:00:01.235835
+0:00:02.297999 testing/python/autotune/test_tilelang_autotune_scalar_inputs.py::test_autotune_none_tunable_does_not_segfault               1 0:00:02.297999 0:00:02.297999
+0:00:02.020721 testing/python/autotune/test_tilelang_autotune_scalar_inputs.py::test_autotune_scalar_inputs_with_set_autotune_inputs       1 0:00:02.020721 0:00:02.020721
+0:00:01.908989 testing/python/autotune/test_tilelang_autotune.py::test_autotune_matmul                                                     1 0:00:01.908989 0:00:01.908989
+0:00:01.900819 testing/python/autotune/test_pass_configs_tuning.py::test_autotune_mixed_pass_configs                                       1 0:00:01.900819 0:00:01.900819
+0:00:01.801513 testing/python/autotune/test_tilelang_autotune_input_cache.py::test_autotune_refreshes_conflicting_symbolic_inputs          2 0:00:00.900757 0:00:01.427927
+0:00:01.364346 testing/python/autotune/test_tilelang_autotune_do_not_specialize.py::test_do_not_specialize_same_key_for_different_values   1 0:00:01.364346 0:00:01.364346
+0:00:01.348910 testing/python/autotune/test_tilelang_autotune_do_not_specialize.py::test_do_not_specialize_threads_new_entry               1 0:00:01.348910 0:00:01.348910
+0:00:00.460647 testing/python/autotune/test_tilelang_autotune_input_cache.py::test_autotune_refreshes_inputs_between_runs                  2 0:00:00.230324 0:00:00.415581
+0:00:00.348269 testing/python/autotune/test_pass_configs_tuning.py::test_autotune_pass_configs_merge_with_global                           1 0:00:00.348269 0:00:00.348269
+0:00:00.334557 testing/python/autotune/test_tilelang_autotune_with_inputs.py::test_autotune_matmul                                         1 0:00:00.334557 0:00:00.334557
+0:00:00.332566 testing/python/autotune/test_tilelang_autotune_do_not_specialize.py::test_do_not_specialize_new_key_for_m_param             1 0:00:00.332566 0:00:00.332566
+0:00:00.284185 testing/python/autotune/test_pass_configs_tuning.py::test_autotune_decorator_with_per_config_pass_configs                   1 0:00:00.284185 0:00:00.284185
+0:00:00.279817 testing/python/autotune/test_tilelang_autotune_eager_mode.py::test_autotune_matmul_compile                                  1 0:00:00.279817 0:00:00.279817
+0:00:00.269224 testing/python/autotune/test_pass_configs_tuning.py::test_autotune_decorator_pass_configs_override_jit_global               1 0:00:00.269224 0:00:00.269224
+0:00:00.183118 testing/python/autotune/test_guided_tuner.py::test_parallel_compile_cumulative_and_wall_are_distinct                        1 0:00:00.183118 0:00:00.183118
+0:00:00.020607 testing/python/autotune/test_guided_search.py::test_coupled_constraints_define_legal_universe_with_real_z3                  1 0:00:00.020607 0:00:00.020607
+0:00:00.010665 testing/python/autotune/test_tilelang_autotune_timeout.py::test_benchmark_worker_discards_inputs_after_timeout              1 0:00:00.010665 0:00:00.010665
+0:00:00.010444 testing/python/autotune/test_tilelang_autotune_timeout.py::test_benchmark_worker_reports_timeout_without_signals            1 0:00:00.010444 0:00:00.010444
+0:00:00.009205 testing/python/autotune/test_guided_tuner.py::test_five_arms_use_expected_candidate_denominators                            5 0:00:00.001785 0:00:00.002594
+0:00:00.006950 testing/python/autotune/test_tilelang_autotune_eager_mode.py::test_autotune_matmul_symbolic_m                               1 0:00:00.006950 0:00:00.006950
+0:00:35.634658 grand total                                                                                                                92 0:00:00.001275 0:00:04.936954
+======================================================================== test setup duration top =========================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.014528 grand total                                                                                                                93 0:00:00.000080 0:00:00.001534
+======================================================================= test teardown duration top =======================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.004260 grand total                                                                                                                93 0:00:00.000042 0:00:00.000102
+91 passed, 2 skipped in 39.55s

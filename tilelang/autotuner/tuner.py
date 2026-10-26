@@ -29,10 +29,11 @@ import json
 import hashlib
 import threading
 import traceback
+import time
 from pathlib import Path
 
 from tilelang.autotuner.param import CompileArgs, ProfileArgs, AutotuneResult
-from tilelang.autotuner.report import TrialReporter
+from tilelang.autotuner.report import EventReporter, TrialReporter
 from tilelang.autotuner.grouped_compile import compile_grouped_unit_tvm_ffi
 from tilelang.utils.language import get_prim_func_name
 from tilelang.utils.device import get_available_cpu_count
@@ -480,6 +481,7 @@ class AutoTuner:
         group_compile_size: int,
         compile_func: Callable[..., tilelang.JITKernel],
         elaborate_func: Callable[..., PrimFunc],
+        event_reporter: EventReporter | None = None,
     ) -> tuple[
         concurrent.futures.ThreadPoolExecutor,
         list[concurrent.futures.Future],
@@ -513,21 +515,107 @@ class AutoTuner:
             return elaborate_impl
 
         def compile_unit(unit_items: list[UnitItem], per_config_pass_configs=None):
+            observed = event_reporter is not None and event_reporter.enabled
             if grouped_compile_active:
                 effective_compile_args = self._merge_pass_configs_into_compile_args(per_config_pass_configs)
-                return compile_grouped_unit_tvm_ffi(
-                    unit_items=unit_items,
-                    compile_args=effective_compile_args,
-                    elaborate_func=get_elaborate_func(),
-                )
+                if not observed:
+                    return compile_grouped_unit_tvm_ffi(
+                        unit_items=unit_items,
+                        compile_args=effective_compile_args,
+                        elaborate_func=get_elaborate_func(),
+                    )
+
+                # Grouped compilation has one real invocation.  Every config in
+                # the group therefore shares the same explicitly-labelled
+                # interval; these durations must not be summed and called wall.
+                for idx, _ in unit_items:
+                    event_reporter.emit(
+                        "compile_start",
+                        index=idx,
+                        config=self.configs[idx],
+                        timing_scope="compile_unit_shared",
+                        compile_unit_size=len(unit_items),
+                    )
+                started = time.perf_counter()
+                try:
+                    unit_results = compile_grouped_unit_tvm_ffi(
+                        unit_items=unit_items,
+                        compile_args=effective_compile_args,
+                        elaborate_func=get_elaborate_func(),
+                    )
+                except Exception as exc:
+                    elapsed = time.perf_counter() - started
+                    for idx, _ in unit_items:
+                        event_reporter.emit(
+                            "compile_end",
+                            index=idx,
+                            config=self.configs[idx],
+                            status="error",
+                            error=str(exc),
+                            wall_seconds=elapsed,
+                            timing_scope="compile_unit_shared",
+                            compile_unit_size=len(unit_items),
+                        )
+                    raise
+                elapsed = time.perf_counter() - started
+                returned_indexes = set()
+                for idx, _config_arg, _, error in unit_results:
+                    returned_indexes.add(idx)
+                    event_reporter.emit(
+                        "compile_end",
+                        index=idx,
+                        config=self.configs[idx],
+                        status="error" if error is not None else "ok",
+                        error=str(error) if error is not None else None,
+                        wall_seconds=elapsed,
+                        timing_scope="compile_unit_shared",
+                        compile_unit_size=len(unit_items),
+                    )
+                for idx, _ in unit_items:
+                    if idx not in returned_indexes:
+                        event_reporter.emit(
+                            "compile_end",
+                            index=idx,
+                            config=self.configs[idx],
+                            status="error",
+                            error="Grouped compilation returned no result for this config.",
+                            wall_seconds=elapsed,
+                            timing_scope="compile_unit_shared",
+                            compile_unit_size=len(unit_items),
+                        )
+                return unit_results
+
             compile_impl = get_compile_func()
             unit_results: list[UnitResult] = []
             for idx, config_arg in unit_items:
+                if observed:
+                    event_reporter.emit("compile_start", index=idx, config=self.configs[idx], timing_scope="config")
+                    started = time.perf_counter()
                 try:
                     jit_kernel = compile_impl(**config_arg)
-                    unit_results.append((idx, config_arg, jit_kernel, None))
                 except Exception as e:
+                    if observed:
+                        event_reporter.emit(
+                            "compile_end",
+                            index=idx,
+                            config=self.configs[idx],
+                            status="error",
+                            error=str(e),
+                            wall_seconds=time.perf_counter() - started,
+                            timing_scope="config",
+                        )
                     unit_results.append((idx, config_arg, None, e))
+                else:
+                    if observed:
+                        event_reporter.emit(
+                            "compile_end",
+                            index=idx,
+                            config=self.configs[idx],
+                            status="ok",
+                            wall_seconds=time.perf_counter() - started,
+                            timing_scope="config",
+                        )
+                    unit_results.append((idx, config_arg, jit_kernel, None))
             return unit_results
 
         compile_units: list[CompileUnit] = []
@@ -576,6 +664,7 @@ class AutoTuner:
                 logger.debug("Error: %s", traceback.format_exc())
 
         benchmark_device = worker_device if torch.cuda.is_available() and target_kind == "cuda" else None
+        observe = "event_reporter" in (getattr(benchmark_target, "keywords", {}) or {})
 
         def _call_benchmark_target(
             jit_kernel: tilelang.JITKernel,
@@ -584,10 +673,18 @@ class AutoTuner:
             # Timeout mode runs benchmark_target in a fresh daemon thread, so
             # scope the device at the actual call site.
             def invoke():
+                if not observe:
+                    return benchmark_target(
+                        jit_kernel=jit_kernel,
+                        benchmark_state=benchmark_state,
+                        benchmark_device=benchmark_device,
+                    )
                 return benchmark_target(
                     jit_kernel=jit_kernel,
                     benchmark_state=benchmark_state,
                     benchmark_device=benchmark_device,
+                    config=config,
+                    index=idx,
                 )
 
             if benchmark_device is None:
@@ -676,6 +773,9 @@ class AutoTuner:
         early_stop_factor: float,
         benchmark_state: _BenchmarkWorkerState,
         benchmark_device: int | torch.device | None = None,
+        config: ConfigArg | None = None,
+        index: int | None = None,
+        event_reporter: EventReporter | None = None,
     ) -> tuple[float, float | None]:
         profile_args = self.profile_args
         supply_type = profile_args.supply_type
@@ -723,22 +823,80 @@ class AutoTuner:
             )
             jit_input_tensors_cache = jit_input_tensors_supply()
 
-        if (not skip_check) and (ref_prog is not None):
-            if manual_check_prog is not None:
-                profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)
-            else:
-                profiler.assert_allclose(
-                    ref_prog, input_tensors=jit_input_tensors_cache, rtol=rtol, atol=atol, max_mismatched_ratio=max_mismatched_ratio
+        validation_required = (not skip_check) and (ref_prog is not None)
+        observed = event_reporter is not None and event_reporter.enabled
+        if observed:
+            event_reporter.emit(
+                "validation_start",
+                index=index,
+                config=config,
+                required=validation_required,
+                reason=None if validation_required else ("skip_check" if skip_check else "no_reference_program"),
+            )
+            validation_started = time.perf_counter()
+        try:
+            if validation_required:
+                if manual_check_prog is not None:
+                    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)
+                else:
+                    profiler.assert_allclose(
+                        ref_prog, input_tensors=jit_input_tensors_cache, rtol=rtol, atol=atol, max_mismatched_ratio=max_mismatched_ratio
+                    )
+        except Exception as exc:
+            if observed:
+                event_reporter.emit(
+                    "validation_end",
+                    index=index,
+                    config=config,
+                    status="error",
+                    error=str(exc),
+                    wall_seconds=time.perf_counter() - validation_started,
                 )
-        latency = profiler.do_bench(
-            n_warmup=warmup,
-            n_repeat=rep,
-            input_tensors=jit_input_tensors_cache,
-            backend=backend,
-            early_stop_baseline=(
-                benchmark_state.shared_best_latency[0] * early_stop_factor if benchmark_state.shared_best_latency is not None else None
-            ),
-        )
+            raise
+        else:
+            if observed:
+                event_reporter.emit(
+                    "validation_end",
+                    index=index,
+                    config=config,
+                    status="passed" if validation_required else "not_run",
+                    wall_seconds=time.perf_counter() - validation_started,
+                )
+
+        if observed:
+            event_reporter.emit("profile_start", index=index, config=config)
+            profile_started = time.perf_counter()
+        try:
+            latency = profiler.do_bench(
+                n_warmup=warmup,
+                n_repeat=rep,
+                input_tensors=jit_input_tensors_cache,
+                backend=backend,
+                early_stop_baseline=(
+                    benchmark_state.shared_best_latency[0] * early_stop_factor if benchmark_state.shared_best_latency is not None else None
+                ),
+            )
+        except Exception as exc:
+            if observed:
+                event_reporter.emit(
+                    "profile_end",
+                    index=index,
+                    config=config,
+                    status="error",
+                    error=str(exc),
+                    wall_seconds=time.perf_counter() - profile_started,
+                )
+            raise
+        else:
+            if observed:
+                event_reporter.emit(
+                    "profile_end",
+                    index=index,
+                    config=config,
+                    status="ok",
+                    latency_ms=latency,
+                    wall_seconds=time.perf_counter() - profile_started,
+                )
 
         if ref_latency_cache is None and ref_prog is not None:
             ref_input_tensors_cache = ref_input_tensors_supply()
@@ -862,9 +1020,13 @@ class AutoTuner:
 
         if early_stop and early_stop_factor < 1.0:
             raise ValueError(f"early_stop_factor must be >= 1.0, got {early_stop_factor}")
+        event_reporter = EventReporter(getattr(self, "_event_observer", None), logger)
+        self._last_event_reporter = event_reporter
         if on_trial is not None and early_stop:
             raise ValueError("Trial reporting with early_stop is not supported in this prototype")
-        reporter = TrialReporter(on_trial, logger)
+        if event_reporter.enabled and early_stop:
+            raise ValueError("Structured observation with early_stop is not supported because estimated latency is indistinguishable")
+        reporter = TrialReporter(on_trial, logger, events=event_reporter)
 
         sig = inspect.signature(self.fn)
         parameters = sig.parameters
@@ -895,6 +1057,17 @@ class AutoTuner:
 
         key = self.generate_cache_key(parameters, extra_parameters)
 
+        cache_source = None
+        if event_reporter.enabled:
+            cache_enabled = key is not None and env.is_cache_enabled() and not env.is_autotune_cache_disabled()
+            event_reporter.emit(
+                "cache_identity",
+                cache_key=key,
+                cache_dir=str(self.cache_dir) if key is not None else None,
+                enabled=cache_enabled,
+                reason=None if key is not None else "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+            )
+
         cached_result = None
         with self._lock:
             if key is not None and env.is_cache_enabled() and not env.is_autotune_cache_disabled():
@@ -902,6 +1075,7 @@ class AutoTuner:
                 if key in self._memory_cache:
                     # Include PrimFunc name when hitting autotuner memory cache
                     cached_result = self._memory_cache[key]
+                    cache_source = "memory"
                     prim = getattr(cached_result, "func", None)
                     kernel_name = get_prim_func_name(prim, "<unknown>")
                     logger.warning(
@@ -912,10 +1086,12 @@ class AutoTuner:
                     # Then check disk cache
                     cached_result = self._load_result_from_disk(key)
                     if cached_result is not None:
+                        cache_source = "disk"
                         self._memory_cache[key] = cached_result
 
         if cached_result is not None:
             # Never invoke user code while holding the shared cache lock.
+            event_reporter.emit("cache_hit", cache_key=key, source=cache_source)
             reporter.emit("cache_hit")
             return cached_result
 
@@ -993,13 +1169,16 @@ class AutoTuner:
         self._validate_input_supply_requirements(prim_func_for_validation, self.compile_args.out_idx)
 
         # Launch compile tasks
-        pool, futures, future_to_unit, compile_desc = self._prepare_compile_execution(
-            config_args=config_args,
-            grouped_compile_active=grouped_compile_active,
-            group_compile_size=group_compile_size,
-            compile_func=compile_func,
-            elaborate_func=elaborate_func,
-        )
+        compile_execution_options = {
+            "config_args": config_args,
+            "grouped_compile_active": grouped_compile_active,
+            "group_compile_size": group_compile_size,
+            "compile_func": compile_func,
+            "elaborate_func": elaborate_func,
+        }
+        if event_reporter.enabled:
+            compile_execution_options["event_reporter"] = event_reporter
+        pool, futures, future_to_unit, compile_desc = self._prepare_compile_execution(**compile_execution_options)
 
         ref_latency = None
         # Keep inputs and reference timings local to this run. A later run may
@@ -1014,6 +1193,7 @@ class AutoTuner:
                 best_kernel = jit_kernel
                 if shared_best_latency_ref is not None:
                     shared_best_latency_ref[0] = latency
+                event_reporter.emit("best", index=idx, config=self.configs[idx], latency_ms=latency)
 
             progress_bar.set_postfix({"best_latency": best_latency})
             tqdm.write(f"Tuned Latency {latency} with config {self.configs[idx]} at index {idx}")
@@ -1034,11 +1214,16 @@ class AutoTuner:
                 "Benchmark timeout is enforced in benchmark workers by running each benchmark call "
                 "in a daemon sub-thread and waiting up to the configured timeout."
             )
+        benchmark_target_options = {
+            "warmup": warmup,
+            "rep": rep,
+            "early_stop_factor": early_stop_factor,
+        }
+        if event_reporter.enabled:
+            benchmark_target_options["event_reporter"] = event_reporter
         benchmark_target = partial(
             self._benchmark_target,
-            warmup=warmup,
-            rep=rep,
-            early_stop_factor=early_stop_factor,
+            **benchmark_target_options,
         )
 
         def _enqueue_benchmark_task(jit_kernel: tilelang.JITKernel, config: dict[str, Any], idx: int):
