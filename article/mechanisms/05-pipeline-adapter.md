@@ -90,7 +90,7 @@ fallback = False
 A dependency on multiple async stages is not supported
 ```
 
-这不是 Z3 求解失败，也不是数值错误，而是 stock CUDA IR 的表达边界。完整日志保留在 [device-integration-test.txt](../../evidence/G3/device-integration-test.txt)。随后使用两个 producer 同 stage 的可表达调度，才完成上述 off/on 验证。
+失败发生在 stock CUDA IR 的表达阶段；Z3 已完成求解，尚未进入数值执行。完整日志保留在 [device-integration-test.txt](../../evidence/G3/device-integration-test.txt)。随后使用两个 producer 同 stage 的可表达调度，才完成上述 off/on 验证。
 
 当前仍有三条明确边界：
 

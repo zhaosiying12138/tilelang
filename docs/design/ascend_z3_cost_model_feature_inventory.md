@@ -35,7 +35,7 @@
 3. `tilelang/ascend/backend.py::BACKEND`（plain AscendC）与 `PTO_BACKEND` 都在 `pipelines={"ascend": pipeline.ascend_pipeline}` 上复用同一 lowering；二者只在 codegen/execution backend 等处分开。
 4. `tilelang/backend/pass_pipeline/pipeline.py::PassPipeline.lower` 进入命名 instrumentation 后执行 `tilelang/ascend/pipeline.py::AscendPassPipelineBody`。
 5. `tilelang/ascend/pipeline.py::ascend_pipeline = PassPipeline("ascend", AscendPassPipelineBody)` 是注册对象。`tilelang/ascend/__init__.py` 导入 `transform`，`tilelang/ascend/transform/__init__.py` 再导入 `z3_scheduler`，因此两个 `tvm_ffi.register_global_func` 在 C++ 查 FFI 前完成 Python 注册。
-6. `allow_autoschedule` 读取 `PassConfigKey.TL_ENABLE_AUTO_SCHEDULE`（默认 true）。false 时不是转交 CUDA/其他 scheduler，而是保留未自动调度 kernel，并在后段执行 `InferBufferAliases`；true 时由 `InsertSync` 产生 alias contract。
+6. `allow_autoschedule` 读取 `PassConfigKey.TL_ENABLE_AUTO_SCHEDULE`（默认 true）。false 时保留未自动调度 kernel，并在后段执行 `InferBufferAliases`，不改交 CUDA/其他 scheduler；true 时由 `InsertSync` 产生 alias contract。
 7. `should_disable_shared_memory_reuse` 独立控制 UB 复用；禁用它不等于禁用同步或 flag 规划。
 
 ### 2.2 标准 pass 顺序（源码顺序不可随意交换）
@@ -702,7 +702,7 @@ latency = max(min_cycles, cycles)
 3. **`TC/test_estimate_latency.py` 补充数值 oracle**：composed Seq 两条公式、repeat T=0/1/N、branch max、While fallback、PerCore 无/有 boundary、跨迭代 suffix+prefix、非法多 pipe/candidate/wait conditional；覆盖所有 override 组合和 latency=0/II=1。
 4. **`TC/test_latency_params.py`**：第 4 节参数 schema 的每个字段都有至少一个改变结果的用例；零 bandwidth/throughput、未知 op、sub-byte bytes、int64 溢出、动态 bound 无信息和静态 shape cap，防止“参数存在但从未接线”。
 5. **`TC/test_pipeline_integration.py`**：验证 CUDA 新 Z3 链与旧 role-based WS、通用 Pipelined/InjectSoftwarePipeline 的互斥或组合顺序，auto-schedule off 的 alias 路径、disable reuse 仍同步、多 kernel program order。
-6. **`TC/test_unsupported_ascend_concepts.py`**：逐项覆盖 parity 的 N/A。断言不是“静默无操作/返回原 IR即成功”，而是文档化不支持、明确诊断或确认只生成语义不同的 NV 实现；防止 Ascend intrinsic/mask/pool/预算渗入 CUDA。
+6. **`TC/test_unsupported_ascend_concepts.py`**：逐项覆盖 parity 的 N/A。断言必须覆盖以下可审计结果：文档化不支持、明确诊断，或确认只生成语义不同的 NV 实现；不得把“静默无操作/返回原 IR”判为成功。防止 Ascend intrinsic/mask/pool/预算渗入 CUDA。
 7. **TVM prover 独立隔离测试**：不要复用 scheduler 的通过结论。现有 `testing/python/layout/test_tilelang_layout_inference_z3_context.py` 中 fresh-context 两个相关用例可作为 prover 参考；新增直接区域冲突、guard implication、rlimit/unknown 与 scheduler 并发隔离，证明 `Z3Prover` 和 Python scheduler 不共享意外状态。
 8. **校准证据测试**：每个 NV latency 参数关联架构、指令、shape/dtype、clock、静态公式和 microbenchmark；静态 cycle 断言与实测性能回归分开，不能以一次机器上的数字宣称所有 SM 正确。
 
@@ -724,5 +724,3 @@ latency = max(min_cycles, cycles)
 10. **成本常数须带校准链**。每个 NV 参数记录架构、指令、dtype/shape、单位、来源、静态推导和 microbenchmark；性能实测与功能正确性分开。Ascend 周期常数、DeepGEMM ns heuristic 和 AutoTuner 实测 latency 不得互相冒充。
 11. **新增源码行为先加账再实现**。后续发现新的 helper、依赖类型、resource bit、annotation、动态形状 fallback、诊断或测试参数时，先新增 parity 行和 NV/测试位置，再改实现；禁止代码先行而清单不更新。源 Ascend 测试变化也要同步复核本清单 22 文件/218 函数基线。
 12. **完成判定采用闭环审查**。只有“NV 实现已落地 + 对应测试真实执行通过 + 独立证据可复查 + 源/NV/测试三向链接一致”才可核销相应范围。`IMPLEMENTED_HOST_TESTED` 只闭环 host 范围，`DEVICE_VALIDATED_SUBSET` 只闭环写明的设备子集；本文当前不授予任何条目 arbitrary-IR/full-Ascend 端到端完成状态。文章或后续报告引用本清单时必须附范围与证据，不能把设计文档、联合测试总数或单一 A+B 用例当作全量功能完成证明。
-
-

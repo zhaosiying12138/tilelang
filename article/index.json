@@ -14,7 +14,9 @@
     "mechanisms/07-gdn-correctness.md",
     "mechanisms/08-calibration.md",
     "results/implementation-status.md",
-    "results/search-protocol.md"
+    "results/search-protocol.md",
+    {"path": "appendix/parity-inventory.md", "id": "parity-inventory"},
+    {"path": "appendix/parity-evidence.md", "id": "parity-evidence"}
   ],
   "katex": {
     "directory": "/home/zhaosiying/.vscode-server/bin/4fe60c8b1cdac1c4c174f2fb180d0d758272d713/node_modules/katex/dist"

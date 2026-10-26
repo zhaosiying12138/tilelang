@@ -42,7 +42,7 @@ python scripts/probe_cuda_hardware.py \
 
 ## 3. 一个实际暴露出的复现问题
 
-第一次采集时，device attributes 已完整，但 `driver_version` 为 null。日志给出的原因不是“驱动未知”，而是精简 PATH 中没有 `nvidia-smi`。在 WSL 中，该工具位于 `/usr/lib/wsl/lib/nvidia-smi`。
+第一次采集时，device attributes 已完整，但 `driver_version` 为 null。日志明确指出：精简 PATH 中没有 `nvidia-smi`，导致该字段暂缺。在 WSL 中，该工具位于 `/usr/lib/wsl/lib/nvidia-smi`。
 
 将 `/usr/lib/wsl/lib` 加入 `scripts/env.sh` 后重新采集，driver、当前显存、时钟、功耗、温度和 pstate 均获得真实值。两次日志分别保留在 [hardware-probe.txt](../../evidence/G2/hardware-probe.txt) 与 [hardware-probe-complete.txt](../../evidence/G2/hardware-probe-complete.txt)，复现者可以看到问题原因和修正后的完整记录。
 

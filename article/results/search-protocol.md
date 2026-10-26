@@ -11,11 +11,11 @@
 
 fwd 的动态 shared memory 公式为 $38912+576\times block\_DV$，因此 128 对应的 112640 B 超过本机 opt-in per-block 上限。bwd 的 `prepare_h_num_stages=3` 由 $57344+18432\times stages$ 同样排除。资源之外无法静态证明的属性仍保留为 UNKNOWN，不能由编译失败反推 UNSAT。公式与设备证据见 [fwd shared memory](../../evidence/G5/gdn-fwd-shared-memory.json) 和 [prepare_h shared memory](../../evidence/G5/gdn-prepare-h-shared-memory.json)。
 
-五臂共享同一输入与公开执行路径：`stock-raw` 穷举 raw，`z3-legal-exhaustive` 穷举保留空间，`z3-cm-topk` 在保留空间内按解析模型排序后实测 top-k，`budget-raw` 与 `budget-random` 以相同 k 做原始顺序和固定 seed 随机顺序对照。模型 overhead、solver 检查和所有候选失败都进入事件日志。
+五种策略共享同一输入与公开执行路径：`stock-raw` 穷举 raw，`z3-legal-exhaustive` 穷举保留空间，`z3-cm-topk` 在保留空间内按解析模型排序后实测 top-k，`budget-raw` 与 `budget-random` 以相同 k 做原始顺序和固定 seed 随机顺序对照。模型 overhead、solver 检查和所有候选失败都进入事件日志。
 
 ## 2. 正式 cold 协议
 
-正式搜索的每一轮都是新的 Python 进程。每个方向执行三次，每次五臂，合计 30 个 run；搜索 warmup=10、repeat=50。入口为：
+正式搜索的每一轮都是新的 Python 进程。每个方向执行三次，每次五种策略，合计 30 个 run；搜索 warmup=10、repeat=50。入口为：
 
 ```bash
 for direction in fwd bwd; do
@@ -30,13 +30,13 @@ done
 
 协议审计不能只检查目录是否存在。`benchmark/z3_cost_model/gdn/audit_cold.py` 还检查：30 个身份是否完整且不重复、30 个 PID 是否不同、warmup/repeat 是否均为 10/50、候选预算是否改变、缓存路径是否仍位于 run 内、before 是否为空、是否存在成功 profile 和有限的最佳延迟。任何一项失败都会使审计返回非零。
 
-早期 `repeat_search.py` 在同一进程内调度各臂，并沿用 warmup=2/repeat=5。该数据保留为 pilot，用于观察空间、配置和排序；其 wall time 不进入正式 cold 收益表。正式数据全部来自上述 fresh-process 脚本。这个修正不改变 raw/legal/top-k，也不删除任何 pilot 记录。
+早期 `repeat_search.py` 在同一进程内调度各策略，并沿用 warmup=2/repeat=5。该数据保留为 pilot，用于观察空间、配置和排序；其 wall time 不进入正式 cold 收益表。正式数据全部来自上述 fresh-process 脚本。这个修正不改变 raw/legal/top-k，也不删除任何 pilot 记录。
 
 ## 3. Winner 选择规则与一次未达标迭代
 
-初版确认按“单轮 winner 的多数配置”选择最终候选。T4096 的 fwd 所有臂均选 `block_DV=16`，七轮确认通过；bwd 的 guided 为 `stage=2, group=32`，等预算随机对照为 `stage=2, group=16`，确认比值为 **1.000624**。虽然差异约 0.062%，严格的 `guided/control <= 1.0` 仍未满足，因此 [v2 backward summary](../../evidence/G6/gdn-confirmation-v2/bwd/summary.json) 保留 `acceptance.passed=false`，不能按成功处理。
+初版确认按“单轮 winner 的多数配置”选择最终候选。T4096 的 fwd 所有策略均选 `block_DV=16`，七轮确认通过；bwd 的 guided 为 `stage=2, group=32`，等预算随机对照为 `stage=2, group=16`，确认比值为 **1.000624**。虽然差异约 0.062%，严格的 `guided/control <= 1.0` 仍未满足，因此 [v2 backward summary](../../evidence/G6/gdn-confirmation-v2/bwd/summary.json) 保留 `acceptance.passed=false`，不能按成功处理。
 
-修订规则对全部五个臂一致：设 $L_{a,c,r}$ 为臂 $a$ 的候选 $c$ 在第 $r$ 次 cold 搜索中被实际选中后的有效 latency，先计算
+修订规则对全部五种策略一致：设 $L_{a,c,r}$ 为策略 $a$ 的候选 $c$ 在第 $r$ 次 cold 搜索中被实际选中后的有效 latency，先计算
 
 $$m_{a,c}=\operatorname{median}_{r\in\mathcal S(a,c)}L_{a,c,r},$$
 

@@ -14,7 +14,7 @@
 | NOT_APPLICABLE_HARDWARE | 10 | Ascend 专有指令、ABI 或物理池没有直接 NV 对应 |
 | **合计** | **84** | **不是 84 项完成** |
 
-完整条目见 [feature inventory](../../docs/design/ascend_z3_cost_model_feature_inventory.md)，机制与证据解释见 [parity appendix](../../docs/design/cuda_z3_parity_evidence.md)。这些 Markdown 文件在仓库中保留，不把它们压缩成“全功能迁移完成”的宣传结论。
+完整条目见 [feature inventory](#parity-inventory)，机制与证据解释见 [parity appendix](#parity-evidence)。这些附录保留全部 84 项及其开放边界，不把它们压缩成“全功能迁移完成”的宣传结论。
 
 ## 2. 已执行的证据层级
 
