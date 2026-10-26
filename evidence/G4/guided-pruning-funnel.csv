@@ -1,0 +1,10 @@
+category,count,denominator,fraction_of_raw,role
+raw,9,9,1.0,input
+sat,6,9,0.6666666666666666,retained_solver_outcome
+unknown,0,9,0.0,retained_solver_outcome_not_unsat
+unsat,3,9,0.3333333333333333,proven_pruned
+dedup,0,9,0.0,duplicate_removed_not_unsat
+other,0,9,0.0,explicit_other
+retained,6,9,0.6666666666666666,sat_plus_unknown
+compiled,0,9,0.0,successful_stage
+profiled,0,9,0.0,successful_stage

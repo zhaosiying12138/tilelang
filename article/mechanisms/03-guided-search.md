@@ -45,6 +45,10 @@ RAW 9 LEGAL 6 UNSAT 3
 
 逐配置 verdict、Z3 statistics 和分母保存在 [guided-demo-pruning.json](../../evidence/G4/guided-demo-pruning.json)。
 
+![真实 Z3 输入生成的剪枝漏斗；本例尚未进入 GPU 编译与测量，因此后两级均为 0](../../evidence/G4/guided-pruning-funnel.png)
+
+左图保留 raw→SAT/unknown retained→compiled→profiled 的完整分母，右图把 SAT、unknown、UNSAT 和 dedup 分开。此例 compiled 与 profiled 均为 0，因为尚未运行 GPU；图中没有用非零数字填补尚未发生的阶段。
+
 ## 3. 成本模型负责排序，不负责宣称硬件事实
 
 `CandidateCostModel.predict(config)` 返回 `(score, terms)`。`GuidedSearch` 对 $U$ 中每个候选评分，按 `(score, config_id, canonical_json)` 稳定排序。低分优先，所有 score 和分项必须是有限数；模型异常不会被静默转换成“丢弃候选”。

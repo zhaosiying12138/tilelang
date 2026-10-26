@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "plot": "pruning_funnel",
+  "raw": 9,
+  "sat": 6,
+  "unknown": 0,
+  "unsat": 3,
+  "dedup": 0,
+  "other": 0,
+  "retained": 6,
+  "compiled": 0,
+  "profiled": 0,
+  "denominator": "raw",
+  "rows": [
+    {
+      "category": "raw",
+      "count": 9,
+      "denominator": 9,
+      "fraction_of_raw": 1.0,
+      "role": "input"
+    },
+    {
+      "category": "sat",
+      "count": 6,
+      "denominator": 9,
+      "fraction_of_raw": 0.6666666666666666,
+      "role": "retained_solver_outcome"
+    },
+    {
+      "category": "unknown",
+      "count": 0,
+      "denominator": 9,
+      "fraction_of_raw": 0.0,
+      "role": "retained_solver_outcome_not_unsat"
+    },
+    {
+      "category": "unsat",
+      "count": 3,
+      "denominator": 9,
+      "fraction_of_raw": 0.3333333333333333,
+      "role": "proven_pruned"
+    },
+    {
+      "category": "dedup",
+      "count": 0,
+      "denominator": 9,
+      "fraction_of_raw": 0.0,
+      "role": "duplicate_removed_not_unsat"
+    },
+    {
+      "category": "other",
+      "count": 0,
+      "denominator": 9,
+      "fraction_of_raw": 0.0,
+      "role": "explicit_other"
+    },
+    {
+      "category": "retained",
+      "count": 6,
+      "denominator": 9,
+      "fraction_of_raw": 0.6666666666666666,
+      "role": "sat_plus_unknown"
+    },
+    {
+      "category": "compiled",
+      "count": 0,
+      "denominator": 9,
+      "fraction_of_raw": 0.0,
+      "role": "successful_stage"
+    },
+    {
+      "category": "profiled",
+      "count": 0,
+      "denominator": 9,
+      "fraction_of_raw": 0.0,
+      "role": "successful_stage"
+    }
+  ]
+}

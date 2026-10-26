@@ -134,3 +134,4 @@ uv.lock
 # Experiment-owned runtime caches
 evidence/**/*-cache/
 evidence/**/cache/
+!evidence/**/*.csv
