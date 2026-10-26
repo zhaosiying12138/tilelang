@@ -1,0 +1,2 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+GDN_STAGE1_GROUP8_DETERMINISM_1000_PASS

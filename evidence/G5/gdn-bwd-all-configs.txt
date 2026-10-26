@@ -1,0 +1,260 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn
+configfile: pytest.ini
+plugins: xdist-3.8.0, platformdirs-4.13.5, durations-1.10.0, timeout-2.4.0
+collected 18 items / 9 deselected / 9 selected
+
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py F [ 11%]
+.....FFF                                                                 [100%]
+
+=================================== FAILURES ===================================
+_______________ test_core_raw_backward_config[stages-1_group-8] ________________
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py:89: in test_core_raw_backward_config
+    check_backward(runner, batch)
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/correctness.py:158: in check_backward
+    assert_backward(batch, actual, expected)
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/correctness.py:127: in assert_backward
+    gdr_common.assert_relative(
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/gdr_common.py:197: in assert_relative
+    assert error <= reference * RTOL, (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: dv: error=0.292879, reference=3.997140, relative=0.073272 > rtol=0.02
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 02:31:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-27 02:31:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-27 02:31:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-27 02:31:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-27 02:31:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-27 02:31:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+2026-10-27 02:31:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-27 02:31:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-27 02:31:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel` with `out_idx=None`
+2026-10-27 02:31:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel`
+2026-10-27 02:31:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_group_reduce_vector_kernel` with `out_idx=None`
+2026-10-27 02:31:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_group_reduce_vector_kernel`
+2026-10-27 02:31:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-27 02:31:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+----------------------------- Captured stderr call -----------------------------
+[02:31:26] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/verify_buffer_init.cc:394: Warning: Buffer read before initialization: 2 buffer(s) read before anything writes them
+  [1] `dk_frag_l` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:604:1
+  [2] `dk_frag_r` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:605:1
+Initialize the buffer before its first read (for example with `T.clear`, `T.fill`, or a `T.copy` into it). If you believe this is a false positive, disable the check by setting `PassConfigKey.TL_DISABLE_BUFFER_INIT_CHECK` in the pass config.
+[02:31:36] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[02:31:36] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[02:31:36] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[02:31:36] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+------------------------------ Captured log call -------------------------------
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:convert_frame.py:304 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:meta_utils.py:298 
+DEBUG    torch.__trace:meta_utils.py:537 
+DEBUG    torch.__trace:meta_utils.py:537 
+DEBUG    torch.__trace:meta_utils.py:2385 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:symbolic_shapes.py:5971 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:symbolic_shapes.py:8465 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:output_graph.py:2942 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:aot_autograd_result.py:415 
+DEBUG    torch.__trace:aot_autograd_result.py:435 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:codecache.py:2148 
+DEBUG    torch.__trace:codecache.py:2156 
+DEBUG    torch.__trace:codecache.py:2160 
+DEBUG    torch.__trace:codecache.py:2168 
+DEBUG    torch.__trace:codecache.py:2176 
+DEBUG    torch.__trace:aot_autograd_result.py:217 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:codegen.py:200 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:symbolic_shapes.py:8465 
+DEBUG    torch.__trace:symbolic_shapes.py:8465 
+DEBUG    torch.__trace:utils.py:2402 
+DEBUG    torch.__trace:autograd_cache.py:1200 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:guards.py:4769 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2022 
+DEBUG    torch.__trace:utils.py:2363 
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_group_reduce_vector_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_group_reduce_vector_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+_______________ test_core_raw_backward_config[stages-3_group-8] ________________
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py:89: in test_core_raw_backward_config
+    check_backward(runner, batch)
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/correctness.py:157: in check_backward
+    actual = runner.backward(batch, actual_forward)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/runner.py:266: in backward
+    gradients = self.api.chunk_gated_delta_rule_bwd(
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:178: in chunk_gated_delta_rule_bwd
+    h, _, _ = fused_gdr_h(
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/prepare_h.py:665: in fused_gdr_h
+    tilelang_prepare_h_kernel(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 02:31:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-27 02:32:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+_______________ test_core_raw_backward_config[stages-3_group-16] _______________
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py:89: in test_core_raw_backward_config
+    check_backward(runner, batch)
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/correctness.py:157: in check_backward
+    actual = runner.backward(batch, actual_forward)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/runner.py:266: in backward
+    gradients = self.api.chunk_gated_delta_rule_bwd(
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:178: in chunk_gated_delta_rule_bwd
+    h, _, _ = fused_gdr_h(
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/prepare_h.py:665: in fused_gdr_h
+    tilelang_prepare_h_kernel(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________ test_core_raw_backward_config[stages-3_group-32] _______________
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py:89: in test_core_raw_backward_config
+    check_backward(runner, batch)
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/correctness.py:157: in check_backward
+    actual = runner.backward(batch, actual_forward)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/runner.py:266: in backward
+    gradients = self.api.chunk_gated_delta_rule_bwd(
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:178: in chunk_gated_delta_rule_bwd
+    h, _, _ = fused_gdr_h(
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/prepare_h.py:665: in fused_gdr_h
+    tilelang_prepare_h_kernel(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+========================================= fixture duration top ==========================================
+total          name                                                     num med            max           
+0:00:00.000391 grand total                                                9 0:00:00.000040 0:00:00.000073
+======================================== test call duration top =========================================
+total          name                                                     num med            max           
+0:01:00.651882 tests/test_runner_core.py::test_core_raw_backward_config   9 0:00:01.491808 0:00:43.622847
+0:01:00.651882 grand total                                                9 0:00:01.491808 0:00:43.622847
+======================================== test setup duration top ========================================
+total          name                                                     num med            max           
+0:00:00.004220 grand total                                                9 0:00:00.000206 0:00:00.002525
+====================================== test teardown duration top =======================================
+total          name                                                     num med            max           
+0:00:00.001220 grand total                                                9 0:00:00.000087 0:00:00.000367
+=========================== short test summary info ============================
+FAILED ../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_raw_backward_config[stages-1_group-8]
+FAILED ../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_raw_backward_config[stages-3_group-8]
+FAILED ../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_raw_backward_config[stages-3_group-16]
+FAILED ../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_raw_backward_config[stages-3_group-32]
+============= 4 failed, 5 passed, 9 deselected in 60.89s (0:01:00) =============
