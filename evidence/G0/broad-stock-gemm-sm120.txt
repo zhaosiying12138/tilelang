@@ -1,0 +1,32 @@
+..............ss....                                                     [100%]
+============================================================================ fixture duration top =============================================================================
+total          name                                                                                                                           num med            max           
+       0:00:00 grand total                                                                                                                      0        0:00:00        0:00:00
+=========================================================================== test call duration top ============================================================================
+total          name                                                                                                                           num med            max           
+0:00:02.427484 testing/python/kernel/test_tilelang_kernel_gemm.py::test_pad_f16f16f16_nn                                                        1 0:00:02.427484 0:00:02.427484
+0:00:02.084944 testing/python/kernel/test_tilelang_kernel_gemm.py::test_pad_aligned_f16f16f16_nn                                                1 0:00:02.084944 0:00:02.084944
+0:00:02.067568 testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py::test_tma_smem_alignment_runtime_hostarch                   1 0:00:02.067568 0:00:02.067568
+0:00:02.037366 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f16f16f16_nn                                                       1 0:00:02.037366 0:00:02.037366
+0:00:02.002287 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f32f32f32_tn                                                       1 0:00:02.002287 0:00:02.002287
+0:00:01.715803 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f32f32f32_nt                                                       1 0:00:01.715803 0:00:01.715803
+0:00:01.625107 testing/python/kernel/test_tilelang_kernel_gemm.py::test_pad_f16f16f32_nn                                                        1 0:00:01.625107 0:00:01.625107
+0:00:01.584226 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_i8i8i32_tn                                                         1 0:00:01.584226 0:00:01.584226
+0:00:01.575923 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f16f16f16_tn                                                       1 0:00:01.575923 0:00:01.575923
+0:00:01.541534 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_bf16bf16f32_nn                                                     1 0:00:01.541534 0:00:01.541534
+0:00:01.494933 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f16f16f32_nn                                                       1 0:00:01.494933 0:00:01.494933
+0:00:01.479599 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f32f32f32_nn                                                       1 0:00:01.479599 0:00:01.479599
+0:00:01.421127 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_i8i8i32_nt                                                         1 0:00:01.421127 0:00:01.421127
+0:00:01.381619 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f64f64f64_nt                                                       1 0:00:01.381619 0:00:01.381619
+0:00:01.380426 testing/python/kernel/test_tilelang_kernel_gemm.py::test_gemm_f16f16f16_nt                                                       1 0:00:01.380426 0:00:01.380426
+0:00:00.328779 testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py::test_tma_smem_alignment_codegen_sm120_blackwell_consumer   1 0:00:00.328779 0:00:00.328779
+0:00:00.325940 testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py::test_tma_smem_alignment_codegen_sm90_hopper                1 0:00:00.325940 0:00:00.325940
+0:00:00.322540 testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py::test_tma_smem_alignment_codegen_sm100_blackwell_dc         1 0:00:00.322540 0:00:00.322540
+0:00:26.797206 grand total                                                                                                                     18 0:00:01.558728 0:00:02.427484
+=========================================================================== test setup duration top ===========================================================================
+total          name                                                                                                                           num med            max           
+0:00:00.000859 grand total                                                                                                                     20 0:00:00.000044 0:00:00.000061
+========================================================================= test teardown duration top ==========================================================================
+total          name                                                                                                                           num med            max           
+0:00:00.001070 grand total                                                                                                                     20 0:00:00.000052 0:00:00.000080
+18 passed, 2 skipped in 27.75s
