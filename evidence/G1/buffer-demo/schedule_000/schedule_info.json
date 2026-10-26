@@ -1,0 +1,71 @@
+{
+  "buffer_sizes": [
+    1
+  ],
+  "buffer_versions": [
+    3
+  ],
+  "data_dependencies": [
+    [
+      0,
+      0,
+      -1,
+      5
+    ]
+  ],
+  "enable_offset": false,
+  "fallback": false,
+  "iis": [
+    1
+  ],
+  "latencies": [
+    4
+  ],
+  "manual_schedule": false,
+  "manual_stages": [
+    0
+  ],
+  "memory_groups": [
+    [
+      3,
+      0
+    ]
+  ],
+  "minimal_II": 2,
+  "num_stages": 4,
+  "num_tasks": 1,
+  "owner_exclusions": [],
+  "pipe_order_dependencies": [],
+  "random_seed": 42,
+  "recalculate_buffer_versions": true,
+  "resource_bits": 7,
+  "resource_dependencies": [],
+  "resource_flags": [
+    0
+  ],
+  "rlimit": 1000000,
+  "schedule_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G1/buffer-demo/schedule_000",
+  "schedule_kind": "loop",
+  "search_history": [
+    {
+      "II": 3,
+      "verdict": "sat"
+    },
+    {
+      "II": 2,
+      "verdict": "sat"
+    },
+    {
+      "II": 1,
+      "verdict": "unsat"
+    }
+  ],
+  "sorted_indices": [
+    0
+  ],
+  "stage_order_dependencies": [],
+  "start_times": [
+    0
+  ],
+  "timestamp": 1793032452.5719767
+}

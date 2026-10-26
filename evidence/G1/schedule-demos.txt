@@ -1,0 +1,17 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+[CUDA Python Z3] Scheduling 2 straight-line tasks
+[CUDA Python Z3] Minimum makespan: 5
+[CUDA Python Z3] Task 0: start=0, latency=3, II=2, resource=0b0000001
+[CUDA Python Z3] Task 1: start=3, latency=2, II=1, resource=0b0000001
+STRAIGHT_RESULT [0, 3] [0, 1]
+[CUDA Python Z3 Loop] Scheduling 1 tasks, num_stages=4
+[CUDA Python Z3 Loop] Data dependencies: [(0, 0, -1, 5)]
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [1] / [[3, 0]]
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=2, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000000
+BUFFER_RESULT [0] [3] 2
