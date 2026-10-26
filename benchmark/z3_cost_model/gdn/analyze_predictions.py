@@ -18,18 +18,26 @@ def _key(config, direction):
     )
 
 
-def collect(root):
+def collect(root, cache_track="cold"):
+    if cache_track not in ("cold", "warm", "no-cache"):
+        raise ValueError(f"Unknown cache track: {cache_track}")
     scores = {}
     measured = {}
     for path in Path(root).rglob("events.jsonl"):
         direction = None
-        repetition = None
+        include = True
         for line in path.open(encoding="utf-8"):
             event = json.loads(line)
             if event.get("event") == "run_start":
                 metadata = event.get("metadata", {})
                 direction = metadata.get("direction")
-                repetition = metadata.get("repetition")
+                track = metadata.get("cache_track")
+                if track is None:
+                    mode = metadata.get("cache_mode")
+                    track = "cold" if mode == "enabled" else mode
+                include = track == cache_track
+            if not include:
+                continue
             if event.get("event") == "score":
                 key = _key(event["config"], direction)
                 scores.setdefault(key, {
@@ -43,8 +51,6 @@ def collect(root):
             if event.get("event") == "trial" and event.get("status") == "ok":
                 key = _key(event["config"], direction)
                 measured.setdefault(key, []).append(event["latency_ms"])
-        if direction is not None and repetition is not None:
-            continue
     if not scores:
         raise ValueError(f"No score records found under {root}")
     predicted_records = []
@@ -83,8 +89,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--cache-track", choices=("cold", "warm", "no-cache"), default="cold")
     args = parser.parse_args(argv)
-    predicted, measured = collect(args.root)
+    predicted, measured = collect(args.root, cache_track=args.cache_track)
     repo_root = Path(__file__).resolve().parents[3]
     viz = _load_visualization(repo_root)
     output = Path(args.output)

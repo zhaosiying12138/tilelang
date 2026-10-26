@@ -1,0 +1,187 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+In file included from /home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/Python.h:12,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:9:
+/home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/pyconfig.h:1874:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1874 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:1:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+[05:34:03] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/verify_buffer_init.cc:394: Warning: Buffer read before initialization: 2 buffer(s) read before anything writes them
+  [1] `dk_frag_l` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:604:1
+  [2] `dk_frag_r` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:605:1
+Initialize the buffer before its first read (for example with `T.clear`, `T.fill`, or a `T.copy` into it). If you believe this is a false positive, disable the check by setting `PassConfigKey.TL_DISABLE_BUFFER_INIT_CHECK` in the pass config.
+[05:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[05:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[05:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[05:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+2026-10-27 05:33:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-27 05:33:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-27 05:33:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-27 05:33:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-27 05:33:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-27 05:33:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+2026-10-27 05:33:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-27 05:34:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-27 05:34:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel` with `out_idx=None`
+2026-10-27 05:34:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel`
+2026-10-27 05:34:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_group_reduce_vector_kernel` with `out_idx=None`
+2026-10-27 05:34:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_group_reduce_vector_kernel`
+2026-10-27 05:34:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-27 05:34:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-27 05:34:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_group_reduce_vector_kernel` with `out_idx=None`
+2026-10-27 05:34:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_group_reduce_vector_kernel`
+2026-10-27 05:34:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-27 05:34:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+{"direction": "bwd", "record_index": 0, "pair_index": 0, "round": 0, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.054159998893738, "mean_ms": 2.0538135993480684, "min_ms": 2.0354878902435303, "max_ms": 2.1846399307250977, "samples": "samples.jsonl#record_index=0"}
+{"direction": "bwd", "record_index": 1, "pair_index": 0, "round": 0, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.060960054397583, "mean_ms": 2.0602600061893463, "min_ms": 2.04419207572937, "max_ms": 2.0754880905151367, "samples": "samples.jsonl#record_index=1"}
+{"direction": "bwd", "record_index": 2, "pair_index": 0, "round": 1, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0631039142608643, "mean_ms": 2.062600954771042, "min_ms": 2.044703960418701, "max_ms": 2.079263925552368, "samples": "samples.jsonl#record_index=2"}
+{"direction": "bwd", "record_index": 3, "pair_index": 0, "round": 1, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.050816059112549, "mean_ms": 2.050876315832138, "min_ms": 2.0346240997314453, "max_ms": 2.0712640285491943, "samples": "samples.jsonl#record_index=3"}
+{"direction": "bwd", "record_index": 4, "pair_index": 0, "round": 2, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0610239505767822, "mean_ms": 2.067667351961136, "min_ms": 2.0460479259490967, "max_ms": 3.4269120693206787, "samples": "samples.jsonl#record_index=4"}
+{"direction": "bwd", "record_index": 5, "pair_index": 0, "round": 2, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.052240014076233, "mean_ms": 2.0524454498291016, "min_ms": 2.0363519191741943, "max_ms": 2.067487955093384, "samples": "samples.jsonl#record_index=5"}
+{"direction": "bwd", "record_index": 6, "pair_index": 0, "round": 3, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0550239086151123, "mean_ms": 2.0554859137535093, "min_ms": 2.0365118980407715, "max_ms": 2.2909440994262695, "samples": "samples.jsonl#record_index=6"}
+{"direction": "bwd", "record_index": 7, "pair_index": 0, "round": 3, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0628960132598877, "mean_ms": 2.062037116289139, "min_ms": 2.0460479259490967, "max_ms": 2.0778560638427734, "samples": "samples.jsonl#record_index=7"}
+{"direction": "bwd", "record_index": 8, "pair_index": 0, "round": 4, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.052847981452942, "mean_ms": 2.052615839242935, "min_ms": 2.03385591506958, "max_ms": 2.0722239017486572, "samples": "samples.jsonl#record_index=8"}
+{"direction": "bwd", "record_index": 9, "pair_index": 0, "round": 4, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.060544013977051, "mean_ms": 2.060443838834763, "min_ms": 2.0446720123291016, "max_ms": 2.0767359733581543, "samples": "samples.jsonl#record_index=9"}
+{"direction": "bwd", "record_index": 10, "pair_index": 0, "round": 5, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.059040069580078, "mean_ms": 2.0593537628650664, "min_ms": 2.0446720123291016, "max_ms": 2.0773439407348633, "samples": "samples.jsonl#record_index=10"}
+{"direction": "bwd", "record_index": 11, "pair_index": 0, "round": 5, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0528159141540527, "mean_ms": 2.0523891270160677, "min_ms": 2.0358400344848633, "max_ms": 2.0701119899749756, "samples": "samples.jsonl#record_index=11"}
+{"direction": "bwd", "record_index": 12, "pair_index": 0, "round": 6, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0616159439086914, "mean_ms": 2.0627385652065278, "min_ms": 2.0461440086364746, "max_ms": 2.2615039348602295, "samples": "samples.jsonl#record_index=12"}
+{"direction": "bwd", "record_index": 13, "pair_index": 0, "round": 6, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.050096035003662, "mean_ms": 2.0518899083137514, "min_ms": 2.0344319343566895, "max_ms": 2.327552080154419, "samples": "samples.jsonl#record_index=13"}
+{"direction": "bwd", "record_index": 14, "pair_index": 2, "round": 0, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0510239601135254, "mean_ms": 2.051785590648651, "min_ms": 2.036479949951172, "max_ms": 2.0705599784851074, "samples": "samples.jsonl#record_index=14"}
+{"direction": "bwd", "record_index": 15, "pair_index": 2, "round": 0, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}", "count": 200, "median_ms": 2.130207896232605, "mean_ms": 2.1311247885227202, "min_ms": 2.1154239177703857, "max_ms": 2.32694411277771, "samples": "samples.jsonl#record_index=15"}
+{"direction": "bwd", "record_index": 16, "pair_index": 2, "round": 1, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}", "count": 200, "median_ms": 2.1278560161590576, "mean_ms": 2.1280169641971587, "min_ms": 2.1134400367736816, "max_ms": 2.159872055053711, "samples": "samples.jsonl#record_index=16"}
+{"direction": "bwd", "record_index": 17, "pair_index": 2, "round": 1, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0508480072021484, "mean_ms": 2.0512448060512543, "min_ms": 2.0356481075286865, "max_ms": 2.2215681076049805, "samples": "samples.jsonl#record_index=17"}
+{"direction": "bwd", "record_index": 18, "pair_index": 2, "round": 2, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}", "count": 200, "median_ms": 2.1266400814056396, "mean_ms": 2.1275431978702546, "min_ms": 2.112287998199463, "max_ms": 2.2917120456695557, "samples": "samples.jsonl#record_index=18"}
+{"direction": "bwd", "record_index": 19, "pair_index": 2, "round": 2, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0517280101776123, "mean_ms": 2.052034078836441, "min_ms": 2.036479949951172, "max_ms": 2.072000026702881, "samples": "samples.jsonl#record_index=19"}
+{"direction": "bwd", "record_index": 20, "pair_index": 2, "round": 3, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0523520708084106, "mean_ms": 2.0527432000637056, "min_ms": 2.0358400344848633, "max_ms": 2.325279951095581, "samples": "samples.jsonl#record_index=20"}
+{"direction": "bwd", "record_index": 21, "pair_index": 2, "round": 3, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}", "count": 200, "median_ms": 2.133984088897705, "mean_ms": 2.1339743983745576, "min_ms": 2.1164159774780273, "max_ms": 2.149888038635254, "samples": "samples.jsonl#record_index=21"}
+{"direction": "bwd", "record_index": 22, "pair_index": 2, "round": 4, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.0529279708862305, "mean_ms": 2.0530025577545166, "min_ms": 2.0357439517974854, "max_ms": 2.1118719577789307, "samples": "samples.jsonl#record_index=22"}
+{"direction": "bwd", "record_index": 23, "pair_index": 2, "round": 4, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}", "count": 200, "median_ms": 2.128671884536743, "mean_ms": 2.1281801533699034, "min_ms": 2.11027193069458, "max_ms": 2.145087957382202, "samples": "samples.jsonl#record_index=23"}
+{"direction": "bwd", "record_index": 24, "pair_index": 2, "round": 5, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}", "count": 200, "median_ms": 2.1324959993362427, "mean_ms": 2.132342879772186, "min_ms": 2.1184639930725098, "max_ms": 2.1450560092926025, "samples": "samples.jsonl#record_index=24"}
+{"direction": "bwd", "record_index": 25, "pair_index": 2, "round": 5, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.056960105895996, "mean_ms": 2.0563028836250306, "min_ms": 2.0364480018615723, "max_ms": 2.071552038192749, "samples": "samples.jsonl#record_index=25"}
+{"direction": "bwd", "record_index": 26, "pair_index": 2, "round": 6, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}", "count": 200, "median_ms": 2.1265119314193726, "mean_ms": 2.1274609541893006, "min_ms": 2.113856077194214, "max_ms": 2.144479990005493, "samples": "samples.jsonl#record_index=26"}
+{"direction": "bwd", "record_index": 27, "pair_index": 2, "round": 6, "config_id": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 2.059040069580078, "mean_ms": 2.058763999938965, "min_ms": 2.0406079292297363, "max_ms": 2.072416067123413, "samples": "samples.jsonl#record_index=27"}
+{
+  "status": "ok",
+  "acceptance": {
+    "passed": true,
+    "rule": "guided/exhaustive <= 1.02 and guided/each equal-budget control <= 1.0; identical configs are exactly equal"
+  },
+  "comparisons": [
+    {
+      "alternative_arms": [
+        "stock-raw",
+        "budget-random"
+      ],
+      "identical_arms": [],
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "identical": false,
+      "relations": [
+        "equal_budget_control",
+        "stock_informational"
+      ],
+      "pair_index": 0,
+      "guided_median_ms": 2.0528159141540527,
+      "alternative_median_ms": 2.0610239505767822,
+      "quality_ratio_guided_over_alternative": 0.9960174958566432,
+      "paired_round_differences_ms": [
+        -0.006800055503845215,
+        -0.01228785514831543,
+        -0.008783936500549316,
+        -0.00787210464477539,
+        -0.007696032524108887,
+        -0.006224155426025391,
+        -0.011519908905029297
+      ],
+      "requirements": {
+        "not_slower_than_equal_budget_control": true
+      },
+      "passed": true
+    },
+    {
+      "alternative_arms": [],
+      "identical_arms": [
+        "z3-legal-exhaustive",
+        "z3-cm-topk"
+      ],
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 2
+      },
+      "identical": true,
+      "relations": [
+        "same_space_exhaustive"
+      ],
+      "pair_index": 1,
+      "guided_median_ms": 2.0525839924812317,
+      "alternative_median_ms": 2.0525839924812317,
+      "quality_ratio_guided_over_alternative": 1.0,
+      "paired_round_differences_ms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "requirements": {
+        "within_2_percent_of_exhaustive": true
+      },
+      "passed": true
+    },
+    {
+      "alternative_arms": [
+        "budget-raw"
+      ],
+      "identical_arms": [],
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 1
+      },
+      "identical": false,
+      "relations": [
+        "equal_budget_control"
+      ],
+      "pair_index": 2,
+      "guided_median_ms": 2.0523520708084106,
+      "alternative_median_ms": 2.128671884536743,
+      "quality_ratio_guided_over_alternative": 0.9641467460143855,
+      "paired_round_differences_ms": [
+        -0.07918393611907959,
+        -0.07700800895690918,
+        -0.07491207122802734,
+        -0.08163201808929443,
+        -0.0757439136505127,
+        -0.07553589344024658,
+        -0.06747186183929443
+      ],
+      "requirements": {
+        "not_slower_than_equal_budget_control": true
+      },
+      "passed": true
+    }
+  ]
+}

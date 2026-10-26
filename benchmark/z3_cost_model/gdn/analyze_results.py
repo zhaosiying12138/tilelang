@@ -22,11 +22,19 @@ def _ratio(numerator, denominator):
     return numerator / denominator if denominator not in (None, 0) and numerator is not None else None
 
 
-def collect_runs(root):
+def collect_runs(root, cache_track="cold"):
+    if cache_track not in ("cold", "warm", "no-cache"):
+        raise ValueError(f"Unknown cache track: {cache_track}")
     runs = []
     for path in sorted(Path(root).rglob("summary.json")):
         with path.open(encoding="utf-8") as stream:
             summary = json.load(stream)
+        track = summary.get("gdn", {}).get("cache_track") or summary.get("metadata", {}).get("cache_track")
+        if track is None:
+            mode = summary.get("experiment", {}).get("cache_mode")
+            track = "cold" if mode == "enabled" else mode
+        if track != cache_track:
+            continue
         direction = summary.get("gdn", {}).get("direction") or summary.get("metadata", {}).get("direction")
         arm = summary.get("arm") or summary.get("metadata", {}).get("arm")
         if direction not in ("fwd", "bwd") or arm not in ARMS:
@@ -34,6 +42,7 @@ def collect_runs(root):
         experiment = summary.get("experiment", {})
         runs.append({
             "path": str(path),
+            "cache_track": track,
             "direction": direction,
             "repetition": experiment.get("repetition", 0),
             "arm": arm,
@@ -98,6 +107,7 @@ def aggregate(comparisons):
                 continue
             output.append({
                 "direction": direction,
+                "cache_track": selected[0]["cache_track"],
                 "arm": arm,
                 "repetitions": len(selected),
                 "R": selected[0]["R"],
@@ -143,16 +153,16 @@ def _load_visualization(repo_root):
     return module
 
 
-def write_analysis(root, output_dir, make_plots=True):
-    runs = collect_runs(root)
+def write_analysis(root, output_dir, make_plots=True, cache_track="cold"):
+    runs = collect_runs(root, cache_track=cache_track)
     comparisons = build_comparisons(runs)
     aggregates = aggregate(comparisons)
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
-    payload = {"schema": "gdn-search-analysis/v1", "runs": comparisons, "aggregates": aggregates}
+    payload = {"schema": "gdn-search-analysis/v1", "cache_track": cache_track, "runs": comparisons, "aggregates": aggregates}
     (output / "analysis.json").write_text(json.dumps(payload, ensure_ascii=False, allow_nan=False, indent=2) + "\n")
     fields = [
-        "direction", "repetition", "arm", "R", "U", "selected", "compile_attempts",
+        "direction", "cache_track", "repetition", "arm", "R", "U", "selected", "compile_attempts",
         "compile_success", "compile_fail", "profile_attempts", "validation_attempts", "solver_checks", "model_attempts",
         "solver_wall_seconds", "model_wall_seconds", "compile_wall_seconds",
         "profile_wall_seconds", "validation_wall_seconds", "end_to_end_wall_seconds",
@@ -162,7 +172,7 @@ def write_analysis(root, output_dir, make_plots=True):
     ]
     _write_csv(output / "runs.csv", comparisons, fields)
     aggregate_fields = [
-        "direction", "arm", "repetitions", "R", "U", "selected", "best_config",
+        "direction", "cache_track", "arm", "repetitions", "R", "U", "selected", "best_config",
         "best_latency_ms", "latency_range_ms", "search_speedup", "compile_reduction",
         "profile_reduction", "quality_ratio", "compile_attempts", "profile_attempts",
         "validation_attempts", "solver_checks", "model_attempts", "solver_wall_seconds",
@@ -209,12 +219,13 @@ def build_parser():
     parser.add_argument("--root", required=True, help="Directory containing GDN summary.json files")
     parser.add_argument("--output", required=True, help="Output directory for analysis and figures")
     parser.add_argument("--no-plots", action="store_true")
+    parser.add_argument("--cache-track", choices=("cold", "warm", "no-cache"), default="cold")
     return parser
 
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
-    payload = write_analysis(args.root, args.output, make_plots=not args.no_plots)
+    payload = write_analysis(args.root, args.output, make_plots=not args.no_plots, cache_track=args.cache_track)
     print(json.dumps({"runs": len(payload["runs"]), "aggregates": len(payload["aggregates"])}, indent=2))
     return 0
 
