@@ -17,6 +17,8 @@
 [TileLang (Ascend 950)](./tilelang/ascend/README.md)
 </div>
 
+> **CUDA Z3/cost-model branch:** see the [implementation scope, installation, tests, and exact reproduction protocol](README.cuda-z3.md).
+
 Tile Language (**tile-lang**) is a concise domain-specific language designed to streamline the development of high-performance GPU/CPU/NPU kernels (e.g., GEMM, Dequant GEMM, FlashAttention, LinearAttention). By employing a Pythonic syntax with an underlying compiler infrastructure on top of [TVM](https://tvm.apache.org/), tile-lang allows developers to focus on productivity without sacrificing the low-level optimizations necessary for state-of-the-art performance.
 
 <img src="./images/MatmulExample.png" alt="TileLang tiled matrix multiplication example" />

@@ -4,7 +4,7 @@
 
 本实现把硬件属性查询和吞吐标定分开。`hardware-sm120.json` 只提供 SM 数、shared/L2/寄存器上限等属性；`calibration-sm120.json` 则由 11 个独立 TileLang 微基准产生。校准 shape 与 GEMM、Conv、FlashAttention 和 GDN 的正式 shape 不同，不从候选实测时间反推 per-config 常数。
 
-每项使用独立进程、独立 cache、10 次 warmup、50 次 CUDA event 采样，并保存 raw samples、median/IQR、正确性、编译目标、环境和 SASS 证据。`--require-complete`  prevents any partial calibration from being accepted by the measured-only model.
+每项使用独立进程、独立 cache、10 次 warmup、50 次 CUDA event 采样，并保存 raw samples、median/IQR、正确性、编译目标、环境和 SASS 证据。`--require-complete` 要求所有核心标定项完整，否则 measured-only 模型拒绝加载该文件。
 
 核心入口是：
 

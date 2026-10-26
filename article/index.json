@@ -1,6 +1,6 @@
 {
   "title": "TileLang CUDA Z3 与成本模型：从 Ascend 调度到 RTX 5090 的实践",
-  "description": "完整实现、真实测试与证据驱动的迁移记录。所有性能与正确性结论均来自本机 TileLang 执行日志；机制示例与性能实验分开标注。",
+  "description": "机制实现、真实测试与证据驱动的迁移记录；未完成项显式列出。所有性能与正确性结论均来自本机 TileLang 执行日志，机制示例与性能实验分开标注。",
   "toc_depth": 3,
   "chapters": [
     "baselines/stock-validation.md",
@@ -8,6 +8,7 @@
     "mechanisms/02-latency-model.md",
     "mechanisms/03-guided-search.md",
     "mechanisms/04-hardware-probe.md",
+    "mechanisms/05-pipeline-adapter.md",
     "mechanisms/05-pipeline-adapter.md",
     "mechanisms/06-gdn-resource-pruning.md",
     "mechanisms/07-gdn-correctness.md",
