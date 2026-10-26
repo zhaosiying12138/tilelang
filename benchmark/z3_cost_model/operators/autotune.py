@@ -531,7 +531,7 @@ class _ObservedOperatorTuner:
             for status, count in summary.get("trials", {}).items()
         )
         summary["has_recorded_candidate_failures"] = (
-            any(isinstance(value, int) and value > 0 for value in failures.values()) or trial_failures or bool(summary.get("errors"))
+            any(isinstance(value, int) and value > 0 for value in failures.values()) or trial_failures
         )
         summary["failure_policy"] = "candidate failures remain in events/summary; factory/run exceptions are re-raised"
         return _strict_json(summary)

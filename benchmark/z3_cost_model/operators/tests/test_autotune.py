@@ -800,3 +800,27 @@ def test_real_sm120_models_and_constraints_cover_every_frozen_suite():
         selected = search.top_k(1)
         assert len(selected) == 1 and selected[0] in legal
         assert len(search.predictions()) == len(legal)
+
+
+def test_model_capacity_unknown_is_not_a_candidate_failure(tmp_path):
+    observed = autotune._ObservedOperatorTuner(
+        object(),
+        run_dir=tmp_path,
+        log_paths=(tmp_path / "stdout.log", tmp_path / "stderr.log"),
+        run_metadata={"suite": "gemm_square"},
+        cache_mode="enabled",
+    )
+    summary = {
+        "status": "ok",
+        "compile_fail": 0,
+        "validation": {"failed": 0},
+        "profile": {"fail": 0},
+        "trials": {"ok": 1},
+        "errors": [{"kind": "model", "error": "shared bytes exceed capacity"}],
+        "cache": {},
+    }
+    augmented = observed._augment(summary, None)
+    assert augmented["has_recorded_candidate_failures"] is False
+    assert augmented["errors"][0]["kind"] == "model"
+    summary["trials"] = {"compile_error": 1}
+    assert observed._augment(summary, None)["has_recorded_candidate_failures"] is True
