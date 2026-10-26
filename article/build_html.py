@@ -145,6 +145,10 @@ class LoadedConfig:
     def evidence_dir(self) -> Path:
         return self.repo_root / "evidence"
 
+    @property
+    def manifest_dir(self) -> Path:
+        return self.repo_root / "manifest"
+
 
 # ---------------------------------------------------------------------------
 # Generic helpers and configuration validation
@@ -287,7 +291,7 @@ class ResourceCollector:
             raise BuildError(f"{kind}必须使用非空相对路径：{raw_path}")
 
         candidates: list[Path] = []
-        if candidate.parts and candidate.parts[0] in {"article", "evidence"}:
+        if candidate.parts and candidate.parts[0] in {"article", "evidence", "manifest"}:
             candidates.append((self.config.repo_root / candidate).resolve())
         else:
             candidates.append((base_dir / candidate).resolve())
@@ -295,12 +299,12 @@ class ResourceCollector:
             if config_relative not in candidates:
                 candidates.append(config_relative)
 
-        allowed_roots = (self.config.assets_dir.resolve(), self.config.evidence_dir.resolve())
+        allowed_roots = (self.config.assets_dir.resolve(), self.config.evidence_dir.resolve(), self.config.manifest_dir.resolve())
         for path in candidates:
             if path.exists():
                 if not any(_is_within(path, root) for root in allowed_roots):
                     roots = "、".join(str(root) for root in allowed_roots)
-                    raise BuildError(f"{kind}只能来自 article/assets 或 evidence：{raw_path}；允许根目录：{roots}")
+                    raise BuildError(f"{kind}只能来自 article/assets、evidence 或 manifest：{raw_path}；允许根目录：{roots}")
                 if not path.is_file():
                     raise BuildError(f"{kind}源路径不是文件：{path}")
                 return path
@@ -315,6 +319,9 @@ class ResourceCollector:
             return f"assets/{source.relative_to(assets).as_posix()}"
         if _is_within(source, evidence):
             return f"evidence/{source.relative_to(evidence).as_posix()}"
+        manifest = self.config.manifest_dir.resolve()
+        if _is_within(source, manifest):
+            return f"manifest/{source.relative_to(manifest).as_posix()}"
         raise BuildError(f"资源不在允许的目录中：{source}")
 
     def add(self, raw_path: str, base_dir: Path, kind: str, name: str | None = None) -> Resource:

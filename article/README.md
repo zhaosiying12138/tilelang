@@ -7,7 +7,7 @@
 3. **公式转换记录 JSON**：逐条保留原始 TeX、转换文本、章节、行号、公式类型及是否位于表格中。
 4. **SHA256 manifest 与 ZIP**：收集文章图片及 CSV/JSON/log 等证据附件，同时打包 HTML、知乎 Markdown 和公式记录。
 
-本工具只转换已有内容，**不会生成、补齐或修改性能数字**。原始 Markdown、机制文档和 evidence 不会被改写。当前不创建正文使用的 `article/index.json`；下面的配置仅是 schema 示例。
+本工具只转换已有内容，**不会生成、补齐或修改性能数字**。原始 Markdown、机制文档和 evidence 不会被改写。正文配置由 `article/index.json` 驱动；下面的配置仅是 schema 示例。
 
 ## 1. 依赖
 
@@ -66,7 +66,7 @@ python3 -m venv /tmp/article-build-venv
 
 ### 图片与附件路径解析
 
-内容资源只允许来自 `article/assets` 或仓库的 `evidence`，以防误打包任意文件：
+内容资源只允许来自 `article/assets` 或仓库的 `evidence`、`manifest`，以防误打包任意文件：
 
 - Markdown 图片先相对于当前章节解析，再相对于 `article` 解析。
 - 配置中的附件相对于 `article` 解析。
@@ -146,6 +146,7 @@ article.zhihu.md
 article.zhihu.formulas.json
 assets/...                 # 来自 article/assets 的默认资源路径
 evidence/...               # 来自 evidence 的默认资源路径
+manifest/...               # 来自 manifest 的默认资源路径
 attachments/...            # 使用 attachments[].name 的附件
 manifest.json
 ```

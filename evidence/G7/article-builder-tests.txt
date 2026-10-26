@@ -1,6 +1,7 @@
 test_check_only_cli_writes_nothing_and_missing_chapter_fails (test_build_html.SyntheticArticleTests.test_check_only_cli_writes_nothing_and_missing_chapter_fails) ... ok
 test_full_cli_writes_html_zhihu_formula_log_manifest_and_zip (test_build_html.SyntheticArticleTests.test_full_cli_writes_html_zhihu_formula_log_manifest_and_zip) ... ok
 test_html_zhihu_math_images_manifest_and_zip (test_build_html.SyntheticArticleTests.test_html_zhihu_math_images_manifest_and_zip) ... ok
+test_manifest_directory_is_allowed_evidence_root (test_build_html.SyntheticArticleTests.test_manifest_directory_is_allowed_evidence_root) ... ok
 test_missing_declared_attachment_is_an_error (test_build_html.SyntheticArticleTests.test_missing_declared_attachment_is_an_error) ... ok
 test_missing_image_is_an_error (test_build_html.SyntheticArticleTests.test_missing_image_is_an_error) ... ok
 test_missing_katex_distribution_is_an_error (test_build_html.SyntheticArticleTests.test_missing_katex_distribution_is_an_error) ... ok
@@ -8,6 +9,6 @@ test_missing_katex_font_is_an_error (test_build_html.SyntheticArticleTests.test_
 test_remote_image_is_rejected_for_self_contained_html (test_build_html.SyntheticArticleTests.test_remote_image_is_rejected_for_self_contained_html) ... ok
 
 ----------------------------------------------------------------------
-Ran 8 tests in 0.344s
+Ran 9 tests in 0.207s
 
 OK

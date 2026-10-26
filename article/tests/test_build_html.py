@@ -87,6 +87,15 @@ class SyntheticArticleTests(unittest.TestCase):
         self.config_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
         return self.config_path
 
+    def test_manifest_directory_is_allowed_evidence_root(self) -> None:
+        self.write_chapter("[硬件清单](../manifest/hardware.json)")
+        manifest = self.root / "manifest"
+        manifest.mkdir()
+        (manifest / "hardware.json").write_text('{"sm_count": 82}', encoding="utf-8")
+        self.write_config()
+        result = builder.build_article(self.config_path)
+        self.assertTrue(any(resource.archive_path == "manifest/hardware.json" for resource in result.resources))
+
     def test_html_zhihu_math_images_manifest_and_zip(self) -> None:
         chapter = self.write_chapter(
             """# 总览
