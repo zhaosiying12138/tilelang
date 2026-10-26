@@ -27,6 +27,20 @@ def PipelinePlanning():
     return _ffi_api.PipelinePlanning()  # type: ignore
 
 
+def InferZ3PipelineProblem():
+    """Complete missing task, dependency, and cost fields on annotated CUDA loops.
+
+    The pass is disabled unless ``tl.enable_z3_task_analysis`` is true.
+    It does not run the solver or modify loops without ``tl_z3_pipeline``.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.InferZ3PipelineProblem()  # type: ignore
+
+
 def Z3PipelinePlanning():
     """Plan explicitly annotated CUDA loops with the registered Z3 FFI solver.
 

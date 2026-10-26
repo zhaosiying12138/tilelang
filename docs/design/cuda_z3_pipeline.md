@@ -2,10 +2,13 @@
 
 ## Scope and activation
 
-G3 connects an **explicit, user-supplied loop scheduling problem** to the
+G3 connects an **explicit or opt-in inferred loop scheduling problem** to the
 registered CUDA Python solver
-`tl.cuda.transform.z3_schedule_loop_python`. It does not infer latencies,
-dependencies, resource usage, or buffer sizes from CUDA IR.
+`tl.cuda.transform.z3_schedule_loop_python`. The companion
+`InferZ3PipelineProblem` pass can complete supported task costs, dependencies,
+resource masks, and buffer fields; unsupported IR remains an explicit error or
+requires user-supplied annotations rather than becoming a zero-cost/no-dependency
+approximation.
 
 The transform is exposed as `tilelang.transform.Z3PipelinePlanning()` and is
 controlled by:
@@ -15,10 +18,14 @@ PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
 # value: "tl.enable_z3_pipeline_planning"; default: False
 ```
 
-The CUDA pipeline invokes it immediately before stock `PipelinePlanning` only
-when this config is true. The C++ pass checks the same config, so direct uses
-are also disabled by default. With the config false, or with no
-`tl_z3_pipeline` loop marker, the pass is a no-op.
+The CUDA pipeline invokes the optional inference pass and then this planning
+pass immediately before stock `PipelinePlanning`. Inference requires
+`tl.enable_z3_task_analysis=True`; the C++ passes check their respective
+configs, so direct uses are also disabled by default. With planning disabled,
+or with no `tl_z3_pipeline` loop marker, planning is a no-op. In the main CUDA
+pipeline, inference-only on an annotated module is rejected rather than silently
+falling through to stock planning; direct inference remains available for
+offline inspection.
 
 A module containing G3 loops must not also enable
 `tl.enable_auto_warp_specialization`. The CUDA pipeline rejects this
@@ -71,7 +78,7 @@ stated otherwise.
 | `tl_z3_pipeline_resource_deps` | `Array<Array<IntImm>>` | `[]` | `(left, right)` resource exclusion pairs. |
 | `tl_z3_pipeline_owner_exclusion_deps` | `Array<Array<IntImm>>` | `[]` | `(left, right, latency_lr, latency_rl)`. **Currently rejected by G3.** |
 | `tl_z3_pipeline_pipe_order_deps` | `Array<Array<IntImm>>` | `[]` | `(previous, current)` residue-order constraints. |
-| `tl_z3_pipeline_stage_order_deps` | `Array<Array<IntImm>>` | `[]` | `(upstream, downstream)`. **Currently rejected conservatively by G3.** |
+| `tl_z3_pipeline_stage_order_deps` | `Array<Array<IntImm>>` | `[]` | `(upstream, downstream)`. Forwarded to the solver and checked against the returned raw stages; scheduled Bind cases that require cross-stage cloning are still rejected downstream. |
 | `tl_z3_pipeline_buffer_sizes` | `Array<IntImm>` | `[]` | Solver buffer sizes, length `B`. |
 | `tl_z3_pipeline_buffer_vars` | `Array<Var>` | `[]` | Ordered solver buffer-id to `Buffer.data` mapping, length `B`. |
 | `tl_z3_pipeline_memory_groups` | `Array<Array<IntImm>>` | `[]` | Solver-native `[capacity, buffer_id, ...]` groups. |
@@ -196,17 +203,20 @@ pipeline rewriting.
   loop. Manual Z3 mode never overwrites a handwritten schedule.
 - `owner_exclusion_deps` is rejected before solving. Stage/order annotations do
   not preserve owner lifetime, direction, and wraparound semantics.
-- All `stage_order_deps` are currently rejected before solving. This is
-  conservative: downstream Let cloning and the associated stage-order parity
-  are not implemented, and G3 does not distinguish clones that might be safe
-  from clones that are not.
+- `stage_order_deps` is forwarded and checked both for valid task indices and
+  for `raw_stage[upstream] <= raw_stage[downstream]` in the actual solver
+  result. A uniform minimum-stage shift preserves that inequality. No Let clone
+  is invented: scheduled Bind consumers that would cross a stage, or violate
+  same-stage order, remain explicit `InjectSoftwarePipeline` errors.
 - Flat non-identity reorder has the safety restrictions listed above; more
   general Let/declaration motion is not implemented.
 - The annotation problem is authoritative. G3 does not prove that a user has
   supplied every real IR dependency or an accurate performance model.
-- Automatic latency/dependency extraction, owner-ring lowering, Let clone
+- Automatic extraction is provided by the separate bounded
+  `InferZ3PipelineProblem` pass documented in `cuda_z3_task_analysis.md`; it is
+  not an arbitrary-IR proof. Owner-ring lowering, general Let clone
   materialization, absolute-time CUDA IR, and full Ascend scheduling parity are
-  future work, not completed G3 features.
+  not claimed as completed features.
 
 After a successful solve, G3 removes its input-problem annotations, preserves
 `num_stages` and unrelated annotations, and emits the audit, order/stage, and
@@ -219,6 +229,11 @@ standard `tl_pipeline_order/stage` keys to `software_pipeline_order/stage`.
 uses direct TIR construction and a mock FFI callback. It covers full argument
 projection, stock planning composition, the cross-stage tie and inverse order,
 flat physical reorder and rejection, buffer maps, manual/offset normalization,
-replayable-Bind mapping, task-count mismatch, unsupported dependencies,
+replayable-Bind mapping, task-count mismatch, unsupported owner dependencies,
+stage-order forwarding/result validation, scheduled-Bind cross-stage rejection,
 scheduler conflicts, invalid results, UNSAT/unknown propagation, strict no-op,
 and default-off behavior. No GPU or real Z3 solve is needed by these tests.
+The companion task-analysis tests additionally cover distance-two conflicts,
+ordinary-import FFI registration, and real inference/solver ordering in the main
+CUDA pipeline. The final joint run is recorded in
+`evidence/G3/main-pipeline-host-tests-final.txt` (148 passed).

@@ -1,5 +1,6 @@
 from . import target  # noqa: F401
 from . import transform  # noqa: F401
+from . import task_cost as task_cost  # noqa: F401
 
 # Compose the language namespace before loading the implementation registries:
 # CUDA intrinsic emitters refer back to this module while they initialize.

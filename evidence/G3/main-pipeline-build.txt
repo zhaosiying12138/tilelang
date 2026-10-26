@@ -1,0 +1,76 @@
+[0/2] Re-checking globbed directories...
+[1/4] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o
+FAILED: [code=1] CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o 
+/usr/bin/ccache /usr/bin/g++ -DCUDA_MAJOR_VERSION=13 -DDMLC_USE_LOGGING_LIBRARY="<tvm/runtime/logging.h>" -DTVM_LOG_CUSTOMIZE=1 -I/home/zhaosiying/codebase/tilelang-cuda-z3/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/dlpack/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl -O3 -DNDEBUG -fPIC -MD -MT CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o -MF CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o.d -o CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o -c /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc
+In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:28,
+                 from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/any.h:27,
+                 from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:29,
+                 from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/transform.h:59,
+                 from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/tirx/transform.h:27,
+                 from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.h:8,
+                 from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:6:
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h: In instantiation of ‘std::unique_ptr<std::__cxx11::basic_string<char> > tvm::ffi::details::LogCheckFormat(const X&, const Y&) [with X = __int128; Y = int]’:
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:440:1:   required from ‘std::unique_ptr<std::__cxx11::basic_string<char> > tvm::ffi::details::LogCheck_GT(const X&, const Y&) [with X = __int128; Y = int]’
+  422 |     return LogCheckFormat(x, y);                                                       \
+      |            ~~~~~~~~~~~~~~^~~~~~
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:795:7:   required from here
+  455 |       ::tvm::ffi::details::LogCheck##name(x, y))                          \
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:413:14: error: ambiguous overload for ‘operator<<’ (operand types are ‘std::basic_ostream<char>’ and ‘const __int128’)
+  413 |   os << " (" << x << " vs. " << y << ") ";  // CHECK_XX(x, y) requires x and y can be serialized to
+      |   ~~~~~~~~~~~^~~~
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:413:14: note: there are 16 candidates
+In file included from /usr/include/c++/15/ostream:42,
+                 from /usr/include/c++/15/iostream:43,
+                 from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:33:
+/usr/include/c++/15/bits/ostream.h:174:7: note: candidate 1: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(long int) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  174 |       operator<<(long __n)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:178:7: note: candidate 2: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(long unsigned int) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  178 |       operator<<(unsigned long __n)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:182:7: note: candidate 3: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(bool) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  182 |       operator<<(bool __n)
+      |       ^~~~~~~~
+In file included from /usr/include/c++/15/ostream:294:
+/usr/include/c++/15/bits/ostream.tcc:100:5: note: candidate 4: ‘std::basic_ostream<_CharT, _Traits>& std::basic_ostream<_CharT, _Traits>::operator<<(short int) [with _CharT = char; _Traits = std::char_traits<char>]’
+  100 |     basic_ostream<_CharT, _Traits>::
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/15/bits/ostream.h:189:7: note: candidate 5: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(short unsigned int) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  189 |       operator<<(unsigned short __n)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.tcc:114:5: note: candidate 6: ‘std::basic_ostream<_CharT, _Traits>& std::basic_ostream<_CharT, _Traits>::operator<<(int) [with _CharT = char; _Traits = std::char_traits<char>]’
+  114 |     basic_ostream<_CharT, _Traits>::
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/15/bits/ostream.h:200:7: note: candidate 7: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(unsigned int) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  200 |       operator<<(unsigned int __n)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:211:7: note: candidate 8: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(long long int) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  211 |       operator<<(long long __n)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:215:7: note: candidate 9: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(long long unsigned int) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  215 |       operator<<(unsigned long long __n)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:231:7: note: candidate 10: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(double) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  231 |       operator<<(double __f)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:235:7: note: candidate 11: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(float) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  235 |       operator<<(float __f)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:243:7: note: candidate 12: ‘std::basic_ostream<_CharT, _Traits>::__ostream_type& std::basic_ostream<_CharT, _Traits>::operator<<(long double) [with _CharT = char; _Traits = std::char_traits<char>; __ostream_type = std::basic_ostream<char>]’
+  243 |       operator<<(long double __f)
+      |       ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:636:5: note: candidate 13: ‘std::basic_ostream<_CharT, _Traits>& std::operator<<(basic_ostream<_CharT, _Traits>&, char) [with _CharT = char; _Traits = char_traits<char>]’
+  636 |     operator<<(basic_ostream<_CharT, _Traits>& __out, char __c)
+      |     ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:642:5: note: candidate 14: ‘std::basic_ostream<char, _Traits>& std::operator<<(basic_ostream<char, _Traits>&, char) [with _Traits = char_traits<char>]’
+  642 |     operator<<(basic_ostream<char, _Traits>& __out, char __c)
+      |     ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:653:5: note: candidate 15: ‘std::basic_ostream<char, _Traits>& std::operator<<(basic_ostream<char, _Traits>&, signed char) [with _Traits = char_traits<char>]’
+  653 |     operator<<(basic_ostream<char, _Traits>& __out, signed char __c)
+      |     ^~~~~~~~
+/usr/include/c++/15/bits/ostream.h:658:5: note: candidate 16: ‘std::basic_ostream<char, _Traits>& std::operator<<(basic_ostream<char, _Traits>&, unsigned char) [with _Traits = char_traits<char>]’
+  658 |     operator<<(basic_ostream<char, _Traits>& __out, unsigned char __c)
+      |     ^~~~~~~~
+[2/4] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/z3_pipeline_planning.cc.o
+ninja: build stopped: subcommand failed.

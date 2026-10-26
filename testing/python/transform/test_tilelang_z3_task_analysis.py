@@ -7,7 +7,6 @@ Python FFI only; the integration test calls the real CPU Z3 solver.
 from __future__ import annotations
 
 import json
-from collections.abc import Mapping
 from pathlib import Path
 
 import pytest
@@ -300,11 +299,32 @@ def test_raw_war_waw_fixed_dependencies_follow_source_order():
     func = _make_store_func(statements, [a, b], annotations, loop_var=k)
 
     loop = _find_pipeline_loop(_run_infer(func)["main"])
-    assert _nested_ints(loop.annotations["tl_z3_pipeline_data_deps"]) == [
+    dependencies = _nested_ints(loop.annotations["tl_z3_pipeline_data_deps"])
+    same_iteration = [dependency for dependency in dependencies if dependency[2] == 0]
+    assert same_iteration == [
         [0, 1, 0, 3],  # RAW: A writer -> A reader.
         [0, 2, 0, 3],  # WAW: first A writer -> second A writer.
         [1, 2, 0, 4],  # WAR: A reader -> later A writer.
     ]
+    assert dependencies == same_iteration
+
+
+@pytest.mark.parametrize("index_mode", ["increasing", "decreasing"])
+def test_distance_two_conflict_is_not_dropped_by_distance_one_reasoning(index_mode):
+    tir = tvm.tirx
+    a = tir.decl_buffer((8,), "float32", name="A")
+    k = tir.Var("k", "int32")
+    statements = [
+        tir.BufferStore(a, 1.0, [k]),
+        tir.BufferStore(a, 2.0, [k + 2 if index_mode == "increasing" else 6 - k]),
+    ]
+    annotations = _complete_annotations([3, 4])
+    annotations.pop("tl_z3_pipeline_data_deps")
+    func = _make_store_func(statements, [a], annotations, loop_var=k)
+
+    loop = _find_pipeline_loop(_run_infer(func)["main"])
+    dependencies = _nested_ints(loop.annotations["tl_z3_pipeline_data_deps"])
+    assert [0, 1, 1, 3] in dependencies
 
 
 def test_copy_gemm_parallel_vector_and_scalar_features_and_resources():
@@ -510,6 +530,73 @@ def test_real_z3_integration_after_inference(tmp_path):
     assert len(loop.annotations["tl_z3_pipeline_audit_starts"]) == 2
     assert int(loop.annotations["tl_z3_pipeline_audit_ii"]) > 0
     assert len(loop.annotations["tl_pipeline_buffer_versions"]) == 1
+
+
+def test_regular_package_import_registers_task_cost_ffi_without_explicit_import():
+    import subprocess
+    import sys
+
+    code = (
+        "import tilelang, tvm_ffi; "
+        "assert tvm_ffi.get_global_func('tl.cuda.estimate_task'); "
+        "assert tvm_ffi.get_global_func('tl.cuda.z3_memory_group_capacities')"
+    )
+    subprocess.run([sys.executable, "-c", code], check=True, capture_output=True, text=True, timeout=60)
+
+
+def test_main_cuda_pipeline_infers_before_z3_planning(tmp_path):
+    hardware, calibration = _write_specs(tmp_path)
+    annotations = {
+        "tl_z3_pipeline": True,
+        "tl_z3_pipeline_hardware": str(hardware),
+        "tl_z3_pipeline_calibration": str(calibration),
+        "tl_z3_pipeline_manual_schedule": True,
+        "tl_z3_pipeline_manual_stages": _imms([0, 1]),
+        "tl_z3_pipeline_enable_offset": True,
+    }
+
+    @T.prim_func
+    def main(A: T.Tensor((64,), "float32"), B: T.Tensor((64,), "float32")):
+        with T.Kernel(1, threads=128):
+            a_shared = T.alloc_shared((16,), "float32")
+            for k in T.Pipelined(4, num_stages=2, annotations=annotations):
+                T.copy(A[k * 16 : (k + 1) * 16], a_shared, coalesced_width=16)
+                for i in T.Parallel(16):
+                    B[k * 16 + i] = a_shared[i] + 1.0
+
+    from tilelang.cuda.pipeline import CUDAPassPipelineBodyPrologue
+
+    events = []
+    estimator = tvm_ffi.get_global_func(_ESTIMATOR)
+    solver = tvm_ffi.get_global_func(_SOLVER)
+
+    def tracked_estimator(*args):
+        events.append("estimate")
+        return estimator(*args)
+
+    def tracked_solver(*args):
+        events.append("solve")
+        return solver(*args)
+
+    tvm_ffi.register_global_func(_ESTIMATOR, f=tracked_estimator, override=True)
+    tvm_ffi.register_global_func(_SOLVER, f=tracked_solver, override=True)
+    config = {_CONFIG: True, _Z3_CONFIG: True}
+    with _SM80, tvm.transform.PassContext(config=config):
+        lowered = CUDAPassPipelineBodyPrologue(_bound_module(main), _SM80)
+
+    assert events[:2] == ["estimate", "estimate"]
+    assert "solve" in events
+    assert set(events[events.index("solve") :]) == {"solve"}
+    audits = []
+
+    def visit(node):
+        if isinstance(node, tvm.tirx.For) and "tl_z3_pipeline_audit_starts" in node.annotations:
+            audits.append(node)
+        assert not isinstance(node, tvm.tirx.For) or "tl_z3_pipeline" not in node.annotations
+
+    post_order_visit(lowered["main"].body, visit)
+    assert audits
+    assert int(audits[0].annotations["tl_z3_pipeline_audit_ii"]) > 0
 
 
 if __name__ == "__main__":

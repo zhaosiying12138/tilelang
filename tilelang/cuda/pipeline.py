@@ -25,6 +25,7 @@ from tilelang.transform import PassContext
 
 
 _Z3_PIPELINE_CONFIG = "tl.enable_z3_pipeline_planning"
+_Z3_TASK_ANALYSIS_CONFIG = "tl.enable_z3_task_analysis"
 _AUTO_WS_CONFIG = "tl.enable_auto_warp_specialization"
 
 
@@ -49,9 +50,9 @@ def _module_has_existing_warp_specialization(mod: IRModule) -> bool:
 
     def visit(node):
         nonlocal found
-        if isinstance(node, SBlock) and "tl.ws_schedule" in node.annotations:
-            found = True
-        elif isinstance(node, tirx.AttrStmt) and node.attr_key in ("warp_specialize", "kWarpSpecializationScope"):
+        if (isinstance(node, SBlock) and "tl.ws_schedule" in node.annotations) or (
+            isinstance(node, tirx.AttrStmt) and node.attr_key in ("warp_specialize", "kWarpSpecializationScope")
+        ):
             found = True
 
     for _, func in mod.functions.items():
@@ -104,7 +105,14 @@ def _module_has_shared_barrier(mod: IRModule) -> bool:
 def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     pass_ctx = tilelang.transform.get_pass_context()
     z3_pipeline_enabled = pass_ctx.config.get(_Z3_PIPELINE_CONFIG, False)
-    z3_pipeline_module = bool(z3_pipeline_enabled) and _module_has_z3_pipeline_annotations(mod)
+    z3_task_analysis_enabled = pass_ctx.config.get(_Z3_TASK_ANALYSIS_CONFIG, False)
+    has_z3_annotations = (z3_pipeline_enabled or z3_task_analysis_enabled) and _module_has_z3_pipeline_annotations(mod)
+    z3_pipeline_module = bool(z3_pipeline_enabled) and has_z3_annotations
+    if z3_task_analysis_enabled and has_z3_annotations and not z3_pipeline_enabled:
+        raise ValueError(
+            "CUDA Z3 task analysis requires tl.enable_z3_pipeline_planning in the main CUDA pipeline. "
+            "For offline annotation inspection, call InferZ3PipelineProblem directly without stock planning."
+        )
     if z3_pipeline_module and _module_has_existing_warp_specialization(mod):
         raise ValueError("CUDA Z3 pipeline planning cannot overwrite an existing warp-specialization schedule")
     if z3_pipeline_module and pass_ctx.config.get(_AUTO_WS_CONFIG) is not None:
@@ -175,10 +183,10 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     # Simplify the unrolled loop bodies.
     mod = tilelang.transform.Simplify()(mod)
 
-    # Run pipeline planning and software-pipeline rewriting before layout
-    # inference so inferred layouts see the final pipelined structure directly.
-    # The Z3 pass also checks its config internally; keeping the call gated here
-    # makes the default CUDA pipeline identical to the stock pass sequence.
+    # Infer after unroll/Simplify so analysis and planning see the same tasks.
+    # Both passes are opt-in; the stock CUDA pass sequence is unchanged by default.
+    if z3_task_analysis_enabled and has_z3_annotations:
+        mod = tilelang.transform.InferZ3PipelineProblem()(mod)
     if z3_pipeline_enabled:
         mod = tilelang.transform.Z3PipelinePlanning()(mod)
     mod = tilelang.transform.PipelinePlanning()(mod)

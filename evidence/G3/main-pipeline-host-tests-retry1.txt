@@ -1,0 +1,48 @@
+........................................................................ [ 48%]
+........................................................................ [ 97%]
+...                                                                      [100%]
+============================================================================================= fixture duration top ==============================================================================================
+total          name                                                                                                                                                             num med            max           
+0:00:00.014087 testing/python/transform/test_tilelang_z3_task_analysis.py::test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable::tmp_path                          1 0:00:00.014087 0:00:00.014087
+0:00:00.017712 grand total                                                                                                                                                      240 0:00:00.000016 0:00:00.014087
+============================================================================================ test call duration top =============================================================================================
+total          name                                                                                                                                                             num med            max           
+0:00:01.846491 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                            1 0:00:01.846491 0:00:01.846491
+0:00:01.022919 testing/python/transform/test_tilelang_z3_task_analysis.py::test_non_static_versioned_buffer_size_is_an_error_not_zero                                             1 0:00:01.022919 0:00:01.022919
+0:00:00.098236 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                                       10 0:00:00.009571 0:00:00.011666
+0:00:00.084856 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                                      1 0:00:00.084856 0:00:00.084856
+0:00:00.072118 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                                   2 0:00:00.036059 0:00:00.038283
+0:00:00.048107 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering                    12 0:00:00.002762 0:00:00.014611
+0:00:00.020823 testing/python/transform/test_tilelang_z3_task_analysis.py::test_real_z3_integration_after_inference                                                               1 0:00:00.020823 0:00:00.020823
+0:00:00.018389 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum                       1 0:00:00.018389 0:00:00.018389
+0:00:00.018345 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                                  2 0:00:00.009173 0:00:00.009775
+0:00:00.017787 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                                3 0:00:00.005927 0:00:00.006118
+0:00:00.017462 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline                  1 0:00:00.017462 0:00:00.017462
+0:00:00.016761 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                                  2 0:00:00.008380 0:00:00.009074
+0:00:00.012128 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer              2 0:00:00.006064 0:00:00.006493
+0:00:00.011800 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_propagates_buffer_producer_through_bind                              1 0:00:00.011800 0:00:00.011800
+0:00:00.011481 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_waits_for_individual_physical_commit_group                       1 0:00:00.011481 0:00:00.011481
+0:00:00.010966 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_copy_gemm_num_stages_plan                               1 0:00:00.010966 0:00:00.010966
+0:00:00.010662 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_reaches_mixed_dependency_fixed_point                                 1 0:00:00.010662 0:00:00.010662
+0:00:00.010414 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_does_not_propagate_disjoint_buffer_region                            1 0:00:00.010414 0:00:00.010414
+0:00:00.010109 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_tcgen05_gemm_plan                                       1 0:00:00.010109 0:00:00.010109
+0:00:00.009947 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_redirects_copy_anchor_through_copy_producer                          1 0:00:00.009947 0:00:00.009947
+0:00:00.009825 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_waits_before_dependent_copy                                          1 0:00:00.009825 0:00:00.009825
+0:00:00.008454 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_relaxes_loop_wait_and_descends_trailing_drain                    1 0:00:00.008454 0:00:00.008454
+0:00:00.008222 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_loop_local_alloc_plan                                   1 0:00:00.008222 0:00:00.008222
+0:00:00.008049 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_wgmma_gemm_plan                                         1 0:00:00.008049 0:00:00.008049
+0:00:00.007636 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_mbarrier_arrive_wait_plan                               1 0:00:00.007636 0:00:00.007636
+0:00:00.007495 testing/python/transform/test_tilelang_transform_pipeline_buffer_versions.py::test_explicit_buffer_version_override                                               12 0:00:00.000625 0:00:00.000801
+0:00:00.007130 testing/python/transform/test_tilelang_z3_task_analysis.py::test_copy_gemm_parallel_vector_and_scalar_features_and_resources                                       1 0:00:00.007130 0:00:00.007130
+0:00:00.007013 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_tma_copy_plan                                           1 0:00:00.007013 0:00:00.007013
+0:00:00.006489 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_replays_scalar_bind_without_annotation_slot            1 0:00:00.006489 0:00:00.006489
+0:00:00.006111 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_only_wraps_producer_statements_from_explicit_group_annotations   1 0:00:00.006111 0:00:00.006111
+0:00:03.563151 grand total                                                                                                                                                      147 0:00:00.002288 0:00:01.846491
+============================================================================================ test setup duration top ============================================================================================
+total          name                                                                                                                                                             num med            max           
+0:00:00.014281 testing/python/transform/test_tilelang_z3_task_analysis.py::test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable                                    1 0:00:00.014281 0:00:00.014281
+0:00:00.028376 grand total                                                                                                                                                      147 0:00:00.000052 0:00:00.014281
+========================================================================================== test teardown duration top ===========================================================================================
+total          name                                                                                                                                                             num med            max           
+0:00:00.006989 grand total                                                                                                                                                      147 0:00:00.000041 0:00:00.000189
+147 passed in 7.73s

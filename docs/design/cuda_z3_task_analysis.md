@@ -24,16 +24,23 @@ FFI 名称：`tl.transform.InferZ3PipelineProblem`。Pass 仅在 PassContext 中
 
 后工作。默认 config、无 `tl_z3_pipeline` loop、以及输入已经完整的 loop 都是严格 no-op。 Pass 不运行 solver，不生成 pipeline stage/order，也不替代 `Z3PipelinePlanning`。
 
-由于本次改动不修改 `pipeline.py`，主 CUDA pipeline 不会自动插入此 pass。需要显式组合：
+普通 `import tilelang` / `import tilelang.cuda` 会导入 `task_cost` 并注册 FFI；注册本身不探测设备。主 CUDA lowering 在 `UnrollLoop` 和 `Simplify` 之后、stock `PipelinePlanning` 之前依次执行：
+
+```text
+InferZ3PipelineProblem  (tl.enable_z3_task_analysis=True)
+Z3PipelinePlanning      (tl.enable_z3_pipeline_planning=True)
+PipelinePlanning
+InjectSoftwarePipeline
+```
+
+主编译要求同一标注模块同时开启 analysis 和 planning；只开 analysis 会明确报错，避免补全字段后静默改由 stock scheduler 消费。离线检查仍可显式单独调用：
 
 ```python
-from tilelang.cuda import task_cost  # 注册成本/容量 FFI
-
 with tvm.transform.PassContext(config={"tl.enable_z3_task_analysis": True}):
-    mod = tvm_ffi.get_global_func("tl.transform.InferZ3PipelineProblem")()(mod)
-with tvm.transform.PassContext(config={"tl.enable_z3_pipeline_planning": True}):
-    mod = tilelang.transform.Z3PipelinePlanning()(mod)
+    mod = tilelang.transform.InferZ3PipelineProblem()(mod)
 ```
+
+完整显式 problem 不需要 analysis；只开 planning 保留原有显式 annotation 路径。两个配置都关闭时主 CUDA pass 序列不变。
 
 对带 `tl_z3_pipeline` 的 loop，pass 只补充缺失字段；annotation key 已存在时，即使其值是空数组，也视为显式 override，不重算、不覆盖。
 
@@ -59,7 +66,7 @@ scheduled statement 的提取规则与 `z3_pipeline_planning.cc` 保持一致：
 - `writes[i]` 与 `writes[j]`：WAW；
 - `reads[i]` 与 `writes[j]`：WAR。
 
-只有 `i < j` 时生成 same-iteration 边，distance=0，latency 为 source task 的 effective latency。loop-carried 检查覆盖包括 `i == j` 在内的 task 对；比较时将 consumer 侧的 pipeline loop var 平移一轮。冲突判断复用 `PipelineRegionsMayConflict` 和 thread domains，只有可证明不相交才省略边，symbolic alias / strided view 等情况保守保留。
+只有 `i < j` 时生成 same-iteration 边，distance=0，latency 为 source task 的 effective latency。same-iteration 冲突复用 `PipelineRegionsMayConflict` 和 thread domains。loop-carried 检查覆盖包括 `i == j` 在内的 task 对。对同 storage、无 strides 且下标仅含 pipeline loop var 的仿射区间，分析器引入独立的非零 iteration delta，比较两个区间的所有不同整数迭代，而不是只检查 `k+1`。某一维可证明不重叠时才省略该维冲突；符号下标、strided view、其他自由变量或不能建立该证明时保守保留依赖。因此仅在距离 2 或更远发生的冲突不会漏边。
 
 cross-iteration distance：
 
@@ -149,8 +156,10 @@ C++ 对每个需要成本或 mask 的 task 调 FFI，只填写缺失的 latency/
 - RAW/WAR/WAW source-order dependencies、resource pairs；
 - copy geometry/bytes、dense GEMM M/N/K/dtype/acc、parallel vector/SFU/read bytes、scalar resource；
 - 非静态 shared buffer size 和 opaque side-effect 拒绝；
+- 仅在距离 2 冲突的跨迭代依赖保留；
 - manual async same-stage 审计及 automatic 拒绝；
 - 真实 `tl.cuda.estimate_task` FFI JSON、measured-only、hardware capacity 缺项；
+- 普通包导入自动注册 FFI，主 CUDA pipeline 中 estimator 先于真实 solver；
 - 推导后接真实 CPU Z3 solver 的集成。
 
-这些测试不需要 GPU，也不编译 CUDA kernel。原生 pass 测试需要主线先 build 新 C++ 文件；纯 Python `task_cost` 可独立做 CPU 测试。当前文档不把 synthetic calibration 的结果解释为真实设备性能。
+最终构建及 148 项 task-analysis/pipeline 联合 host 回归见 `evidence/G3/main-pipeline-build-final.txt` 与 `evidence/G3/main-pipeline-host-tests-final.txt`。这些测试不需要 GPU，也不编译 CUDA kernel。原生 pass 测试需要主线先 build 新 C++ 文件；纯 Python `task_cost` 可独立做 CPU 测试。当前文档不把 synthetic calibration 的结果解释为真实设备性能。

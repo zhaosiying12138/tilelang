@@ -347,20 +347,54 @@ def test_task_count_must_match_scheduled_body_statements():
     assert calls == []
 
 
-@pytest.mark.parametrize(
-    ("overrides", "message"),
-    [
-        ({"owner_exclusion_deps": [(0, 1, 1, 1)]}, "owner_exclusion_deps"),
-        ({"stage_order_deps": [(0, 1)]}, "stage_order_deps"),
-    ],
-)
-def test_unexpressible_dependencies_fail_before_solver(overrides, message):
-    func, _ = _make_loop(_annotations(**overrides))
+def test_unexpressible_dependencies_fail_before_solver():
+    func, _ = _make_loop(_annotations(owner_exclusion_deps=[(0, 1, 1, 1)]))
     calls = _install_solver(([0, 0, 0, 0], [], 8))
 
-    with pytest.raises(Exception, match=message):
+    with pytest.raises(Exception, match="owner_exclusion_deps"):
         _run_z3(func)
     assert calls == []
+
+
+def test_stage_order_is_forwarded_and_checked_after_projection():
+    func, _ = _make_loop(_annotations(stage_order_deps=[(0, 1)]))
+    calls = _install_solver(([0, 2, 0, 0], [], 2))
+
+    loop = _find_loop(_run_z3(func)["main"])
+    assert _nested_ints(calls[0]["stage_order_deps"]) == [[0, 1]]
+    assert _ints(loop.annotations["tl_pipeline_stage"]) == [0, 1, 0, 0]
+
+
+def test_stage_order_rejects_a_solver_result_that_violates_it():
+    func, _ = _make_loop(_annotations(stage_order_deps=[(0, 1)]))
+    _install_solver(([2, 0, 0, 0], [], 2))
+
+    with pytest.raises(Exception, match="violates stage_order_deps"):
+        _run_z3(func)
+
+
+def test_stage_order_does_not_bypass_scheduled_bind_validation():
+    tir = tvm.tirx
+    a = tir.decl_buffer((8,), "int32", name="bind_A")
+    b = tir.decl_buffer((8,), "int32", name="bind_B")
+    k = tir.Var("k", "int32")
+    value = tir.Var("scheduled_value", "int32")
+    statements = [
+        tir.BufferStore(a, 1, [k]),
+        tir.Bind(value, tir.BufferLoad(a, [k]) + 1),
+        tir.BufferStore(b, value, [k]),
+    ]
+    annotations = _annotations(latencies=[1, 1, 1], iis=[1, 1, 1], resource_flags=[0, 0, 0], stage_order_deps=[(1, 2)])
+    annotations["num_stages"] = tir.IntImm("int32", 2)
+    loop = tir.For(k, 0, 4, tir.ForKind.SERIAL, tir.SeqStmt(statements), annotations=annotations)
+    func = tir.PrimFunc([a.data, b.data], loop, buffer_map={a.data: a, b.data: b}).with_attr("global_symbol", "main")
+    _install_solver(([0, 0, 2], [], 2))
+    planned = _run_z3(func)
+
+    with tvm.transform.PassContext(config={_CONFIG: True}):
+        stock = tl.transform.PipelinePlanning()(planned)
+        with pytest.raises(Exception, match="different pipeline stage"):
+            tl.transform.InjectSoftwarePipeline()(stock)
 
 
 def test_manual_schedule_conflicts_with_handwritten_order_stage():
@@ -404,9 +438,22 @@ def test_cuda_pipeline_rejects_auto_ws_before_any_scheduler_runs():
     mod = _bound_module(func)
     calls = _install_solver(([0, 0, 0, 0], [], 8))
 
-    with tvm.transform.PassContext(config={_CONFIG: True, _AUTO_WS_CONFIG: "role_based"}):
-        with pytest.raises(ValueError, match="cannot schedule the same annotated module"):
-            CUDAPassPipelineBodyPrologue(mod, _SM80)
+    with tvm.transform.PassContext(config={_CONFIG: True, _AUTO_WS_CONFIG: "role_based"}), pytest.raises(
+        ValueError, match="cannot schedule the same annotated module"
+    ):
+        CUDAPassPipelineBodyPrologue(mod, _SM80)
+    assert calls == []
+
+
+def test_main_pipeline_rejects_task_analysis_without_z3_planning():
+    from tilelang.cuda.pipeline import CUDAPassPipelineBodyPrologue
+
+    func, _ = _make_loop(_annotations())
+    calls = _install_solver(([0, 0, 0, 0], [], 8))
+    with tvm.transform.PassContext(config={"tl.enable_z3_task_analysis": True}), pytest.raises(
+        ValueError, match="requires tl.enable_z3_pipeline_planning"
+    ):
+        CUDAPassPipelineBodyPrologue(_bound_module(func), _SM80)
     assert calls == []
 
 

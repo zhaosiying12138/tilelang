@@ -87,6 +87,14 @@ class PassConfigKey(str, Enum):
     the same annotated module because the two schedulers cannot own one loop.
     """
 
+    TL_ENABLE_Z3_TASK_ANALYSIS = "tl.enable_z3_task_analysis"
+    """Infer missing CUDA Z3 task, dependency, and cost annotations.
+
+    Opt-in; default False. The main CUDA pipeline requires Z3 pipeline planning
+    to consume these annotations; the standalone pass also supports offline
+    inspection. Explicit fields, including explicit empty arrays, are preserved.
+    """
+
     TL_ENABLE_FAST_MATH = "tl.enable_fast_math"
     """
         Enable fast math optimization. Default: False

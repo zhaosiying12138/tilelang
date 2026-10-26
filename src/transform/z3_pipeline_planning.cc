@@ -505,10 +505,13 @@ private:
            "and wraparound semantics";
     Array<Array<Integer>> stage_order_deps =
         GetNestedIntegerArrays(annotations, kZ3StageOrderDeps);
-    ICHECK(stage_order_deps.empty())
-        << "Z3PipelinePlanning: stage_order_deps are conservatively unsupported "
-           "because downstream Let cloning and its stage-order semantics are "
-           "not implemented";
+    for (const Array<Integer> &dependency : stage_order_deps) {
+      ICHECK_EQ(dependency.size(), 2U)
+          << "Z3PipelinePlanning: stage_order_deps entries must be (task, task)";
+      ICHECK(dependency[0]->value >= 0 && dependency[0]->value < n &&
+             dependency[1]->value >= 0 && dependency[1]->value < n)
+          << "Z3PipelinePlanning: stage_order_deps task index is out of range";
+    }
 
     int64_t num_stages = GetInteger(annotations, "num_stages", 0);
     ICHECK_GT(num_stages, 0)
@@ -610,6 +613,11 @@ private:
           << "Z3PipelinePlanning: solver returned a negative start time";
       raw_stages[i] = starts[i] / ii;
       min_stage = std::min(min_stage, raw_stages[i]);
+    }
+    for (const Array<Integer> &dependency : stage_order_deps) {
+      ICHECK_LE(raw_stages[dependency[0]->value], raw_stages[dependency[1]->value])
+          << "Z3PipelinePlanning: solver result violates stage_order_deps ("
+          << dependency[0]->value << ", " << dependency[1]->value << ")";
     }
 
     std::vector<int> stages(n, 0);

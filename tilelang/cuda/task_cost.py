@@ -27,7 +27,7 @@ except ImportError:  # Standalone CPU tests loaded directly by file path.
     _path = Path(__file__).with_name("latency_model.py")
     _spec = importlib.util.spec_from_file_location("_tilelang_cuda_latency_model_for_task_cost", _path)
     if _spec is None or _spec.loader is None:
-        raise ImportError(f"Cannot load CUDA latency model from {_path}")
+        raise ImportError(f"Cannot load CUDA latency model from {_path}") from None
     _lm = importlib.util.module_from_spec(_spec)
     import sys
 

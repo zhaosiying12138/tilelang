@@ -765,60 +765,121 @@ private:
     return Buffer();
   }
 
+  bool OnlyLoopVar(const PrimExpr &expr, const Var &loop_var) const {
+    bool supported = true;
+    PostOrderVisit(expr, [&](const ObjectRef &node) {
+      if (const auto *var = node.as<VarNode>()) {
+        supported = supported && GetRef<Var>(var).same_as(loop_var);
+      }
+    });
+    return supported;
+  }
+
+  bool DistinctIterationsDisjoint(const BufferRegion &left,
+                                  const BufferRegion &right,
+                                  const ForNode *loop) const {
+    if (!left->buffer.same_as(right->buffer)) return true;
+    if (!left->buffer->strides.empty() || !right->buffer->strides.empty() ||
+        left->region.size() != right->region.size()) {
+      return false;
+    }
+    arith::Analyzer analyzer;
+    Var delta("z3_distinct_iteration_delta", loop->loop_var.dtype());
+    Map<Var, PrimExpr> shift;
+    shift.Set(loop->loop_var, loop->loop_var + delta);
+    auto is_zero = [](const PrimExpr &expr) {
+      const int64_t *value = as_const_int(expr);
+      return value != nullptr && *value == 0;
+    };
+    auto floor_div = [](__int128 value, __int128 divisor) {
+      ICHECK(divisor > 0);
+      __int128 quotient = value / divisor;
+      if (value % divisor < 0) --quotient;
+      return quotient;
+    };
+    for (size_t dim = 0; dim < left->region.size(); ++dim) {
+      const Range &a = left->region[dim];
+      const Range &b = right->region[dim];
+      const int64_t *a_extent = as_const_int(analyzer.Simplify(a->extent));
+      const int64_t *b_extent = as_const_int(analyzer.Simplify(b->extent));
+      if (a_extent == nullptr || b_extent == nullptr || *a_extent < 0 ||
+          *b_extent < 0 || !OnlyLoopVar(a->min, loop->loop_var) ||
+          !OnlyLoopVar(b->min, loop->loop_var)) {
+        return false;
+      }
+      if (*a_extent == 0 || *b_extent == 0) return true;
+      PrimExpr unshifted = analyzer.Simplify(b->min - a->min);
+      bool contains_loop_var = false;
+      PostOrderVisit(unshifted, [&](const ObjectRef &node) {
+        if (const auto *var = node.as<VarNode>()) {
+          contains_loop_var = contains_loop_var ||
+                              GetRef<Var>(var).same_as(loop->loop_var);
+        }
+      });
+      if (contains_loop_var) return false;
+      const int64_t *offset = as_const_int(unshifted);
+      if (offset == nullptr) return false;
+
+      PrimExpr shifted = tirx::Substitute(b->min, shift);
+      PrimExpr slope = analyzer.Simplify(shifted - b->min);
+      if (!OnlyLoopVar(slope, delta)) return false;
+      Map<Var, PrimExpr> delta_zero;
+      delta_zero.Set(delta, IntImm(delta.dtype(), 0));
+      Map<Var, PrimExpr> delta_one;
+      delta_one.Set(delta, IntImm(delta.dtype(), 1));
+      if (!is_zero(analyzer.Simplify(tirx::Substitute(slope, delta_zero)))) {
+        return false;
+      }
+      const int64_t *coefficient =
+          as_const_int(analyzer.Simplify(tirx::Substitute(slope, delta_one)));
+      if (coefficient == nullptr ||
+          !is_zero(analyzer.Simplify(
+              slope - delta * IntImm(delta.dtype(), *coefficient)))) {
+        return false;
+      }
+
+      __int128 c = *coefficient;
+      __int128 offset_value = *offset;
+      __int128 a_size = *a_extent;
+      __int128 b_size = *b_extent;
+      if (c == 0) {
+        if (offset_value <= -b_size || offset_value >= a_size) return true;
+        continue;
+      }
+      // After translating the left minimum to zero, overlap requires
+      // -b_size < c * nonzero_delta + offset < a_size. Testing the first
+      // integer in that interval, plus the neighbors of excluded delta=0,
+      // proves disjointness without mistaking distance one for all distances.
+      __int128 lower = -b_size - offset_value;
+      __int128 upper = a_size - offset_value;
+      if (c < 0) {
+        __int128 old_lower = lower;
+        lower = -upper;
+        upper = -old_lower;
+      }
+      __int128 step = c < 0 ? -c : c;
+      __int128 first = floor_div(lower, step) + 1;
+      bool possible_overlap = false;
+      for (__int128 candidate : {first, __int128(-1), __int128(1)}) {
+        if (candidate == 0) continue;
+        __int128 difference = c * candidate + offset_value;
+        if (difference > -b_size && difference < a_size) {
+          possible_overlap = true;
+          break;
+        }
+      }
+      if (!possible_overlap) return true;
+    }
+    return false;
+  }
+
   bool RegionsConflict(const BufferRegion &left, const BufferRegion &right,
                        const ForNode *loop, bool cross_iteration,
                        const Map<Var, arith::IntSet> &thread_domains) const {
-    if (!cross_iteration) {
-      return PipelineRegionsMayConflict(left, right, thread_domains);
+    if (cross_iteration) {
+      return !DistinctIterationsDisjoint(left, right, loop);
     }
-    Map<Var, PrimExpr> substitution;
-    substitution.Set(loop->loop_var,
-                     loop->loop_var + IntImm(loop->loop_var.dtype(), 1));
-    Array<Range> shifted_ranges;
-    for (const Range &range : right->region) {
-      shifted_ranges.push_back(Range::FromMinExtent(
-          tirx::Substitute(range->min, substitution),
-          tirx::Substitute(range->extent, substitution)));
-    }
-    BufferRegion shifted(right->buffer, shifted_ranges);
-    auto prove_disjoint = [&](const BufferRegion &lhs,
-                              const BufferRegion &rhs) -> bool {
-      if (!lhs->buffer.same_as(rhs->buffer) ||
-          !lhs->buffer->strides.empty() ||
-          lhs->region.size() != rhs->region.size()) {
-        return false;
-      }
-      // Do not cancel thread or other independent variables between the two
-      // accesses. The restricted serial-loop-only case is safe to compare
-      // directly; all other cases use the conservative shared utility.
-      for (const auto *regions : {&lhs->region, &rhs->region}) {
-        for (const Range &range : *regions) {
-          for (const PrimExpr &expr : {range->min, range->extent}) {
-            bool supported = true;
-            PostOrderVisit(expr, [&](const ObjectRef &node) {
-              if (const auto *var = node.as<VarNode>()) {
-                supported = supported && GetRef<Var>(var).same_as(loop->loop_var);
-              }
-            });
-            if (!supported) return false;
-          }
-        }
-      }
-      arith::Analyzer analyzer;
-      for (size_t dim = 0; dim < lhs->region.size(); ++dim) {
-        const Range &a = lhs->region[dim];
-        const Range &b = rhs->region[dim];
-        if (analyzer.CanProve(a->extent <= 0) ||
-            analyzer.CanProve(b->extent <= 0) ||
-            analyzer.CanProve(a->min + a->extent <= b->min) ||
-            analyzer.CanProve(b->min + b->extent <= a->min)) {
-          return true;
-        }
-      }
-      return false;
-    };
-    if (prove_disjoint(left, shifted)) return false;
-    return PipelineRegionsMayConflict(left, shifted, thread_domains);
+    return PipelineRegionsMayConflict(left, right, thread_domains);
   }
 
   void AddDataDependency(std::vector<Array<Integer>> *dependencies,
