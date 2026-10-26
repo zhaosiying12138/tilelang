@@ -95,17 +95,19 @@ python benchmark/z3_cost_model/calibration/calibrate.py \
 
 ```bash
 RUN=evidence/G6/gdn-cold-fresh-repro
+NUM_TOKENS=4096
 test ! -e "$RUN"
 
 for direction in fwd bwd; do
   for repetition in 0 1 2; do
-    bash scripts/run_gdn_cold_fresh.sh \
+    GDN_NUM_TOKENS="$NUM_TOKENS" bash scripts/run_gdn_cold_fresh.sh \
       "$direction" "$repetition" "$RUN"
   done
 done
 
 python benchmark/z3_cost_model/gdn/audit_cold.py \
-  --root "$RUN" --output "$RUN/protocol-audit.json"
+  --root "$RUN" --output "$RUN/protocol-audit.json" \
+  --num-tokens "$NUM_TOKENS"
 python benchmark/z3_cost_model/gdn/analyze_results.py \
   --root "$RUN" --output "$RUN/analysis"
 python benchmark/z3_cost_model/gdn/analyze_predictions.py \
@@ -116,9 +118,11 @@ python benchmark/z3_cost_model/gdn/analyze_predictions.py \
 
 `benchmark/z3_cost_model/gdn/repeat_search.py` 是早期同进程 pilot 入口，保留历史 warmup=2/repeat=5 默认值，只用于复现 pilot。正式 cold 数据必须使用上述 shell 驱动。
 
+T4096 的 `modal-winner` 确认曾暴露等预算对照未达标，因此保留为 validation。修订后的 `candidate-median` 对每个臂分别计算各候选在三次 cold 中的实测中位数，选择最低者，canonical JSON 仅处理并列；不增加候选、不改变 top-k，也不使用确认测量来选择 winner。新的 T8192 held-out 在 [`manifest/gdn-selection-v2-plan.json`](manifest/gdn-selection-v2-plan.json) 中预先登记。复现该 held-out 时设置 `NUM_TOKENS=8192`；早期 `modal-winner` 仍保留用于历史对照。
+
 ### 七轮独立确认
 
-确认脚本按各臂三次 cold winner 的多数配置冻结候选，canonical JSON 只用于并列处理。不同配置按 ABBA 交错，warmup=50、每轮 200 个 L2-flushed CUDA-event 样本，共 7 轮。计时前后都校验公开 forward/backward 输出。
+确认脚本按各臂候选的三次 cold 实测中位数冻结配置，canonical JSON 只用于并列处理。不同配置按 ABBA 交错，warmup=50、每轮 200 个 L2-flushed CUDA-event 样本，共 7 轮。计时前后都校验公开 forward/backward 输出。分析与确认的 token 形状必须一致，否则在计时前报错。
 
 ```bash
 CONFIRM=evidence/G6/gdn-confirmation-repro
@@ -126,10 +130,12 @@ test ! -e "$CONFIRM"
 
 python benchmark/z3_cost_model/gdn/confirm.py \
   --direction fwd --analysis "$RUN/analysis/analysis.json" \
-  --output-dir "$CONFIRM"
+  --output-dir "$CONFIRM" --selection-rule candidate-median \
+  --num-tokens "$NUM_TOKENS"
 python benchmark/z3_cost_model/gdn/confirm.py \
   --direction bwd --analysis "$RUN/analysis/analysis.json" \
-  --output-dir "$CONFIRM"
+  --output-dir "$CONFIRM" --selection-rule candidate-median \
+  --num-tokens "$NUM_TOKENS"
 ```
 
 脚本退出码表示执行是否完成；质量验收还要读取 `summary.json` 的 `acceptance.passed` 和逐项 ratio。相同配置按身份相等处理，不构造虚假的两组性能差。全部原始样本在 `samples.jsonl`，GPU 状态、源码 SHA 和缓存清单一并保存。
@@ -195,7 +201,32 @@ bash scripts/run_compile_matrix.sh \
   --run --tier quick --output evidence/G5/compile-matrix-quick-repro
 ```
 
-full 执行可使用 `--only` 指定清单中的精确 row/group/file ID，分批完成后再汇总。每行结果区分 `FAIL_LOWER`、`FAIL_DEVICE_COMPILE`、`FAIL_LAUNCH`、`FAIL_NUMERIC`、`SKIP_DEP` 和真实 pass。GDN smoke 不计入六梯度数值验收。
+full 执行可使用 `--only` 指定清单中的精确 row/group/file ID，分批完成后再汇总。当前计划将 728 个默认执行 row 分为 84 个文件、16 个交错批次；每个批次使用独立输出，合并器要求所有 row 恰好执行一次：
+
+```bash
+for index in {0..15}; do
+  bash scripts/run_compile_matrix_batch.sh \
+    "$index" 16 \
+    evidence/G5/full-default-shard-plan-v1.json \
+    evidence/G5/compile-matrix-full-repro/batches
+done
+
+python benchmark/z3_cost_model/merge_matrix.py \
+  --tier full --mode default \
+  --output evidence/G5/compile-matrix-full-repro/merged \
+  evidence/G5/compile-matrix-full-repro/batches/batch-{0..15}
+```
+
+独立的 opt-in fixture 不混入 default 分母，单独执行：
+
+```bash
+python benchmark/z3_cost_model/compile_matrix.py \
+  --run --tier full --mode z3-opt-in \
+  --only testing/python/cuda/test_compile_matrix_driver.py \
+  --output evidence/G5/compile-matrix-z3-opt-in-repro
+```
+
+每行结果区分 `FAIL_LOWER`、`FAIL_DEVICE_COMPILE`、`FAIL_LAUNCH`、`FAIL_NUMERIC`、`SKIP_DEP` 和真实 pass。GDN smoke 不计入六梯度数值验收。
 
 ## 八、资源与缓存纪律
 

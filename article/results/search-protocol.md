@@ -2,7 +2,7 @@
 
 ## 1. 固定对象与候选空间
 
-核心验收调用 FlashQLA 的公开 `chunk_gated_delta_rule_fwd` 与 `chunk_gated_delta_rule_bwd`，性能形状固定为 `B=1,T=4096,Hg=4,H=8,K=DV=128`，BF16，chunk=32，512 threads，`auto_cp=False`。反向计时从既有 forward artifacts 开始，artifact producer 固定 `block_DV=64`，不计入反向候选的搜索旋钮或计时区间。
+核心验收调用 FlashQLA 的公开 `chunk_gated_delta_rule_fwd` 与 `chunk_gated_delta_rule_bwd`。初版性能形状为 `B=1,T=4096,Hg=4,H=8,K=DV=128`，BF16，chunk=32，512 threads，`auto_cp=False`；该形状在选择规则迭代后作为 validation。修订后的独立 held-out 为 `T=8192`，其他维度和执行语义不变，预注册见 [selection-v2 plan](../../manifest/gdn-selection-v2-plan.json)。反向计时从既有 forward artifacts 开始，artifact producer 固定 `block_DV=64`，不计入反向候选的搜索旋钮或计时区间。
 
 | 方向 | 搜索旋钮 | raw | Z3 后保留 | guided 实测预算 |
 |---|---|---:|---:|---:|
@@ -32,7 +32,19 @@ done
 
 早期 `repeat_search.py` 在同一进程内调度各臂，并沿用 warmup=2/repeat=5。该数据保留为 pilot，用于观察空间、配置和排序；其 wall time 不进入正式 cold 收益表。正式数据全部来自上述 fresh-process 脚本。这个修正不改变 raw/legal/top-k，也不删除任何 pilot 记录。
 
-## 3. warm 与 no-cache 的独立敏感性
+## 3. Winner 选择规则与一次未达标迭代
+
+初版确认按“单轮 winner 的多数配置”选择最终候选。T4096 的 fwd 所有臂均选 `block_DV=16`，七轮确认通过；bwd 的 guided 为 `stage=2, group=32`，等预算随机对照为 `stage=2, group=16`，确认比值为 **1.000624**。虽然差异约 0.062%，严格的 `guided/control <= 1.0` 仍未满足，因此 [v2 backward summary](../../evidence/G6/gdn-confirmation-v2/bwd/summary.json) 保留 `acceptance.passed=false`，不能按成功处理。
+
+修订规则对全部五个臂一致：设 $L_{a,c,r}$ 为臂 $a$ 的候选 $c$ 在第 $r$ 次 cold 搜索中被实际选中后的有效 latency，先计算
+
+$$m_{a,c}=\operatorname{median}_{r\in\mathcal S(a,c)}L_{a,c,r},$$
+
+再选择 $m_{a,c}$ 最小的候选， canonical JSON 仅用于并列。$\mathcal S(a,c)$ 是该候选实际出现的 cold repetition，确认阶段的测量不参与选择。它使用了各候选已有的全部重复测量，不增加 top-k，也不改变 Z3、模型系数或 raw/legal 空间。旧 `modal-winner` 入口保留用于复现，不静默替换历史结果。
+
+由于 T4096 已用于这次选择规则迭代，按隔离条款将其转为 validation，并在运行前登记 T8192 为新 held-out。搜索、审计和确认都显式传递 `num_tokens`，防止用默认形状混用证据。新 held-out 只运行一次完整协议，pass/fail 均保留，不通过反复确认挑选答案。
+
+## 4. warm 与 no-cache 的独立敏感性
 
 敏感性只做 `stock-raw` 与 `z3-cm-topk`，两个方向各一次，共 8 个独立进程。no-cache 同时禁用 TileLang 和 CUDA 编译缓存；warm 先预热，再用新的 tuner 在同一隔离缓存中测量。warmup run 与 measured run 分别有 JSONL 和 summary，预热成本没有被塞进 measured run 的计时。
 
@@ -53,7 +65,7 @@ done
 
 机器可读来源为 [no-cache summary](../../evidence/G6/gdn-cache-sensitivity-v1/analysis-no-cache/summary.csv)、[warm summary](../../evidence/G6/gdn-cache-sensitivity-v1/analysis-warm/summary.csv) 和 [协议记录](../../evidence/G6/gdn-cache-sensitivity-v1/protocol.json)。审计确认 8 个 PID 全部不同，no-cache 的两个 disable flag 均为 1，warm 均为 0，before 均为空。单次搜索内的延迟差可能来自计时波动，最终配置质量必须由独立交错测量判断。
 
-## 4. 分母与失败保留
+## 5. 分母与失败保留
 
 `stock-raw` 的 compile attempts 等于 raw 数，但成功 profile 数可能更少：fwd 的 128 与 bwd 的 stage 3 会在 raw 路径触发已记录的资源/启动失败。Z3 的作用是让相同约束在编译前排除这些配置，失败本身不被改写成 UNSAT。guided 与 budget arms 的 compile/profile 计数按实际选中候选计，不能用 raw 数代替。
 
