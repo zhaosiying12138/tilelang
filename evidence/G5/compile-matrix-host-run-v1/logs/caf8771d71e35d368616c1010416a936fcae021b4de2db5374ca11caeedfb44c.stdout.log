@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+=============================================================================== fixture duration top ================================================================================
+total          name                                                                                                                                 num med            max           
+       0:00:00 grand total                                                                                                                            0        0:00:00        0:00:00
+============================================================================== test call duration top ===============================================================================
+total          name                                                                                                                                 num med            max           
+0:00:00.015864 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_expands_annotated_layout   1 0:00:00.015864 0:00:00.015864
+0:00:00.015864 grand total                                                                                                                            1 0:00:00.015864 0:00:00.015864
+============================================================================== test setup duration top ==============================================================================
+total          name                                                                                                                                 num med            max           
+0:00:00.000062 grand total                                                                                                                            1 0:00:00.000062 0:00:00.000062
+============================================================================ test teardown duration top =============================================================================
+total          name                                                                                                                                 num med            max           
+0:00:00.000046 grand total                                                                                                                            1 0:00:00.000046 0:00:00.000046
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_expands_annotated_layout
+1 passed in 0.57s

@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+===================================================================== fixture duration top ======================================================================
+total          name                                                                                                             num med            max           
+       0:00:00 grand total                                                                                                        0        0:00:00        0:00:00
+==================================================================== test call duration top =====================================================================
+total          name                                                                                                             num med            max           
+0:00:00.013143 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_resource_forward_and_wraparound_exclusion   1 0:00:00.013143 0:00:00.013143
+0:00:00.013143 grand total                                                                                                        1 0:00:00.013143 0:00:00.013143
+==================================================================== test setup duration top ====================================================================
+total          name                                                                                                             num med            max           
+0:00:00.000062 grand total                                                                                                        1 0:00:00.000062 0:00:00.000062
+================================================================== test teardown duration top ===================================================================
+total          name                                                                                                             num med            max           
+0:00:00.000049 grand total                                                                                                        1 0:00:00.000049 0:00:00.000049
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_resource_forward_and_wraparound_exclusion
+1 passed in 0.13s

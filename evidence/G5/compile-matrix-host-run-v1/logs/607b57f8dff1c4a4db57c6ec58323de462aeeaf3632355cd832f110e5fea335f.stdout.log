@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000431 grand total   1 0:00:00.000431 0:00:00.000431
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000055 grand total   1 0:00:00.000055 0:00:00.000055
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000043 grand total   1 0:00:00.000043 0:00:00.000043
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_sm120_bf16_mma_sync_atom_rounding_and_gemm_ii
+1 passed in 0.02s

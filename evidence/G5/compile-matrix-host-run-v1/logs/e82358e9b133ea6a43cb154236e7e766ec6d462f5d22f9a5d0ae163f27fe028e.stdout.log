@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000194 grand total   1 0:00:00.000194 0:00:00.000194
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000056 grand total   1 0:00:00.000056 0:00:00.000056
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000034 grand total   1 0:00:00.000034 0:00:00.000034
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_per_core_phase_max_cross_wait_add_and_protocol_ii
+1 passed in 0.02s

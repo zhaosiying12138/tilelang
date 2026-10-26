@@ -1,0 +1,23 @@
+......                                                                   [100%]
+==================================== PASSES ====================================
+=================================================================================== fixture duration top ===================================================================================
+total          name                                                                                                                                        num med            max           
+0:00:00.000535 grand total                                                                                                                                  42 0:00:00.000010 0:00:00.000070
+================================================================================== test call duration top ==================================================================================
+total          name                                                                                                                                        num med            max           
+0:00:00.943684 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_physical_strided_regions   6 0:00:00.000581 0:00:00.941241
+0:00:00.943684 grand total                                                                                                                                   6 0:00:00.000581 0:00:00.941241
+================================================================================= test setup duration top ==================================================================================
+total          name                                                                                                                                        num med            max           
+0:00:00.001559 grand total                                                                                                                                   6 0:00:00.000227 0:00:00.000395
+================================================================================ test teardown duration top ================================================================================
+total          name                                                                                                                                        num med            max           
+0:00:00.000532 grand total                                                                                                                                   6 0:00:00.000058 0:00:00.000210
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_physical_strided_regions[shape0-strides0-write_index0-read_index0-True-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_physical_strided_regions[shape0-strides0-write_index0-read_index0-True-stages1-orders1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_physical_strided_regions[shape1-strides1-write_index1-read_index1-True-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_physical_strided_regions[shape1-strides1-write_index1-read_index1-True-stages1-orders1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_physical_strided_regions[shape2-strides2-write_index2-read_index2-False-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_physical_strided_regions[shape2-strides2-write_index2-read_index2-False-stages1-orders1]
+6 passed in 1.49s

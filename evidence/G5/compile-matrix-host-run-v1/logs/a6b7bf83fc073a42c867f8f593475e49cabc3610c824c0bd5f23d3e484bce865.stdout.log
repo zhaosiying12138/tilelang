@@ -1,0 +1,20 @@
+...                                                                      [100%]
+==================================== PASSES ====================================
+=================================================================================== fixture duration top ===================================================================================
+total          name                                                                                                                                        num med            max           
+0:00:00.000077 grand total                                                                                                                                   3 0:00:00.000029 0:00:00.000031
+================================================================================== test call duration top ==================================================================================
+total          name                                                                                                                                        num med            max           
+0:00:00.933217 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_threaded_strided_regions   3 0:00:00.000871 0:00:00.931604
+0:00:00.933217 grand total                                                                                                                                   3 0:00:00.000871 0:00:00.931604
+================================================================================= test setup duration top ==================================================================================
+total          name                                                                                                                                        num med            max           
+0:00:00.000383 grand total                                                                                                                                   3 0:00:00.000131 0:00:00.000152
+================================================================================ test teardown duration top ================================================================================
+total          name                                                                                                                                        num med            max           
+0:00:00.000186 grand total                                                                                                                                   3 0:00:00.000047 0:00:00.000097
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_threaded_strided_regions[0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_threaded_strided_regions[16]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_threaded_strided_regions[32]
+3 passed in 1.51s

@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+=================================================================================== fixture duration top ====================================================================================
+total          name                                                                                                                                         num med            max           
+       0:00:00 grand total                                                                                                                                    0        0:00:00        0:00:00
+================================================================================== test call duration top ===================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.013516 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_waits_for_individual_physical_commit_group   1 0:00:00.013516 0:00:00.013516
+0:00:00.013516 grand total                                                                                                                                    1 0:00:00.013516 0:00:00.013516
+================================================================================== test setup duration top ==================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.000064 grand total                                                                                                                                    1 0:00:00.000064 0:00:00.000064
+================================================================================ test teardown duration top =================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.000048 grand total                                                                                                                                    1 0:00:00.000048 0:00:00.000048
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_waits_for_individual_physical_commit_group
+1 passed in 0.59s

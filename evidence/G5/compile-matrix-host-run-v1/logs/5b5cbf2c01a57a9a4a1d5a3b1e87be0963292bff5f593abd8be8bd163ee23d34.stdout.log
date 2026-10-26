@@ -1,0 +1,27 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+______________________________ test_invalid_loop _______________________________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 06:02:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-27 06:02:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-27 06:02:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=None`
+====================================================== fixture duration top ======================================================
+total          name                                                                              num med            max           
+       0:00:00 grand total                                                                         0        0:00:00        0:00:00
+===================================================== test call duration top =====================================================
+total          name                                                                              num med            max           
+0:00:00.958493 testing/python/analysis/test_tilelang_fragment_loop_checker.py::test_invalid_loop   1 0:00:00.958493 0:00:00.958493
+0:00:00.958493 grand total                                                                         1 0:00:00.958493 0:00:00.958493
+==================================================== test setup duration top =====================================================
+total          name                                                                              num med            max           
+0:00:00.000068 grand total                                                                         1 0:00:00.000068 0:00:00.000068
+=================================================== test teardown duration top ===================================================
+total          name                                                                              num med            max           
+0:00:00.000053 grand total                                                                         1 0:00:00.000053 0:00:00.000053
+=========================== short test summary info ============================
+PASSED testing/python/analysis/test_tilelang_fragment_loop_checker.py::test_invalid_loop
+1 passed in 1.58s

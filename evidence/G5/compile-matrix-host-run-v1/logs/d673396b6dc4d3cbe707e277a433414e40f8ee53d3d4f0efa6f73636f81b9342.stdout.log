@@ -1,0 +1,20 @@
+..                                                                       [100%]
+==================================== PASSES ====================================
+==================================================================== fixture duration top =====================================================================
+total          name                                                                                                           num med            max           
+0:00:00.000105 grand total                                                                                                      6 0:00:00.000014 0:00:00.000030
+=================================================================== test call duration top ====================================================================
+total          name                                                                                                           num med            max           
+0:00:00.016331 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_owner_exclusion_and_pipe_order   2 0:00:00.008166 0:00:00.008708
+0:00:00.016331 grand total                                                                                                      2 0:00:00.008166 0:00:00.008708
+=================================================================== test setup duration top ===================================================================
+total          name                                                                                                           num med            max           
+0:00:00.010926 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_owner_exclusion_and_pipe_order   2 0:00:00.005463 0:00:00.010753
+0:00:00.010926 grand total                                                                                                      2 0:00:00.005463 0:00:00.010753
+================================================================= test teardown duration top ==================================================================
+total          name                                                                                                           num med            max           
+0:00:00.000131 grand total                                                                                                      2 0:00:00.000066 0:00:00.000068
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_owner_exclusion_and_pipe_order[pipe_order0-expected0-expected_order0]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_owner_exclusion_and_pipe_order[pipe_order1-expected1-expected_order1]
+2 passed in 0.16s

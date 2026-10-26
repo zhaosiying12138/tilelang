@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+=================================================================== fixture duration top ====================================================================
+total          name                                                                                                         num med            max           
+       0:00:00 grand total                                                                                                    0        0:00:00        0:00:00
+================================================================== test call duration top ===================================================================
+total          name                                                                                                         num med            max           
+0:00:00.008685 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_resource_bits_are_configurable_and_checked   1 0:00:00.008685 0:00:00.008685
+0:00:00.008685 grand total                                                                                                    1 0:00:00.008685 0:00:00.008685
+================================================================== test setup duration top ==================================================================
+total          name                                                                                                         num med            max           
+0:00:00.000064 grand total                                                                                                    1 0:00:00.000064 0:00:00.000064
+================================================================ test teardown duration top =================================================================
+total          name                                                                                                         num med            max           
+0:00:00.000046 grand total                                                                                                    1 0:00:00.000046 0:00:00.000046
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_resource_bits_are_configurable_and_checked
+1 passed in 0.13s

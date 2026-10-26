@@ -1,0 +1,18 @@
+..                                                                       [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+0:00:00.000123 grand total   6 0:00:00.000017 0:00:00.000033
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000966 grand total   2 0:00:00.000483 0:00:00.000621
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000412 grand total   2 0:00:00.000206 0:00:00.000246
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000102 grand total   2 0:00:00.000051 0:00:00.000057
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_strided_geometry_uses_transaction_width[8-32-4]
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_strided_geometry_uses_transaction_width[24-48-3]
+2 passed in 0.02s

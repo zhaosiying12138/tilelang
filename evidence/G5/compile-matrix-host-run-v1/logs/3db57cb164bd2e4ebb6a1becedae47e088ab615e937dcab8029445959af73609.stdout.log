@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+==================================================================== fixture duration top ====================================================================
+total          name                                                                                                          num med            max           
+       0:00:00 grand total                                                                                                     0        0:00:00        0:00:00
+=================================================================== test call duration top ===================================================================
+total          name                                                                                                          num med            max           
+0:00:00.007986 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_unsat_has_dedicated_exception   1 0:00:00.007986 0:00:00.007986
+0:00:00.007986 grand total                                                                                                     1 0:00:00.007986 0:00:00.007986
+================================================================== test setup duration top ===================================================================
+total          name                                                                                                          num med            max           
+0:00:00.000063 grand total                                                                                                     1 0:00:00.000063 0:00:00.000063
+================================================================= test teardown duration top =================================================================
+total          name                                                                                                          num med            max           
+0:00:00.000044 grand total                                                                                                     1 0:00:00.000044 0:00:00.000044
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_unsat_has_dedicated_exception
+1 passed in 0.14s

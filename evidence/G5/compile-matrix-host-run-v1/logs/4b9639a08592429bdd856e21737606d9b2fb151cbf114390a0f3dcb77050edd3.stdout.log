@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+===================================================================== fixture duration top =====================================================================
+total          name                                                                                                            num med            max           
+       0:00:00 grand total                                                                                                       0        0:00:00        0:00:00
+==================================================================== test call duration top ====================================================================
+total          name                                                                                                            num med            max           
+0:00:00.017600 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_ffi_registration_conversion_and_return_shapes   1 0:00:00.017600 0:00:00.017600
+0:00:00.017600 grand total                                                                                                       1 0:00:00.017600 0:00:00.017600
+=================================================================== test setup duration top ====================================================================
+total          name                                                                                                            num med            max           
+0:00:00.000076 grand total                                                                                                       1 0:00:00.000076 0:00:00.000076
+================================================================== test teardown duration top ==================================================================
+total          name                                                                                                            num med            max           
+0:00:00.000059 grand total                                                                                                       1 0:00:00.000059 0:00:00.000059
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_ffi_registration_conversion_and_return_shapes
+1 passed in 0.14s

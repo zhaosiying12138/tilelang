@@ -1,0 +1,27 @@
+..........                                                               [100%]
+==================================== PASSES ====================================
+=========================================================================== fixture duration top ===========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.000508 grand total                                                                                                                  30 0:00:00.000013 0:00:00.000070
+========================================================================== test call duration top ==========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.105618 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers  10 0:00:00.010050 0:00:00.013543
+0:00:00.105618 grand total                                                                                                                  10 0:00:00.010050 0:00:00.013543
+========================================================================= test setup duration top ==========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.001676 grand total                                                                                                                  10 0:00:00.000159 0:00:00.000284
+======================================================================== test teardown duration top ========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.000555 grand total                                                                                                                  10 0:00:00.000054 0:00:00.000073
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[False-2-4]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[False-4-2]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[False-3-1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[False-1-3]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[False-3-3]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[True-2-4]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[True-4-2]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[True-3-1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[True-1-3]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers[True-3-3]
+10 passed in 0.66s

@@ -1,0 +1,19 @@
+..                                                                       [100%]
+==================================== PASSES ====================================
+======================================================================================== fixture duration top ========================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.000083 grand total                                                                                                                                             2 0:00:00.000041 0:00:00.000053
+======================================================================================= test call duration top =======================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.028370 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer   2 0:00:00.014185 0:00:00.015544
+0:00:00.028370 grand total                                                                                                                                             2 0:00:00.014185 0:00:00.015544
+====================================================================================== test setup duration top =======================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.000326 grand total                                                                                                                                             2 0:00:00.000163 0:00:00.000170
+===================================================================================== test teardown duration top =====================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.000196 grand total                                                                                                                                             2 0:00:00.000098 0:00:00.000115
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer[False]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer[True]
+2 passed in 0.59s

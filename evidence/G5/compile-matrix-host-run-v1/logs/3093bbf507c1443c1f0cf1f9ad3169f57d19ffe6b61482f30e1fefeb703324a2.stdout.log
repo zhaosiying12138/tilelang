@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+====================================================================== fixture duration top =======================================================================
+total          name                                                                                                               num med            max           
+0:00:00.000027 grand total                                                                                                          1 0:00:00.000027 0:00:00.000027
+===================================================================== test call duration top ======================================================================
+total          name                                                                                                               num med            max           
+0:00:00.012664 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_unknown_after_sat_aborts_instead_of_pruning   1 0:00:00.012664 0:00:00.012664
+0:00:00.012664 grand total                                                                                                          1 0:00:00.012664 0:00:00.012664
+===================================================================== test setup duration top =====================================================================
+total          name                                                                                                               num med            max           
+0:00:00.000132 grand total                                                                                                          1 0:00:00.000132 0:00:00.000132
+=================================================================== test teardown duration top ====================================================================
+total          name                                                                                                               num med            max           
+0:00:00.000546 grand total                                                                                                          1 0:00:00.000546 0:00:00.000546
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_unknown_after_sat_aborts_instead_of_pruning
+1 passed in 0.13s

@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+====================================================================== fixture duration top ======================================================================
+total          name                                                                                                              num med            max           
+       0:00:00 grand total                                                                                                         0        0:00:00        0:00:00
+===================================================================== test call duration top =====================================================================
+total          name                                                                                                              num med            max           
+0:00:00.009205 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_minimizes_makespan_and_stable_tie   1 0:00:00.009205 0:00:00.009205
+0:00:00.009205 grand total                                                                                                         1 0:00:00.009205 0:00:00.009205
+==================================================================== test setup duration top =====================================================================
+total          name                                                                                                              num med            max           
+0:00:00.000082 grand total                                                                                                         1 0:00:00.000082 0:00:00.000082
+=================================================================== test teardown duration top ===================================================================
+total          name                                                                                                              num med            max           
+0:00:00.000049 grand total                                                                                                         1 0:00:00.000049 0:00:00.000049
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_minimizes_makespan_and_stable_tie
+1 passed in 0.17s

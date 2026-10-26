@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000411 grand total   1 0:00:00.000411 0:00:00.000411
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000059 grand total   1 0:00:00.000059 0:00:00.000059
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000037 grand total   1 0:00:00.000037 0:00:00.000037
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_unknown_memory_path_has_nonfree_explicit_fallback
+1 passed in 0.02s

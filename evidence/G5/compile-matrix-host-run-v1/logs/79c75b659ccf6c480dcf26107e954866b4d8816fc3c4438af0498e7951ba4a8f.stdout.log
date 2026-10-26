@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000397 grand total   1 0:00:00.000397 0:00:00.000397
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000064 grand total   1 0:00:00.000064 0:00:00.000064
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000045 grand total   1 0:00:00.000045 0:00:00.000045
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_calibration_converts_ns_and_per_second_units_explicitly
+1 passed in 0.02s

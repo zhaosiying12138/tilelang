@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+=========================================================== fixture duration top ============================================================
+total          name                                                                                         num med            max           
+       0:00:00 grand total                                                                                    0        0:00:00        0:00:00
+========================================================== test call duration top ===========================================================
+total          name                                                                                         num med            max           
+0:00:00.014579 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_memory_group_capacity   1 0:00:00.014579 0:00:00.014579
+0:00:00.014579 grand total                                                                                    1 0:00:00.014579 0:00:00.014579
+========================================================== test setup duration top ==========================================================
+total          name                                                                                         num med            max           
+0:00:00.000071 grand total                                                                                    1 0:00:00.000071 0:00:00.000071
+======================================================== test teardown duration top =========================================================
+total          name                                                                                         num med            max           
+0:00:00.000053 grand total                                                                                    1 0:00:00.000053 0:00:00.000053
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_memory_group_capacity
+1 passed in 0.14s

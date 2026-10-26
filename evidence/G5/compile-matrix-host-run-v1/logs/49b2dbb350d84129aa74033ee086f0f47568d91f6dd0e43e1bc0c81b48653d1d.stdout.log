@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+================================================================ fixture duration top =================================================================
+total          name                                                                                                   num med            max           
+0:00:00.000025 grand total                                                                                              1 0:00:00.000025 0:00:00.000025
+=============================================================== test call duration top ================================================================
+total          name                                                                                                   num med            max           
+0:00:00.007755 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_mocked_unknown_never_falls_back   1 0:00:00.007755 0:00:00.007755
+0:00:00.007755 grand total                                                                                              1 0:00:00.007755 0:00:00.007755
+=============================================================== test setup duration top ===============================================================
+total          name                                                                                                   num med            max           
+0:00:00.000147 grand total                                                                                              1 0:00:00.000147 0:00:00.000147
+============================================================= test teardown duration top ==============================================================
+total          name                                                                                                   num med            max           
+0:00:00.000562 grand total                                                                                              1 0:00:00.000562 0:00:00.000562
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_mocked_unknown_never_falls_back
+1 passed in 0.13s
