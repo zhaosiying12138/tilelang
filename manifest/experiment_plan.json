@@ -134,5 +134,5 @@
     "better_schedule_rule": "Any latency improvement must be confirmed by independent interleaved measurements; a search-time minimum alone is insufficient",
     "iteration_rule": "If either direction fails, revise constraints/model/scheduling on calibration or validation data and rerun the frozen acceptance protocol; do not delete failing configurations or suites"
   },
-  "current_result_status": "NOT_RUN"
+  "current_result_status": "GDN_T8192_ACCEPTANCE_PASSED; T4096_SELECTION_VALIDATION_FAILURE_PRESERVED; CLASSIC_AND_FULL_MATRIX_RUNNING"
 }
