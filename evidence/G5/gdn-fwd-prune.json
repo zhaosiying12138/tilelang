@@ -1,0 +1,100 @@
+{
+  "raw": 4,
+  "unique": 4,
+  "duplicates": 0,
+  "checked": 1,
+  "sat": 0,
+  "unsat": 1,
+  "unknown": 3,
+  "timeouts": 0,
+  "resource_limited": 0,
+  "kept": 3,
+  "pruned": 1,
+  "seed": 42,
+  "rlimit": 1000000,
+  "wall_seconds": 0.008463074977044016,
+  "stats": {
+    "max memory": 17.2,
+    "memory": 17.2,
+    "num allocs": 7853,
+    "rlimit count": 3
+  },
+  "unknown_config_ids": [
+    "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+    "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+    "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+  ],
+  "timeout_config_ids": [],
+  "resource_limited_config_ids": [],
+  "records": [
+    {
+      "index": 0,
+      "config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+      "status": "unknown",
+      "reason": "fwd dynamic_shared_bytes=48128 (38912+576*block_DV), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 6.300397217273712e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 1,
+      "config": {
+        "block_DV": 32,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "config_id": "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+      "status": "unknown",
+      "reason": "fwd dynamic_shared_bytes=57344 (38912+576*block_DV), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 2.3074971977621317e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 2,
+      "config": {
+        "block_DV": 64,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "config_id": "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3",
+      "status": "unknown",
+      "reason": "fwd dynamic_shared_bytes=75776 (38912+576*block_DV), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 1.6873003914952278e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 3,
+      "config": {
+        "block_DV": 128,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "config_id": "c129a19e331b45f8fa6048ec2687e97846db9c85139e16e31b458f9a7f062d2d",
+      "status": "unsat",
+      "reason": "unsat",
+      "wall_seconds": 0.000668352993670851,
+      "stats": {
+        "num allocs": 7853,
+        "rlimit count": 3,
+        "max memory": 17.2,
+        "memory": 17.2
+      },
+      "timeout": false,
+      "resource_limited": false
+    }
+  ]
+}

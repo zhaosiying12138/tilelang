@@ -366,14 +366,30 @@ def test_gdn_block_dv_and_prepare_h_stage_byte_constraints():
     bwd = CudaCostModel(hardware(), calibration(), "gdn_bwd", shape)
     _, stage1 = bwd.predict({"prepare_h_num_stages": 1, "registers_per_thread": 128})
     _, stage2 = bwd.predict({"prepare_h_num_stages": 2, "registers_per_thread": 128})
-    # One prepare_h version: K+V+A = 18432 B plus g/b = 256 B.
-    assert stage1["gdn_prepare_h_shared_memory_bytes_per_cta"] == 76160
-    assert stage2["gdn_prepare_h_shared_memory_bytes_per_cta"] == 94848
-    assert stage2["gdn_prepare_h_shared_memory_bytes_per_cta"] - stage1["gdn_prepare_h_shared_memory_bytes_per_cta"] == 18688
+    # G5 measured dynamic shared bytes: 57344 + 18432 * stages.
+    assert stage1["gdn_prepare_h_shared_memory_bytes_per_cta"] == 75776
+    assert stage2["gdn_prepare_h_shared_memory_bytes_per_cta"] == 94208
+    assert stage2["gdn_prepare_h_shared_memory_bytes_per_cta"] - stage1["gdn_prepare_h_shared_memory_bytes_per_cta"] == 18432
     assert stage1["shared_memory_bytes_per_cta"] == 90880  # max(prepare_h, fused_bwd)
-    assert stage2["shared_memory_bytes_per_cta"] == 94848
+    assert stage2["shared_memory_bytes_per_cta"] == 94208
     assert stage2["gdn_prepare_h_num_stages"] == 2
-    with pytest.raises(CostModelError, match="shared bytes"):
+
+    # Relax only the synthetic cap to observe the exact stage-3 capacity; the
+    # real 101376 B cap must still reject the same 112640 B allocation.
+    relaxed = CudaCostModel(
+        hardware(
+            shared_memory_per_block_optin_bytes=262144,
+            shared_memory_per_multiprocessor_bytes=262144,
+        ),
+        calibration(),
+        "gdn_bwd",
+        shape,
+    )
+    _, stage3 = relaxed.predict({"prepare_h_num_stages": 3, "registers_per_thread": 128})
+    assert stage3["gdn_prepare_h_shared_memory_bytes_per_cta"] == 112640
+    assert stage3["shared_memory_bytes_per_cta"] == 112640
+    assert stage3["gdn_prepare_h_num_stages"] == 3
+    with pytest.raises(CostModelError, match="gdn_prepare_h shared bytes 112640 exceed per-block opt-in 101376"):
         bwd.predict({"prepare_h_num_stages": 3, "registers_per_thread": 128})
 
     with pytest.raises(CostModelError, match="only|not gdn_fwd|applies"):
@@ -498,7 +514,7 @@ def test_gdn_backward_state_io_follows_public_kernel_contract():
 
 
 def test_gdn_backward_real_space_all_nine_configs_are_finite():
-    # Stage 3 exceeds the original SM120 capacity model, so use explicitly
+    # Stage 3 exceeds the measured SM120 capacity, so use explicitly
     # synthetic larger shared limits to exercise all nine legal space points.
     relaxed_hardware = hardware(
         shared_memory_per_block_optin_bytes=262144,

@@ -1,0 +1,193 @@
+{
+  "raw": 9,
+  "unique": 9,
+  "duplicates": 0,
+  "checked": 3,
+  "sat": 0,
+  "unsat": 3,
+  "unknown": 6,
+  "timeouts": 0,
+  "resource_limited": 0,
+  "kept": 6,
+  "pruned": 3,
+  "seed": 42,
+  "rlimit": 1000000,
+  "wall_seconds": 0.007967468991409987,
+  "stats": {
+    "max memory": 51.599999999999994,
+    "memory": 51.59,
+    "num allocs": 194151,
+    "rlimit count": 18
+  },
+  "unknown_config_ids": [
+    "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+    "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+    "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+    "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+    "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+    "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+  ],
+  "timeout_config_ids": [],
+  "resource_limited_config_ids": [],
+  "records": [
+    {
+      "index": 0,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 1
+      },
+      "config_id": "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+      "status": "unknown",
+      "reason": "bwd prepare_h dynamic_shared_bytes=75776 (57344+18432*prepare_h_num_stages), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 4.499597707763314e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 1,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 1
+      },
+      "config_id": "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+      "status": "unknown",
+      "reason": "bwd prepare_h dynamic_shared_bytes=75776 (57344+18432*prepare_h_num_stages), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 5.6889024563133717e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 2,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 1
+      },
+      "config_id": "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+      "status": "unknown",
+      "reason": "bwd prepare_h dynamic_shared_bytes=75776 (57344+18432*prepare_h_num_stages), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 1.6606005374342203e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 3,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 2
+      },
+      "config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+      "status": "unknown",
+      "reason": "bwd prepare_h dynamic_shared_bytes=94208 (57344+18432*prepare_h_num_stages), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 1.3465003576129675e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 4,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "config_id": "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+      "status": "unknown",
+      "reason": "bwd prepare_h dynamic_shared_bytes=94208 (57344+18432*prepare_h_num_stages), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 1.1119002010673285e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 5,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 2
+      },
+      "config_id": "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+      "status": "unknown",
+      "reason": "bwd prepare_h dynamic_shared_bytes=94208 (57344+18432*prepare_h_num_stages), opt-in cap=101376: the shared-memory cap is not exceeded, but register usage and other launch feasibility remain UNKNOWN.",
+      "wall_seconds": 1.1832977179437876e-05,
+      "stats": {},
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 6,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 3
+      },
+      "config_id": "ad3b6157d07e6076ff48ee8574b5d32136ba97c1c46262a04cec4a847a417e4b",
+      "status": "unsat",
+      "reason": "unsat",
+      "wall_seconds": 0.0004231180064380169,
+      "stats": {
+        "num allocs": 38048,
+        "rlimit count": 3,
+        "max memory": 17.2,
+        "memory": 17.19
+      },
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 7,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 3
+      },
+      "config_id": "1a3d7a6075cffd411244883a0ea2ea9665e5c5dbf02d25e9eb3e958f829b5adf",
+      "status": "unsat",
+      "reason": "unsat",
+      "wall_seconds": 0.00022723001893609762,
+      "stats": {
+        "num allocs": 62643,
+        "rlimit count": 6,
+        "max memory": 17.2,
+        "memory": 17.2
+      },
+      "timeout": false,
+      "resource_limited": false
+    },
+    {
+      "index": 8,
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 3
+      },
+      "config_id": "84a192fe4d7a72816b7f73b76b9d0acbf0ad271ca88e539b76e337399bebf201",
+      "status": "unsat",
+      "reason": "unsat",
+      "wall_seconds": 0.00018492300296202302,
+      "stats": {
+        "num allocs": 93460,
+        "rlimit count": 9,
+        "max memory": 17.2,
+        "memory": 17.2
+      },
+      "timeout": false,
+      "resource_limited": false
+    }
+  ]
+}

@@ -79,9 +79,46 @@ The fixed contract is `auto_cp=False`, bf16, K=DV=128, chunk=32, T=128 for the s
 
 The old 12-per-direction cross-products and their semantic duplicates are gone. Fixed fields and semantic de-duplication are not represented as UNSAT.
 
-Only source/shape-provable checks are implemented: positive `block_DV` dividing DV=128, integer `prepare_h_num_stages >= 1`, positive group tile, non-default group-tile divisibility by T, the fixed core contract, and the fixed 512-thread/32-thread-warp protocol. Default group tile 16 does not acquire a new T-divisibility requirement. No old evidence is used to declare `block_DV=128` UNSAT.
+Only source/shape-provable checks are implemented: positive `block_DV` dividing DV=128, integer `prepare_h_num_stages >= 1`, positive group tile, non-default group-tile divisibility by T, the fixed core contract, and the fixed 512-thread/32-thread-warp protocol. Default group tile 16 does not acquire a new T-divisibility requirement.
 
-Every raw configuration currently has structural status SAT. Overall status remains UNKNOWN because no IR/ptxas/device-spec resource evaluator is connected. `ResourceChecker` is the extension point for later shared-memory, register, and launch feasibility checks; UNSAT dominates UNKNOWN when independent evidence becomes available.
+Every raw configuration remains structurally SAT. Overall feasibility is evaluated separately by `resource.py`; structural SAT is not promoted to resource SAT.
+
+### Evidence-backed resource constraints
+
+The validated forward dynamic-shared-memory formula is:
+
+```text
+dynamic_shared_bytes = 38912 + 576 * block_DV
+```
+
+`evidence/G5/gdn-fwd-shared-memory.json` records exact agreement between this formula and generated code for all four values. It also records complete-correctness passes for 16/32/64 and the shared-memory launch failure for 128:
+
+| `block_DV` | Dynamic shared bytes | Opt-in cap | Existing G5 evidence | Resource-check result |
+| --- | ---: | ---: | --- | --- |
+| 16 | 48128 | 101376 | correctness passed | UNKNOWN |
+| 32 | 57344 | 101376 | correctness passed | UNKNOWN |
+| 64 | 75776 | 101376 | correctness passed | UNKNOWN |
+| 128 | 112640 | 101376 | launch failed: shared memory | UNSAT |
+
+The validated backward `prepare_h` dynamic-shared-memory formula is:
+
+```text
+dynamic_shared_bytes = 57344 + 18432 * prepare_h_num_stages
+```
+
+`evidence/G5/gdn-prepare-h-shared-memory.json` records exact formula/generated-code agreement for stages 1/2/3. Stage 1 also has 1000 determinism checks in the cited evidence; stage 3 fails at launch:
+
+| `prepare_h_num_stages` | Dynamic shared bytes | Opt-in cap | Existing G5 evidence | Resource-check result |
+| --- | ---: | ---: | --- | --- |
+| 1 | 75776 | 101376 | correctness and 1000 determinism checks passed | UNKNOWN |
+| 2 | 94208 | 101376 | correctness passed | UNKNOWN |
+| 3 | 112640 | 101376 | launch failed: shared memory | UNSAT |
+
+The cap comes only from `manifest/hardware-sm120.json` at `device.shared_memory_per_block_optin_bytes`. `GDNResourceChecker` fails closed when the file, device object, or positive integer cap is missing/invalid; it does not substitute the ordinary 48 KiB limit or an unlimited default.
+
+`search.py` connects this checker to the existing `evaluate_config`. Its direction-specific raw spaces contain `direction`, `block_DV`, `prepare_h_num_stages`, and `group_reduce_block_size`: forward still has 4 raw configs and backward 9, with no semantic-duplicate cross-products. Evaluation maps UNSAT to `False`, SAT to `True`, and UNKNOWN to `Indeterminate`. Forward pruning is raw 4 -> kept 3, with only `block_DV=128` UNSAT, one actual solver check, and the other three retained as UNKNOWN. Backward pruning is raw 9 -> kept 6: exactly the three stage-3 configs are UNSAT with three actual solver checks, while stages 1/2 across all group sizes remain six UNKNOWN candidates. Externally indeterminate records do not construct a solver, increment `checked`, or get counted as UNSAT.
+
+Passing either shared-memory cap check is not resource SAT: forward blocks 16/32/64 and backward prepare_h stages 1/2 remain UNKNOWN. Register use, fused backward/GQA-reduction resources, and other launch feasibility still lack validated formulas. The original `config.py`/CLI default deferred checker is unchanged; the evidence-backed checker is installed explicitly through `search.py`.
 
 ## Correctness coverage
 
@@ -108,7 +145,7 @@ The upstream five test functions in `test_gdr_unit.py` are retained, including l
 - `--check-configs` is host-only. `--correctness` and pytest GPU entries require a supported CUDA GPU; like upstream, their float64 PyTorch reference runs on the input device.
 - The new core correctness entry is scoped to SM120. SM121 and other architecture sources are present but are not validated targets of this first-round port.
 - CP and multi-card paths are vendored but not exercised by the core runner; `auto_cp=False` is intentional. Combined SM120 inter+intra CP remains unavailable because there is no `aggregate_card_state` implementation.
-- Register and other launch-feasibility checks remain UNKNOWN unless a verified checker supplies evidence. The forward shared-memory rule is derived from generated code and validated on all four block sizes; it does not prove complete kernel correctness or occupancy.
+- Register and other launch-feasibility checks remain UNKNOWN unless a verified checker supplies evidence. The forward `block_DV` and backward `prepare_h_num_stages` shared-memory rules are validated against generated code for all values in their respective raw domains; they do not prove complete kernel correctness, occupancy, or performance.
 - Slow tests include long upstream inputs, 13 direction-specific raw-config GPU cases, and repeated 1000-iteration checks.
 
 ## Reproduction
@@ -121,6 +158,8 @@ Run from `/home/zhaosiying/codebase/tilelang-cuda-z3`.
 python3 benchmark/z3_cost_model/gdn/cli.py --check-configs
 python3 -m unittest discover \
   -s benchmark/z3_cost_model/gdn/tests -p 'test_config.py' -v
+python3 benchmark/z3_cost_model/gdn/tests/test_resource_search.py -v
+python3 -m pytest -q testing/python/autotune/test_guided_search.py
 
 python3 - <<'PY'
 import ast
@@ -155,7 +194,7 @@ python3 benchmark/z3_cost_model/gdn/cli.py --correctness bwd
 python3 benchmark/z3_cost_model/gdn/cli.py \
   --correctness fwd --block-dv 64
 python3 benchmark/z3_cost_model/gdn/cli.py \
-  --correctness bwd --prepare-h-num-stages 3 --group-reduce-block-size 32
+  --correctness bwd --prepare-h-num-stages 1 --group-reduce-block-size 32
 
 # Source-style repeated determinism checks (slow).
 python3 benchmark/z3_cost_model/gdn/cli.py \

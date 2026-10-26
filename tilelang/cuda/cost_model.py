@@ -700,11 +700,11 @@ def _prepare_h_kernel(g: Mapping[str, Any], config: Mapping[str, Any], stages: i
         sfu=c + (2 if calc_mt else 0), barriers=c * 2, stages=stages, kind="tma",
         scalar_load_bytes=initial,
     )
-    versioned = s * k * e + s * dv * e + s * s * e + 2 * s * 4
-    persistent = k * dv * e + s * k * e + s * dv * e + 2 * s * (k // 2) * e + s * 4
+    # G5 generated-code measurement for the fixed SM120 prepare_h kernel;
+    # phase work/traffic above remains analytical and is unchanged.
     return KernelWork(
         "gdn_prepare_h", ctas, (wy, recurrence), threads_per_cta=512,
-        shared_memory_bytes_per_cta=stages * versioned + persistent,
+        shared_memory_bytes_per_cta=57_344 + 18_432 * stages,
         registers_per_thread=registers, fallbacks=("gdn.fixed_role_phase_model",),
     )
 

@@ -366,15 +366,13 @@ capacity(b) = 4*S*K*e + 3*S*b*e + 2*S*S*e + K*b*e + 24*S
 
 ### 7.4 Backward `prepare_h`
 
-`prepare_h_num_stages=p` 只控制 prepare_h 的 K/V/A/g/b 多版本；真实搜索空间为 `p in {1,2,3}`，其他整数直接报错：
+`prepare_h_num_stages=p` 只控制 prepare_h 的流水线阶段数；真实搜索空间为 `p in {1,2,3}`，其他整数直接报错。固定 SM120 GDN prepare_h kernel 的 shared 容量采用 G5 生成代码实测公式，不再使用旧的 `versioned+persistent` 生命周期估算：
 
 ```text
-versioned = S*K*e + S*DV*e + S*S*e + 2*S*4 = 18688 B (FP16/BF16)
-persistent = K*DV*e + S*K*e + S*DV*e + 2*S*(K/2)*e + S*4 = 57472 B
-capacity(p) = p*versioned + persistent
+capacity(p) = 57344 + 18432*p
 ```
 
-所以 p=1/2 分别为 76160/94848 B；在当前 SM120 manifest 容量下 p=3 会超容量并报错，而不是被钳制成可运行配置。
+所以 p=1/2/3 分别为 75776/94208/112640 B。`evidence/G5/gdn-prepare-h-shared-memory.json` 记录三个阶段的公式值与实际 dynamic shared bytes 完全一致；在当前 SM120 manifest 的 101376 B opt-in 容量下，p=3 超容量并报错，而不是被钳制成可运行配置。该替换只改变 prepare_h 容量诊断与容量校验，不改变其工作量、流量或阶段时间语义，也不构成性能排序结论。
 
 每 CTA、每 chunk：
 

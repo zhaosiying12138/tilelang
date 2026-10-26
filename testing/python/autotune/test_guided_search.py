@@ -37,6 +37,7 @@ _guided = importlib.import_module(f"{_TEST_PACKAGE}.autotuner.guided")
 
 ConfigSpace = _space.ConfigSpace
 ConstraintBuildError = _space.ConstraintBuildError
+Indeterminate = _space.Indeterminate
 Z3Pruner = _space.Z3Pruner
 canonical_json = _space.canonical_json
 CandidateCostModel = _guided.CandidateCostModel
@@ -243,6 +244,52 @@ def test_duplicates_have_a_separate_audit_bucket_and_self_consistent_denominator
     json.dumps(audit, allow_nan=False)
 
 
+def test_external_indeterminate_skips_solver_and_preserves_denominators():
+    config = {"x": 0}
+
+    def forbidden_solver(_context):
+        raise AssertionError("external UNKNOWN must not construct a solver")
+
+    pruner = Z3Pruner(
+        constraint_fn=lambda _config, _z3, _context: Indeterminate("precomputed resource UNKNOWN"),
+        solver_factory=forbidden_solver,
+    )
+    result = pruner.prune([config, dict(config)])
+    audit = result.audit
+
+    assert result.configs == [config]
+    assert result.unknown == [config]
+    assert audit["raw"] == 2
+    assert audit["unique"] == 1
+    assert audit["duplicates"] == 1
+    assert audit["checked"] == 0
+    assert audit["sat"] == 0
+    assert audit["unsat"] == 0
+    assert audit["unknown"] == 1
+    assert audit["kept"] == 1
+    assert audit["pruned"] == 0
+    assert audit["raw"] == audit["sat"] + audit["unsat"] + audit["unknown"] + audit["duplicates"]
+    assert audit["unique"] == audit["sat"] + audit["unsat"] + audit["unknown"]
+    assert audit["kept"] == audit["sat"] + audit["unknown"]
+    assert [record["status"] for record in audit["records"]] == ["unknown", "duplicate"]
+    assert audit["records"][0]["reason"] == "precomputed resource UNKNOWN"
+    assert audit["records"][0]["stats"] == {}
+    assert audit["stats"] == {}
+    json.dumps(audit, allow_nan=False)
+
+
+def test_none_builder_result_still_errors_without_solver():
+    def forbidden_solver(_context):
+        raise AssertionError("an invalid builder result must not construct a solver")
+
+    pruner = Z3Pruner(
+        constraint_fn=lambda _config, _z3, _context: None,
+        solver_factory=forbidden_solver,
+    )
+    with pytest.raises(ConstraintBuildError, match="returned None"):
+        pruner.prune([{"x": 0}])
+
+
 def test_constraint_builder_error_is_explicit_not_unsat():
     def broken(config, _z3, _context):
         if config["x"] == 1:
@@ -254,8 +301,8 @@ def test_constraint_builder_error_is_explicit_not_unsat():
 
     with pytest.raises(ConstraintBuildError, match="cannot encode"):
         pruner.prune([{"x": 0}, {"x": 1}])
+    assert len(solvers) == 1
     assert solvers[0].check_calls == 1
-    assert solvers[1].check_calls == 0
 
 
 def test_equal_budget_raw_random_and_guided_candidates():

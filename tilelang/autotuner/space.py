@@ -2,7 +2,8 @@
 
 The module deliberately has no TileLang, compiler, or GPU imports.  A constraint
 builder receives ``(config, z3, context)`` and returns one Z3 expression, a
-Python boolean, or a list/tuple of expressions.  Expressions must use the
+Python boolean, a list/tuple of expressions, or :class:`Indeterminate` when an
+external evaluator has already determined UNKNOWN.  Expressions must use the
 supplied private context.  Only an explicit UNSAT verdict removes a candidate.
 """
 
@@ -28,6 +29,7 @@ __all__ = [
     "ConfigSpace",
     "ConstraintBuildError",
     "ConstraintBuilder",
+    "Indeterminate",
     "JSONValue",
     "PruneResult",
     "Z3Pruner",
@@ -163,12 +165,26 @@ class ConfigSpace:
 
 
 @dataclass(frozen=True)
+class Indeterminate:
+    """An externally determined UNKNOWN that must not invoke a solver.
+
+    Constraint builders return an instance when they cannot produce a
+    sufficient SAT/UNSAT constraint but already know the conservative verdict.
+    The candidate is retained and audited as unknown; it is never UNSAT and does
+    not contribute to the actual solver-check count.
+    """
+
+    reason: str = "external_unknown"
+
+
+@dataclass(frozen=True)
 class PruneResult:
     """Conservative pruning output.
 
     ``configs`` contains unique SAT and indeterminate candidates in first-seen
-    order.  ``unknown`` is the subset whose solver verdict was unknown,
-    including timeouts.  ``audit`` contains only JSON-serializable values.
+    order.  ``unknown`` is the subset whose verdict was unknown, including
+    external :class:`Indeterminate` results and solver timeouts.  ``audit``
+    contains only JSON-serializable values.
     """
 
     configs: list[Config]
@@ -229,10 +245,12 @@ def _has_resource_limit_reason(reason: str) -> bool:
 class Z3Pruner:
     """Prune only proven-infeasible configurations with isolated Z3 solvers.
 
-    Every non-duplicate candidate gets a fresh solver sharing one private
-    context per :meth:`prune` call.  ``random_seed`` and ``rlimit`` are fixed on
-    every solver.  Unknown, timeout, and resource-limited results remain in the
-    candidate set and are separately identified in the result and audit.
+    Every determinate non-duplicate candidate gets a fresh solver sharing one
+    private context per :meth:`prune` call.  ``random_seed`` and ``rlimit`` are
+    fixed on every solver.  Unknown, timeout, and resource-limited results remain
+    in the candidate set and are separately identified in the result and audit.
+    An :class:`Indeterminate` builder result is audited as unknown without
+    constructing a solver or incrementing the solver-check count.
 
     Args:
         constraint_fn: Optional default constraint builder.  A per-call builder
@@ -352,49 +370,67 @@ class Z3Pruner:
             if builder is not None:
                 assert new_solver is not None
                 candidate_started = time.perf_counter()
-                solver = new_solver()
-                solver.set("random_seed", self.seed)
-                solver.set("rlimit", self.rlimit)
                 try:
                     constraints = builder(copy.deepcopy(config), z3, context)
                     if constraints is None:
                         raise TypeError("Constraint builder returned None instead of expressions")
-                    clauses = list(constraints) if isinstance(constraints, (list, tuple)) else [constraints]
-                    if clauses:
-                        solver.add(*clauses)
+                    clauses = (
+                        None
+                        if isinstance(constraints, Indeterminate)
+                        else list(constraints)
+                        if isinstance(constraints, (list, tuple))
+                        else [constraints]
+                    )
                 except Exception as exc:
                     raise ConstraintBuildError(f"Failed to build constraints for config {identity} at raw index {index}: {exc}") from exc
 
-                solver_checks += 1
-                verdict = ""
-                timed_out = False
-                try:
-                    verdict = str(solver.check()).lower()
-                    reason = verdict
-                    if verdict == "sat":
-                        status = "sat"
-                    elif verdict == "unsat":
-                        status = "unsat"
-                    elif verdict in ("unknown", "timeout"):
-                        status = "unknown"
-                        reason = str(solver.reason_unknown()) if verdict == "unknown" else "timeout"
-                        if not reason:
-                            reason = "unknown"
-                    else:
-                        raise RuntimeError(f"Unrecognized solver verdict {verdict!r} for config {identity}")
-                except TimeoutError as exc:
-                    status = "unknown"
-                    reason = f"timeout: {exc}"
-                    timed_out = True
+                if isinstance(constraints, Indeterminate):
+                    record["status"] = "unknown"
+                    record["reason"] = str(constraints.reason) or "external_unknown"
+                    record["wall_seconds"] = time.perf_counter() - candidate_started
+                else:
+                    assert clauses is not None
+                    solver = new_solver()
+                    solver.set("random_seed", self.seed)
+                    solver.set("rlimit", self.rlimit)
+                    try:
+                        if clauses:
+                            solver.add(*clauses)
+                    except Exception as exc:
+                        raise ConstraintBuildError(
+                            f"Failed to build constraints for config {identity} at raw index {index}: {exc}"
+                        ) from exc
 
-                record["status"] = status
-                record["reason"] = reason
-                record["timeout"] = timed_out or verdict == "timeout"
-                if status == "unknown":
-                    record["timeout"] = record["timeout"] or _has_timeout_reason(reason)
-                    record["resource_limited"] = _has_resource_limit_reason(reason)
-                record["stats"] = _statistics_dict(solver)
-                record["wall_seconds"] = time.perf_counter() - candidate_started
+                    solver_checks += 1
+                    verdict = ""
+                    timed_out = False
+                    try:
+                        verdict = str(solver.check()).lower()
+                        reason = verdict
+                        if verdict == "sat":
+                            status = "sat"
+                        elif verdict == "unsat":
+                            status = "unsat"
+                        elif verdict in ("unknown", "timeout"):
+                            status = "unknown"
+                            reason = str(solver.reason_unknown()) if verdict == "unknown" else "timeout"
+                            if not reason:
+                                reason = "unknown"
+                        else:
+                            raise RuntimeError(f"Unrecognized solver verdict {verdict!r} for config {identity}")
+                    except TimeoutError as exc:
+                        status = "unknown"
+                        reason = f"timeout: {exc}"
+                        timed_out = True
+
+                    record["status"] = status
+                    record["reason"] = reason
+                    record["timeout"] = timed_out or verdict == "timeout"
+                    if status == "unknown":
+                        record["timeout"] = record["timeout"] or _has_timeout_reason(reason)
+                        record["resource_limited"] = _has_resource_limit_reason(reason)
+                    record["stats"] = _statistics_dict(solver)
+                    record["wall_seconds"] = time.perf_counter() - candidate_started
 
             records.append(record)
             if record["status"] != "unsat":
