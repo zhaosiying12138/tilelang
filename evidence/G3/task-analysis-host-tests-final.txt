@@ -1,0 +1,17 @@
+...........                                                              [100%]
+=========================================================================== fixture duration top ============================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.002193 grand total                                                                                                                   14 0:00:00.000064 0:00:00.001880
+========================================================================== test call duration top ===========================================================================
+total          name                                                                                                                         num med            max           
+0:00:01.029069 testing/python/transform/test_tilelang_z3_task_analysis.py::test_non_static_versioned_buffer_size_is_an_error_not_zero         1 0:00:01.029069 0:00:01.029069
+0:00:00.020781 testing/python/transform/test_tilelang_z3_task_analysis.py::test_real_z3_integration_after_inference                           1 0:00:00.020781 0:00:00.020781
+0:00:00.008741 testing/python/transform/test_tilelang_z3_task_analysis.py::test_copy_gemm_parallel_vector_and_scalar_features_and_resources   1 0:00:00.008741 0:00:00.008741
+0:00:01.064181 grand total                                                                                                                   11 0:00:00.000865 0:00:01.029069
+========================================================================== test setup duration top ==========================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.002983 grand total                                                                                                                   11 0:00:00.000066 0:00:00.002076
+======================================================================== test teardown duration top =========================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.000701 grand total                                                                                                                   11 0:00:00.000057 0:00:00.000111
+11 passed in 5.12s

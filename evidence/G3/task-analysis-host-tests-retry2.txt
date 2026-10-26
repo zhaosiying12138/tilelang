@@ -1,0 +1,413 @@
+...F....FFF                                                              [100%]
+=================================== FAILURES ===================================
+_______ test_copy_gemm_parallel_vector_and_scalar_features_and_resources _______
+
+    def test_copy_gemm_parallel_vector_and_scalar_features_and_resources():
+        annotations = {"tl_z3_pipeline": True, **_mock_paths()}
+    
+        @T.prim_func
+        def main(
+            A: T.Tensor((16, 16), "float16"),
+            B: T.Tensor((16, 16), "float16"),
+            Out: T.Tensor((16, 16), "float32"),
+        ):
+            with T.Kernel(1, threads=128):
+                a_shared = T.alloc_shared((16, 16), "float16")
+                b_shared = T.alloc_shared((16, 16), "float16")
+                c_fragment = T.alloc_fragment((16, 16), "float32")
+                for _ in T.Pipelined(1, num_stages=2, annotations=annotations):
+                    T.copy(A, a_shared, coalesced_width=16)
+                    T.gemm(a_shared, b_shared, c_fragment)
+                    for i, j in T.Parallel(16, 16):
+                        Out[i, j] = T.exp2(c_fragment[i, j]) + 1.0
+    
+        calls = _install_model_mock()
+>       loop = _find_pipeline_loop(_run_infer(main)["main"])
+                                   ^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_z3_task_analysis.py:169: in _run_infer
+    return _infer_pass()(mod)
+           ^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::InferZ3PipelineProblem()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::InferZ3PipelineProblem()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+    ???
+<unknown>:0: in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::InferLoop(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in TVMFFIPyCallback(void*, TVMFFIAny const*, int, TVMFFIAny*)
+    ???
+<unknown>:0: in TVMFFIPyCallManager::ForwardPyErrorToFFI()
+    ???
+<unknown>:0: in TVMFFICyErrorSetRaisedFromPyError(_object*)
+    ???
+testing/python/transform/test_tilelang_z3_task_analysis.py:199: in estimator
+    return task_cost.estimate_task(features, _HARDWARE, _CALIBRATION, require_measured)
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in TVMFFIPyCallback(void*, TVMFFIAny const*, int, TVMFFIAny*)
+    ???
+<unknown>:0: in TVMFFIPyCallManager::ForwardPyErrorToFFI()
+    ???
+<unknown>:0: in TVMFFICyErrorSetRaisedFromPyError(_object*)
+    ???
+tilelang/cuda/task_cost.py:153: in estimate_task
+    _, arch, _ = _hardware_parts(hardware)
+tilelang/cuda/task_cost.py:74: in _hardware_parts
+    spec, source, _ = _mapping(hardware, "hardware")
+tilelang/cuda/task_cost.py:56: in _mapping
+    encoded = json.dumps(dict(value), allow_nan=False)
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:258: in iterencode
+    return _iterencode(o, 0)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise TypeError(f'Object of type {o.__class__.__name__} '
+    
+                    f'is not JSON serializable')
+E   TypeError: Object of type Map is not JSON serializable
+
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:180: TypeError
+_____ test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable ______
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-55/test_task_cost_ffi_is_strict_j0')
+
+    def test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable(tmp_path):
+        hardware, calibration = _write_specs(tmp_path)
+        features = {
+            "copies": [
+                {
+                    "src_scope": "global",
+                    "dst_scope": "shared",
+                    "bytes": 64,
+                    "geometry": "coalesced",
+                    "width": 0,
+                }
+            ]
+        }
+        ffi = tvm_ffi.get_global_func(_ESTIMATOR)
+        result = ffi(features, str(hardware), str(calibration), False)
+        assert set(result) == {"latency", "ii", "terms", "resource_flags", "reliability", "fallback_used"}
+        assert (result["latency"], result["ii"], result["resource_flags"]) == (7, 5, 1)
+        assert result["reliability"] == "measured"
+        assert result["fallback_used"] == []
+>       assert json.loads(json.dumps(result, allow_nan=False))["terms"]["resource_flags"] == 1
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:462: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:258: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x7f98d7b99a30>
+o = {"fallback_used": (), "ii": 5, "latency": 7, "reliability": "measured", "resource_flags": 1, "terms": {"compute_latenc..."throughput": "ops/cycle"}, "vector_bandwidth_cycles": 0, "vector_ii": 0, "vector_latency": 0, "vector_op_cycles": {}}}
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type Map is not JSON serializable
+
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:180: TypeError
+_____________ test_hardware_capacity_requires_explicit_optin_field _____________
+
+    def test_hardware_capacity_requires_explicit_optin_field():
+        hardware = {
+            "schema": "tilelang.cuda.hardware-spec",
+            "device": {"compute_capability": "12.0"},
+        }
+        with pytest.raises(ValueError, match="shared_memory_per_block_optin_bytes"):
+>           task_cost.memory_group_capacities(hardware)
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:479: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in TVMFFIPyCallback(void*, TVMFFIAny const*, int, TVMFFIAny*)
+    ???
+<unknown>:0: in TVMFFIPyCallManager::ForwardPyErrorToFFI()
+    ???
+<unknown>:0: in TVMFFICyErrorSetRaisedFromPyError(_object*)
+    ???
+tilelang/cuda/task_cost.py:120: in memory_group_capacities
+    spec, _, _ = _hardware_parts(hardware)
+tilelang/cuda/task_cost.py:74: in _hardware_parts
+    spec, source, _ = _mapping(hardware, "hardware")
+tilelang/cuda/task_cost.py:56: in _mapping
+    encoded = json.dumps(dict(value), allow_nan=False)
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:258: in iterencode
+    return _iterencode(o, 0)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise TypeError(f'Object of type {o.__class__.__name__} '
+    
+                    f'is not JSON serializable')
+E   TypeError: Object of type Map is not JSON serializable
+
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/json/encoder.py:180: TypeError
+___________________ test_real_z3_integration_after_inference ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-55/test_real_z3_integration_after0')
+
+    def test_real_z3_integration_after_inference(tmp_path):
+        hardware, calibration = _write_specs(tmp_path)
+        annotations = {
+            "tl_z3_pipeline": True,
+            "tl_z3_pipeline_hardware": str(hardware),
+            "tl_z3_pipeline_calibration": str(calibration),
+            "tl_z3_pipeline_manual_schedule": True,
+            "tl_z3_pipeline_manual_stages": _imms([0, 1]),
+            "tl_z3_pipeline_enable_offset": True,
+        }
+    
+        @T.prim_func
+        def main(A: T.Tensor((64,), "float32"), B: T.Tensor((64,), "float32")):
+            with T.Kernel(1, threads=128):
+                a_shared = T.alloc_shared((16,), "float32")
+                for k in T.Pipelined(4, num_stages=2, annotations=annotations):
+                    T.copy(A[k * 16 : (k + 1) * 16], a_shared, coalesced_width=16)
+                    for i in T.Parallel(16):
+                        B[k * 16 + i] = a_shared[i] + 1.0
+    
+>       inferred = _run_infer(main)
+                   ^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:502: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_z3_task_analysis.py:169: in _run_infer
+    return _infer_pass()(mod)
+           ^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::InferZ3PipelineProblem()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::InferZ3PipelineProblem()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+    ???
+<unknown>:0: in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::Z3TaskAnalyzer::InferLoop(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in TVMFFIPyCallback(void*, TVMFFIAny const*, int, TVMFFIAny*)
+    ???
+<unknown>:0: in TVMFFIPyCallManager::ForwardPyErrorToFFI()
+    ???
+<unknown>:0: in TVMFFICyErrorSetRaisedFromPyError(_object*)
+    ???
+tilelang/cuda/task_cost.py:157: in estimate_task
+    features = _lm.TaskFeatures.from_dict(_plain(features))
+tilelang/cuda/latency_model.py:893: in from_dict
+    return cls(**values)
+<string>:10: in __init__
+    ???
+tilelang/cuda/latency_model.py:849: in __post_init__
+    object.__setattr__(self, "copies", tuple(
+tilelang/cuda/latency_model.py:850: in <genexpr>
+    item if isinstance(item, MemoryAccess) else MemoryAccess(**item) for item in copies
+<string>:9: in __init__
+    ???
+tilelang/cuda/latency_model.py:776: in __post_init__
+    object.__setattr__(self, "bytes", _extent_object(self.bytes, "memory bytes"))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise TypeError(f"{name} must be an integer, Extent, mapping, or None")
+E   TypeError: memory bytes must be an integer, Extent, mapping, or None
+
+tilelang/cuda/latency_model.py:218: TypeError
+=========================================================================== fixture duration top ============================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.001874 grand total                                                                                                                   14 0:00:00.000060 0:00:00.001554
+========================================================================== test call duration top ===========================================================================
+total          name                                                                                                                         num med            max           
+0:00:01.026957 testing/python/transform/test_tilelang_z3_task_analysis.py::test_copy_gemm_parallel_vector_and_scalar_features_and_resources   1 0:00:01.026957 0:00:01.026957
+0:00:01.036522 grand total                                                                                                                   11 0:00:00.000744 0:00:01.026957
+========================================================================== test setup duration top ==========================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.003060 grand total                                                                                                                   11 0:00:00.000069 0:00:00.001746
+======================================================================== test teardown duration top =========================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.000754 grand total                                                                                                                   11 0:00:00.000056 0:00:00.000136
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_copy_gemm_parallel_vector_and_scalar_features_and_resources
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_hardware_capacity_requires_explicit_optin_field
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_real_z3_integration_after_inference
+4 failed, 7 passed in 5.30s

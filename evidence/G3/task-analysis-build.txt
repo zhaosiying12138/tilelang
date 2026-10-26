@@ -1,0 +1,26 @@
+[0/2] Re-checking globbed directories...
+[1/3] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o
+FAILED: [code=1] CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o 
+/usr/bin/ccache /usr/bin/g++ -DCUDA_MAJOR_VERSION=13 -DDMLC_USE_LOGGING_LIBRARY="<tvm/runtime/logging.h>" -DTVM_LOG_CUSTOMIZE=1 -I/home/zhaosiying/codebase/tilelang-cuda-z3/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/dlpack/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl -O3 -DNDEBUG -fPIC -MD -MT CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o -MF CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o.d -o CMakeFiles/tilelang_objs.dir/src/transform/z3_task_analysis.cc.o -c /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc: In member function ‘bool tvm::tl::{anonymous}::Z3TaskAnalyzer::RegionsConflict(const tvm::tirx::BufferRegion&, const tvm::tirx::BufferRegion&, const tvm::tirx::ForNode*, bool, const tvm::ffi::Map<tvm::tirx::Var, tvm::arith::IntSet>&) const’:
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:779:21: error: no matching function for call to ‘tvm::tl::{anonymous}::Z3TaskAnalyzer::Substitute(const tvm::PrimExpr&, tvm::ffi::Map<tvm::tirx::Var, tvm::PrimExpr>&) const’
+  779 |           Substitute(range->min, substitution),
+      |           ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:779:21: note: there is 1 candidate
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:648:15: note: candidate 1: ‘static tvm::tirx::Stmt tvm::tl::{anonymous}::Z3TaskAnalyzer::Substitute(const tvm::tirx::PrimFunc&)’
+  648 |   static Stmt Substitute(const PrimFunc &func) {
+      |               ^~~~~~~~~~
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:648:15: note: candidate expects 1 argument, 2 provided
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:780:21: error: no matching function for call to ‘tvm::tl::{anonymous}::Z3TaskAnalyzer::Substitute(const tvm::PrimExpr&, tvm::ffi::Map<tvm::tirx::Var, tvm::PrimExpr>&) const’
+  780 |           Substitute(range->extent, substitution)));
+      |           ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:780:21: note: there is 1 candidate
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:648:15: note: candidate 1: ‘static tvm::tirx::Stmt tvm::tl::{anonymous}::Z3TaskAnalyzer::Substitute(const tvm::tirx::PrimFunc&)’
+  648 |   static Stmt Substitute(const PrimFunc &func) {
+      |               ^~~~~~~~~~
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:648:15: note: candidate expects 1 argument, 2 provided
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc: In member function ‘tvm::tirx::Buffer tvm::tl::{anonymous}::Z3TaskAnalyzer::BufferForVar(const tvm::tirx::Var&, const tvm::tl::{anonymous}::ScheduledTaskAnalysis&) const’:
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_task_analysis.cc:765:3: warning: control reaches end of non-void function [-Wreturn-type]
+  765 |   }
+      |   ^
+ninja: build stopped: subcommand failed.
