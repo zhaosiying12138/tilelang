@@ -1,0 +1,3720 @@
+{
+  "schema": "tilelang.cuda.compile-matrix",
+  "version": 1,
+  "audit": {
+    "source": "read-only source audit frozen into explicit pytest node lists; no runtime glob or -k discovery",
+    "collected_is_not_passed": true,
+    "quick_operator_candidates": 49,
+    "full_operator_candidates": 651,
+    "full_testing_candidates": 627,
+    "full_example_candidates": 24,
+    "host_support_candidates": 77,
+    "L1_collected_rows": 126,
+    "L2_collected_rows": 729
+  },
+  "expected_rows": {
+    "quick": {
+      "operator": 49,
+      "host": 77,
+      "z3_fixture": 0,
+      "total": 126
+    },
+    "full": {
+      "operator": 651,
+      "host": 77,
+      "z3_fixture": 1,
+      "total": 729
+    },
+    "host": {
+      "operator": 0,
+      "host": 77,
+      "z3_fixture": 0,
+      "total": 77
+    }
+  },
+  "layers": {
+    "H0": "Host/frontend/IR structural checks; no numeric or device-success claim.",
+    "H1": "Lowering/code generation/device compilation without a numeric hard gate.",
+    "G": "GDN compilation/launch smoke only; success is G_SMOKE, never correctness.",
+    "P": "Reference-checked numerical parity; every collected case must execute and pass."
+  },
+  "arch_lanes": {
+    "host": {
+      "requires_device": false
+    },
+    "explicit-cuda-target": {
+      "requires_device": false,
+      "note": "Target is pinned by the test; no host-arch substitution."
+    },
+    "cuda-any": {
+      "requires_device": true
+    },
+    "sm70": {
+      "requires_device": true,
+      "exact": 70
+    },
+    "sm75": {
+      "requires_device": true,
+      "exact": 75
+    },
+    "sm80": {
+      "requires_device": true,
+      "exact": 80
+    },
+    "sm89": {
+      "requires_device": true,
+      "exact": 89
+    },
+    "sm90": {
+      "requires_device": true,
+      "exact": 90
+    },
+    "sm100": {
+      "requires_device": true,
+      "exact": 100
+    },
+    "sm120": {
+      "requires_device": true,
+      "exact": 120
+    },
+    "cuda-up-to-sm80": {
+      "requires_device": true,
+      "max": 80
+    },
+    "cuda-up-to-sm89": {
+      "requires_device": true,
+      "max": 89
+    },
+    "sm80-plus": {
+      "requires_device": true,
+      "min": 80
+    },
+    "sm89-plus": {
+      "requires_device": true,
+      "min": 89
+    },
+    "sm90-plus": {
+      "requires_device": true,
+      "min": 90
+    },
+    "sm100-plus": {
+      "requires_device": true,
+      "min": 100
+    },
+    "sm120-plus": {
+      "requires_device": true,
+      "min": 120
+    }
+  },
+  "dependency_policy": {
+    "install": false,
+    "missing_status": "SKIP_DEP",
+    "note": "Probe only. Never install FA/FLA, downgrade torch, or treat one package as a substitute for the other. requirements-test-cuda.txt pins flash-attn==2.5.8 with torch<2.14; a torch>=2.14 environment is diagnosed, not modified."
+  },
+  "dependencies": {
+    "tilelang": {
+      "in_tree": "tilelang/__init__.py"
+    },
+    "torch": {
+      "module": "torch",
+      "distribution": "torch"
+    },
+    "z3": {
+      "module": "z3",
+      "distribution": "z3-solver"
+    },
+    "tvm-ffi": {
+      "module": "tvm_ffi",
+      "distribution": "apache-tvm-ffi"
+    },
+    "triton": {
+      "module": "triton",
+      "distribution": "triton"
+    },
+    "einops": {
+      "module": "einops",
+      "distribution": "einops"
+    },
+    "cuda-python": {
+      "module": "cuda",
+      "distribution": "cuda-python"
+    },
+    "flash-attn": {
+      "module": "flash_attn",
+      "distribution": "flash-attn",
+      "requirements_pin": "flash-attn==2.5.8",
+      "torch_requirement": "<2.14",
+      "independent_from": "fla"
+    },
+    "fla": {
+      "module": "fla",
+      "distribution": "flash-linear-attention",
+      "independent_from": "flash-attn"
+    }
+  },
+  "operator_groups": [
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_copy.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_copy.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_scalar_copy_annotations_preserved"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_copy.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_copy.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tilelang_copy_bufferload",
+        "test_tilelang_copy_uses_stmatrix_m16n8_for_sm100_int8_shared_store"
+      ],
+      "quick_nodes": [
+        "test_tilelang_copy_bufferload"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_copy.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_copy.py",
+      "layer": "H1",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tilelang_copy_fp8_e8m0"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_copy.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_copy.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tilelang_copy",
+        "test_tilelang_copy_cross_dtype",
+        "test_tilelang_copy_oob_safe_value_uses_annotation",
+        "test_tilelang_copy_oob_safe_value_defaults_to_zero",
+        "test_tilelang_copy_oob_safe_value_casts_to_destination_dtype",
+        "test_tilelang_elementwise_copy_oob_safe_value_non_regression",
+        "test_tilelang_copy_oob_safe_value_lexical_scope",
+        "test_tilelang_copy_with_stride",
+        "test_tilelang_copy_bufferload_cross_dtype",
+        "test_tilelang_copy_buffer_load_with_parallel",
+        "test_tilelang_copy_shape_mismatched"
+      ],
+      "quick_nodes": [
+        "test_tilelang_copy",
+        "test_tilelang_copy_cross_dtype",
+        "test_tilelang_copy_with_stride"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_copy.py#4",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_copy.py",
+      "layer": "P",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tilelang_copy_fp4"
+      ],
+      "quick_nodes": [
+        "test_tilelang_copy_fp4"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_finalize_reducer_invalid_batch"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_allreduce_rejects_non_power_of_two_logical_width",
+        "test_allreduce_scale_greater_than_one_rejects_non_power_of_two",
+        "test_allreduce_rejects_non_power_of_two_scale",
+        "test_reduce_rejects_subbyte_accumulator",
+        "test_finalize_reducer_rejects_subbyte_accumulator",
+        "test_reduce_packed_max_nan_propagate_uses_nan_intrinsics",
+        "test_reduce_packed_min_nan_propagate_uses_nan_intrinsics",
+        "test_reduce_packed_absmax_nan_propagate_uses_nan_intrinsics",
+        "test_reduce_packed_max_nan_propagate_runtime",
+        "test_reduce_packed_min_nan_propagate_runtime",
+        "test_reduce_packed_max_nan_batch_runtime",
+        "test_bitwise_reduce_rejects_float_source",
+        "test_bitwise_reduce_rejects_float_destination",
+        "test_bitwise_reduce_accepts_integer_faces"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_reduce_local_packed_codegen",
+        "test_reduce_local_noncontiguous_dim_packed_codegen",
+        "test_reduce_local_to_var_packed_codegen",
+        "test_reduce_rejects_invalid_destination_shape",
+        "test_finalize_reducer_codegen",
+        "test_fp8_fp4_non_finite_const_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "layer": "H1",
+      "arch_lane": "sm80-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_reduce_partial_thread_barrier_ignores_large_unused_layout_dimension",
+        "test_sm80_batch_reduce_uses_named_barrier",
+        "test_reduce_partial_thread_barrier_rejects_non_power_of_two_width",
+        "test_reduce_partial_thread_barrier_rejects_warp_misaligned_base",
+        "test_reduce_partial_thread_barrier_rejects_discontiguous_warps",
+        "test_finalize_reducer_sm80_uses_named_barrier"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce.py#4",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_reduce",
+        "test_reduce_local_packed_correctness",
+        "test_reduce_clear",
+        "test_reduce_keepdim",
+        "test_finalize_reducer_correctness",
+        "test_finalize_reducer_batched_correctness",
+        "test_finalize_reducer_short_parallel_extent",
+        "test_finalize_reducer_mixed_parallel_extents",
+        "test_finalize_reducer_epoch_inside_pipelined_loop",
+        "test_finalize_reducer_default_alloc_v1_syntax",
+        "test_finalize_reducer_conditional_finalize",
+        "test_reduce_absmax_bf16_noncontiguous_packed_layout_regression",
+        "test_reduce_sum_reshape_straddle_layout_regression",
+        "test_allreduce_power_of_two_width_runtime",
+        "test_allreduce_scale_greater_than_one_valid_runtime"
+      ],
+      "quick_nodes": [
+        "test_finalize_reducer_short_parallel_extent"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce.py#5",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "layer": "P",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_reduce_fp4_input_wider_accumulator_runtime",
+        "test_blackwell_non_finite_const_matches_runtime_conversion"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce.py#6",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "layer": "P",
+      "arch_lane": "sm80-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_reduce_partial_thread_barrier_correctness",
+        "test_reduce_partial_thread_barrier_full_block_groups",
+        "test_reduce_partial_thread_barrier_multiple_groups_in_partial_cta",
+        "test_reduce_partial_thread_barrier_offset_thread_range"
+      ],
+      "quick_nodes": [
+        "test_reduce_partial_thread_barrier_correctness"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce.py#7",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce.py",
+      "layer": "P",
+      "arch_lane": "sm89-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_reduce_packed_fp8_to_float16_absmax_runtime",
+        "test_reduce_fp8_e4m3_dst_runtime",
+        "test_fp8_non_finite_const_matches_runtime_conversion"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reducer_v2.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reducer_v2.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_bitwise_reducer_rejects_float_dtype",
+        "test_reject_init_value_dtype_mismatch",
+        "test_reject_update_before_init",
+        "test_reject_missing_finalize",
+        "test_reject_ordinary_store",
+        "test_reject_read_before_finalize",
+        "test_reject_clear_on_reducer",
+        "test_reject_update_outside_parallel",
+        "test_reject_double_init",
+        "test_reject_finalize_in_different_scope",
+        "test_reject_finalize_in_extra_loop",
+        "test_annotated_partial_conflict_raises",
+        "test_annotate_plain_fragment_on_reducer_raises",
+        "test_partial_combine_size_roundtrip",
+        "test_partial_fragment_combine_must_divide_replicate",
+        "test_partial_fragment_explicit_combine_construction"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reducer_v2.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reducer_v2.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_forced_baseline_codegen_uses_full_width_allreduce",
+        "test_fp32_narrow_plan_not_packed",
+        "test_update_packed_fp32x2_sm100_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reducer_v2.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reducer_v2.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_scalar_sum_regression_36_not_576",
+        "test_deferred_sum_across_serial_tiles",
+        "test_pipelined_accumulation",
+        "test_multiple_update_sites_mixed_extents",
+        "test_max_min",
+        "test_seed_applied_exactly_once",
+        "test_int32_sum",
+        "test_narrow_plan_scalar_sum_uses_projected_allreduce",
+        "test_narrow_plan_local_complete_no_collective",
+        "test_narrow_plan_local_complete_inner_serial",
+        "test_narrow_plan_row_reduction_projected_width",
+        "test_narrow_plan_rejects_non_power_of_two_thread_stride",
+        "test_seed_with_narrow_plan",
+        "test_seed_with_local_complete",
+        "test_narrow_plan_permuted_indices",
+        "test_narrow_plan_unit_dim_indices",
+        "test_differential_forced_baseline_vs_auto",
+        "test_packed_accumulation_fp16_parallel_reduction",
+        "test_packed_accumulation_fp16_inner_serial",
+        "test_packed_accumulation_bf16_max",
+        "test_differential_packed_vs_baseline_fp16",
+        "test_bitwise_reduce",
+        "test_epoch_inside_serial_loop_online_softmax",
+        "test_epoch_inside_pipelined_loop",
+        "test_epoch_inside_uniform_conditional",
+        "test_seed_captured_at_init_site",
+        "test_finalize_in_conditional_refinement",
+        "test_wide_plan_finalize_publication_static_indices_2d",
+        "test_wide_plan_finalize_publication_static_indices_1d",
+        "test_wide_plan_finalize_publication_legacy_entry",
+        "test_wide_plan_finalize_staged_chain_override",
+        "test_wide_steering_static_accumulator_with_compute_consumer",
+        "test_narrow_steering_dst_compute_consumer",
+        "test_annotated_dst_not_steered",
+        "test_narrow_steering_unsatisfiable_falls_back_wide",
+        "test_update_vectorizes_on_contiguous_layout",
+        "test_update_vectorizes_wide_plan",
+        "test_update_vectorize_attempt_keeps_replica_guard",
+        "test_update_reduction_axis_stays_scalar",
+        "test_update_packed_fp16",
+        "test_partial_layout_widen_on_disagreeing_sites",
+        "test_zero_update_epoch_wide_floor",
+        "test_annotated_partial_middle_plan",
+        "test_annotated_partial_steers_inputs",
+        "test_annotated_dst_incompatible_unconstrained_chain_overridden",
+        "test_same_storage_different_combine_widens_at_commit",
+        "test_annotated_partial_copy_groups_pins_replicated_loop",
+        "test_annotated_partial_copy_groups_middle_plan"
+      ],
+      "quick_nodes": [
+        "test_differential_forced_baseline_vs_auto"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atomic.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atomic.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_atomic_load_accepts_valid_memory_orders",
+        "test_atomic_load_rejects_unsupported_memory_orders",
+        "test_atomic_store_accepts_valid_memory_orders",
+        "test_atomic_store_rejects_unsupported_memory_orders",
+        "test_atomic_addx2_return_prev_accepts_sliced_destination",
+        "test_atomic_addx2_return_prev_accepts_let_bound_slice",
+        "test_atomic_addx2_return_prev_accepts_ramp"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atomic.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atomic.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_atomic_or_codegen",
+        "test_atomic_store_dtype",
+        "test_atomic_scalar_return_prev",
+        "test_atomic_add_return_prev_materialized_once",
+        "test_atomic_add_contended_bf16",
+        "test_atomic_add_bf16_compiles_for_sm75"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atomic.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atomic.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tma_atomic_add_rejects_unsupported_dtype",
+        "test_tma_atomic_add_accepts_ptx_dtype",
+        "test_tma_atomic_add_uint64_uses_linear_layout",
+        "test_tma_atomic_add_splits_32b_swizzle_box",
+        "test_tma_atomic_add_rejects_pre_hopper_target",
+        "test_tma_atomic_add_rejects_unencodable_explicit_layout",
+        "test_atomic_addx4_sliced_dst_compile"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atomic.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atomic.py",
+      "layer": "H1",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tma_atomic_add_wide_linear_layout_runtime",
+        "test_atomic_add_auto_vectorized",
+        "test_atomic_add_auto_vectorized_unit_test",
+        "test_atomic_add_complicated_parallel"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atomic.py#4",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atomic.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_atomic_memory_order",
+        "test_atomic_addx2_half",
+        "test_atomic_addx2_float",
+        "test_atomic_add_mixed_dtype_fp16",
+        "test_atomic_add_mixed_dtype_bf16",
+        "test_atomic_different_memory_orders",
+        "test_atomic_add_vectorized_preserves_memory_order",
+        "test_atomic_addx4",
+        "test_atomic_addx4_16bit",
+        "test_atomic_return_prev",
+        "test_atomic_return_prev_16bit",
+        "test_atomic_add",
+        "test_tile_atomic_add",
+        "test_tile_atomic_add_expr",
+        "test_tile_atomic_add_scalar",
+        "test_atomic_max",
+        "test_atomic_min",
+        "test_atomic_int64",
+        "test_atomic_max_scalar_fp16",
+        "test_atomic_min_scalar_fp16",
+        "test_atomic_load_store",
+        "test_tile_atomic_max",
+        "test_tile_atomic_min",
+        "test_tile_atomic_max_expr",
+        "test_atomic_addx2_return_prev",
+        "test_atomic_addx4_return_prev",
+        "test_atomic_addx2_return_prev_fp16",
+        "test_atomic_addx2_return_prev_bf16",
+        "test_atomic_addx4_return_prev_fp16",
+        "test_atomic_addx4_return_prev_bf16",
+        "test_atomic_add_invariant_destination",
+        "test_atomic_add_invariant_shared_and_memory_order"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atomic.py#5",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atomic.py",
+      "layer": "P",
+      "arch_lane": "sm80-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_atomic_add_vectorized_preserves_memory_order_bf16",
+        "test_atomic_max_scalar_bf16",
+        "test_atomic_min_scalar_bf16"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atomic.py#6",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atomic.py",
+      "layer": "P",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tma_atomic_add",
+        "test_tma_atomic_add_uint64_runtime",
+        "test_tma_atomic_add_versioned_smem_slice_runtime",
+        "test_tma_atomic_add_32b_swizzle_runtime",
+        "test_atomic_add_fp32_shared_stays_scalar_on_sm90",
+        "test_atomic_add_dynamic_rows_keep_x4"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_pipeline.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_pipeline.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_pipeline_order_stage",
+        "test_blocksparse_matmul"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_copy.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_copy.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_fp4_unpacksmem_tma_descriptor_uses_align16b",
+        "test_fp4_unpacksmem_tma_store_is_rejected",
+        "test_copy_prefer_tma_lowers_as_synchronous_tma_load",
+        "test_device_bound_pointer_keeps_descriptorless_bulk1d",
+        "test_device_bound_descriptor_tma_is_rejected_when_ws_disabled"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_copy.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_copy.py",
+      "layer": "H1",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_fp4_tma_copy_roundtrip_packed_smem",
+        "test_fp4_tma_copy_unpacked_smem_load_descriptor_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_copy.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_copy.py",
+      "layer": "H1",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tma_copy_per_warp_leader_scope_codegen",
+        "test_tma_copy_default_block_leader_scope_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_copy.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_copy.py",
+      "layer": "P",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tma_copy_pipeline_2_stages",
+        "test_tma_copy_pipeline_3_stages",
+        "test_tma_copy_uses_explicit_global_stride_for_row_offset",
+        "test_tma_copy_uses_descriptor_for_padded_multirow_region",
+        "test_tma_copy_box_split_respects_smem_alignment",
+        "test_tma_load_wide_linear_fixed_slice_with_unaligned_global_shape",
+        "test_tma_store_wide_linear_fixed_slice_with_unaligned_global_shape",
+        "test_tma_load_oob_fill_with_non_aligned_global_extent",
+        "test_tma_copy_store_pipeline_2_stages",
+        "test_tma_copy_store_pipeline_3_stages",
+        "test_tma_copy_cluster_mask_multicast"
+      ],
+      "quick_nodes": [
+        "test_tma_copy_pipeline_2_stages",
+        "test_tma_copy_pipeline_3_stages",
+        "test_tma_copy_store_pipeline_2_stages"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_1d.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_1d.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tilelang_language_tma_1d"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_store.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_store.py",
+      "layer": "H1",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_plain_copy_full_shape_tma_store_uses_1d",
+        "test_tma_store_wait_read_option_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_store.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_store.py",
+      "layer": "P",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tma_store_2_stages",
+        "test_tma_store_3_stages",
+        "test_plain_copy_auto_tma_store"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_async_copy_gemm_sm80.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_async_copy_gemm_sm80.py",
+      "layer": "H1",
+      "arch_lane": "sm80",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_copy_and_async_copy_gemm_codegen_equivalent_sm80"
+      ],
+      "quick_nodes": [
+        "test_copy_and_async_copy_gemm_codegen_equivalent_sm80"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_gemm_blockscaled.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_gemm_blockscaled.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_gemm_blockscaled_emits_dispatching_call",
+        "test_gemm_blockscaled_parses_to_its_own_tile_op",
+        "test_gemm_blockscaled_records_use_2cta_and_sf_layout",
+        "test_gemm_blockscaled_checks_2cta_n_extent",
+        "test_mma_gemm_blockscaled_records_sf_layout"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_gemm_blockscaled.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_gemm_blockscaled.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tcgen05_gemm_blockscaled_pins_tcgen05_path",
+        "test_sm100_rejects_fragment_accumulator_blockscaled_gemm"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_gemm_blockscaled.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_gemm_blockscaled.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_blockscaled_instruction_selection",
+        "test_blockscaled_sm120_selects_fragment_a",
+        "test_blockscaled_tcgen05_rejects_tmem_a",
+        "test_blockscaled_tcgen05_request_cannot_select_sm120_mma",
+        "test_blockscaled_gemm_rejects_wgmma_annotation",
+        "test_blockscaled_gemm_without_mbar_requires_explicit_async",
+        "test_gemm_blockscaled_waits_implicitly_like_gemm",
+        "test_blockscaled_gemm_rejected_by_backend_without_support"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_gemm_blockscaled.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_gemm_blockscaled.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_sm100_1cta_blockscaled_gemm_lowers_to_tcgen05"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tensor_core_intrin_emitter_mma_keeps_base_positional_signature",
+        "test_default_tensor_core_intrin_emitter_stays_arch_neutral",
+        "test_generic_mma_gemm_has_no_blockscaled_lowering_branch",
+        "test_sm120_mma_blockscaled_strategy_helpers_are_not_public_api",
+        "test_nvf4_mma_block_scale_fragment_layouts_match_cute",
+        "test_nvf4_mma_block_scale_lane_scale_mapping_matches_cute",
+        "test_nvf4_mma_block_scale_rejects_unsupported_configs",
+        "test_nvf4_mma_block_scale_rejects_incompatible_dtypes",
+        "test_sm120_fulltile_package_contract_matches_current_pingpong_path",
+        "test_sm120_fulltile_package_contract_supports_k128_path",
+        "test_sm120_fulltile_package_contract_derives_arbitrary_reasonable_block_shape",
+        "test_sm120_fulltile_package_contract_describes_compact_selector_copy_view",
+        "test_sm120_fulltile_package_contract_word_offsets_match_source_layout_oracle",
+        "test_sm120_fulltile_package_contract_describes_pingpong_lifecycle",
+        "test_sm120_fulltile_package_contract_pingpong_lifecycle_is_data_ready",
+        "test_sm120_fulltile_package_contract_describes_omma_sf_issue_schedule",
+        "test_sm120_fulltile_package_contract_odd_warp_atom_grid",
+        "test_sm120_nvfp4_example_kernel_rejects_unsupported_tails"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_nvf4_mma_block_scale_packed_smem_non_alias_offset_units",
+        "test_nvf4_mma_block_scale_compact_fragment_diagnostic",
+        "test_nvf4_mma_block_scale_scale_buffer_aliasing"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py",
+      "layer": "H1",
+      "arch_lane": "sm120",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_nvf4_mma_block_scale_fragment_a_unrolls_k_atoms_and_packs_scales"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py",
+      "layer": "H1",
+      "arch_lane": "sm120-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_nvf4_mma_block_scale_codegen",
+        "test_nvf4_mma_block_scale_rejects_legacy_cutlass_128x4_layout_alias",
+        "test_nvf4_mma_block_scale_fulltile_is_frontend_lowered",
+        "test_nvf4_mma_block_scale_packed_smem_offsets",
+        "test_sm120_nvfp4_example_kernel_handles_mn_tail_tiles"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py#4",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py",
+      "layer": "P",
+      "arch_lane": "sm120-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_nvf4_mma_block_scale_constant_scale_correctness",
+        "test_nvf4_mma_block_scale_varying_scale_correctness",
+        "test_nvf4_mma_block_scale_fragments_and_odd_warps"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tcgen05_gemm.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tcgen05_gemm.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_sync_gemm_has_no_2cta_parameter"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tcgen05_gemm.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tcgen05_gemm.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tcgen05_gemm_matches_sync_gemm_issue_codegen",
+        "test_tcgen05_gemm_can_omit_intermediate_completion_event",
+        "test_sync_gemm_preserves_sliced_ts_operands_for_sm100_selection",
+        "test_tcgen05_gemm_2cta_requires_two_cta_cluster",
+        "test_tcgen05_gemm_rejects_non_tcgen05_lowering",
+        "test_tcgen05_gemm_sliced_operand_emits_offset"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tcgen05_gemm.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tcgen05_gemm.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tcgen05_gemm_2cta_rejects_non_blackwell_target"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tcgen05_gemm.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tcgen05_gemm.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_ts_gemm_through_dtype_punned_view",
+        "test_explicit_gemm_2cta_correctness",
+        "test_explicit_gemm_2cta_ts_thread_handoff_correctness",
+        "test_tcgen05_gemm_sliced_operand_correctness",
+        "test_tcgen05_ld_whole_batched_buffer_correctness",
+        "test_tcgen05_gemm_fp16_accumulator_pack16b_epilogue",
+        "test_tcgen05_gemm_batched_correctness",
+        "test_tcgen05_ts_gemm_tmem_a_correctness",
+        "test_sync_tcgen05_gemm_pipelined_wait_parity"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_wgmma_gemm.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_wgmma_gemm.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_compute_gmma_descriptor_k_major",
+        "test_compute_gmma_descriptor_mn_major_128b",
+        "test_compute_gmma_descriptor_same_layout_both_majors"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_wgmma_gemm.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_wgmma_gemm.py",
+      "layer": "H1",
+      "arch_lane": "sm90",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_wgmma_gemm_has_no_implicit_wait",
+        "test_wgmma_gemm_dispatch_has_no_implicit_wait",
+        "test_wgmma_gemm_rejects_mma_fallback",
+        "test_wgmma_gemm_sliced_operand_emits_offset"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_wgmma_gemm.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_wgmma_gemm.py",
+      "layer": "P",
+      "arch_lane": "sm90",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_wgmma_gemm_static_slice_initializes_from_slice_pointer",
+        "test_wgmma_gemm_sliced_operand_correctness"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemm.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_f16f16f16_nn",
+        "test_gemm_f16f16f32_nn",
+        "test_gemm_bf16bf16f32_nn",
+        "test_gemm_f32f32f32_nn",
+        "test_gemm_f16f16f16_tn",
+        "test_gemm_f16f16f16_nt",
+        "test_gemm_i8i8i32_nt",
+        "test_gemm_i8i8i32_tn",
+        "test_gemm_f64f64f64_nt",
+        "test_gemm_f32f32f32_nt",
+        "test_gemm_f32f32f32_tn",
+        "test_pad_aligned_f16f16f16_nn",
+        "test_pad_f16f16f16_nn",
+        "test_pad_f16f16f32_nn"
+      ],
+      "quick_nodes": [
+        "test_gemm_f16f16f16_nn",
+        "test_gemm_f16f16f32_nn",
+        "test_gemm_bf16bf16f32_nn",
+        "test_gemm_f32f32f32_nn",
+        "test_gemm_f16f16f16_tn",
+        "test_gemm_f16f16f16_nt",
+        "test_gemm_i8i8i32_nt",
+        "test_gemm_f64f64f64_nt"
+      ]
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemm.py#1",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm.py",
+      "layer": "P",
+      "arch_lane": "cuda-up-to-sm89",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_f16f16f16_sr",
+        "test_gemm_f16f16f16_rs"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemm_batched.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_batched.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_f16f16f16_nn"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemm_simt.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_simt.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_assert_tl_matmul",
+        "test_assert_tl_matmul_int8"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemm_with_stride.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_with_stride.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tilelang_kernel_gemm_with_stride"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemv_simt.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemv_simt.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemv_simt",
+        "test_gemv_simt_fp8"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_fp8_gemm_rejects_pre_sm89_target",
+        "test_fp8_gemm_keeps_mma_path_on_sm89",
+        "test_fp16_gemm_on_sm80_is_unaffected"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/quantize/test_tilelang_quantize_fp8.py#0",
+      "role": "operator",
+      "path": "testing/python/quantize/test_tilelang_quantize_fp8.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_u8_to_f8_e4m3_to_f16_all_codes"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py#0",
+      "role": "operator",
+      "path": "testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_blockscaled_chunk_kmajor_word_offset_fixed_cases",
+        "test_sm120_contract_helpers_stay_out_of_the_quantize_module",
+        "test_blockscaled_chunk_kmajor_byte_word_and_flat_offsets",
+        "test_blockscaled_chunk_kmajor_explains_compact_source_address_examples",
+        "test_compact_package_producer_contract_inverts_omma_sf_source_lane_selectors",
+        "test_current_register_package_shape_cannot_be_relabelled_as_cute_compact_slots",
+        "test_cutlass_fulltile_issue_site_contract_matches_known_static_dump_points",
+        "test_current_tilelang_issue_order_differs_from_cutlass_serpentine_order",
+        "test_sfa_compact_source_example_spans_warp_m_groups_not_one_consumer_package",
+        "test_sfb_compact_source_example_spans_b_operand_lane_groups",
+        "test_pack_blockscaled_chunk_kmajor_scale_bytes_fixed_byte_offsets",
+        "test_pack_blockscaled_chunk_kmajor_scale_bytes_random_binary_512x32_matches_oracle",
+        "test_pack_blockscaled_chunk_kmajor_scale_bytes_matches_cutedsl_blocked_sf_layout",
+        "test_pack_blockscaled_chunk_kmajor_scale_bytes_matches_word_swizzle",
+        "test_pack_nvfp4_scale_bytes_default_matches_blockscaled_chunk_kmajor_layout",
+        "test_blockscaled_chunk_kmajor_matches_current_omma_sf_selector_contract",
+        "test_compact_package_issue_table_models_omma_sf_source_lane_selectors",
+        "test_compact_package_issue_table_matches_cpp_macro_issue_order",
+        "test_frontend_package_macro_keeps_compact_selector_issue_order",
+        "test_compact_package_issue_table_matches_effective_row_helpers",
+        "test_compact_package_copy_view_contract_maps_issue_rows_to_kmajor_words",
+        "test_sm120_cuda_header_only_keeps_the_atomic_mma_wrapper",
+        "test_blockscaled_chunk_kmajor_scale_packer_rejects_invalid_shapes",
+        "test_encode_fp4_e2m1_values_and_pack_order",
+        "test_quantize_nvfp4_blockscaled_random_bf16_has_bounded_error",
+        "test_quantize_nvfp4_blockscaled_explicit_layout_matches_default",
+        "test_swizzle_blockscaled_chunk_kmajor_pads_rows_to_full_tiles"
+      ],
+      "quick_nodes": [
+        "test_sm120_contract_helpers_stay_out_of_the_quantize_module",
+        "test_sm120_cuda_header_only_keeps_the_atomic_mma_wrapper",
+        "test_encode_fp4_e2m1_values_and_pack_order",
+        "test_quantize_nvfp4_blockscaled_random_bf16_has_bounded_error"
+      ]
+    },
+    {
+      "id": "operator:testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py#1",
+      "role": "operator",
+      "path": "testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_decode_ue4m3_scale_byte_device_helper_matches_host_reference"
+      ],
+      "quick_nodes": [
+        "test_decode_ue4m3_scale_byte_device_helper_matches_host_reference"
+      ]
+    },
+    {
+      "id": "operator:testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py#2",
+      "role": "operator",
+      "path": "testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py",
+      "layer": "H1",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tilelang_quantize_nvfp4_blockscaled_matches_reference_layout_and_error_bound"
+      ],
+      "quick_nodes": [
+        "test_tilelang_quantize_nvfp4_blockscaled_matches_reference_layout_and_error_bound"
+      ]
+    },
+    {
+      "id": "operator:testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py#3",
+      "role": "operator",
+      "path": "testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_encode_ue4m3_scale_bytes_known_values",
+        "test_quantize_nvfp4_blockscaled_bf16_activation_contract"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py#0",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tma_smem_alignment_codegen_sm90_hopper",
+        "test_tma_smem_alignment_codegen_sm100_blackwell_dc",
+        "test_tma_smem_alignment_codegen_sm120_blackwell_consumer"
+      ],
+      "quick_nodes": [
+        "test_tma_smem_alignment_codegen_sm120_blackwell_consumer"
+      ]
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py#1",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tma_smem_alignment_runtime_hostarch"
+      ],
+      "quick_nodes": [
+        "test_tma_smem_alignment_runtime_hostarch"
+      ]
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_tma_no_ws.py#0",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_tma_no_ws.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_num_stages_one_mixed_tma_cp_async_keeps_auto_ws",
+        "test_pure_tma_fragment_mask_copy_initializes_consumer_branch"
+      ],
+      "quick_nodes": [
+        "test_num_stages_one_mixed_tma_cp_async_keeps_auto_ws"
+      ]
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_tma_no_ws.py#1",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_tma_no_ws.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_pure_tma_consumer_local_init_does_not_leak_into_producer"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_tma_no_ws.py#2",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_tma_no_ws.py",
+      "layer": "H1",
+      "arch_lane": "sm90",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_sparse_ws_regular_metadata_copy_stays_in_producer"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_tma_no_ws.py#3",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_tma_no_ws.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_num_stages_zero_pure_tma_does_not_auto_warp_specialize",
+        "test_num_stages_one_pure_tma_keeps_auto_warp_specialize",
+        "test_guarded_pure_tma_pipeline_keeps_auto_warp_specialize",
+        "test_num_stages_zero_cp_async_only_does_not_auto_warp_specialize",
+        "test_num_stages_one_cp_async_only_keeps_non_ws_launch_shape",
+        "test_mixed_tma_cp_async_shared_stage_barriers"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_ws_simt_copy_full_producer_extent.py#0",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_ws_simt_copy_full_producer_extent.py",
+      "layer": "P",
+      "arch_lane": "sm90",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_ws_keeps_full_producer_extent_for_lowered_simt_copy",
+        "test_ws_tma_producer_participation"
+      ],
+      "quick_nodes": [
+        "test_ws_keeps_full_producer_extent_for_lowered_simt_copy"
+      ]
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_pipeline_transitive_copy_dependencies.py#0",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_pipeline_transitive_copy_dependencies.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_pipeline_planning_tracks_transitive_copy_index_producer"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/issue/test_tilelang_issue_pipeline_transitive_copy_dependencies.py#1",
+      "role": "operator",
+      "path": "testing/python/issue/test_tilelang_issue_pipeline_transitive_copy_dependencies.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_pipeline_cross_thread_copy_index_producer_runtime",
+        "test_scheduled_bind_with_replayed_input_runtime",
+        "test_transitive_tma_copy_falls_back_to_sequential",
+        "test_dependent_copy_waits_for_async_index_runtime"
+      ],
+      "quick_nodes": [
+        "test_pipeline_cross_thread_copy_index_producer_runtime"
+      ]
+    },
+    {
+      "id": "operator:testing/python/cuda/test_tma_dsmem.py#0",
+      "role": "operator",
+      "path": "testing/python/cuda/test_tma_dsmem.py",
+      "layer": "P",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tma_store_cluster",
+        "test_store_cluster_non_16b_contiguous_fallback",
+        "test_store_cluster_simt_no_barrier",
+        "test_store_cluster_multi_tma_barrier",
+        "test_store_cluster_non_16b_row_fallback",
+        "test_store_cluster_3d_multi_tma"
+      ],
+      "quick_nodes": [
+        "test_tma_store_cluster"
+      ]
+    },
+    {
+      "id": "operator:testing/python/cuda/test_tma_multicast_demo.py#0",
+      "role": "operator",
+      "path": "testing/python/cuda/test_tma_multicast_demo.py",
+      "layer": "P",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tma_multicast_demo"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_copy_ldmatrix.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_copy_ldmatrix.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_ldmatrix_shared_region",
+        "test_ldmatrix_partial_fragment_falls_back",
+        "test_ldmatrix_shared_region_feeds_gemm"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_copy_ldmatrix.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_copy_ldmatrix.py",
+      "layer": "P",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_stmatrix_int8_shared_region"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_copy_ldmatrix.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_copy_ldmatrix.py",
+      "layer": "P",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_stmatrix_shared_region",
+        "test_stmatrix_partial_fragment_falls_back"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_gather_scatter.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_gather_scatter.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_gather_position_independent_swizzle_is_rejected"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tma_gather_scatter.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tma_gather_scatter.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gather_scatter_basic",
+        "test_gather_scatter_swizzled",
+        "test_gather_blocked_layout_multi_instruction",
+        "test_gather_position_dependent_swizzle_multi_instruction"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tmem_copy.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tmem_copy.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_widening_view_of_interleaved_layout_is_rejected"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tmem_copy.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tmem_copy.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tmem_copy_roundtrip",
+        "test_tmem_copy_roundtrip_16bit",
+        "test_tmem_copy_roundtrip_sliced_last_dim",
+        "test_tmem_copy_sliced_store_whole_load",
+        "test_tmem_copy_roundtrip_sliced_batch",
+        "test_tmem_copy_16bit_multi_segment",
+        "test_tmem_copy_roundtrip_across_a_shared_allocation"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tcgen05_sliced_operands.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tcgen05_sliced_operands.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tcgen05_ts_nonzero_c_m_n_origins_compile",
+        "test_tcgen05_ss_rejects_k_origin_inside_atom",
+        "test_tcgen05_rejects_regions_that_split_instruction_atoms"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_tcgen05_sliced_operands.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_tcgen05_sliced_operands.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tcgen05_ss_atom_aligned_k_slices",
+        "test_tcgen05_ss_slice_at_offset_swizzle_atom",
+        "test_tcgen05_ts_issue_only_sliced_a_and_b",
+        "test_tcgen05_2cta_ts_slices_have_distinct_a_and_b_origins",
+        "test_tcgen05_ss_k_slice_on_penultimate_axes",
+        "test_tcgen05_ts_nonzero_a_m_and_b_n_origins",
+        "test_tcgen05_ss_pinned_leading_modes_end_to_end"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_vectorize.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_vectorize.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_vectorize_all_dtypes",
+        "test_vectorize_broadcast_int8",
+        "test_vectorize_broadcast_int4",
+        "test_fill_int4_buffer"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_vectorize.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_vectorize.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_vectorize_call_infinity",
+        "test_vectorize_call_bitwise_logical"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_vectorize.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_vectorize.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_vectorize",
+        "test_vectorize_invariant_index",
+        "test_vectorize_global_invariant_store_accumulate",
+        "test_vectorize_local_invariant_store_accumulate"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_scan.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_scan.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_fragment_scan_annotations_preserved"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_scan.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_scan.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_cumsum_smem",
+        "test_cumsum_fragment",
+        "test_cumsum_smem_1d",
+        "test_cumsum_fragment_1d",
+        "test_cumsum_smem_pipelined",
+        "test_cumsum_region_1d",
+        "test_cumsum_region_2d",
+        "test_cummax_smem",
+        "test_cummax_fragment",
+        "test_cummax_out_of_place",
+        "test_cummax_smem_1d",
+        "test_cummax_fragment_1d",
+        "test_cumsum_strided_region",
+        "test_cummax_strided_region",
+        "test_scan_strided_out_of_place",
+        "test_scan_offset_subregion"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_transpose.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_transpose.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tilelang_transpose",
+        "test_tilelang_transpose_square"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/jit/test_tilelang_jit_nvrtc.py#0",
+      "role": "operator",
+      "path": "testing/python/jit/test_tilelang_jit_nvrtc.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch",
+        "cuda-python"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_nvrtc_kernel_do_bench",
+        "test_nvrtc_kernel_multi_stream"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/jit/test_tilelang_jit_nvrtc.py#1",
+      "role": "operator",
+      "path": "testing/python/jit/test_tilelang_jit_nvrtc.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch",
+        "cuda-python"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_jit_kernel",
+        "test_nvrtc_kernel_handles_are_isolated_between_adapters",
+        "test_nvrtc_dynamic_shape",
+        "test_nvrtc_im2col_tma_desc",
+        "test_nvrtc_l2_persistent_map",
+        "test_nvrtc_pdl"
+      ],
+      "quick_nodes": [
+        "test_nvrtc_dynamic_shape"
+      ]
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_strided_view.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_strided_view.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_scalar_view_rejects_different_bit_count",
+        "test_scalar_view_preserves_bit_count",
+        "test_scalar_view_rank_change",
+        "test_view_requires_explicit_strides_for_noncontiguous_source",
+        "test_view_accepts_explicit_strides_for_rank_change",
+        "test_view_ignores_singleton_dimension_stride",
+        "test_view_rejects_invalid_strided_views"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_view.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_view.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_view_shape_mismatch",
+        "test_view_subbyte_dtype_change"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_view.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_view.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_annotated_layout_on_dtype_changing_view_compile"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_view.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_view.py",
+      "layer": "H1",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_view_shared_fp4_to_uint8_compile"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_view.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_view.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_reshape_view",
+        "test_shared_view_narrowing_numeric",
+        "test_shared_view_widening_numeric"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_warp_reduce.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_warp_reduce.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_warp_reduce_sum",
+        "test_warp_reduce_max",
+        "test_warp_reduce_min",
+        "test_warp_reduce_bitand",
+        "test_warp_reduce_bitor",
+        "test_warp_reduce_64"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce_maxmin_nan.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce_maxmin_nan.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_reduce_max_default_uses_plain_op",
+        "test_reduce_max_nan_propagate_uses_nan_op",
+        "test_reduce_min_nan_propagate_uses_nan_op",
+        "test_reduce_absmax_nan_propagate_uses_nan_op",
+        "test_reduce_max_runtime_nan_behavior",
+        "test_reduce_min_runtime_nan_behavior",
+        "test_reduce_max_clear_false_nan_propagate",
+        "test_reduce_min_clear_false_nan_propagate",
+        "test_reduce_absmax_clear_false_nan_propagate"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_reduce_maxmin_nan.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_reduce_maxmin_nan.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_reduce_nan_dtype_contract"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_fp8.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_fp8.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_determine_fp8_type_uses_requested_rocm_device"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_float4_e2m1_unpacked_dtype.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_float4_e2m1_unpacked_dtype.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_float4_e2m1_unpacked_dtype_properties",
+        "test_float4_e2m1_unpacked_tir_dtype_tag",
+        "test_float4_e2m1_unpacked_distinct_from_packed",
+        "test_float4_e2m1_unpacked_dtype_helpers"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_float4_e2m1_unpacked_dtype.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_float4_e2m1_unpacked_dtype.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_float4_simt_copy_bans_packed_to_unpacked",
+        "test_tcgen05_instr_desc_fp4_unpacked_x_fp8",
+        "test_tcgen05_blockscaled_instr_desc_mxfp4_unpacked_x_mxfp8"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_vectorized_cast.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_vectorized_cast.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_fp4_fp8_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_vectorized_cast.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_vectorized_cast.py",
+      "layer": "H1",
+      "arch_lane": "sm89-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_fp4_fp8_exact"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_vectorized_cast.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_vectorized_cast.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_vectorized_cast"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_vectorized_cast.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_vectorized_cast.py",
+      "layer": "P",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_vectorized_cast_fp4",
+        "test_vectorized_cast_fp8_bf16"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_vectorized_cast.py#4",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_vectorized_cast.py",
+      "layer": "P",
+      "arch_lane": "sm89-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_vectorized_cast_fp8"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_symbolic_loop_layout.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_symbolic_loop_layout.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_symbolic_noninjective_shared_layout_rejected"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_symbolic_loop_layout.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_symbolic_loop_layout.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_symbolic_parallel_loop_layout"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_persistent.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_persistent.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_persistent_group_order_and_tail_coverage",
+        "test_persistent_guards_body_without_loop_break",
+        "test_persistent_full_last_dimension_group_preserves_row_major_order",
+        "test_persistent_preserves_pipeline_annotations"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_cluster.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_cluster.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_clc_query_codegen_includes_cluster_header"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_cluster.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_cluster.py",
+      "layer": "H1",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_cluster_launch",
+        "test_cluster_launch_intrinsics",
+        "test_cluster_id_matches_hardware_rank",
+        "test_cluster_barrier"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_pdl.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_pdl.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_pdl_trigger",
+        "test_pdl_sync",
+        "test_cutedsl_pdl_codegen_and_launcher_support"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_pdl.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_pdl.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_cutedsl_pdl_runtime_pipeline",
+        "test_cutedsl_pdl_overlap_microbenchmark"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_ldg.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_ldg.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_ldg32_codegen",
+        "test_ldg64_codegen",
+        "test_ldg128_codegen",
+        "test_ldg256_stg256_fallback_on_pre_sm100",
+        "test_ldg32_predicated_codegen",
+        "test_ldg64_predicated_codegen",
+        "test_ldg128_predicated_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_ldg.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_ldg.py",
+      "layer": "P",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_ldg256_codegen",
+        "test_ldg256_predicated_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_ldst.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_ldst.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_stg32_predicated_codegen",
+        "test_stg64_predicated_codegen",
+        "test_stg128_predicated_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_ldst.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_ldst.py",
+      "layer": "H1",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_stg256_predicated_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_ldst.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_ldst.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_stg32_codegen",
+        "test_stg64_codegen",
+        "test_stg128_codegen",
+        "test_lds_sts32_codegen",
+        "test_lds_sts64_codegen",
+        "test_lds_sts128_codegen",
+        "test_implicit_256_bit_vector_store_fallback_on_pre_sm100"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_ldst.py#3",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_ldst.py",
+      "layer": "P",
+      "arch_lane": "sm100-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_stg256_codegen"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atom_mma.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atom_mma.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_tcgen05_atom_gemm"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atom_mma.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atom_mma.py",
+      "layer": "P",
+      "arch_lane": "sm80-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_mma_atom_gemm"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_atom_mma.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_atom_mma.py",
+      "layer": "P",
+      "arch_lane": "sm90",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_wgmma_atom_gemm"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_clear.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_clear.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_matmul",
+        "test_shared_fill_cast_zero_uses_st_bulk",
+        "test_fill_int8_negative"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_fastmath.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_fastmath.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_fastmath_rejects_unsupported_dtype",
+        "test_fastmath_accepts_float_dtype_at_frontend"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_fastmath.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_fastmath.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_fastmath_16bit_intrinsics",
+        "test_plain_math_alongside_fastmath"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_rand.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_rand.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_rand_1d",
+        "test_rand_init_in_split_guard"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_sync_threads.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_sync_threads.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_sync_threads_with_variable_barrier_id",
+        "test_sync_threads_with_computed_barrier_id"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_warp_sync.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_warp_sync.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_shfl_fp8_rocm_builtin_return_types"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_warp_sync.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_warp_sync.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_warp_sync",
+        "test_shfl_sync",
+        "test_shfl_narrow_float_dtypes",
+        "test_shfl_fp8_rocm"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_warp_vote.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_warp_vote.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_predicate_intrinsics_reject_float",
+        "test_predicate_intrinsics_accept_integer_or_boolean"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_warp_vote.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_warp_vote.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_any_sync",
+        "test_all_sync",
+        "test_ballot_sync",
+        "test_ballot",
+        "test_ffs_ballot_sync",
+        "test_fns_ballot_sync",
+        "test_activemask",
+        "test_syncthreads_count",
+        "test_syncthreads_and",
+        "test_syncthreads_or",
+        "test_match_any_sync",
+        "test_match_all_sync"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemm_sliced_operand.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_sliced_operand.py",
+      "layer": "P",
+      "arch_lane": "sm90-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_sliced_shared_operand"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemm_sm75.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_sm75.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_sm75_ldmatrix_shared_reads_stay_in_bounds"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_gemm_sm75.py#1",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_gemm_sm75.py",
+      "layer": "P",
+      "arch_lane": "sm75",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_sm75_f16_gemm_uses_m16n8k8_and_matches_torch",
+        "test_sm75_f16_gemm_f16_accum_uses_m16n8k8_and_matches_torch",
+        "test_sm75_uint8_gemm_uses_m8n8k16_and_matches_torch",
+        "test_sm75_int8_gemm_uses_m8n8k16_and_matches_torch",
+        "test_sm75_int4_gemm_uses_m8n8k32_and_matches_torch",
+        "test_sm75_f16_gemm_pipelined_multi_stage_matches_torch"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_sm70_fragment_copy.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_sm70_fragment_copy.py",
+      "layer": "P",
+      "arch_lane": "sm70",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_sm70_fragment_cast_copy_feeds_rs_gemm"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_sm70_gemm_fma.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_sm70_gemm_fma.py",
+      "layer": "P",
+      "arch_lane": "sm70",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_sm70_bf16_ss_gemm_uses_fma_fallback",
+        "test_sm70_bf16_rs_gemm_uses_fma_fallback",
+        "test_sm70_fp16_transposed_a_uses_fma_fallback"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_sm75_gemm_fma.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_sm75_gemm_fma.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_sm75_fp32_gemm_compiles_to_fma_fallback",
+        "test_sm75_fp64_gemm_compiles_to_fma_fallback",
+        "test_sm75_bf16_gemm_compiles_to_fma_fallback",
+        "test_sm75_fp16_gemm_keeps_mma_path"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_sm75_gemm_fma.py#1",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_sm75_gemm_fma.py",
+      "layer": "P",
+      "arch_lane": "sm75",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_sm75_fp32_gemm_fma_matches_torch",
+        "test_sm75_fp64_gemm_fma_matches_torch",
+        "test_sm75_bf16_gemm_fma_matches_torch"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_bf16_gemm_tcgen5_ts.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_bf16_gemm_tcgen5_ts.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_ss_gemm_bf16_baseline",
+        "test_chained_gemm_128",
+        "test_chained_gemm_256",
+        "test_chained_gemm_non_power_of_2_k"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/kernel/test_tilelang_kernel_int8_gemm_tcgen5.py#0",
+      "role": "operator",
+      "path": "testing/python/kernel/test_tilelang_kernel_int8_gemm_tcgen5.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_assert_matmul"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/profiler/test_tilelang_profiler_dynamic_symbolic.py#0",
+      "role": "operator",
+      "path": "testing/python/profiler/test_tilelang_profiler_dynamic_symbolic.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_profiler_dynamic_symbolic_single",
+        "test_profiler_dynamic_symbolic_multiple",
+        "test_profiler_dynamic_symbolic_missing_constraint",
+        "test_profiler_dynamic_symbolic_with_input_tensors"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/profiler/test_tilelang_profiler_dynamic_symbolic.py#1",
+      "role": "operator",
+      "path": "testing/python/profiler/test_tilelang_profiler_dynamic_symbolic.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_profiler_dynamic_symbolic_correctness"
+      ],
+      "quick_nodes": [
+        "test_profiler_dynamic_symbolic_correctness"
+      ]
+    },
+    {
+      "id": "operator:testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py#0",
+      "role": "operator",
+      "path": "testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_dynamic_shared_memory_varies_across_calls"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/runtime/test_tilelang_runtime_tma_validation.py#0",
+      "role": "operator",
+      "path": "testing/python/runtime/test_tilelang_runtime_tma_validation.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tma_runtime_validation_surfaces_invalid_argument_constraints"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/runtime/test_tilelang_runtime_tma_validation.py#1",
+      "role": "operator",
+      "path": "testing/python/runtime/test_tilelang_runtime_tma_validation.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_tma_host_codegen_aligns_tvm_ffi_stack_alloca_for_descriptor"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/tilelibrary/test_tilelang_tilelibrary_gemm_sp.py#0",
+      "role": "operator",
+      "path": "testing/python/tilelibrary/test_tilelang_tilelibrary_gemm_sp.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_ss",
+        "test_gemm_rs",
+        "test_gemm_sr",
+        "test_gemm_rr",
+        "test_compress_dtype_combinations"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/tilelibrary/test_tilelang_tilelibrary_gemm_sp.py#1",
+      "role": "operator",
+      "path": "testing/python/tilelibrary/test_tilelang_tilelibrary_gemm_sp.py",
+      "layer": "P",
+      "arch_lane": "sm80-plus",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_sp_8bit_signedness"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/transform/test_tilelang_transform_im2col_fallback.py#0",
+      "role": "operator",
+      "path": "testing/python/transform/test_tilelang_transform_im2col_fallback.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_im2col_uses_simt_fallback_before_hopper",
+        "test_im2col_uses_tma_on_hopper",
+        "test_im2col_wide_channel_block_uses_multiple_boxes",
+        "test_im2col_tall_pixel_block_uses_single_box",
+        "test_im2col_single_channel_rejects_pixel_inner_pairing",
+        "test_c2d_im2col_alias_warns_and_uses_new_tileop"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_parallel.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_parallel.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_parallel_vectorize_var"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_parallel.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_parallel.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_parallel_static_extent",
+        "test_parallel_let_indices",
+        "test_parallel_dynamic_extent"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_alloc.py#0",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_alloc.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_alloc_barrier_rejects_non_positive_arrive_count"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_alloc.py#1",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_alloc.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_alloc_var",
+        "test_alloc_var_add",
+        "test_alloc_var_with_initializer",
+        "test_alloc_multi_vars_with_initializer"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/language/test_tilelang_language_alloc.py#2",
+      "role": "operator",
+      "path": "testing/python/language/test_tilelang_language_alloc.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_alloc_global"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/jit/test_tilelang_jit_gemm.py#0",
+      "role": "operator",
+      "path": "testing/python/jit/test_tilelang_jit_gemm.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_f16f16f32_nn_kernel_jit"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/jit/test_tilelang_jit_gemm_cython.py#0",
+      "role": "operator",
+      "path": "testing/python/jit/test_tilelang_jit_gemm_cython.py",
+      "layer": "H1",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_cython_kernel_multi_stream"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/jit/test_tilelang_jit_gemm_cython.py#1",
+      "role": "operator",
+      "path": "testing/python/jit/test_tilelang_jit_gemm_cython.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_cython_kernel_do_bench"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:testing/python/jit/test_tilelang_jit_gemm_cython.py#2",
+      "role": "operator",
+      "path": "testing/python/jit/test_tilelang_jit_gemm_cython.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_gemm_jit_kernel",
+        "test_cython_dynamic_shape",
+        "test_cython_dynamic_shape_with_out_idx",
+        "test_matmul_int_variable",
+        "test_matmul_float_variable"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:examples/gdn/test_example_gdn_compilation.py#0",
+      "role": "operator",
+      "path": "examples/gdn/test_example_gdn_compilation.py",
+      "layer": "G",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [
+        "fla"
+      ],
+      "numeric_gate": false,
+      "nodes": [
+        "test_example_wy_fast_compilation",
+        "test_example_wy_fast_bwd_split_compilation",
+        "test_example_chunk_o_compilation",
+        "test_example_chunk_o_bwd_compilation",
+        "test_example_chunk_scaled_dot_kkt_compilation",
+        "test_example_cumsum_compilation",
+        "test_example_chunk_delta_h_compilation",
+        "test_example_chunk_delta_bwd_compilation"
+      ],
+      "quick_nodes": [
+        "test_example_wy_fast_compilation",
+        "test_example_wy_fast_bwd_split_compilation",
+        "test_example_chunk_o_compilation",
+        "test_example_chunk_o_bwd_compilation",
+        "test_example_chunk_scaled_dot_kkt_compilation",
+        "test_example_cumsum_compilation",
+        "test_example_chunk_delta_h_compilation",
+        "test_example_chunk_delta_bwd_compilation"
+      ],
+      "notes": "Compilation smoke only: no reference assertion; a pass is G_SMOKE, never PASS_NUMERIC."
+    },
+    {
+      "id": "operator:examples/flash_attention/test_example_flash_attention.py#0",
+      "role": "operator",
+      "path": "examples/flash_attention/test_example_flash_attention.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_example_gqa_fwd_bshd",
+        "test_example_gqa_bwd",
+        "test_example_mha_bwd_bhsd"
+      ],
+      "quick_nodes": [
+        "test_example_gqa_fwd_bshd",
+        "test_example_gqa_bwd",
+        "test_example_mha_bwd_bhsd"
+      ]
+    },
+    {
+      "id": "operator:examples/flash_attention/test_example_flash_attention.py#1",
+      "role": "operator",
+      "path": "examples/flash_attention/test_example_flash_attention.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch",
+        "einops",
+        "flash-attn"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_example_mha_fwd_varlen"
+      ],
+      "quick_nodes": [
+        "test_example_mha_fwd_varlen"
+      ]
+    },
+    {
+      "id": "operator:examples/blocksparse_attention/test_example_blocksparse_attention.py#0",
+      "role": "operator",
+      "path": "examples/blocksparse_attention/test_example_blocksparse_attention.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch",
+        "triton",
+        "einops"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_block_sparse_attn_triton",
+        "test_example_tilelang_block_sparse_attn"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:examples/blocksparse_attention/test_example_blocksparse_attention.py#1",
+      "role": "operator",
+      "path": "examples/blocksparse_attention/test_example_blocksparse_attention.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch",
+        "triton",
+        "einops",
+        "flash-attn"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_example_tilelang_sparse_gqa_decode_varlen_indice",
+        "test_example_tilelang_sparse_gqa_decode_varlen_mask"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:examples/linear_attention/test_linear_attn.py#0",
+      "role": "operator",
+      "path": "examples/linear_attention/test_linear_attn.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch",
+        "fla",
+        "einops"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_example_linear_attn_fwd",
+        "test_example_linear_attn_bwd"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:examples/elementwise/test_example_elementwise.py#0",
+      "role": "operator",
+      "path": "examples/elementwise/test_example_elementwise.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_example_elementwise_add"
+      ],
+      "quick_nodes": [
+        "test_example_elementwise_add"
+      ]
+    },
+    {
+      "id": "operator:examples/norm/test_rms_norm.py#0",
+      "role": "operator",
+      "path": "examples/norm/test_rms_norm.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_rms_norm"
+      ],
+      "quick_nodes": [
+        "test_rms_norm"
+      ]
+    },
+    {
+      "id": "operator:examples/convolution/test_example_convolution.py#0",
+      "role": "operator",
+      "path": "examples/convolution/test_example_convolution.py",
+      "layer": "P",
+      "arch_lane": "cuda-up-to-sm89",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_example_convolution"
+      ],
+      "quick_nodes": [
+        "test_example_convolution"
+      ]
+    },
+    {
+      "id": "operator:examples/cast/test_example_cast.py#0",
+      "role": "operator",
+      "path": "examples/cast/test_example_cast.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_example_group_per_split_token_cast_to_fp8",
+        "test_example_per_token_cast_to_fp8"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "operator:examples/gemm/test_example_gemm.py#0",
+      "role": "operator",
+      "path": "examples/gemm/test_example_gemm.py",
+      "layer": "P",
+      "arch_lane": "cuda-any",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": true,
+      "nodes": [
+        "test_example_gemm"
+      ],
+      "quick_nodes": []
+    }
+  ],
+  "host_groups": [
+    {
+      "id": "host:testing/python/transform/test_tilelang_cuda_z3_scheduler.py",
+      "role": "host",
+      "path": "testing/python/transform/test_tilelang_cuda_z3_scheduler.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "z3",
+        "tvm-ffi"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_straight_line_minimizes_makespan_and_stable_tie",
+        "test_straight_line_data_latency_and_resource_exclusion",
+        "test_straight_line_owner_exclusion_and_pipe_order",
+        "test_straight_line_unsat_has_dedicated_exception",
+        "test_straight_line_unknown_is_not_reported_as_unsat",
+        "test_loop_start_is_k_ii_plus_r",
+        "test_loop_fixed_cross_iteration_distance",
+        "test_loop_negative_distance_recalculates_and_reads_buffer_versions",
+        "test_loop_resource_forward_and_wraparound_exclusion",
+        "test_loop_owner_forward_and_wraparound_exclusion",
+        "test_loop_stage_order_changes_minimum_ii",
+        "test_loop_enable_offset_controls_cross_stage_resource_spread",
+        "test_loop_manual_stages_are_fixed_then_normalized",
+        "test_loop_manual_pipe_order_infeasible_does_not_fallback",
+        "test_loop_memory_group_capacity",
+        "test_loop_automatic_serial_fallback_only_after_unsat_exhaustion",
+        "test_loop_mocked_unknown_never_falls_back",
+        "test_loop_unknown_after_sat_aborts_instead_of_pruning",
+        "test_private_context_loop_seed_and_rlimit",
+        "test_repeated_and_threaded_solves_are_deterministic",
+        "test_resource_bits_are_configurable_and_checked",
+        "test_straight_line_strict_input_validation",
+        "test_loop_strict_input_validation",
+        "test_missing_required_inputs_raise_type_error",
+        "test_ffi_registration_conversion_and_return_shapes",
+        "test_verbose_writes_json_in_tmp_path",
+        "test_verbose_writes_png_and_pdf_in_tmp_path",
+        "test_debug_failure_does_not_change_schedule"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "host:testing/python/cuda/test_cuda_latency_model.py",
+      "role": "host",
+      "path": "testing/python/cuda/test_cuda_latency_model.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_resource_bits_match_z3_seven_bit_contract",
+        "test_memory_completion_and_independent_ii_formula",
+        "test_memory_completion_sums_accesses_while_ii_takes_path_max",
+        "test_zero_bandwidth_is_explicit_fallback_not_free",
+        "test_unknown_memory_path_has_nonfree_explicit_fallback",
+        "test_strided_geometry_uses_transaction_width",
+        "test_unknown_geometry_and_width_are_marked",
+        "test_sm120_bf16_mma_sync_atom_rounding_and_gemm_ii",
+        "test_sm120_tf32_k_atom_is_distinct_from_generic_mma_sync",
+        "test_multiple_gemms_sum_completion_but_take_max_ii",
+        "test_unsupported_gemm_dtype_is_explicit_fallback",
+        "test_vector_operation_sfu_bandwidth_and_resource_max",
+        "test_zero_vector_bandwidth_is_not_free",
+        "test_scalar_and_mixed_compute_use_resource_max",
+        "test_scope_alias_normalizes_memory_path_and_provenance",
+        "test_dynamic_extent_upper_bound_and_unknown_reliability",
+        "test_latency_and_ii_overrides_are_independent_and_validated",
+        "test_serial_repeat_and_branch_formulas",
+        "test_per_core_phase_max_cross_wait_add_and_protocol_ii",
+        "test_capacity_independent_completion_and_issue_intervals_differ",
+        "test_integer_overflow_and_invalid_values_are_rejected",
+        "test_dataclasses_and_results_are_strict_json_serializable",
+        "test_calibration_converts_ns_and_per_second_units_explicitly",
+        "test_gdn_calibration_schema_is_normalized_per_sm_per_cycle",
+        "test_require_measured_rejects_defaults_and_unmeasured_inputs",
+        "test_default_arch_and_ii_parameters_are_explicit_fallbacks",
+        "test_empty_task_gets_minimal_schedulable_cost"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "host:testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py",
+      "role": "host",
+      "path": "testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py",
+      "layer": "H1",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_inject_software_pipeline_checks_cross_thread_raw_reordering",
+        "test_async_pipeline_groups_multiple_copy_producers",
+        "test_async_pipeline_waits_for_individual_physical_commit_group",
+        "test_async_pipeline_only_wraps_producer_statements_from_explicit_group_annotations",
+        "test_async_pipeline_marks_copy_ops_for_pipeline_managed_cp_async_sync",
+        "test_pipeline_explicit_gemm_mbar_uses_logical_epoch",
+        "test_async_pipeline_does_not_mark_non_cp_async_compatible_copy",
+        "test_async_pipeline_relaxes_loop_wait_and_descends_trailing_drain",
+        "test_degenerate_pipeline_with_single_stage_is_not_expanded",
+        "test_inject_software_pipeline_expands_annotated_layout",
+        "test_inject_software_pipeline_sibling_buffers",
+        "test_inject_software_pipeline_replays_scalar_bind_without_annotation_slot",
+        "test_inject_software_pipeline_replays_readonly_bufferload_bind",
+        "test_inject_software_pipeline_rejects_side_effecting_replay_mask",
+        "test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer",
+        "test_inject_software_pipeline_ignores_legacy_scalar_bind_annotation_slot",
+        "test_inject_software_pipeline_replays_scalar_bind_dependencies",
+        "test_inject_software_pipeline_checks_physical_strided_regions",
+        "test_inject_software_pipeline_checks_threaded_strided_regions",
+        "test_inject_software_pipeline_versions_thread_regions"
+      ],
+      "quick_nodes": []
+    },
+    {
+      "id": "host:testing/python/analysis/test_tilelang_fragment_loop_checker.py",
+      "role": "host",
+      "path": "testing/python/analysis/test_tilelang_fragment_loop_checker.py",
+      "layer": "H0",
+      "arch_lane": "host",
+      "dependencies": [
+        "tilelang",
+        "torch"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_invalid_loop",
+        "test_valid_loop"
+      ],
+      "quick_nodes": []
+    }
+  ],
+  "z3_fixture_groups": [
+    {
+      "id": "z3-fixture:annotated-copy-pipeline",
+      "role": "z3_fixture",
+      "path": "testing/python/cuda/test_compile_matrix_driver.py",
+      "layer": "H1",
+      "arch_lane": "explicit-cuda-target",
+      "dependencies": [
+        "tilelang",
+        "torch",
+        "z3"
+      ],
+      "optional_dependencies": [],
+      "numeric_gate": false,
+      "nodes": [
+        "test_z3_opt_in_pass_configs_compile_fixture"
+      ],
+      "quick_nodes": [],
+      "z3_opt_in": {
+        "pass_configs": {
+          "tl.enable_z3_pipeline_planning": true
+        },
+        "environment": "TILELANG_COMPILE_MATRIX_PASS_CONFIGS",
+        "purpose": "Dedicated annotated-loop compile fixture; ordinary pytest nodes are not opted in."
+      }
+    }
+  ]
+}
