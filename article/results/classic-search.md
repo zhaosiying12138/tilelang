@@ -6,9 +6,9 @@
 
 | suite | 固定问题 | raw | legal | 主预算 |
 |---|---|---:|---:|---:|
-| gemm_square | FP16 GEMM，M=N=K=4096，B[n,k] 转置 | 288 | 256 | top-10 |
-| gemm_short_k | M=N=8192，K=256 | 288 | 256 | top-10 |
-| conv2d_stride_tail | NHWC implicit GEMM，33×33→17×17，C64→F96，stride 2、tail | 144 | 128 | top-10 |
+| gemm_square | FP16 GEMM，M=N=K=4096，B[n,k] 转置 | 288 | 240 | top-10 |
+| gemm_short_k | M=N=8192，K=256 | 288 | 240 | top-10 |
+| conv2d_stride_tail | NHWC implicit GEMM，33×33→17×17，C64→F96，stride 2、tail | 144 | 120 | top-10 |
 | flash_attention_causal | BSHD，B1/H16/S2048/D64，causal | 54 | 54 | top-10 |
 
 GEMM 的空间为 `block_M/N=[64,128,256]`、`block_K=[32,64]`、`num_stages=[0,1,2,3]`、`threads=[128,256]`、rasterization 两值。Conv 删除 kernel 不消费的 rasterization 轴。FA 使用 `block_M/N=[64,128,256]`、stages 1–3 和两种线程数。
@@ -44,7 +44,7 @@ CPU 测试与小形状数值测试定义见 [operators README](../../benchmark/z
 
 ## 4. 约束只删除可证明的 UNSAT
 
-GEMM/Conv 的 shared 必要下界为 `max(2*block_K*(block_M+block_N), 2*block_M*block_N)`，FA 为 `max(Q+K,Q+V,O)`。这些公式利用操作数同时存活关系，不声称等于最终 post-lowering shared 分配。stage 版本、reuse、padding、barrier、寄存器、TMA 对齐和 target-specific 指令选择在信息不足时保持 UNKNOWN 或不予编码。
+GEMM/Conv 的 shared 必要下界为 `max(2*block_K*(block_M+block_N)*max(1,num_stages), 2*block_M*block_N)`，FA 为 `max(Q+K,Q+V,O)`。这些公式利用操作数在各有效 pipeline 版本中的同时存活关系，以及输出在循环后的复用机会，不声称等于最终 post-lowering shared 分配。首轮 stock-raw 的 48 个动态 shared 超限与版本化公式逐一对应，零漏报、零误报；据此将 GEMM legal 从 256 收紧到 240，guided top-10 配置逐项不变。首批保留为约束 validation，后续正式批次使用修订空间。stage 版本、reuse、padding、barrier、寄存器、TMA 对齐和 target-specific 指令选择在信息不足时保持 UNKNOWN 或不予编码。
 
 SM120 没有照搬 sm_80/sm_90 的 atom 条件，因此 unknown=0 不能被解释为“所有合法性已证明”。`CostModelCapacityError` 也不同于 Z3 UNSAT：容量未知的候选保留在宇宙中并排在有效预测之后，top-k 覆盖时仍可进入编译验证。模型容量 UNKNOWN 与候选 compile/validation/profile failure 分开计数。
 

@@ -112,7 +112,7 @@ reference 在 matmul/convolution 前将输入转为 FP32，并在调用期间关
 1. tile 为正、`num_stages` 非负、reduction trip 非空，CUDA threads 为正、不超过 1024 且能被 32 整除；可再用显式 device thread limit 收紧。
 2. `sm_80`/`sm_90` 静态 stock-pipeline 模型下，根据上游 `src/cuda/op/gemm.cc` 的指令选择和 warp partition 存在性编码局部 GEMM atom 条件。FA 分别考虑 QK 与 PV 两个 GEMM。target 未指定或不受支持时，该项为 unknown，不做猜测。
 3. 共享内存只编码必要下界，并且只有调用方提供“已核实的可用 per-block 上限”时才启用：
-   - GEMM/Conv：`max(2*block_K*(block_M+block_N), 2*block_M*block_N)` bytes。
+   - GEMM/Conv：`max(2*block_K*(block_M+block_N)*max(1,num_stages), 2*block_M*block_N)` bytes，覆盖有效 pipeline 版本的 A/B 操作数与输出复用后的必要下界；`num_stages=0` 仍按一个 buffer generation 计算。
    - FA：`max(Q+K,Q+V,O)`，其中 `Q=O=2*block_M*D`、`K=V=2*block_N*D` bytes。
 
 这些下界利用 GEMM 操作数的同时存活关系；不是实际 post-lowering shared-memory 预测。pipeline buffer 版本、reuse、alignment/padding、barrier、寄存器和未提供的 device limit 均在 manifest 中列为 unknown 及来源/原因。

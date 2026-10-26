@@ -12,10 +12,17 @@
     "warmup": 10,
     "repeat": 50,
     "raw_space": 288,
-    "legal_space": 256,
+    "legal_space": 240,
     "cost_model_coefficients_changed": false,
     "constraints_changed": false,
     "candidate_budgets_changed": false
+  },
+  "constraint_revision": {
+    "versioned_shared_lower_bound": "max(2*block_K*(block_M+block_N)*max(1,num_stages), 2*block_M*block_N)",
+    "validation": "The first complete stock-raw run has 48 validation failures. The formula predicts exactly the same 48 configs with zero missing and zero unexpected failures. Guided top-10 is unchanged.",
+    "legal_space_after_revision": 240,
+    "first_batch_role": "validation evidence preserved; later formal batches use the revised space",
+    "performance_coefficients_changed": false
   },
   "fallback": "If a complete unique top-10 baseline is unavailable or its config universe differs, speedup, quality, and correlation fields are unavailable rather than inferred. A failed legal-oracle does not erase successful raw evidence: quality uses the full stock-raw optimum with quality_reference=stock-raw, and rank analysis uses only successful raw configs with legal_oracle_complete=false and an explicit denominator."
 }

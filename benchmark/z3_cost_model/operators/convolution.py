@@ -109,7 +109,7 @@ SHAPE = PRIMARY_SHAPE
 
 
 def _shared_memory_lower_bound(config: ConvConfig) -> int:
-    gemm_operands = 2 * config.block_K * (config.block_M + config.block_N)
+    gemm_operands = 2 * config.block_K * (config.block_M + config.block_N) * max(1, config.num_stages)
     output = 2 * config.block_M * config.block_N
     return max(gemm_operands, output)
 
@@ -297,7 +297,7 @@ def suite_manifest(*, model: ConstraintModel | None = None) -> dict[str, Any]:
         "default_pass_configs": None,
         "constraints": constraints_manifest(
             trip_count="ceildiv(K*K*C, block_K)",
-            shared_lower_bound="max(2*block_K*(block_M+block_N), 2*block_M*block_N)",
+            shared_lower_bound="max(2*block_K*(block_M+block_N)*max(1,num_stages), 2*block_M*block_N)",
             gemm_operations=("M=block_M, N=block_N, K=block_K, policy=Square",),
             model=selected_model,
         ),

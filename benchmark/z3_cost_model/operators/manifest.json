@@ -1,7 +1,39 @@
 {
+  "schema": "tilelang.z3_cost_model.classic_operators.v1",
   "operators": [
     {
-      "canonical_id": "sha256(ConfigSpace.canonical_json(config).utf8)",
+      "schema": "tilelang.z3_cost_model.operator_suite.v1",
+      "operator": "gemm",
+      "shape": {
+        "M": 4096,
+        "N": 4096,
+        "K": 4096
+      },
+      "shape_variants": [
+        {
+          "name": "main_4096_cubed",
+          "shape": {
+            "M": 4096,
+            "N": 4096,
+            "K": 4096
+          }
+        },
+        {
+          "name": "short_k_m_n_8192",
+          "shape": {
+            "M": 8192,
+            "N": 8192,
+            "K": 256
+          }
+        }
+      ],
+      "dtype": {
+        "io": "float16",
+        "accumulator": "float32",
+        "reference": "float32"
+      },
+      "operation": "C[M,N] = A[M,K] @ B[N,K]^T",
+      "raw_count": 288,
       "configuration_keys": [
         "block_M",
         "block_N",
@@ -10,14 +42,24 @@
         "threads",
         "enable_rasterization"
       ],
+      "canonical_id": "sha256(ConfigSpace.canonical_json(config).utf8)",
+      "seed": 20261026,
+      "default_pass_configs": null,
       "constraints": {
+        "policy": "Only an explicit Z3 UNSAT verdict prunes; SAT and unknown are retained. Compiler failures are never inputs to the builder.",
+        "model": {
+          "target": null,
+          "max_threads_per_block": null,
+          "shared_memory_per_block_limit_bytes": null,
+          "source": null
+        },
         "known_clauses": [
           {
             "name": "pipeline_stage_and_trip",
-            "note": "A deeper pipeline than the trip count is retained: guarded prologue/body/epilogue provide no general stage<=trip legality rule.",
             "rule": "tile extents > 0; num_stages >= 0; reduction trip > 0",
+            "trip_count": "ceildiv(K, block_K)",
             "source": "tilelang/language/loop.py::Pipelined and src/transform/inject_pipeline.cc::PipelineRewriter::BuildPipeline",
-            "trip_count": "ceildiv(K, block_K)"
+            "note": "A deeper pipeline than the trip count is retained: guarded prologue/body/epilogue provide no general stage<=trip legality rule."
           },
           {
             "name": "cuda_threads",
@@ -26,172 +68,75 @@
           },
           {
             "name": "stock_cuda_gemm_atom_when_target_known",
-            "note": "Only local GEMM tile extents and warps are constrained; global M/N/K/reduction tails are not required to be divisible.",
             "operations": [
               "M=block_M, N=block_N, K=block_K, policy=Square"
             ],
-            "source": "src/cuda/op/gemm.cc::{AllowWgmma,ComputeDefaultWarpPartition,ComputeWgmmaWarpPartition}"
+            "source": "src/cuda/op/gemm.cc::{AllowWgmma,ComputeDefaultWarpPartition,ComputeWgmmaWarpPartition}",
+            "note": "Only local GEMM tile extents and warps are constrained; global M/N/K/reduction tails are not required to be divisible."
           },
           {
-            "lower_bound_bytes": "max(2*block_K*(block_M+block_N), 2*block_M*block_N)",
             "name": "necessary_shared_memory_lower_bound",
             "rule": "lower_bound <= explicit usable limit, only when that limit is supplied",
+            "lower_bound_bytes": "max(2*block_K*(block_M+block_N)*max(1,num_stages), 2*block_M*block_N)",
             "source": "T.alloc_shared declarations and simultaneous GEMM operand liveness; unversioned bytes are a lower bound on versioned storage."
           }
         ],
-        "model": {
-          "max_threads_per_block": null,
-          "shared_memory_per_block_limit_bytes": null,
-          "source": null,
-          "target": null
-        },
-        "policy": "Only an explicit Z3 UNSAT verdict prunes; SAT and unknown are retained. Compiler failures are never inputs to the builder.",
         "unknown": [
           {
             "name": "full_shared_memory",
-            "reason": "Exact post-lowering bytes additionally depend on pipeline stage/order liveness, shared-memory reuse, alignment/padding, barriers, target and pass configs.",
+            "status": "unknown",
             "source": "src/transform/inject_pipeline.cc::PipelineRewriter::ComputeBufferVersions",
-            "status": "unknown"
+            "reason": "Exact post-lowering bytes additionally depend on pipeline stage/order liveness, shared-memory reuse, alignment/padding, barriers, target and pass configs."
           },
           {
             "name": "register_usage",
-            "reason": "No reliable static register formula is available; no register-based pruning is attempted.",
+            "status": "unknown",
             "source": null,
-            "status": "unknown"
+            "reason": "No reliable static register formula is available; no register-based pruning is attempted."
           },
           {
             "name": "usable_shared_memory_limit",
-            "reason": "No GPU is queried; supply an explicit verified ConstraintModel limit to enable this clause.",
+            "status": "unknown",
             "source": null,
-            "status": "unknown"
+            "reason": "No GPU is queried; supply an explicit verified ConstraintModel limit to enable this clause."
           },
           {
             "name": "target_specific_gemm_instruction_and_atom",
-            "reason": "Target auto/unspecified or unsupported by the conservative selector; no atom-based pruning is attempted.",
+            "status": "unknown",
             "source": "src/cuda/op/gemm.cc::Gemm::SelectInst",
-            "status": "unknown"
+            "reason": "Target auto/unspecified or unsupported by the conservative selector; no atom-based pruning is attempted."
           }
         ]
       },
-      "default_pass_configs": null,
-      "dtype": {
-        "accumulator": "float32",
-        "io": "float16",
-        "reference": "float32"
-      },
-      "operation": "C[M,N] = A[M,K] @ B[N,K]^T",
-      "operator": "gemm",
       "provenance": {
-        "derivation": "Upstream tile schedule and Cartesian space; canonical keys threads/enable_rasterization are used directly. No performance data is inherited.",
+        "upstream_revision": "80364b3d9758854a9692cc0f14089025f54d3f3f",
         "sources": [
           "examples/gemm/example_gemm_autotune.py",
           "tilelang/autotuner/space.py"
         ],
-        "upstream_revision": "80364b3d9758854a9692cc0f14089025f54d3f3f"
-      },
-      "raw_count": 288,
-      "schema": "tilelang.z3_cost_model.operator_suite.v1",
-      "seed": 20261026,
-      "shape": {
-        "K": 4096,
-        "M": 4096,
-        "N": 4096
-      },
-      "shape_variants": [
-        {
-          "name": "main_4096_cubed",
-          "shape": {
-            "K": 4096,
-            "M": 4096,
-            "N": 4096
-          }
-        },
-        {
-          "name": "short_k_m_n_8192",
-          "shape": {
-            "K": 256,
-            "M": 8192,
-            "N": 8192
-          }
-        }
-      ]
+        "derivation": "Upstream tile schedule and Cartesian space; canonical keys threads/enable_rasterization are used directly. No performance data is inherited."
+      }
     },
     {
-      "canonical_id": "sha256(ConfigSpace.canonical_json(config).utf8)",
-      "configuration_keys": [
-        "block_M",
-        "block_N",
-        "block_K",
-        "num_stages",
-        "threads"
-      ],
-      "constraints": {
-        "known_clauses": [
-          {
-            "name": "pipeline_stage_and_trip",
-            "note": "A deeper pipeline than the trip count is retained: guarded prologue/body/epilogue provide no general stage<=trip legality rule.",
-            "rule": "tile extents > 0; num_stages >= 0; reduction trip > 0",
-            "source": "tilelang/language/loop.py::Pipelined and src/transform/inject_pipeline.cc::PipelineRewriter::BuildPipeline",
-            "trip_count": "ceildiv(K*K*C, block_K)"
-          },
-          {
-            "name": "cuda_threads",
-            "rule": "0 < threads <= 1024 and threads % 32 == 0; optional explicit device limit",
-            "source": "CUDA warp size and per-block thread limit; tilelang/cuda/hardware.py device fields"
-          },
-          {
-            "name": "stock_cuda_gemm_atom_when_target_known",
-            "note": "Only local GEMM tile extents and warps are constrained; global M/N/K/reduction tails are not required to be divisible.",
-            "operations": [
-              "M=block_M, N=block_N, K=block_K, policy=Square"
-            ],
-            "source": "src/cuda/op/gemm.cc::{AllowWgmma,ComputeDefaultWarpPartition,ComputeWgmmaWarpPartition}"
-          },
-          {
-            "lower_bound_bytes": "max(2*block_K*(block_M+block_N), 2*block_M*block_N)",
-            "name": "necessary_shared_memory_lower_bound",
-            "rule": "lower_bound <= explicit usable limit, only when that limit is supplied",
-            "source": "T.alloc_shared declarations and simultaneous GEMM operand liveness; unversioned bytes are a lower bound on versioned storage."
-          }
-        ],
-        "model": {
-          "max_threads_per_block": null,
-          "shared_memory_per_block_limit_bytes": null,
-          "source": null,
-          "target": null
-        },
-        "policy": "Only an explicit Z3 UNSAT verdict prunes; SAT and unknown are retained. Compiler failures are never inputs to the builder.",
-        "unknown": [
-          {
-            "name": "full_shared_memory",
-            "reason": "Exact post-lowering bytes additionally depend on pipeline stage/order liveness, shared-memory reuse, alignment/padding, barriers, target and pass configs.",
-            "source": "src/transform/inject_pipeline.cc::PipelineRewriter::ComputeBufferVersions",
-            "status": "unknown"
-          },
-          {
-            "name": "register_usage",
-            "reason": "No reliable static register formula is available; no register-based pruning is attempted.",
-            "source": null,
-            "status": "unknown"
-          },
-          {
-            "name": "usable_shared_memory_limit",
-            "reason": "No GPU is queried; supply an explicit verified ConstraintModel limit to enable this clause.",
-            "source": null,
-            "status": "unknown"
-          },
-          {
-            "name": "target_specific_gemm_instruction_and_atom",
-            "reason": "Target auto/unspecified or unsupported by the conservative selector; no atom-based pruning is attempted.",
-            "source": "src/cuda/op/gemm.cc::Gemm::SelectInst",
-            "status": "unknown"
-          }
-        ]
+      "schema": "tilelang.z3_cost_model.operator_suite.v1",
+      "operator": "convolution_nhwc_implicit_gemm",
+      "shape": {
+        "N": 4,
+        "C": 64,
+        "H": 33,
+        "W": 33,
+        "F": 96,
+        "K": 3,
+        "S": 2,
+        "D": 1,
+        "P": 1,
+        "OH": 17,
+        "OW": 17,
+        "reduction": 576
       },
-      "default_pass_configs": null,
       "dtype": {
-        "accumulator": "float32",
         "io": "float16",
+        "accumulator": "float32",
         "reference": "float32"
       },
       "layout": {
@@ -200,49 +145,32 @@
         "output": "N,OH,OW,F"
       },
       "operation": "NHWC implicit GEMM; reduction=KH*KW*C, output rows=N*OH*OW",
-      "operator": "convolution_nhwc_implicit_gemm",
-      "provenance": {
-        "derivation": "Upstream im2col implicit-GEMM schedule; rasterization is deliberately absent from the 144-point space. No performance data is inherited.",
-        "sources": [
-          "examples/convolution/example_convolution_autotune.py",
-          "tilelang/autotuner/space.py"
-        ],
-        "upstream_revision": "80364b3d9758854a9692cc0f14089025f54d3f3f"
-      },
       "raw_count": 144,
-      "schema": "tilelang.z3_cost_model.operator_suite.v1",
-      "seed": 20261026,
-      "shape": {
-        "C": 64,
-        "D": 1,
-        "F": 96,
-        "H": 33,
-        "K": 3,
-        "N": 4,
-        "OH": 17,
-        "OW": 17,
-        "P": 1,
-        "S": 2,
-        "W": 33,
-        "reduction": 576
-      }
-    },
-    {
-      "canonical_id": "sha256(ConfigSpace.canonical_json(config).utf8)",
       "configuration_keys": [
         "block_M",
         "block_N",
+        "block_K",
         "num_stages",
         "threads"
       ],
+      "canonical_id": "sha256(ConfigSpace.canonical_json(config).utf8)",
+      "seed": 20261026,
+      "default_pass_configs": null,
       "constraints": {
+        "policy": "Only an explicit Z3 UNSAT verdict prunes; SAT and unknown are retained. Compiler failures are never inputs to the builder.",
+        "model": {
+          "target": null,
+          "max_threads_per_block": null,
+          "shared_memory_per_block_limit_bytes": null,
+          "source": null
+        },
         "known_clauses": [
           {
             "name": "pipeline_stage_and_trip",
-            "note": "A deeper pipeline than the trip count is retained: guarded prologue/body/epilogue provide no general stage<=trip legality rule.",
             "rule": "tile extents > 0; num_stages >= 0; reduction trip > 0",
+            "trip_count": "ceildiv(K*K*C, block_K)",
             "source": "tilelang/language/loop.py::Pipelined and src/transform/inject_pipeline.cc::PipelineRewriter::BuildPipeline",
-            "trip_count": "max=ceildiv(S,block_N); causal min=ceildiv(min(S,block_M),block_N)"
+            "note": "A deeper pipeline than the trip count is retained: guarded prologue/body/epilogue provide no general stage<=trip legality rule."
           },
           {
             "name": "cuda_threads",
@@ -251,82 +179,154 @@
           },
           {
             "name": "stock_cuda_gemm_atom_when_target_known",
-            "note": "Only local GEMM tile extents and warps are constrained; global M/N/K/reduction tails are not required to be divisible.",
             "operations": [
-              "QK: M=block_M, N=block_N, K=D, policy=FullRow",
-              "PV: M=block_M, N=D, K=block_N, policy=FullRow"
+              "M=block_M, N=block_N, K=block_K, policy=Square"
             ],
-            "source": "src/cuda/op/gemm.cc::{AllowWgmma,ComputeDefaultWarpPartition,ComputeWgmmaWarpPartition}"
+            "source": "src/cuda/op/gemm.cc::{AllowWgmma,ComputeDefaultWarpPartition,ComputeWgmmaWarpPartition}",
+            "note": "Only local GEMM tile extents and warps are constrained; global M/N/K/reduction tails are not required to be divisible."
           },
           {
-            "lower_bound_bytes": "max(Q+K,Q+V,O), where Q=O=2*block_M*D and K=V=2*block_N*D bytes",
             "name": "necessary_shared_memory_lower_bound",
             "rule": "lower_bound <= explicit usable limit, only when that limit is supplied",
+            "lower_bound_bytes": "max(2*block_K*(block_M+block_N)*max(1,num_stages), 2*block_M*block_N)",
             "source": "T.alloc_shared declarations and simultaneous GEMM operand liveness; unversioned bytes are a lower bound on versioned storage."
           }
         ],
-        "model": {
-          "max_threads_per_block": null,
-          "shared_memory_per_block_limit_bytes": null,
-          "source": null,
-          "target": null
-        },
-        "policy": "Only an explicit Z3 UNSAT verdict prunes; SAT and unknown are retained. Compiler failures are never inputs to the builder.",
         "unknown": [
           {
             "name": "full_shared_memory",
-            "reason": "Exact post-lowering bytes additionally depend on pipeline stage/order liveness, shared-memory reuse, alignment/padding, barriers, target and pass configs.",
+            "status": "unknown",
             "source": "src/transform/inject_pipeline.cc::PipelineRewriter::ComputeBufferVersions",
-            "status": "unknown"
+            "reason": "Exact post-lowering bytes additionally depend on pipeline stage/order liveness, shared-memory reuse, alignment/padding, barriers, target and pass configs."
           },
           {
             "name": "register_usage",
-            "reason": "No reliable static register formula is available; no register-based pruning is attempted.",
+            "status": "unknown",
             "source": null,
-            "status": "unknown"
+            "reason": "No reliable static register formula is available; no register-based pruning is attempted."
           },
           {
             "name": "usable_shared_memory_limit",
-            "reason": "No GPU is queried; supply an explicit verified ConstraintModel limit to enable this clause.",
+            "status": "unknown",
             "source": null,
-            "status": "unknown"
+            "reason": "No GPU is queried; supply an explicit verified ConstraintModel limit to enable this clause."
           },
           {
             "name": "target_specific_gemm_instruction_and_atom",
-            "reason": "Target auto/unspecified or unsupported by the conservative selector; no atom-based pruning is attempted.",
+            "status": "unknown",
             "source": "src/cuda/op/gemm.cc::Gemm::SelectInst",
-            "status": "unknown"
+            "reason": "Target auto/unspecified or unsupported by the conservative selector; no atom-based pruning is attempted."
           }
         ]
       },
-      "default_pass_configs": null,
+      "provenance": {
+        "upstream_revision": "80364b3d9758854a9692cc0f14089025f54d3f3f",
+        "sources": [
+          "examples/convolution/example_convolution_autotune.py",
+          "tilelang/autotuner/space.py"
+        ],
+        "derivation": "Upstream im2col implicit-GEMM schedule; rasterization is deliberately absent from the 144-point space. No performance data is inherited."
+      }
+    },
+    {
+      "schema": "tilelang.z3_cost_model.operator_suite.v1",
+      "operator": "flash_attention_bshd",
+      "shape": {
+        "B": 1,
+        "H": 16,
+        "S": 2048,
+        "D": 64,
+        "is_causal": true
+      },
       "dtype": {
-        "accumulator": "float32",
         "io": "float16",
+        "accumulator": "float32",
         "reference": "float32"
       },
       "layout": "BSHD",
       "operation": "softmax((Q@K^T)/sqrt(D) + causal_mask)@V; mask[j,i]=1 iff i<=j",
-      "operator": "flash_attention_bshd",
+      "raw_count": 54,
+      "configuration_keys": [
+        "block_M",
+        "block_N",
+        "num_stages",
+        "threads"
+      ],
+      "canonical_id": "sha256(ConfigSpace.canonical_json(config).utf8)",
+      "seed": 20261026,
+      "default_pass_configs": null,
+      "constraints": {
+        "policy": "Only an explicit Z3 UNSAT verdict prunes; SAT and unknown are retained. Compiler failures are never inputs to the builder.",
+        "model": {
+          "target": null,
+          "max_threads_per_block": null,
+          "shared_memory_per_block_limit_bytes": null,
+          "source": null
+        },
+        "known_clauses": [
+          {
+            "name": "pipeline_stage_and_trip",
+            "rule": "tile extents > 0; num_stages >= 0; reduction trip > 0",
+            "trip_count": "max=ceildiv(S,block_N); causal min=ceildiv(min(S,block_M),block_N)",
+            "source": "tilelang/language/loop.py::Pipelined and src/transform/inject_pipeline.cc::PipelineRewriter::BuildPipeline",
+            "note": "A deeper pipeline than the trip count is retained: guarded prologue/body/epilogue provide no general stage<=trip legality rule."
+          },
+          {
+            "name": "cuda_threads",
+            "rule": "0 < threads <= 1024 and threads % 32 == 0; optional explicit device limit",
+            "source": "CUDA warp size and per-block thread limit; tilelang/cuda/hardware.py device fields"
+          },
+          {
+            "name": "stock_cuda_gemm_atom_when_target_known",
+            "operations": [
+              "QK: M=block_M, N=block_N, K=D, policy=FullRow",
+              "PV: M=block_M, N=D, K=block_N, policy=FullRow"
+            ],
+            "source": "src/cuda/op/gemm.cc::{AllowWgmma,ComputeDefaultWarpPartition,ComputeWgmmaWarpPartition}",
+            "note": "Only local GEMM tile extents and warps are constrained; global M/N/K/reduction tails are not required to be divisible."
+          },
+          {
+            "name": "necessary_shared_memory_lower_bound",
+            "rule": "lower_bound <= explicit usable limit, only when that limit is supplied",
+            "lower_bound_bytes": "max(Q+K,Q+V,O), where Q=O=2*block_M*D and K=V=2*block_N*D bytes",
+            "source": "T.alloc_shared declarations and simultaneous GEMM operand liveness; unversioned bytes are a lower bound on versioned storage."
+          }
+        ],
+        "unknown": [
+          {
+            "name": "full_shared_memory",
+            "status": "unknown",
+            "source": "src/transform/inject_pipeline.cc::PipelineRewriter::ComputeBufferVersions",
+            "reason": "Exact post-lowering bytes additionally depend on pipeline stage/order liveness, shared-memory reuse, alignment/padding, barriers, target and pass configs."
+          },
+          {
+            "name": "register_usage",
+            "status": "unknown",
+            "source": null,
+            "reason": "No reliable static register formula is available; no register-based pruning is attempted."
+          },
+          {
+            "name": "usable_shared_memory_limit",
+            "status": "unknown",
+            "source": null,
+            "reason": "No GPU is queried; supply an explicit verified ConstraintModel limit to enable this clause."
+          },
+          {
+            "name": "target_specific_gemm_instruction_and_atom",
+            "status": "unknown",
+            "source": "src/cuda/op/gemm.cc::Gemm::SelectInst",
+            "reason": "Target auto/unspecified or unsupported by the conservative selector; no atom-based pruning is attempted."
+          }
+        ]
+      },
       "provenance": {
-        "derivation": "Upstream online-softmax schedule and BSHD layout; no fast-math pass is enabled by default. No performance data is inherited.",
+        "upstream_revision": "80364b3d9758854a9692cc0f14089025f54d3f3f",
         "sources": [
           "examples/flash_attention/example_mha_fwd_bshd.py",
           "tilelang/autotuner/space.py"
         ],
-        "upstream_revision": "80364b3d9758854a9692cc0f14089025f54d3f3f"
-      },
-      "raw_count": 54,
-      "schema": "tilelang.z3_cost_model.operator_suite.v1",
-      "seed": 20261026,
-      "shape": {
-        "B": 1,
-        "D": 64,
-        "H": 16,
-        "S": 2048,
-        "is_causal": true
+        "derivation": "Upstream online-softmax schedule and BSHD layout; no fast-math pass is enabled by default. No performance data is inherited."
       }
     }
-  ],
-  "schema": "tilelang.z3_cost_model.classic_operators.v1"
+  ]
 }

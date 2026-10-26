@@ -233,6 +233,29 @@ def test_non_warp_thread_count_is_provably_unsat(module):
     assert result.audit["unknown"] == 0
 
 
+def test_pipeline_versioned_shared_memory_lower_bound():
+    base = {
+        "block_M": 64,
+        "block_N": 256,
+        "block_K": 64,
+        "threads": 128,
+    }
+    for stages, expected in ((0, 40960), (1, 40960), (2, 81920), (3, 122880)):
+        gemm_config = gemm.GemmConfig(**base, num_stages=stages, enable_rasterization=False)
+        conv_config = convolution.ConvConfig(**base, num_stages=stages)
+        assert gemm._shared_memory_lower_bound(gemm_config) == expected
+        assert convolution._shared_memory_lower_bound(conv_config) == expected
+    output_dominant = gemm.GemmConfig(
+        block_M=256,
+        block_N=256,
+        block_K=32,
+        num_stages=0,
+        threads=128,
+        enable_rasterization=False,
+    )
+    assert gemm._shared_memory_lower_bound(output_dominant) == 131072
+
+
 def test_target_specific_atom_constraints_are_not_guessed_for_auto():
     config = {
         "block_M": 80,

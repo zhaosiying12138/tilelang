@@ -1,0 +1,37 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+{
+  "schema": "tilelang.classic.shared-constraint-validation/v1",
+  "role": "constraint validation, not a new performance run",
+  "formula": "max(2*block_K*(block_M+block_N)*max(1,num_stages), 2*block_M*block_N)",
+  "hardware_opt_in_bytes": 101376,
+  "raw_trials": 288,
+  "actual_failed_configs": 48,
+  "predicted_over_capacity_configs": 48,
+  "missing_from_failure": [],
+  "unexpected_failure": [],
+  "failed_by_num_stages": {
+    "0": 8,
+    "1": 8,
+    "2": 8,
+    "3": 24
+  },
+  "old_legal": 256,
+  "new_legal": 240,
+  "top10_unchanged": true,
+  "raw_best_config": {
+    "block_K": 64,
+    "block_M": 128,
+    "block_N": 128,
+    "enable_rasterization": true,
+    "num_stages": 2,
+    "threads": 256
+  },
+  "raw_best_in_top10": false,
+  "raw_best_in_top20": false,
+  "performance_model_coefficients_changed": false,
+  "source": {
+    "stock_events": "evidence/G6/classic-main-v1/gemm_square-rep-0/gemm_square/top-k-0010/stock-raw__rep-0000/events.jsonl",
+    "guided_events": "evidence/G6/classic-main-v1/gemm_square-rep-0/gemm_square/top-k-0010/z3-cm-topk__rep-0000/events.jsonl",
+    "formula": "benchmark/z3_cost_model/operators/gemm.py::_shared_memory_lower_bound"
+  }
+}

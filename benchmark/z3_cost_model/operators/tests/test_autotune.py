@@ -770,6 +770,14 @@ def test_correlation_refuses_incomplete_oracle(tmp_path):
     assert "complete measured oracle" in correlation["reason"]
 
 
+def test_raw_baseline_accepts_a_proper_legal_subset():
+    stock = {"arm": "stock-raw", "R": 288, "_raw_ids": [1, 2, 3], "_legal_ids": []}
+    guided = {"arm": "z3-cm-topk", "R": 288, "U": 256, "_raw_ids": [1, 2, 3], "_legal_ids": [1, 2]}
+    assert analyze_results._same_space(guided, stock) is True
+    guided["_legal_ids"].append(4)
+    assert analyze_results._same_space(guided, stock) is False
+
+
 def test_raw_successful_oracle_supports_quality_and_rank_when_legal_fails(tmp_path):
     _write_analysis_run(tmp_path, "stock-raw", wall=100.0)
     _write_analysis_run(tmp_path, "z3-legal-exhaustive", failed_trial=True, wall=80.0)
@@ -795,9 +803,9 @@ def test_real_sm120_models_and_constraints_cover_every_frozen_suite():
 
     constraint_model, _ = autotune.constraint_model_from_hardware(autotune.DEFAULT_HARDWARE_PATH)
     expected_legal = {
-        "gemm_square": 256,
-        "gemm_short_k": 256,
-        "conv2d_stride_tail": 128,
+        "gemm_square": 240,
+        "gemm_short_k": 240,
+        "conv2d_stride_tail": 120,
         "flash_attention_causal": 54,
     }
     for name, spec in autotune.SUITES.items():
