@@ -17,5 +17,5 @@
     "constraints_changed": false,
     "candidate_budgets_changed": false
   },
-  "fallback": "If a complete unique top-10 baseline is unavailable or its config universe differs, speedup, quality, and correlation fields are unavailable rather than inferred."
+  "fallback": "If a complete unique top-10 baseline is unavailable or its config universe differs, speedup, quality, and correlation fields are unavailable rather than inferred. A failed legal-oracle does not erase successful raw evidence: quality uses the full stock-raw optimum with quality_reference=stock-raw, and rank analysis uses only successful raw configs with legal_oracle_complete=false and an explicit denominator."
 }

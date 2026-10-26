@@ -396,8 +396,15 @@ def build_comparisons(runs):
         row = {key: value for key, value in run.items() if not key.startswith("_")}
         baseline, baseline_shared = _baseline(run, stock)
         reference, oracle_shared = _baseline(run, oracle)
+        quality_reference = reference if reference is not None else baseline
+        quality_shared = oracle_shared if reference is not None else baseline_shared
         row["baseline_available"] = baseline is not None
         row["oracle_available"] = reference is not None
+        row["quality_reference"] = "z3-legal-exhaustive" if reference is not None else "stock-raw" if quality_reference is not None else None
+        row["quality_reference_config"] = quality_reference["best_config"] if quality_reference is not None else None
+        row["quality_reference_path"] = quality_reference["path"] if quality_reference is not None else None
+        row["quality_reference_top_k"] = quality_reference["top_k"] if quality_reference is not None else None
+        row["quality_reference_shared_with_top10"] = quality_shared
         row["baseline_top_k"] = baseline["top_k"] if baseline is not None else None
         row["oracle_top_k"] = reference["top_k"] if reference is not None else None
         row["baseline_shared_with_top10"] = baseline_shared
@@ -431,11 +438,11 @@ def build_comparisons(runs):
             )
             row["compile_reduction_denominator"] = baseline["compile_attempts"] if _positive(baseline["compile_attempts"]) else None
             row["profile_reduction_denominator"] = baseline["profile_attempts"] if _positive(baseline["profile_attempts"]) else None
-        if run["performance_evidence"] and reference is not None:
-            row["quality_ratio"] = _ratio(run["best_latency_ms"], reference["best_latency_ms"])
-            row["regret_ms"] = float(run["best_latency_ms"]) - float(reference["best_latency_ms"])
+        if run["performance_evidence"] and quality_reference is not None:
+            row["quality_ratio"] = _ratio(run["best_latency_ms"], quality_reference["best_latency_ms"])
+            row["regret_ms"] = float(run["best_latency_ms"]) - float(quality_reference["best_latency_ms"])
             row["relative_regret"] = row["quality_ratio"] - 1.0 if row["quality_ratio"] is not None else None
-            row["quality_denominator_ms"] = reference["best_latency_ms"]
+            row["quality_denominator_ms"] = quality_reference["best_latency_ms"]
         rows.append(row)
     return rows
 
@@ -526,12 +533,19 @@ def _pearson(xs, ys):
 
 
 def build_correlations(runs):
+    stock = _unique_index(runs, lambda run: run["arm"] == "stock-raw" and run["performance_evidence"])
     oracle = _unique_index(runs, lambda run: run["arm"] == "z3-legal-exhaustive" and run["oracle_complete"])
     output = []
     for run in runs:
         if run["arm"] != "z3-cm-topk":
             continue
         reference, oracle_shared = _baseline(run, oracle)
+        oracle_kind = "z3-legal-exhaustive"
+        legal_oracle_complete = True
+        if reference is None:
+            reference, oracle_shared = _baseline(run, stock)
+            oracle_kind = "stock-raw-successful-trials"
+            legal_oracle_complete = False
         record = {
             "suite": run["suite"],
             "arm": run["arm"],
@@ -546,7 +560,13 @@ def build_correlations(runs):
             "oracle_measured_configs": 0,
             "paired_configs": 0,
             "denominator": 0,
-            "denominator_definition": "unique config_id with a finite prediction and a successful measurement in one complete z3-legal-exhaustive oracle",
+            "oracle_kind": oracle_kind,
+            "legal_oracle_complete": legal_oracle_complete,
+            "denominator_definition": (
+                "unique config_id with a finite prediction and a successful measurement in one complete z3-legal-exhaustive oracle"
+                if legal_oracle_complete
+                else "unique config_id with a finite prediction and a successful stock-raw measurement; failed legal candidates are excluded and counted separately"
+            ),
             "pearson": None,
             "spearman": None,
             "path": run["path"],
@@ -554,6 +574,8 @@ def build_correlations(runs):
             "oracle_top_k": reference["top_k"] if reference is not None else None,
             "oracle_shared_with_top10": oracle_shared,
         }
+        if not legal_oracle_complete and reference is not None:
+            record["reason"] = "complete legal oracle unavailable; using successful stock-raw trials with an explicit denominator"
         if not run["predictions_complete"]:
             record["reason"] = "guided predictions are incomplete or do not match the legal universe"
             output.append(record)
@@ -630,8 +652,9 @@ def write_analysis(root, output_dir):
         "schema": "tilelang.classic-operators.search-analysis/v1",
         "evidence_policy": {
             "performance": "run_end=ok, one terminal trial per selected config, complete phase intervals, and a best successful trial are required",
+            "quality": "a complete legal oracle is preferred; otherwise quality uses the full stock-raw measured optimum with quality_reference=stock-raw",
             "oracle": "every legal config in z3-legal-exhaustive must compile, validate, and profile successfully",
-            "correlation": "finite predictions joined by config_id only to a unique complete measured oracle; denominator is paired configs",
+            "correlation": "finite predictions joined by config_id to a unique complete measured oracle; if legal is incomplete, use successful stock-raw trials with legal_oracle_complete=false and an explicit denominator",
             "excluded": "cache-only, collected-only, missing/duplicate trial, and failed-run records are not performance evidence",
         },
         "runs": comparisons,

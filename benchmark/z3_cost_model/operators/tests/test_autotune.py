@@ -625,7 +625,7 @@ def _event(name, config=None, **payload):
     return event
 
 
-def _write_analysis_run(root, arm, *, selected_indexes=(0, 1, 2, 3), missing_trial=False, no_events=False, wall=40.0):
+def _write_analysis_run(root, arm, *, selected_indexes=(0, 1, 2, 3), missing_trial=False, no_events=False, wall=40.0, failed_trial=False):
     configs = [{"x": index} for index in range(4)]
     latencies = {0: 4.0, 1: 1.0, 2: 2.0, 3: 3.0}
     run_dir = root / f"{arm}__rep-0000"
@@ -686,7 +686,8 @@ def _write_analysis_run(root, arm, *, selected_indexes=(0, 1, 2, 3), missing_tri
             clock += 0.1
     measured = selected[:-1] if missing_trial else selected
     for index, config in enumerate(measured):
-        events.append(_event("trial", config, index=index, status="ok", validation="passed", latency_ms=latencies[config["x"]]))
+        failed = failed_trial and index == len(measured) - 1
+        events.append(_event("trial", config, index=index, status="benchmark_error" if failed else "ok", latency_ms=None if failed else latencies[config["x"]]))
     best = min(measured, key=lambda config: latencies[config["x"]])
     events.append(
         _event(
@@ -767,6 +768,24 @@ def test_correlation_refuses_incomplete_oracle(tmp_path):
     assert correlation["denominator"] == 0
     assert correlation["pearson"] is None and correlation["spearman"] is None
     assert "complete measured oracle" in correlation["reason"]
+
+
+def test_raw_successful_oracle_supports_quality_and_rank_when_legal_fails(tmp_path):
+    _write_analysis_run(tmp_path, "stock-raw", wall=100.0)
+    _write_analysis_run(tmp_path, "z3-legal-exhaustive", failed_trial=True, wall=80.0)
+    _write_analysis_run(tmp_path, "z3-cm-topk", selected_indexes=(2,), wall=40.0)
+    payload = analyze_results.write_analysis(tmp_path, tmp_path / "analysis")
+    guided = next(row for row in payload["runs"] if row["arm"] == "z3-cm-topk")
+    assert guided["quality_reference"] == "stock-raw"
+    assert guided["quality_reference_top_k"] == 1
+    assert guided["oracle_available"] is False
+    assert guided["quality_ratio"] == 2.0
+    correlation = payload["correlations"][0]
+    assert correlation["status"] == "ok"
+    assert correlation["oracle_kind"] == "stock-raw-successful-trials"
+    assert correlation["legal_oracle_complete"] is False
+    assert correlation["denominator"] == 3
+    assert "explicit denominator" in correlation["reason"]
 
 
 def test_real_sm120_models_and_constraints_cover_every_frozen_suite():
