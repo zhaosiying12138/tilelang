@@ -877,3 +877,24 @@ def test_sensitivity_reuses_complete_top10_baseline_with_explicit_provenance(tmp
     assert correlation["oracle_top_k"] == 10
     assert correlation["oracle_shared_with_top10"] is True
     assert correlation["denominator"] == 3
+
+
+def test_cli_accepts_repeated_arms_for_bounded_batches(tmp_path, monkeypatch):
+    seen = {}
+
+    def fake_run_jobs(**kwargs):
+        seen.update(kwargs)
+        return {"status": "ok", "completed_jobs": 2, "summary": "fake-summary"}
+
+    monkeypatch.setattr(repeat_search, "run_jobs", fake_run_jobs)
+    result = repeat_search.main([
+        "--suite", "gemm_square",
+        "--arm", "z3-cm-topk",
+        "--arm", "budget-raw",
+        "--repetition", "0",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 0
+    assert seen["suites"] == ("gemm_square",)
+    assert seen["arms"] == ("z3-cm-topk", "budget-raw")
+    assert seen["repetitions"] == (0,)

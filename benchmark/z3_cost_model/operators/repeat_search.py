@@ -248,7 +248,7 @@ def run_jobs(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--suite", choices=(*SUITE_NAMES, "all"), default="all")
-    parser.add_argument("--arm", choices=(*ARMS, "all"), default="all")
+    parser.add_argument("--arm", choices=(*ARMS, "all"), action="append", default=None, help="Repeat to select multiple arms; default: all")
     repetition = parser.add_mutually_exclusive_group()
     repetition.add_argument("--repetition", type=int, help="One repetition id; use for a single-run scheduler command")
     repetition.add_argument("--repetitions", default=None, help="Comma-separated ids (default: 0,1,2)")
@@ -269,7 +269,12 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     suites = SUITE_NAMES if args.suite == "all" else (args.suite,)
-    arms = ARMS if args.arm == "all" else (args.arm,)
+    if args.arm is None or "all" in args.arm:
+        if args.arm is not None and len(args.arm) != 1:
+            raise ValueError("--arm all cannot be combined with other arms")
+        arms = ARMS
+    else:
+        arms = _unique_sequence(args.arm, "arms", ARMS)
     if args.repetition is not None:
         repetitions = (args.repetition,)
     elif args.repetitions is not None:
