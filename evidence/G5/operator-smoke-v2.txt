@@ -1,0 +1,44 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+2026-10-27 03:03:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 03:03:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+{
+  "gemm": {
+    "operator": "gemm",
+    "config_id": "2301827c54b13bd3d65536b8804c56e4acfa630a6f7639d3b4914bf369faa029",
+    "passed": true,
+    "mismatched_elements": 0,
+    "total_elements": 65536,
+    "mismatched_ratio": 0.0,
+    "max_mismatched_ratio": 0,
+    "max_abs_error": 0.0004749298095703125,
+    "max_rel_error": 0.034920621663331985,
+    "atol": 0.02,
+    "rtol": 0.02
+  },
+  "convolution": {
+    "operator": "convolution_nhwc_implicit_gemm",
+    "config_id": "632fd5d2f3cc639d5d3c993d9228356f0e3c484b116c9682e40eb239513a0169",
+    "passed": true,
+    "mismatched_elements": 0,
+    "total_elements": 110976,
+    "mismatched_ratio": 0.0,
+    "max_mismatched_ratio": 0,
+    "max_abs_error": 0.0004886388778686523,
+    "max_rel_error": 0.7333316802978516,
+    "atol": 0.02,
+    "rtol": 0.02
+  },
+  "flash_attention": {
+    "operator": "flash_attention_bshd",
+    "config_id": "4bbbefcffc74eb4a18afdac7aea7c1cf53aaad39b1c07c1b5322f94a6546e6a7",
+    "passed": true,
+    "mismatched_elements": 0,
+    "total_elements": 16384,
+    "mismatched_ratio": 0.0,
+    "max_mismatched_ratio": 0,
+    "max_abs_error": 0.0008251667022705078,
+    "max_rel_error": 13.661489486694336,
+    "atol": 0.02,
+    "rtol": 0.02
+  }
+}

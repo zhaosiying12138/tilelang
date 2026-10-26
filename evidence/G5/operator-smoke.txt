@@ -1,0 +1,16 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+2026-10-27 03:02:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 03:02:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 03:02:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 03:02:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+Traceback (most recent call last):
+  File "<stdin>", line 16, in <module>
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/operators/flash_attention.py", line 246, in kernel_factory
+    cfg = FAConfig.from_mapping(config)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/operators/flash_attention.py", line 80, in from_mapping
+    return cls(**require_exact_keys(config, CONFIG_KEYS))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/operators/_common.py", line 39, in require_exact_keys
+    raise ValueError(f"configuration keys mismatch: missing={missing}, extra={extra}")
+ValueError: configuration keys mismatch: missing=[], extra=['block_K']
