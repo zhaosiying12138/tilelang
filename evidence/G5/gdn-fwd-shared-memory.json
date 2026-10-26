@@ -1,0 +1,46 @@
+{
+  "schema": "gdn-fwd-shared-memory-validation",
+  "version": 1,
+  "formula": "dynamic_shared_bytes = 38912 + 576 * block_DV",
+  "device_optin_limit_bytes": 101376,
+  "observations": [
+    {
+      "block_DV": 16,
+      "actual_dynamic_shared_bytes": 48128,
+      "formula_bytes": 48128,
+      "device_optin_limit_bytes": 101376,
+      "status": "SAT",
+      "correctness_status": "passed"
+    },
+    {
+      "block_DV": 32,
+      "actual_dynamic_shared_bytes": 57344,
+      "formula_bytes": 57344,
+      "device_optin_limit_bytes": 101376,
+      "status": "SAT",
+      "correctness_status": "passed"
+    },
+    {
+      "block_DV": 64,
+      "actual_dynamic_shared_bytes": 75776,
+      "formula_bytes": 75776,
+      "device_optin_limit_bytes": 101376,
+      "status": "SAT",
+      "correctness_status": "passed"
+    },
+    {
+      "block_DV": 128,
+      "actual_dynamic_shared_bytes": 112640,
+      "formula_bytes": 112640,
+      "device_optin_limit_bytes": 101376,
+      "status": "UNSAT",
+      "correctness_status": "FAILED_LAUNCH_SHARED_MEMORY"
+    }
+  ],
+  "logs": {
+    "128": "evidence/G5/gdn-fwd-correctness.txt",
+    "64": "evidence/G5/gdn-fwd-64-correctness.txt",
+    "32": "evidence/G5/gdn-fwd-32-correctness.txt",
+    "16": "evidence/G5/gdn-fwd-16-correctness.txt"
+  }
+}

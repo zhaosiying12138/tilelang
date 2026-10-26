@@ -22,6 +22,6 @@ test_stage_count_must_be_positive_integer (test_config.ConfigSpaceTest.test_stag
 test_unsat_dominates_unknown (test_config.ConfigSpaceTest.test_unsat_dominates_unknown) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 0.031s
+Ran 22 tests in 0.029s
 
 OK

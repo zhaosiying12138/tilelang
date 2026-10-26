@@ -582,15 +582,14 @@ def tilelang_fused_chunk_gdr_bwd(
                     T.fence_proxy_async()
                     T.barrier_arrive(bar_dhtmp_ready)
 
-                if use_dht:
-                    if state_v_first:
-                        for j_v, j_k in T.Parallel(DV, DK // 2):
-                            dh0[bb, bh, j_v, j_k] = dh_fragment_0[j_v, j_k]
-                            dh0[bb, bh, j_v, DK // 2 + j_k] = dh_fragment_1[j_v, j_k]
-                    else:
-                        for j_k, j_v in T.Parallel(DK // 2, DV):
-                            dh0[bb, bh, j_k, j_v] = dh_fragment_0[j_k, j_v]
-                            dh0[bb, bh, DK // 2 + j_k, j_v] = dh_fragment_1[j_k, j_v]
+                if state_v_first:
+                    for j_v, j_k in T.Parallel(DV, DK // 2):
+                        dh0[bb, bh, j_v, j_k] = dh_fragment_0[j_v, j_k]
+                        dh0[bb, bh, j_v, DK // 2 + j_k] = dh_fragment_1[j_v, j_k]
+                else:
+                    for j_k, j_v in T.Parallel(DK // 2, DV):
+                        dh0[bb, bh, j_k, j_v] = dh_fragment_0[j_k, j_v]
+                        dh0[bb, bh, DK // 2 + j_k, j_v] = dh_fragment_1[j_k, j_v]
 
             elif tx < 256:
                 T.set_max_nreg(CONSUMER_K_NREG, 1)

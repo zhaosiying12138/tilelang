@@ -26,7 +26,7 @@ Source mappings:
 
 ## Explicit vendored adaptations
 
-Only the following nine files under `vendor/flash_qla` differ from the locked upstream package:
+Only the following ten files under `vendor/flash_qla` differ from the locked upstream package:
 
 1. `ops/gated_delta_rule/chunk/__init__.py`
    - Adds optional `block_DV` and `prepare_h_num_stages` to the documented forward/backward and high-level autograd APIs.
@@ -42,8 +42,10 @@ Only the following nine files under `vendor/flash_qla` differ from the locked up
 5. `ops/utils/group_reduce.py`
    - Exposes the factory's existing `block_size=16` as `group_reduce_vector(..., block_size=16)` and passes it through explicitly.
    - Default 16 retains upstream partial-tile behavior. A non-default block size requires `num_tokens % block_size == 0`, otherwise a clear `ValueError` is raised before factory invocation.
+6. `ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py`
+   - Always writes the computed `dh0`. Upstream guarded the store with `use_dht`, which returned an all-zero `dh0` when `h0` existed but `dht` was absent, contradicting the mathematical reference. The other backward math, 512-thread roles and mbarrier protocol are unchanged.
 
-No `block_DV` parameter was added to `fused_bwd` or its builder: none exists upstream. No TileLang `prim_func`, 512-thread warp specialization, mbarrier arrival count, or other warp/mbarrier protocol code was changed. There is no monkeypatch; all tuning values use normal public function arguments.
+No `block_DV` parameter was added to `fused_bwd` or its builder: none exists upstream. Apart from the documented `dh0` store fix, no TileLang `prim_func`, 512-thread warp specialization, mbarrier arrival count, or other warp/mbarrier protocol code was changed. There is no monkeypatch; all tuning values use normal public function arguments.
 
 ## Runner and fixed core contract
 
@@ -52,6 +54,7 @@ No `block_DV` parameter was added to `fused_bwd` or its builder: none exists ups
 - `forward()` calls public `chunk_gated_delta_rule_fwd`, including cumsum, KKT solve, CP preprocessing, and fused forward orchestration. It returns `o` and `final_state`, plus `g`, `A`, `h`, and `cp_cache` needed by backward.
 - `backward()` calls public `chunk_gated_delta_rule_bwd`, including prepare_h, fused backward, GQA reduction, and reverse gate cumsum. It returns `dq, dk, dv, db, dg, dh0`. If necessary it first runs public forward to obtain saved values; it never calls a raw fused kernel itself.
 - Both paths explicitly use `auto_cp=False`. Input generation reuses upstream `gdr_common.make_inputs`, with seed 42, bf16 data, and K=DV=128.
+- Backward computes forward artifacts with a separate fixed `forward_block_DV=64`, because the nominal 128 configuration exceeds the verified 101376 B shared-memory limit. This is a launchability adaptation, not an additional backward search knob; backward performance scope starts after those forward artifacts are available.
 - Core fixtures use `num_k_heads=2` and `num_v_heads=4`, so Hg=2 < H=4 and every backward group-tile config reaches the real dq/dk `group_reduce_vector` path. Forward can share the same GQA input.
 - Raw-config correctness uses T=128, making group tiles 8, 16, and 32 all legal. The runner/factory rejects attempts to assign forward-only or backward-fixed knobs to the wrong direction.
 - The loader verifies that imported modules come from this directory's vendor/tests trees and raises on a conflicting pre-imported `flash_qla` rather than silently mixing installations.
@@ -101,11 +104,11 @@ The upstream five test functions in `test_gdr_unit.py` are retained, including l
 
 ## Remaining limitations
 
-- No GPU correctness test, TileLang compilation, build, benchmark, or performance measurement was run for this port. No performance claim or runtime log is included.
+- Forward correctness has passed for `block_DV=16/32/64`; `block_DV=128` fails at launch with 112640 B dynamic shared memory, exceeding the 101376 B device opt-in limit. Backward passes dense, h0/no-dht and padded cases after the documented forward-artifact and `dh0` fixes. Performance search and timing have not yet run.
 - `--check-configs` is host-only. `--correctness` and pytest GPU entries require a supported CUDA GPU; like upstream, their float64 PyTorch reference runs on the input device.
 - The new core correctness entry is scoped to SM120. SM121 and other architecture sources are present but are not validated targets of this first-round port.
 - CP and multi-card paths are vendored but not exercised by the core runner; `auto_cp=False` is intentional. Combined SM120 inter+intra CP remains unavailable because there is no `aggregate_card_state` implementation.
-- Resource feasibility, ptxas acceptance, register/shared-memory limits, and device-specific launch legality remain UNKNOWN until a real resource checker is supplied.
+- Register and other launch-feasibility checks remain UNKNOWN unless a verified checker supplies evidence. The forward shared-memory rule is derived from generated code and validated on all four block sizes; it does not prove complete kernel correctness or occupancy.
 - Slow tests include long upstream inputs, 13 direction-specific raw-config GPU cases, and repeated 1000-iteration checks.
 
 ## Reproduction
@@ -129,7 +132,7 @@ for path in paths:
 print(f'Parsed {len(paths)} Python files')
 PY
 
-# Expected differences are exactly the nine adapted vendor files listed above.
+# Expected differences are exactly the ten adapted vendor files listed above.
 diff -qr \
   /home/zhaosiying/codebase/FlashQLA/flash_qla \
   benchmark/z3_cost_model/gdn/vendor/flash_qla \
@@ -141,7 +144,7 @@ sha256sum \
 
 Observed host results: 22/22 CPU unit tests passed; the CLI reported 4 forward and 9 backward structural-SAT/resource-UNKNOWN configs; all 53 Python files parsed. These are static/host checks only.
 
-### GPU correctness entries (not run for this port)
+### GPU correctness entries (executed as reported above)
 
 ```bash
 # Public fwd/bwd, dense + h0/no-dht + padded cases, default config.

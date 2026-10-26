@@ -23,7 +23,7 @@
     "package": "flash_qla",
     "copy_method": "git archive da06429d54b0f577de0a638f451ac8f0b395e0ac -- flash_qla LICENSE",
     "python_files": 41,
-    "adapted_python_files": 9,
+    "adapted_python_files": 10,
     "upstream_test_files": [
       "tests/ref_gdr.py",
       "tests/gdr_common.py",
@@ -68,7 +68,9 @@
   },
   "notes": [
     "The complete tracked flash_qla package is vendored, including TileLang fwd/bwd, public autograd/orchestration, CP support, and autocp coefficient fixtures.",
-    "Only the nine explicit adaptations listed in benchmark/z3_cost_model/gdn/PORTING.md differ from the locked upstream files.",
+    "Only the ten explicit adaptations listed in benchmark/z3_cost_model/gdn/PORTING.md differ from the locked upstream files.",
+    "Backward forward artifacts use fixed block_DV=64 for launchability; this is not a backward search knob.",
+    "The SM120 fused backward dh0 store is no longer conditional on use_dht, fixing h0-without-dht gradients.",
     "The fwd and bwd spaces contain only real direction-specific knobs; fixed fields and semantic de-duplication are not UNSAT decisions.",
     "Non-default group_reduce_block_size requires num_tokens divisibility; default 16 preserves upstream partial-tile behavior.",
     "No Triton or MLIR implementation is substituted for the FlashQLA TileLang kernels."

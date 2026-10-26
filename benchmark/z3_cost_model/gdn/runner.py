@@ -206,7 +206,7 @@ def make_fixed_inputs(
 class GDNRunner:
     """Run complete public fwd/bwd pipelines for one explicit tuning config."""
 
-    def __init__(self, config: GDNConfig | None = None):
+    def __init__(self, config: GDNConfig | None = None, *, forward_block_DV: int | None = None):
         self.config = default_config(Direction.FWD) if config is None else config
         evaluation = evaluate_config(self.config)
         if evaluation.structural_status is Status.UNSAT:
@@ -216,6 +216,16 @@ class GDNRunner:
                 if check.status is Status.UNSAT
             ]
             raise ValueError("Structurally UNSAT GDN config: " + " ".join(reasons))
+        if self.config.direction is Direction.BWD:
+            self.forward_block_DV = 64 if forward_block_DV is None else forward_block_DV
+        else:
+            if forward_block_DV is not None and forward_block_DV != self.config.block_DV:
+                raise ValueError("forward_block_DV must equal the fwd config block_DV")
+            self.forward_block_DV = self.config.block_DV
+        if not isinstance(self.forward_block_DV, int) or isinstance(self.forward_block_DV, bool):
+            raise TypeError("forward_block_DV must be an integer")
+        if self.forward_block_DV <= 0 or 128 % self.forward_block_DV:
+            raise ValueError("forward_block_DV must be a positive divisor of 128")
         self.api = load_public_api()
 
     def forward(self, batch: GDNBatch, *, output_h: bool = False) -> ForwardResult:
@@ -234,7 +244,7 @@ class GDNRunner:
             state_v_first=batch.state_v_first,
             enable_fwd_cp_cache=False,
             cp_context=None,
-            block_DV=self.config.block_DV,
+            block_DV=self.forward_block_DV,
             prepare_h_num_stages=self.config.prepare_h_num_stages,
         )
         return ForwardResult(o, final_state, g, A, h, cp_cache)
@@ -286,6 +296,7 @@ def make_runner(
     block_DV: int = 128,
     prepare_h_num_stages: int = 2,
     group_reduce_block_size: int = 16,
+    forward_block_DV: int | None = None,
 ) -> GDNRunner:
     direction = Direction(direction)
     if direction is Direction.FWD and (
@@ -302,5 +313,6 @@ def make_runner(
             block_DV,
             prepare_h_num_stages,
             group_reduce_block_size,
-        )
+        ),
+        forward_block_DV=forward_block_DV,
     )
