@@ -1,0 +1,30 @@
+{
+  "project": "tile-ai/tilelang",
+  "upstream_url": "https://github.com/tile-ai/tilelang.git",
+  "origin_url": "https://github.com/zhaosiying12138/tilelang.git",
+  "upstream_branch": "main",
+  "base_commit": "80364b3d9758854a9692cc0f14089025f54d3f3f",
+  "base_commit_title": "[BugFix][Layout] Reject an unsupported operand dtype in sm8x sparse metadata (#3335)",
+  "base_commit_time_utc": "2026-10-26T08:54:00Z",
+  "implementation_branch": "cuda-z3-cost-model",
+  "source_locked_at": "2026-10-26",
+  "tilelang_version": "0.1.15",
+  "submodules": {
+    "3rdparty/cutlass": "b2dd65dc864e09688245b316ac46c4a6cd07e15c",
+    "3rdparty/tvm": "4211874e9e4b8770fd20ad0d98ab80afd1df5028",
+    "3rdparty/tvm/3rdparty/OpenCL-Headers": "b590a6bfe034ea3a418b7b523e3490956bcb367a",
+    "3rdparty/tvm/3rdparty/cutlass": "b2dd65dc864e09688245b316ac46c4a6cd07e15c",
+    "3rdparty/tvm/3rdparty/cutlass_fpA_intB_gemm": "72b9883c986a2ff427ca61ac0b14ad59be1dc862",
+    "3rdparty/tvm/3rdparty/cutlass_fpA_intB_gemm/cutlass": "cc85b64cf676c45f98a17e3a47c0aafcf817f088",
+    "3rdparty/tvm/3rdparty/libflash_attn": "07ba35bae96900e51b4d63ef3487ba24850da870",
+    "3rdparty/tvm/3rdparty/libflash_attn/cutlass": "e0aaa3c3b38db9a89c31f04fef91e92123ad5e2e",
+    "3rdparty/tvm/3rdparty/tvm-ffi": "3c35034fd1026011736e19a4e0e1ed0f22058c42",
+    "3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack": "84d107bf416c6bab9ae68ad285876600d230490d",
+    "3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/libbacktrace": "793921876c981ce49759114d7bb89bb89b2d3a2d"
+  },
+  "notes": [
+    "The implementation branch was created directly from the locked upstream main commit.",
+    "No Ascend device result is claimed; source-side validation is static or host-only.",
+    "All RTX 5090 Laptop performance evidence must be produced by this checkout or a later explicitly recorded commit on this branch."
+  ]
+}
