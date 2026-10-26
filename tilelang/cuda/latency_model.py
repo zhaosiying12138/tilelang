@@ -206,7 +206,7 @@ def _worst_reliability(*values: Reliability) -> Reliability:
     return max(values, key=_RELIABILITY_RANK.__getitem__, default=Reliability.MEASURED)
 
 
-def _extent_object(value: Any, name: str = "extent") -> "Extent | int":
+def _extent_object(value: Any, name: str = "extent") -> Extent | int:
     if isinstance(value, (Extent, int)) and not isinstance(value, bool):
         return value
     if isinstance(value, Mapping):
@@ -294,7 +294,7 @@ class MemoryPathParams(_JSONMixin):
             _rate(getattr(self, name), f"memory path {name}")
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any], clock_hz: float = 0.0) -> "MemoryPathParams":
+    def from_dict(cls, data: Mapping[str, Any], clock_hz: float = 0.0) -> MemoryPathParams:
         if not isinstance(data, Mapping):
             raise TypeError("Memory path calibration must be a mapping")
         unknown = set(data) - set(_MEMORY_PATH_FIELDS) - set(_MEMORY_PATH_ALIASES)
@@ -472,7 +472,7 @@ class CudaLatencyParams(_JSONMixin):
         measured: bool = False,
         source: str = "<json>",
         field_sources: Mapping[str, str] | None = None,
-    ) -> "CudaLatencyParams":
+    ) -> CudaLatencyParams:
         if not isinstance(data, Mapping):
             raise TypeError("CUDA latency calibration must be a JSON object")
         known = {
@@ -579,11 +579,11 @@ class CudaLatencyParams(_JSONMixin):
         return cls(**values)
 
     @classmethod
-    def from_json(cls, data: str | Mapping[str, Any], **kwargs: Any) -> "CudaLatencyParams":
+    def from_json(cls, data: str | Mapping[str, Any], **kwargs: Any) -> CudaLatencyParams:
         return Calibration.from_json(data, **kwargs).params
 
     @classmethod
-    def load(cls, path: str | os.PathLike[str], **kwargs: Any) -> "CudaLatencyParams":
+    def load(cls, path: str | os.PathLike[str], **kwargs: Any) -> CudaLatencyParams:
         return Calibration.load(path, **kwargs).params
 
 
@@ -608,9 +608,7 @@ class Calibration(_JSONMixin):
             for key, source in performance.items() if source in {"default", "fallback", "derived"}
         ))
         unmeasured = tuple(sorted(key for key, source in performance.items() if source == "provided"))
-        if not performance:
-            reliability = Reliability.UNKNOWN
-        elif any(source in {"default", "fallback"} for source in performance.values()):
+        if not performance or any(source in {"default", "fallback"} for source in performance.values()):
             reliability = Reliability.UNKNOWN
         elif any(source in {"provided", "derived"} for source in performance.values()):
             reliability = Reliability.ESTIMATED
@@ -636,7 +634,7 @@ class Calibration(_JSONMixin):
         arch: str | None = None,
         require_measured: bool = False,
         source: str = "<json>",
-    ) -> "Calibration":
+    ) -> Calibration:
         if isinstance(data, str):
             parsed = json.loads(data)
         else:
@@ -663,7 +661,7 @@ class Calibration(_JSONMixin):
         *,
         arch: str | None = None,
         require_measured: bool = False,
-    ) -> "Calibration":
+    ) -> Calibration:
         with open(path, encoding="utf-8") as stream:
             data = json.load(stream)
         return cls.from_json(data, arch=arch, require_measured=require_measured, source=os.fspath(path))
@@ -878,7 +876,7 @@ class TaskFeatures(_JSONMixin):
         return self.ii_override
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "TaskFeatures":
+    def from_dict(cls, data: Mapping[str, Any]) -> TaskFeatures:
         values = dict(data)
         if "copy" in values:
             if "copies" in values:
@@ -917,7 +915,7 @@ class TaskCost(_JSONMixin):
         _json_value(self.terms)
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "TaskCost":
+    def from_dict(cls, data: Mapping[str, Any]) -> TaskCost:
         return cls(
             latency=data["latency"], ii=data["ii"], terms=data.get("terms", {}),
             reliability=data.get("reliability", Reliability.MEASURED),

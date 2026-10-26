@@ -560,7 +560,7 @@ def _collect_software(
 
     try:
         z3 = importlib.import_module("z3")
-        version_function = getattr(z3, "get_version_string")
+        version_function = z3.get_version_string
         z3_version = str(version_function()).strip()
         if not z3_version:
             raise ValueError("z3.get_version_string() returned an empty version")
