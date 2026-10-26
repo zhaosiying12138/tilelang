@@ -1,0 +1,22 @@
+{
+  "schema": "tilelang.gdn.cache-sensitivity-protocol/v1",
+  "created": "2026-10-26T21:42:24.326009+00:00",
+  "git_commit": "17b84b847296f35edf419b62ee79ce14c0645704",
+  "script_sha256": "a30670fc815764db2515073423a752b578a2772456c1cce51ea5064c70db5328",
+  "directions": [
+    "fwd",
+    "bwd"
+  ],
+  "tracks": [
+    "no-cache",
+    "warm"
+  ],
+  "arms": [
+    "stock-raw",
+    "z3-cm-topk"
+  ],
+  "warmup": 10,
+  "repeat": 50,
+  "fresh_process_per_run": true,
+  "shared_cache_deletion": false
+}

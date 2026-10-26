@@ -1,0 +1,239 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+{
+  "R": 9,
+  "U": null,
+  "arm": "stock-raw",
+  "best": {
+    "config": {
+      "block_DV": 128,
+      "direction": "bwd",
+      "group_reduce_block_size": 8,
+      "prepare_h_num_stages": 2
+    },
+    "config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+    "latency_ms": 2.051116704940796,
+    "unavailable_reason": null
+  },
+  "best_config": {
+    "block_DV": 128,
+    "direction": "bwd",
+    "group_reduce_block_size": 8,
+    "prepare_h_num_stages": 2
+  },
+  "best_latency_ms": 2.051116704940796,
+  "cache": {
+    "directory": null,
+    "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+    "enabled": false,
+    "hit": false,
+    "identity": null,
+    "key": null,
+    "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-cache-sensitivity-v1/bwd/no-cache/stock-raw__rep-0000/cache",
+    "requested_mode": "no-cache",
+    "source": null,
+    "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)"
+  },
+  "cache_identity": null,
+  "candidate_count": 9,
+  "candidate_failures": {
+    "compile": 3,
+    "profile": 0,
+    "validation": 0
+  },
+  "compile": {
+    "attempts": 9,
+    "cumulative_seconds": 52.154250336112455,
+    "fail": 3,
+    "success": 6,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 52.15598530700663
+  },
+  "compile_attempts": 9,
+  "compile_fail": 3,
+  "compile_success": 6,
+  "compile_wall_seconds": 52.15598530700663,
+  "duplicates": 0,
+  "end_to_end_wall_seconds": 56.71199997398071,
+  "errors": [
+    {
+      "config_id": "ad3b6157d07e6076ff48ee8574b5d32136ba97c1c46262a04cec4a847a417e4b",
+      "error": "Failed to set the allowed dynamic shared memory size to 112640",
+      "index": 6,
+      "kind": "compile"
+    },
+    {
+      "config_id": "ad3b6157d07e6076ff48ee8574b5d32136ba97c1c46262a04cec4a847a417e4b",
+      "error": "Failed to set the allowed dynamic shared memory size to 112640",
+      "index": 6,
+      "kind": "trial"
+    },
+    {
+      "config_id": "1a3d7a6075cffd411244883a0ea2ea9665e5c5dbf02d25e9eb3e958f829b5adf",
+      "error": "Failed to set the allowed dynamic shared memory size to 112640",
+      "index": 7,
+      "kind": "compile"
+    },
+    {
+      "config_id": "1a3d7a6075cffd411244883a0ea2ea9665e5c5dbf02d25e9eb3e958f829b5adf",
+      "error": "Failed to set the allowed dynamic shared memory size to 112640",
+      "index": 7,
+      "kind": "trial"
+    },
+    {
+      "config_id": "84a192fe4d7a72816b7f73b76b9d0acbf0ad271ca88e539b76e337399bebf201",
+      "error": "Failed to set the allowed dynamic shared memory size to 112640",
+      "index": 8,
+      "kind": "compile"
+    },
+    {
+      "config_id": "84a192fe4d7a72816b7f73b76b9d0acbf0ad271ca88e539b76e337399bebf201",
+      "error": "Failed to set the allowed dynamic shared memory size to 112640",
+      "index": 8,
+      "kind": "trial"
+    }
+  ],
+  "errors_omitted": 0,
+  "experiment": {
+    "after": "after.json",
+    "arm": "stock-raw",
+    "before": "before.json",
+    "cache_mode": "no-cache",
+    "events": "events.jsonl",
+    "repetition": 0,
+    "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-cache-sensitivity-v1/bwd/no-cache/stock-raw__rep-0000"
+  },
+  "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+  "fully_instrumented": true,
+  "gdn": {
+    "cache_track": "no-cache",
+    "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate",
+    "direction": "bwd",
+    "forward_artifact_block_DV": 64,
+    "forward_artifacts_in_search": false,
+    "outputs": [
+      "dq",
+      "dk",
+      "dv",
+      "db",
+      "dg",
+      "dh0"
+    ],
+    "seed": 42,
+    "shape": {
+      "B": 1,
+      "DV": 128,
+      "H": 8,
+      "Hg": 4,
+      "K": 128,
+      "T": 4096,
+      "calc_mt": false,
+      "chunk_size": 32,
+      "dtype": "bf16",
+      "output_dtype": "bf16",
+      "output_final_state": true,
+      "output_h": false,
+      "store_o": true,
+      "use_dht": true,
+      "use_initial_state": true
+    },
+    "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed"
+  },
+  "has_recorded_candidate_failures": true,
+  "metadata": {
+    "arm": "stock-raw",
+    "cache_mode": "no-cache",
+    "cache_track": "no-cache",
+    "direction": "bwd",
+    "operator": "gdn_bwd",
+    "repetition": 0,
+    "seed": 42,
+    "shape": {
+      "B": 1,
+      "DV": 128,
+      "H": 8,
+      "Hg": 4,
+      "K": 128,
+      "T": 4096,
+      "calc_mt": false,
+      "chunk_size": 32,
+      "dtype": "bf16",
+      "output_dtype": "bf16",
+      "output_final_state": true,
+      "output_h": false,
+      "store_o": true,
+      "use_dht": true,
+      "use_initial_state": true
+    },
+    "utc_started": "2026-10-26T21:44:41.417280+00:00"
+  },
+  "model": {
+    "attempts": null,
+    "cumulative_seconds": null,
+    "fail": null,
+    "predictions": null,
+    "success": null,
+    "unavailable_reason": "this arm does not invoke the candidate cost model",
+    "unknown": null,
+    "wall_seconds": null
+  },
+  "model_unknown": null,
+  "model_wall_seconds": null,
+  "observer_errors": [],
+  "profile": {
+    "attempts": 6,
+    "cumulative_seconds": 0.9363909660605714,
+    "fail": 0,
+    "success": 6,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 4.03098321595462
+  },
+  "profile_wall_seconds": 4.03098321595462,
+  "pruner_unknown": null,
+  "reference_latency_ms": 42.74644088745117,
+  "schema_version": 1,
+  "selected": 9,
+  "solver": {
+    "checks": null,
+    "completed": null,
+    "cumulative_seconds": null,
+    "invoked": false,
+    "unavailable_reason": "this arm does not invoke solver pruning",
+    "wall_seconds": null
+  },
+  "solver_wall_seconds": null,
+  "status": "ok",
+  "trials": {
+    "compile_error": 3,
+    "ok": 6
+  },
+  "unavailable": {
+    "U": "stock-raw does not construct the Z3 legal universe",
+    "model": "this arm does not invoke the candidate cost model",
+    "solver": "this arm does not invoke solver pruning",
+    "unknown": "unknown solver verdicts are only defined for a completed pruning pass",
+    "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+  },
+  "unknown": null,
+  "unknown_sources": {
+    "model": null,
+    "overlap": null,
+    "pruner": null,
+    "total": null
+  },
+  "unknown_total": null,
+  "validation": {
+    "attempts": 6,
+    "cumulative_seconds": 0.7695046989247203,
+    "fail": 0,
+    "failed": 0,
+    "not_run": 0,
+    "passed": 6,
+    "success": 6,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 4.398120219993871
+  },
+  "validation_wall_seconds": 4.398120219993871
+}

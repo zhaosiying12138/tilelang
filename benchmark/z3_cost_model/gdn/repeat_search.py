@@ -1,4 +1,10 @@
-"""Repeat all GDN search arms on independent cold-cache runs."""
+"""Legacy same-process GDN repetitions used for the initial pilot.
+
+This entry preserves the pilot's historical warmup=2/repeat=5 defaults and
+process-local JIT reuse.  It is not the final cold-search protocol.  Formal
+cold evidence uses ``scripts/run_gdn_cold_fresh.sh``: one fresh process per
+arm/repetition, warmup=10, repeat=50, and a distinct run-owned cache directory.
+"""
 
 from __future__ import annotations
 

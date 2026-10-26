@@ -1,0 +1,56 @@
+               total        used        free      shared  buff/cache   available
+Mem:              47           8          35           7          10          38
+Swap:             12           8           3
+MemAvailable=39923440 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 25.32, 46, 705, 14001
+START direction=fwd track=no-cache arm=stock-raw
+DONE direction=fwd track=no-cache arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39549972 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.33, 48, 225, 9001
+START direction=fwd track=no-cache arm=z3-cm-topk
+DONE direction=fwd track=no-cache arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39716128 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.48, 49, 225, 9001
+START direction=fwd track=warm arm=stock-raw
+DONE direction=fwd track=warm arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39739228 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.58, 49, 225, 9001
+START direction=fwd track=warm arm=z3-cm-topk
+DONE direction=fwd track=warm arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39664596 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.53, 49, 225, 9001
+START direction=bwd track=no-cache arm=stock-raw
+DONE direction=bwd track=no-cache arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39675068 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.41, 48, 225, 9001
+START direction=bwd track=no-cache arm=z3-cm-topk
+DONE direction=bwd track=no-cache arm=z3-cm-topk
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39757416 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.40, 49, 225, 9001
+START direction=bwd track=warm arm=stock-raw
+DONE direction=bwd track=warm arm=stock-raw
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          35           7          11          37
+Swap:             12           8           3
+MemAvailable=39649348 KiB; required=16777216 KiB
+NVIDIA GeForce RTX 5090 Laptop GPU, 24463, 0, 16.76, 50, 225, 9001
+START direction=bwd track=warm arm=z3-cm-topk
+DONE direction=bwd track=warm arm=z3-cm-topk

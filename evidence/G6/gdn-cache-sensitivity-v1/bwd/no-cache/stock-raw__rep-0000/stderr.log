@@ -1,0 +1,94 @@
+In file included from /home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/Python.h:12,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:9:
+/home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/pyconfig.h:1874:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1874 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:1:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+Compiling configurations:   0%|          | 0/9 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:00<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:00<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:01<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:01<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:01<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:01<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:04<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:04<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:04<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:04<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:10<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:10<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:10<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:10<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:14<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:14<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:15<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:15<?, ?it/s][A[05:44:57] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/verify_buffer_init.cc:394: Warning: Buffer read before initialization: 2 buffer(s) read before anything writes them
+  [1] `dk_frag_l` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:604:1
+  [2] `dk_frag_r` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:605:1
+Initialize the buffer before its first read (for example with `T.clear`, `T.fill`, or a `T.copy` into it). If you believe this is a false positive, disable the check by setting `PassConfigKey.TL_DISABLE_BUFFER_INIT_CHECK` in the pass config.
+[05:45:07] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[05:45:07] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[05:45:07] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[05:45:07] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:34<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:34<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:35<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:35<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:36<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:36<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:36<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:36<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/9 [00:37<?, ?it/s]
+Bench configurations:   0%|          | 0/9 [00:37<?, ?it/s][ACompiling configurations:  11%|█         | 1/9 [00:38<05:04, 38.10s/it]                                                                       
+                                                           [ACompiling configurations:  11%|█         | 1/9 [00:38<05:04, 38.10s/it]
+Bench configurations:   0%|          | 0/9 [00:38<?, ?it/s][A                                                                       
+                                                           [ACompiling configurations:  11%|█         | 1/9 [00:39<05:04, 38.10s/it]
+Bench configurations:   0%|          | 0/9 [00:39<?, ?it/s][ACompiling configurations:  22%|██▏       | 2/9 [00:39<01:55, 16.48s/it]                                                                       
+                                                           [ACompiling configurations:  22%|██▏       | 2/9 [00:39<01:55, 16.48s/it]
+Bench configurations:   0%|          | 0/9 [00:39<?, ?it/s][A                                                                       
+                                                           [ACompiling configurations:  22%|██▏       | 2/9 [00:40<01:55, 16.48s/it]
+Bench configurations:   0%|          | 0/9 [00:40<?, ?it/s][ACompiling configurations:  33%|███▎      | 3/9 [00:40<00:57,  9.56s/it]                                                                       
+                                                           [ACompiling configurations:  33%|███▎      | 3/9 [00:40<00:57,  9.56s/it]
+Bench configurations:   0%|          | 0/9 [00:40<?, ?it/s][A                                                                       
+                                                           [ACompiling configurations:  33%|███▎      | 3/9 [00:45<00:57,  9.56s/it]
+Bench configurations:   0%|          | 0/9 [00:45<?, ?it/s][ACompiling configurations:  44%|████▍     | 4/9 [00:45<00:39,  7.81s/it]                                                                       
+                                                           [ACompiling configurations:  67%|██████▋   | 6/9 [00:45<00:23,  7.81s/it]
+Bench configurations:   0%|          | 0/9 [00:45<?, ?it/s][A                                                                       
+                                                           [ACompiling configurations:  67%|██████▋   | 6/9 [00:50<00:23,  7.81s/it]
+Bench configurations:   0%|          | 0/9 [00:50<?, ?it/s][ACompiling configurations:  78%|███████▊  | 7/9 [00:52<00:08,  4.21s/it]
+Bench configurations:  11%|█         | 1/9 [00:55<07:25, 55.68s/it][A
+Bench configurations:  11%|█         | 1/9 [00:55<07:25, 55.68s/it, best_latency=2.13][A                                                                       
+                                                                                      [ACompiling configurations: 100%|██████████| 9/9 [00:55<00:00,  4.21s/it]
+Bench configurations:  11%|█         | 1/9 [00:55<07:25, 55.68s/it, best_latency=2.13][A
+Bench configurations:  22%|██▏       | 2/9 [00:55<02:41, 23.05s/it, best_latency=2.13][A
+Bench configurations:  22%|██▏       | 2/9 [00:55<02:41, 23.05s/it, best_latency=2.13][A                                                                       
+                                                                                      [ACompiling configurations: 100%|██████████| 9/9 [00:55<00:00,  4.21s/it]
+Bench configurations:  22%|██▏       | 2/9 [00:55<02:41, 23.05s/it, best_latency=2.13][A
+Bench configurations:  33%|███▎      | 3/9 [00:56<01:15, 12.62s/it, best_latency=2.13][A
+Bench configurations:  33%|███▎      | 3/9 [00:56<01:15, 12.62s/it, best_latency=2.13][A                                                                       
+                                                                                      [ACompiling configurations: 100%|██████████| 9/9 [00:56<00:00,  4.21s/it]
+Bench configurations:  33%|███▎      | 3/9 [00:56<01:15, 12.62s/it, best_latency=2.13][A
+Bench configurations:  44%|████▍     | 4/9 [00:56<00:38,  7.72s/it, best_latency=2.13][A
+Bench configurations:  44%|████▍     | 4/9 [00:56<00:38,  7.72s/it, best_latency=2.05][A                                                                       
+                                                                                      [ACompiling configurations: 100%|██████████| 9/9 [00:56<00:00,  4.21s/it]
+Bench configurations:  44%|████▍     | 4/9 [00:56<00:38,  7.72s/it, best_latency=2.05][A
+Bench configurations:  56%|█████▌    | 5/9 [00:56<00:20,  5.01s/it, best_latency=2.05][A
+Bench configurations:  56%|█████▌    | 5/9 [00:56<00:20,  5.01s/it, best_latency=2.05][A                                                                       
+                                                                                      [ACompiling configurations: 100%|██████████| 9/9 [00:56<00:00,  4.21s/it]
+Bench configurations:  56%|█████▌    | 5/9 [00:56<00:20,  5.01s/it, best_latency=2.05][A
+Bench configurations:  67%|██████▋   | 6/9 [00:56<00:10,  3.37s/it, best_latency=2.05][A
+Bench configurations:  67%|██████▋   | 6/9 [00:56<00:10,  3.37s/it, best_latency=2.05][A                                                                       
+                                                                                      [ACompiling configurations: 100%|██████████| 9/9 [00:56<00:00,  4.21s/it]
+Bench configurations:  67%|██████▋   | 6/9 [00:56<00:10,  3.37s/it, best_latency=2.05][A
+Bench configurations: 100%|██████████| 6/6 [00:56<00:00,  3.37s/it, best_latency=2.05][ACompiling configurations: 100%|██████████| 9/9 [00:56<00:00,  6.30s/it]
+Bench configurations: 100%|██████████| 6/6 [00:56<00:00,  9.45s/it, best_latency=2.05]

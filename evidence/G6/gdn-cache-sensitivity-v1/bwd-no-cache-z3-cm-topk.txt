@@ -1,0 +1,200 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+{
+  "R": 9,
+  "U": 6,
+  "arm": "z3-cm-topk",
+  "best": {
+    "config": {
+      "block_DV": 128,
+      "direction": "bwd",
+      "group_reduce_block_size": 32,
+      "prepare_h_num_stages": 2
+    },
+    "config_id": "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+    "latency_ms": 2.048729658126831,
+    "unavailable_reason": null
+  },
+  "best_config": {
+    "block_DV": 128,
+    "direction": "bwd",
+    "group_reduce_block_size": 32,
+    "prepare_h_num_stages": 2
+  },
+  "best_latency_ms": 2.048729658126831,
+  "cache": {
+    "directory": null,
+    "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+    "enabled": false,
+    "hit": false,
+    "identity": null,
+    "key": null,
+    "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-cache-sensitivity-v1/bwd/no-cache/z3-cm-topk__rep-0000/cache",
+    "requested_mode": "no-cache",
+    "source": null,
+    "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)"
+  },
+  "cache_identity": null,
+  "candidate_count": 3,
+  "candidate_failures": {
+    "compile": 0,
+    "profile": 0,
+    "validation": 0
+  },
+  "compile": {
+    "attempts": 3,
+    "cumulative_seconds": 40.50028085894883,
+    "fail": 0,
+    "success": 3,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 40.50088395597413
+  },
+  "compile_attempts": 3,
+  "compile_fail": 0,
+  "compile_success": 3,
+  "compile_wall_seconds": 40.50088395597413,
+  "duplicates": 0,
+  "end_to_end_wall_seconds": 44.44244412903208,
+  "errors": [],
+  "errors_omitted": 0,
+  "experiment": {
+    "after": "after.json",
+    "arm": "z3-cm-topk",
+    "before": "before.json",
+    "cache_mode": "no-cache",
+    "events": "events.jsonl",
+    "repetition": 0,
+    "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-cache-sensitivity-v1/bwd/no-cache/z3-cm-topk__rep-0000"
+  },
+  "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+  "fully_instrumented": true,
+  "gdn": {
+    "cache_track": "no-cache",
+    "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate",
+    "direction": "bwd",
+    "forward_artifact_block_DV": 64,
+    "forward_artifacts_in_search": false,
+    "outputs": [
+      "dq",
+      "dk",
+      "dv",
+      "db",
+      "dg",
+      "dh0"
+    ],
+    "seed": 42,
+    "shape": {
+      "B": 1,
+      "DV": 128,
+      "H": 8,
+      "Hg": 4,
+      "K": 128,
+      "T": 4096,
+      "calc_mt": false,
+      "chunk_size": 32,
+      "dtype": "bf16",
+      "output_dtype": "bf16",
+      "output_final_state": true,
+      "output_h": false,
+      "store_o": true,
+      "use_dht": true,
+      "use_initial_state": true
+    },
+    "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed"
+  },
+  "has_recorded_candidate_failures": false,
+  "metadata": {
+    "arm": "z3-cm-topk",
+    "cache_mode": "no-cache",
+    "cache_track": "no-cache",
+    "direction": "bwd",
+    "operator": "gdn_bwd",
+    "repetition": 0,
+    "seed": 42,
+    "shape": {
+      "B": 1,
+      "DV": 128,
+      "H": 8,
+      "Hg": 4,
+      "K": 128,
+      "T": 4096,
+      "calc_mt": false,
+      "chunk_size": 32,
+      "dtype": "bf16",
+      "output_dtype": "bf16",
+      "output_final_state": true,
+      "output_h": false,
+      "store_o": true,
+      "use_dht": true,
+      "use_initial_state": true
+    },
+    "utc_started": "2026-10-26T21:45:44.795074+00:00"
+  },
+  "model": {
+    "attempts": 6,
+    "cumulative_seconds": 0.001175892073661089,
+    "fail": 0,
+    "predictions": 6,
+    "success": 6,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "unknown": 0,
+    "wall_seconds": 0.0019012760021723807
+  },
+  "model_unknown": 0,
+  "model_wall_seconds": 0.0019012760021723807,
+  "observer_errors": [],
+  "profile": {
+    "attempts": 3,
+    "cumulative_seconds": 0.4629550320096314,
+    "fail": 0,
+    "success": 3,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 3.3967626899830066
+  },
+  "profile_wall_seconds": 3.3967626899830066,
+  "pruner_unknown": 6,
+  "reference_latency_ms": 42.55008316040039,
+  "schema_version": 1,
+  "selected": 3,
+  "solver": {
+    "checks": 3,
+    "completed": true,
+    "cumulative_seconds": 0.0017204050091095269,
+    "invoked": true,
+    "sat": 0,
+    "timeouts": 0,
+    "unavailable_reason": null,
+    "unknown": 6,
+    "unsat": 3,
+    "wall_seconds": 0.0082719000056386
+  },
+  "solver_wall_seconds": 0.0082719000056386,
+  "status": "ok",
+  "trials": {
+    "ok": 3
+  },
+  "unavailable": {},
+  "unknown": 6,
+  "unknown_sources": {
+    "model": 0,
+    "overlap": 0,
+    "pruner": 6,
+    "total": 6
+  },
+  "unknown_total": 6,
+  "validation": {
+    "attempts": 3,
+    "cumulative_seconds": 0.6298727970570326,
+    "fail": 0,
+    "failed": 0,
+    "not_run": 0,
+    "passed": 3,
+    "success": 3,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 3.771255377039779
+  },
+  "validation_wall_seconds": 3.771255377039779
+}

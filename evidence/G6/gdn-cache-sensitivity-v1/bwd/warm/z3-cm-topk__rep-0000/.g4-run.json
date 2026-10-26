@@ -1,0 +1,1 @@
+{"arm":"z3-cm-topk","cache_mode":"warm","experiment_id":"71899c5e8b98428780068a0068474a08","kind":"run","metadata":{"utc_created":"2026-10-26T21:47:42.309563+00:00"},"repetition":0,"root":"/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-cache-sensitivity-v1/bwd/warm","run_name":"z3-cm-topk__rep-0000","schema":"tilelang.g4.search-experiment/v1"}

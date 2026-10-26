@@ -1,0 +1,102 @@
+In file included from /home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/Python.h:12,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:9:
+/home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/pyconfig.h:1874:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1874 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:1:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+Compiling configurations:   0%|          | 0/2 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/2 [00:00<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/2 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/2 [00:00<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/2 [00:01<?, ?it/s]
+Bench configurations:   0%|          | 0/2 [00:01<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/2 [00:01<?, ?it/s]
+Bench configurations:   0%|          | 0/2 [00:01<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/2 [00:04<?, ?it/s]
+Bench configurations:   0%|          | 0/2 [00:04<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/2 [00:04<?, ?it/s]
+Bench configurations:   0%|          | 0/2 [00:04<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/2 [00:10<?, ?it/s]
+Bench configurations:   0%|          | 0/2 [00:10<?, ?it/s][ACompiling configurations:  50%|█████     | 1/2 [00:10<00:10, 10.46s/it]                                                                       
+                                                           [ACompiling configurations:  50%|█████     | 1/2 [00:10<00:10, 10.46s/it]
+Bench configurations:   0%|          | 0/2 [00:10<?, ?it/s][A                                                                       
+                                                           [ACompiling configurations:  50%|█████     | 1/2 [00:16<00:10, 10.46s/it]
+Bench configurations:   0%|          | 0/2 [00:16<?, ?it/s][ACompiling configurations: 100%|██████████| 2/2 [00:16<00:00,  7.86s/it]
+Bench configurations:  50%|█████     | 1/2 [00:18<00:18, 18.28s/it][A
+Bench configurations:  50%|█████     | 1/2 [00:18<00:18, 18.28s/it, best_latency=0.159][A                                                                       
+                                                                                       [ACompiling configurations: 100%|██████████| 2/2 [00:18<00:00,  7.86s/it]
+Bench configurations:  50%|█████     | 1/2 [00:18<00:18, 18.28s/it, best_latency=0.159][A
+Bench configurations: 100%|██████████| 2/2 [00:18<00:00, 18.28s/it, best_latency=0.159][A                                                                       
+                                                                                       [ACompiling configurations: 100%|██████████| 2/2 [00:18<00:00,  7.86s/it]
+Bench configurations: 100%|██████████| 2/2 [00:18<00:00, 18.28s/it, best_latency=0.159][A
+Bench configurations: 100%|██████████| 2/2 [00:18<00:00, 18.28s/it, best_latency=0.159][ACompiling configurations: 100%|██████████| 2/2 [00:18<00:00,  9.17s/it]
+Bench configurations: 100%|██████████| 2/2 [00:18<00:00,  9.17s/it, best_latency=0.159]
+--- Logging error ---
+Traceback (most recent call last):
+  File "/home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/logging/__init__.py", line 1163, in emit
+    stream.write(msg + self.terminator)
+ValueError: I/O operation on closed file.
+Call stack:
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/autotune.py", line 1123, in <module>
+    raise SystemExit(main())
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/autotune.py", line 1103, in main
+    result = run_gdn_search(
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/autotune.py", line 951, in run_gdn_search
+    return experiment.run(
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/experiment.py", line 417, in run
+    result = invoke("events.jsonl", fresh_from=warmup_tuner)
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/experiment.py", line 403, in invoke
+    outcome = active_tuner.run(**call_kwargs)
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/autotune.py", line 767, in run
+    result = self.tuner.run(**kwargs)
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 379, in run
+    result = super().run(
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py", line 1181, in run
+    pool, futures, future_to_unit, compile_desc = self._prepare_compile_execution(**compile_execution_options)
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py", line 491, in _prepare_compile_execution
+    num_workers = self._resolve_num_compile_workers()
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py", line 463, in _resolve_num_compile_workers
+    logger.info(f"Auto-tuning with {cpu_counts} CPU counts, {available_cpu_count} CPUs available, {num_workers} CPUs will be used")
+Message: 'Auto-tuning with 1 CPU counts, 24 CPUs available, 1 CPUs will be used'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/logging/__init__.py", line 1163, in emit
+    stream.write(msg + self.terminator)
+ValueError: I/O operation on closed file.
+Call stack:
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/autotune.py", line 1123, in <module>
+    raise SystemExit(main())
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/autotune.py", line 1103, in main
+    result = run_gdn_search(
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/autotune.py", line 951, in run_gdn_search
+    return experiment.run(
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/experiment.py", line 417, in run
+    result = invoke("events.jsonl", fresh_from=warmup_tuner)
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/experiment.py", line 403, in invoke
+    outcome = active_tuner.run(**call_kwargs)
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/autotune.py", line 767, in run
+    result = self.tuner.run(**kwargs)
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 379, in run
+    result = super().run(
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py", line 1213, in run
+    logger.warning(
+Message: 'Benchmark timeout is enforced in benchmark workers by running each benchmark call in a daemon sub-thread and waiting up to the configured timeout.'
+Arguments: ()
+Compiling configurations:   0%|          | 0/2 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/2 [00:00<?, ?it/s][A
+Bench configurations:  50%|█████     | 1/2 [00:01<00:01,  1.27s/it][A
+Bench configurations:  50%|█████     | 1/2 [00:01<00:01,  1.27s/it, best_latency=0.159][A                                                               
+                                                                                       [ACompiling configurations: 100%|██████████| 2/2 [00:01<00:00,  1.58it/s]
+Bench configurations:  50%|█████     | 1/2 [00:01<00:01,  1.27s/it, best_latency=0.159][A
+Bench configurations: 100%|██████████| 2/2 [00:01<00:00,  1.27s/it, best_latency=0.159][A                                                                       
+                                                                                       [ACompiling configurations: 100%|██████████| 2/2 [00:01<00:00,  1.52it/s]
+Bench configurations: 100%|██████████| 2/2 [00:01<00:00,  1.27s/it, best_latency=0.159][A
+Bench configurations: 100%|██████████| 2/2 [00:01<00:00,  1.27s/it, best_latency=0.159][ACompiling configurations: 100%|██████████| 2/2 [00:01<00:00,  1.51it/s]
+Bench configurations: 100%|██████████| 2/2 [00:01<00:00,  1.51it/s, best_latency=0.159]

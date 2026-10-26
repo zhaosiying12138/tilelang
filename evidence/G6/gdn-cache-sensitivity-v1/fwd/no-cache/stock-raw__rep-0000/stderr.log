@@ -1,0 +1,51 @@
+In file included from /home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/Python.h:12,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:9:
+/home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/pyconfig.h:1874:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1874 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:1:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+Compiling configurations:   0%|          | 0/4 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/4 [00:00<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/4 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/4 [00:00<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/4 [00:01<?, ?it/s]
+Bench configurations:   0%|          | 0/4 [00:01<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/4 [00:01<?, ?it/s]
+Bench configurations:   0%|          | 0/4 [00:01<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/4 [00:04<?, ?it/s]
+Bench configurations:   0%|          | 0/4 [00:04<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/4 [00:04<?, ?it/s]
+Bench configurations:   0%|          | 0/4 [00:04<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/4 [00:09<?, ?it/s]
+Bench configurations:   0%|          | 0/4 [00:09<?, ?it/s][ACompiling configurations:  25%|██▌       | 1/4 [00:09<00:29,  9.79s/it]                                                                       
+                                                           [ACompiling configurations:  25%|██▌       | 1/4 [00:10<00:29,  9.79s/it]
+Bench configurations:   0%|          | 0/4 [00:10<?, ?it/s][A                                                                       
+                                                           [ACompiling configurations:  25%|██▌       | 1/4 [00:15<00:29,  9.79s/it]
+Bench configurations:   0%|          | 0/4 [00:15<?, ?it/s][ACompiling configurations:  50%|█████     | 2/4 [00:15<00:14,  7.38s/it]                                                                       
+                                                           [ACompiling configurations:  50%|█████     | 2/4 [00:15<00:14,  7.38s/it]
+Bench configurations:   0%|          | 0/4 [00:15<?, ?it/s][A                                                                       
+                                                           [ACompiling configurations:  50%|█████     | 2/4 [00:21<00:14,  7.38s/it]
+Bench configurations:   0%|          | 0/4 [00:21<?, ?it/s][ACompiling configurations:  75%|███████▌  | 3/4 [00:21<00:06,  6.83s/it]                                                                       
+                                                           [ACompiling configurations:  75%|███████▌  | 3/4 [00:21<00:06,  6.83s/it]
+Bench configurations:   0%|          | 0/4 [00:21<?, ?it/s][A                                                                       
+                                                           [ACompiling configurations:  75%|███████▌  | 3/4 [00:27<00:06,  6.83s/it]
+Bench configurations:   0%|          | 0/4 [00:27<?, ?it/s][ACompiling configurations: 100%|██████████| 4/4 [00:29<00:00,  7.20s/it]
+Bench configurations:  25%|██▌       | 1/4 [00:31<01:33, 31.13s/it][A
+Bench configurations:  25%|██▌       | 1/4 [00:31<01:33, 31.13s/it, best_latency=0.159][A                                                                       
+                                                                                       [ACompiling configurations: 100%|██████████| 4/4 [00:31<00:00,  7.20s/it]
+Bench configurations:  25%|██▌       | 1/4 [00:31<01:33, 31.13s/it, best_latency=0.159][A
+Bench configurations:  50%|█████     | 2/4 [00:31<01:02, 31.13s/it, best_latency=0.159][A                                                                       
+                                                                                       [ACompiling configurations: 100%|██████████| 4/4 [00:31<00:00,  7.20s/it]
+Bench configurations:  50%|█████     | 2/4 [00:31<01:02, 31.13s/it, best_latency=0.159][A
+Bench configurations:  75%|███████▌  | 3/4 [00:31<00:08,  8.11s/it, best_latency=0.159][A
+Bench configurations:  75%|███████▌  | 3/4 [00:31<00:08,  8.11s/it, best_latency=0.159][A                                                                       
+                                                                                       [ACompiling configurations: 100%|██████████| 4/4 [00:31<00:00,  7.20s/it]
+Bench configurations:  75%|███████▌  | 3/4 [00:31<00:08,  8.11s/it, best_latency=0.159][A
+Bench configurations: 100%|██████████| 3/3 [00:31<00:00,  8.11s/it, best_latency=0.159][ACompiling configurations: 100%|██████████| 4/4 [00:31<00:00,  7.81s/it]
+Bench configurations: 100%|██████████| 3/3 [00:31<00:00, 10.41s/it, best_latency=0.159]
