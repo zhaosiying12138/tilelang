@@ -18,6 +18,11 @@ def _key(config, direction):
     )
 
 
+def _event_lines(path):
+    with path.open(encoding="utf-8") as stream:
+        yield from stream
+
+
 def collect(root, cache_track="cold"):
     if cache_track not in ("cold", "warm", "no-cache"):
         raise ValueError(f"Unknown cache track: {cache_track}")
@@ -26,7 +31,7 @@ def collect(root, cache_track="cold"):
     for path in Path(root).rglob("events.jsonl"):
         direction = None
         include = True
-        for line in path.open(encoding="utf-8"):
+        for line in _event_lines(path):
             event = json.loads(line)
             if event.get("event") == "run_start":
                 metadata = event.get("metadata", {})
