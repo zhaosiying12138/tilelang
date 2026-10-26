@@ -177,10 +177,12 @@ done
 
 for top_k in 1 5 20; do
   for repetition in 0 1 2; do
-    python benchmark/z3_cost_model/operators/repeat_search.py \
-      --suite gemm_square --arm all --repetition "$repetition" \
-      --top-k "$top_k" --cache-mode cold --warmup 10 --repeat 50 \
-      --output-dir "$CLASSIC/sensitivity-k$top_k-rep-$repetition"
+    for arm in z3-cm-topk budget-raw budget-random; do
+      python benchmark/z3_cost_model/operators/repeat_search.py \
+        --suite gemm_square --arm "$arm" --repetition "$repetition" \
+        --top-k "$top_k" --cache-mode cold --warmup 10 --repeat 50 \
+        --output-dir "$CLASSIC/sensitivity-k$top_k-rep-$repetition-$arm"
+    done
   done
 done
 
@@ -189,6 +191,8 @@ python benchmark/z3_cost_model/operators/analyze_results.py \
 ```
 
 GEMM 两个空间的 raw/legal 为 288/256，Conv 为 144/128，FA 为 54/54。SM120 未猜测 stock atom 规则；这些未编码条件与 solver 返回的 UNKNOWN 分开记录，不能用 unknown=0 推断所有编译合法性都已证明。`compile_attempts`、实际成功 profile、失败候选和 cache-only 结果分别入账。预测相关只在完整 oracle 的配置集合上计算。
+
+top-1/5/20 与主 top-10 共用同一 raw/oracle 空间，所以额外预算只运行 guided 和两个等预算控制，并复用同 suite/repetition/cache/seed 的完整 top-10 stock/legal 基线。每行结果都记录 `baseline_top_k=10` 和 `baseline_shared_with_top10=true`，主 top-10 的 oracle 成本单独保留，不能称为免费。若完整基线缺失或空间不一致，相关指标保持 unavailable。协议见 [`manifest/classic-sensitivity-baseline-plan.json`](manifest/classic-sensitivity-baseline-plan.json)。
 
 ## 七、广泛编译矩阵
 

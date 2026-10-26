@@ -18,14 +18,14 @@ from pathlib import Path
 import statistics
 
 if __package__:
-    from .autotune import ARMS, SUITE_NAMES, _strict_json, _write_json
+    from .autotune import ARMS, DEFAULT_TOP_K, SUITE_NAMES, _strict_json, _write_json
 else:
     import sys
 
     _REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
     if str(_REPOSITORY_ROOT) not in sys.path:
         sys.path.insert(0, str(_REPOSITORY_ROOT))
-    from benchmark.z3_cost_model.operators.autotune import ARMS, SUITE_NAMES, _strict_json, _write_json
+    from benchmark.z3_cost_model.operators.autotune import ARMS, DEFAULT_TOP_K, SUITE_NAMES, _strict_json, _write_json
 
 
 _TERMINAL_TRIALS = {"ok", "compile_error", "benchmark_error", "timeout"}
@@ -365,17 +365,45 @@ def _unique_index(runs, predicate):
     return {key: values[0] for key, values in grouped.items() if len(values) == 1}
 
 
+def _baseline_key(run):
+    return (run["suite"], run["repetition"], DEFAULT_TOP_K, run["cache_track"], run["seed"])
+
+
+def _same_space(run, baseline):
+    if run["R"] != baseline["R"]:
+        return False
+    baseline_legal = baseline["R"] if baseline["arm"] == "stock-raw" else baseline["U"]
+    return run["arm"] == "stock-raw" or run["U"] == baseline_legal
+
+
+def _baseline(run, index):
+    exact = index.get(_comparison_key(run))
+    if exact is not None:
+        return (exact, False) if _same_space(run, exact) else (None, False)
+    if run["top_k"] == DEFAULT_TOP_K:
+        return None, False
+    shared = index.get(_baseline_key(run))
+    if shared is not None and _same_space(run, shared):
+        return shared, True
+    return None, False
+
+
 def build_comparisons(runs):
     stock = _unique_index(runs, lambda run: run["arm"] == "stock-raw" and run["performance_evidence"])
     oracle = _unique_index(runs, lambda run: run["arm"] == "z3-legal-exhaustive" and run["oracle_complete"])
     rows = []
     for run in runs:
         row = {key: value for key, value in run.items() if not key.startswith("_")}
-        key = _comparison_key(run)
-        baseline = stock.get(key)
-        reference = oracle.get(key)
+        baseline, baseline_shared = _baseline(run, stock)
+        reference, oracle_shared = _baseline(run, oracle)
         row["baseline_available"] = baseline is not None
         row["oracle_available"] = reference is not None
+        row["baseline_top_k"] = baseline["top_k"] if baseline is not None else None
+        row["oracle_top_k"] = reference["top_k"] if reference is not None else None
+        row["baseline_shared_with_top10"] = baseline_shared
+        row["oracle_shared_with_top10"] = oracle_shared
+        row["baseline_path"] = baseline["path"] if baseline is not None else None
+        row["oracle_path"] = reference["path"] if reference is not None else None
         row["search_speedup"] = None
         row["compile_reduction"] = None
         row["profile_reduction"] = None
@@ -503,7 +531,7 @@ def build_correlations(runs):
     for run in runs:
         if run["arm"] != "z3-cm-topk":
             continue
-        reference = oracle.get(_comparison_key(run))
+        reference, oracle_shared = _baseline(run, oracle)
         record = {
             "suite": run["suite"],
             "arm": run["arm"],
@@ -523,6 +551,8 @@ def build_correlations(runs):
             "spearman": None,
             "path": run["path"],
             "oracle_path": reference["path"] if reference is not None else None,
+            "oracle_top_k": reference["top_k"] if reference is not None else None,
+            "oracle_shared_with_top10": oracle_shared,
         }
         if not run["predictions_complete"]:
             record["reason"] = "guided predictions are incomplete or do not match the legal universe"

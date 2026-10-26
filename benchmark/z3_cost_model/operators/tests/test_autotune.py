@@ -824,3 +824,29 @@ def test_model_capacity_unknown_is_not_a_candidate_failure(tmp_path):
     assert augmented["errors"][0]["kind"] == "model"
     summary["trials"] = {"compile_error": 1}
     assert observed._augment(summary, None)["has_recorded_candidate_failures"] is True
+
+
+def test_sensitivity_reuses_complete_top10_baseline_with_explicit_provenance(tmp_path):
+    _write_analysis_run(tmp_path / "main", "stock-raw", wall=100.0)
+    _write_analysis_run(tmp_path / "main", "z3-legal-exhaustive", wall=80.0)
+    for path in (tmp_path / "main").rglob("summary.json"):
+        summary = json.loads(path.read_text(encoding="utf-8"))
+        summary["operator_run"]["top_k"] = 10
+        path.write_text(json.dumps(summary), encoding="utf-8")
+    _write_analysis_run(tmp_path / "sensitivity", "z3-cm-topk", selected_indexes=(2,), wall=40.0)
+
+    payload = analyze_results.write_analysis(tmp_path, tmp_path / "analysis")
+    guided = next(row for row in payload["runs"] if row["arm"] == "z3-cm-topk" and row["top_k"] == 1)
+    assert guided["baseline_available"] is True
+    assert guided["oracle_available"] is True
+    assert guided["baseline_top_k"] == guided["oracle_top_k"] == 10
+    assert guided["baseline_shared_with_top10"] is True
+    assert guided["oracle_shared_with_top10"] is True
+    assert guided["baseline_path"].endswith("main/stock-raw__rep-0000/summary.json")
+    assert guided["search_speedup"] == 2.5
+    assert guided["quality_ratio"] == 2.0
+    correlation = payload["correlations"][0]
+    assert correlation["status"] == "ok"
+    assert correlation["oracle_top_k"] == 10
+    assert correlation["oracle_shared_with_top10"] is True
+    assert correlation["denominator"] == 3
