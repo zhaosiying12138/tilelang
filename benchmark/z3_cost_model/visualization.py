@@ -887,29 +887,50 @@ def plot_prediction_rank(
                 ax.set_ylim(0.5, limit - 0.5)
                 if len(points) <= 16:
                     for point in points:
+                        label = (
+                            point["candidate"]
+                            .replace("block_DV=", "DV")
+                            .replace("stage=", "S")
+                            .replace("group=", "G")
+                            .replace("fwd:", "")
+                            .replace("bwd:", "")
+                        )
+                        right_edge = point["predicted_rank"] > len(points) * 0.65
+                        top_edge = point["actual_rank"] > len(points) * 0.65
                         ax.annotate(
-                            point["candidate"],
+                            label,
                             (point["predicted_rank"], point["actual_rank"]),
-                            xytext=(4, 4),
+                            xytext=(-4 if right_edge else 4, -4 if top_edge else 4),
                             textcoords="offset points",
-                            fontsize=7,
+                            fontsize=6,
+                            ha="right" if right_edge else "left",
+                            va="top" if top_edge else "bottom",
+                            bbox={"facecolor": "white", "alpha": 0.8, "edgecolor": "none", "pad": 0.3},
+                            zorder=5,
                         )
                 ax.set_xlabel("Predicted rank (1 = lowest prediction)")
                 ax.set_ylabel("Actual rank (1 = lowest measured latency)")
-                ax.set_title(f"{suite} (n={len(points)})")
+                ax.set_title(f"{suite} (n={len(points)})", pad=36)
                 ax.grid(alpha=0.22)
                 metric_lines = [
-                    f"Spearman ρ = {_format_metric(metrics['spearman'])}",
+                    f"Spearman ρ = {_format_metric(metrics['spearman'])}; "
                     f"Kendall τb = {_format_metric(metrics['kendall_tau_b'])}",
+                    "; ".join(
+                        f"top-{k} recall = {_format_metric(metrics['top_k_recall'][str(k)])}" for k in k_values
+                    ),
                 ]
-                metric_lines.extend(
-                    f"top-{k} recall = {_format_metric(metrics['top_k_recall'][str(k)])}" for k in k_values
+                ax.text(
+                    0.0,
+                    1.01,
+                    "\n".join(metric_lines),
+                    transform=ax.transAxes,
+                    va="bottom",
+                    fontsize=8,
+                    linespacing=1.25,
                 )
-                ax.text(0.03, 0.97, "\n".join(metric_lines), transform=ax.transAxes, va="top", fontsize=9, bbox={"facecolor": "white", "alpha": 0.85, "edgecolor": "#D1D5DB"})
-                ax.legend(loc="lower right", fontsize=8)
             for index in range(len(suites), nrows * columns):
                 axes[index // columns][index % columns].axis("off")
-            fig.suptitle("Prediction rank versus confirmed measured rank (lower is better for both)")
+            fig.suptitle("Prediction rank versus confirmed measured rank; dashed line = ideal agreement (lower is better)")
             fig.tight_layout(rect=(0, 0, 1, 0.96))
             fields = ["suite", "candidate", "predicted", "measured", "predicted_rank", "actual_rank", "spearman", "kendall_tau_b"]
             fields.extend(f"top_{k}_recall" for k in k_values)
@@ -1202,13 +1223,13 @@ def plot_gdn_acceptance(records: Any, output: str | os.PathLike[str]) -> dict[st
     metadata, rows = _gdn_data(records)
     plt = _pyplot()
     with _rc_context(plt):
-        fig, axes = plt.subplots(1, 2, figsize=(15, 6.5), sharey=True)
+        fig, axes = plt.subplots(1, 2, figsize=(15, 6.5), sharey=False)
         try:
             max_count = max(max(row["compile_count"], row["profile_count"]) for row in rows)
-            max_latency = max(row["best_latency"] for row in rows)
             for ax, direction in zip(axes, ("fwd", "bwd")):
                 panel_rows = [row for row in rows if row["direction"] == direction]
                 panel_rows.sort(key=lambda row: (_METHOD_ORDER.index(row["method"]) if row["method"] in _METHOD_ORDER else len(_METHOD_ORDER), row["method"]))
+                panel_max_latency = max(row["best_latency"] for row in panel_rows)
                 x_positions = list(range(len(panel_rows)))
                 latencies = [row["best_latency"] for row in panel_rows]
                 colors = [_method_color(row["method"]) for row in panel_rows]
@@ -1217,7 +1238,7 @@ def plot_gdn_acceptance(records: Any, output: str | os.PathLike[str]) -> dict[st
                 ax.set_xticks(x_positions, [row["method"] for row in panel_rows], rotation=15, ha="right")
                 ax.set_title(panel_rows[0]["panel"])
                 ax.set_ylabel(f"Best confirmed latency ({metadata['latency_unit']})")
-                ax.set_ylim(0, max_latency * 1.22)
+                ax.set_ylim(0, panel_max_latency * 1.22)
                 ax.grid(axis="y", alpha=0.22)
                 ax.set_axisbelow(True)
 
@@ -1238,11 +1259,17 @@ def plot_gdn_acceptance(records: Any, output: str | os.PathLike[str]) -> dict[st
                 plt.Line2D([0], [0], color="#111827", marker="o", label="compile count (right axis)"),
                 plt.Line2D([0], [0], color="#DC2626", marker="s", label="profile count (right axis)"),
             ]
-            first_legend = fig.legend(handles=method_handles, loc="upper center", bbox_to_anchor=(0.5, 0.94), ncol=min(4, len(methods)), frameon=False)
-            fig.add_artist(first_legend)
-            fig.legend(handles=metric_handles, loc="upper center", bbox_to_anchor=(0.5, 0.895), ncol=2, frameon=False)
+            fig.legend(
+                handles=method_handles + metric_handles,
+                loc="upper center",
+                bbox_to_anchor=(0.5, 0.94),
+                ncol=4,
+                frameon=False,
+                columnspacing=1.5,
+                handlelength=1.8,
+            )
             fig.suptitle("GDN acceptance: bars = best confirmed latency (left axis); lines = exact input counts (right axis)", y=0.995)
-            fig.tight_layout(rect=(0, 0, 1, 0.85))
+            fig.tight_layout(rect=(0, 0, 1, 0.82))
             fields = ("panel", "direction", "suite", "method", "best_latency", "latency_unit", "compile_count", "profile_count")
             return _emit(fig, plt, output, rows, fields, {"plot": "gdn_acceptance", **metadata})
         finally:
