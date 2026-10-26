@@ -1,0 +1,124 @@
+{
+  "schema": "tilelang-cuda-z3.experiment-plan",
+  "version": 1,
+  "status": "pre_registered_before_performance",
+  "created_without_performance_results": true,
+  "upstream_base": "80364b3d9758854a9692cc0f14089025f54d3f3f",
+  "implementation_branch": "cuda-z3-cost-model",
+  "target": "NVIDIA GeForce RTX 5090 Laptop GPU, sm_120",
+  "execution": {
+    "backend": "tvm_ffi",
+    "profiler": "event",
+    "use_pipeline": false,
+    "enable_grouped_compile": false,
+    "benchmark_multi_gpu": false,
+    "early_stop": false,
+    "search_warmup": 10,
+    "search_repeat": 50,
+    "final_warmup": 50,
+    "final_repeat": 200,
+    "cold_search_replicates": 3,
+    "independent_confirmation_rounds": 7,
+    "confirmation_order": "ABBA or randomized interleaving",
+    "correctness_mismatched_ratio": 0
+  },
+  "arms": [
+    "stock-raw",
+    "z3-legal-exhaustive",
+    "z3-cm-topk",
+    "budget-raw",
+    "budget-random-fixed-seeds"
+  ],
+  "suites": {
+    "gemm_square": {
+      "operator": "gemm",
+      "shape": {"M": 4096, "N": 4096, "K": 4096},
+      "dtype": "fp16 IO, fp32 accumulation",
+      "raw_count": 288,
+      "top_k": 10,
+      "sensitivity_top_k": [1, 5, 10, 20]
+    },
+    "gemm_short_k": {
+      "operator": "gemm",
+      "shape": {"M": 8192, "N": 8192, "K": 256},
+      "dtype": "fp16 IO, fp32 accumulation",
+      "raw_count": 288,
+      "top_k": 10
+    },
+    "conv2d_stride_tail": {
+      "operator": "conv2d_nhwc",
+      "shape": {"N": 4, "C": 64, "H": 33, "W": 33, "F": 96, "K": 3, "stride": 2, "dilation": 1, "padding": 1},
+      "dtype": "fp16 IO, fp32 accumulation",
+      "raw_count": 144,
+      "top_k": 10
+    },
+    "flash_attention_causal": {
+      "operator": "flash_attention_forward_bshd",
+      "shape": {"batch": 1, "heads": 16, "seq_len": 2048, "dim": 64, "causal": true},
+      "dtype": "fp16 IO, fp32 accumulation",
+      "raw_count": 54,
+      "top_k": 10
+    },
+    "gdn_forward": {
+      "operator": "FlashQLA TileLang public forward",
+      "fixed": {"auto_cp": false, "dtype": "bf16", "K": 128, "DV": 128, "chunk": 32, "threads": 512},
+      "performance_shape": {"B": 1, "T": 4096, "Hg": 4, "H": 8},
+      "raw_domains": {"block_DV": [16, 32, 64, 128], "prepare_h_num_stages": [2], "group_reduce_block_size": [16]},
+      "raw_count": 4,
+      "top_k": 2,
+      "acceptance_outputs": ["o", "final_state"]
+    },
+    "gdn_backward": {
+      "operator": "FlashQLA TileLang public backward including prepare_h and GQA reduction",
+      "fixed": {"auto_cp": false, "dtype": "bf16", "K": 128, "DV": 128, "chunk": 32, "threads": 512},
+      "performance_shape": {"B": 1, "T": 4096, "Hg": 4, "H": 8},
+      "raw_domains": {"block_DV": [128], "prepare_h_num_stages": [1, 2, 3], "group_reduce_block_size": [8, 16, 32]},
+      "raw_count": 9,
+      "top_k": 3,
+      "acceptance_outputs": ["dq", "dk", "dv", "db", "dg", "dh0"]
+    }
+  },
+  "gdn_correctness": {
+    "small_dense_shape": {"B": 1, "T": 128, "Hg": 2, "H": 4},
+    "gqa_required": true,
+    "reference": "vendored pure PyTorch float64 reference plus independent small-shape cross-check",
+    "relative_l2_tolerance": 0.02,
+    "additional_cases": ["varlen padding exactly zero", "final_state without h0", "dh0 with h0 and without dht", "multi-seed", "determinism"],
+    "performance_winner_determinism_iterations": 1000
+  },
+  "calibration_isolation": {
+    "microbenchmarks_use_disjoint_shapes": true,
+    "gdn_validation_shape": {"B": 1, "T": 1024, "Hg": 2, "H": 4},
+    "heldout_performance_shape": {"B": 1, "T": 4096, "Hg": 4, "H": 8},
+    "rule": "Heldout oracle measurements must not be used to fit or select cost-model coefficients. If used for iteration, they become validation and a new heldout shape is required."
+  },
+  "cache_protocol": {
+    "fresh_process_per_arm_replicate": true,
+    "fresh_empty_run_owned_tilelang_cache": true,
+    "isolate_cuda_jit_and_xdg_cache": true,
+    "before_after_manifest": true,
+    "no_cache_sensitivity": true,
+    "warm_repeat_separate": true,
+    "shared_user_cache_deletion_forbidden": true
+  },
+  "metrics": [
+    "raw/SAT/UNSAT/unknown/duplicate counts",
+    "compile attempts/successes/failures and actual NVCC/ptxas counts",
+    "validation and profile counts",
+    "solver/model/compile/validation/profile/end-to-end wall time",
+    "best config and independently confirmed latency",
+    "regret and search speedup",
+    "Spearman/Kendall/top-k recall",
+    "cache identity and hits/misses",
+    "broad compile/correctness status by operator and architecture"
+  ],
+  "gdn_core_acceptance": {
+    "both_directions_required": true,
+    "require_correctness_first": true,
+    "search_reduction_required": "guided compile/profile counts and end-to-end search work must be lower than stock-raw while solver and model overhead are included",
+    "quality_rule": "guided confirmed latency must be no worse than 2% above the same-space exhaustive confirmed optimum, and must not lose to equal-budget controls on the reported primary comparison",
+    "better_schedule_rule": "Any latency improvement must be confirmed by independent interleaved measurements; a search-time minimum alone is insufficient",
+    "iteration_rule": "If either direction fails, revise constraints/model/scheduling on calibration or validation data and rerun the frozen acceptance protocol; do not delete failing configurations or suites"
+  },
+  "current_result_status": "NOT_RUN"
+}
