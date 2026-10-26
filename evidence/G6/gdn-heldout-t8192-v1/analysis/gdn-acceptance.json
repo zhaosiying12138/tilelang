@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "plot": "gdn_acceptance",
+  "latency_unit": "ms",
+  "latency_scope": "search_observed",
+  "rows": [
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "stock-raw",
+      "best_latency": 0.3035564720630646,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 4,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "z3-legal-exhaustive",
+      "best_latency": 0.30336254835128784,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "z3-cm-topk",
+      "best_latency": 0.3025907278060913,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "budget-raw",
+      "best_latency": 0.30237311124801636,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "budget-random",
+      "best_latency": 0.3035334348678589,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "stock-raw",
+      "best_latency": 4.2092366218566895,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 9,
+      "profile_count": 6
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "z3-legal-exhaustive",
+      "best_latency": 4.2136759757995605,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 6,
+      "profile_count": 6
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "z3-cm-topk",
+      "best_latency": 4.219660758972168,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "budget-raw",
+      "best_latency": 4.377095699310303,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "budget-random",
+      "best_latency": 4.218301773071289,
+      "latency_unit": "ms",
+      "latency_scope": "search_observed",
+      "compile_count": 3,
+      "profile_count": 3
+    }
+  ]
+}

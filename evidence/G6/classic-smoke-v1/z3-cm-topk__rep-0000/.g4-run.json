@@ -1,0 +1,1 @@
+{"arm":"z3-cm-topk","cache_mode":"enabled","experiment_id":"2916d2e6fe9941fbab997f203fcc529e","kind":"run","metadata":{"utc_created":"2026-10-26T22:32:54.847862+00:00"},"repetition":0,"root":"/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-smoke-v1","run_name":"z3-cm-topk__rep-0000","schema":"tilelang.g4.search-experiment/v1"}

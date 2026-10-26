@@ -1,0 +1,18 @@
+{
+  "fwd": {
+    "count": 3,
+    "spearman": 1.0,
+    "kendall_tau_b": 1.0,
+    "top1_recall": 1.0,
+    "top2_recall": 1.0,
+    "top3_recall": 1.0
+  },
+  "bwd": {
+    "count": 6,
+    "spearman": 0.7944613465542745,
+    "kendall_tau_b": 0.6445033866354896,
+    "top1_recall": 1.0,
+    "top2_recall": 0.5,
+    "top3_recall": 1.0
+  }
+}

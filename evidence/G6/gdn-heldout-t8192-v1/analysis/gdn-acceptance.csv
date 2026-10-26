@@ -1,0 +1,11 @@
+panel,direction,suite,method,best_latency,latency_unit,latency_scope,compile_count,profile_count
+GDN fwd,fwd,GDN fwd,stock-raw,0.3035564720630646,ms,search_observed,4,3
+GDN fwd,fwd,GDN fwd,z3-legal-exhaustive,0.30336254835128784,ms,search_observed,3,3
+GDN fwd,fwd,GDN fwd,z3-cm-topk,0.3025907278060913,ms,search_observed,2,2
+GDN fwd,fwd,GDN fwd,budget-raw,0.30237311124801636,ms,search_observed,2,2
+GDN fwd,fwd,GDN fwd,budget-random,0.3035334348678589,ms,search_observed,2,2
+GDN bwd,bwd,GDN bwd,stock-raw,4.2092366218566895,ms,search_observed,9,6
+GDN bwd,bwd,GDN bwd,z3-legal-exhaustive,4.2136759757995605,ms,search_observed,6,6
+GDN bwd,bwd,GDN bwd,z3-cm-topk,4.219660758972168,ms,search_observed,3,3
+GDN bwd,bwd,GDN bwd,budget-raw,4.377095699310303,ms,search_observed,3,3
+GDN bwd,bwd,GDN bwd,budget-random,4.218301773071289,ms,search_observed,3,3

@@ -1,0 +1,389 @@
+{
+  "entries": [
+    {
+      "path": "before.json",
+      "size_bytes": 82
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/053279c52f09d33dac9d583c748ad6e6517cef981494c4706d145b582a7ed191/kernel.cubin",
+      "size_bytes": 15984
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/053279c52f09d33dac9d583c748ad6e6517cef981494c4706d145b582a7ed191/metadata.json",
+      "size_bytes": 145
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/1b18623bafe8902b9302a48fa72a203d156a22394d4d70ed06fc51b542a283f2/kernel.cubin",
+      "size_bytes": 289424
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/1b18623bafe8902b9302a48fa72a203d156a22394d4d70ed06fc51b542a283f2/metadata.json",
+      "size_bytes": 146
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/3282c923e929f4a9ec1fccd05f3bd9438922438f098799059554d79073cd64bb/kernel.cubin",
+      "size_bytes": 102688
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/3282c923e929f4a9ec1fccd05f3bd9438922438f098799059554d79073cd64bb/metadata.json",
+      "size_bytes": 146
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/3921375ea89a5a9823c0e4e221d399672bba28ca8bf769dd972222ec641c0ddd/kernel.cubin",
+      "size_bytes": 27616
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/3921375ea89a5a9823c0e4e221d399672bba28ca8bf769dd972222ec641c0ddd/metadata.json",
+      "size_bytes": 145
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/87c9f6bbf11d45ed2f0ec34bff42f0c44b5711b718c81ffb2f32ce1f2ba9074d/kernel.cubin",
+      "size_bytes": 27616
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/87c9f6bbf11d45ed2f0ec34bff42f0c44b5711b718c81ffb2f32ce1f2ba9074d/metadata.json",
+      "size_bytes": 145
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/908a09665df7e03134ad51ec50f8e95b814c2678d350fd6e10677b2f7aa9b440/kernel.cubin",
+      "size_bytes": 31424
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/908a09665df7e03134ad51ec50f8e95b814c2678d350fd6e10677b2f7aa9b440/metadata.json",
+      "size_bytes": 145
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/b907eb53e2bd5ea224e5e6ed74bfd8cf76c3a4756e35a957db24df15b61e274c/kernel.cubin",
+      "size_bytes": 323176
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/b907eb53e2bd5ea224e5e6ed74bfd8cf76c3a4756e35a957db24df15b61e274c/metadata.json",
+      "size_bytes": 146
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/d1b6b4791be7acce1a8427ea12ddc1048b263e6fa7b8c82a3cc421c12f8fc2b5/kernel.cubin",
+      "size_bytes": 293712
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/d1b6b4791be7acce1a8427ea12ddc1048b263e6fa7b8c82a3cc421c12f8fc2b5/metadata.json",
+      "size_bytes": 146
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/f83fecf8e4f00e14b8700f76cefb30563be4b30b2a5ad6450b75e0deb26ed381/kernel.cubin",
+      "size_bytes": 968080
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/cuda-binaries/f83fecf8e4f00e14b8700f76cefb30563be4b30b2a5ad6450b75e0deb26ed381/metadata.json",
+      "size_bytes": 146
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/33004a9e21abc2831c26facaaf215e1e388d9963baf12582e1075d46dbdc8dfa/device_kernel.cu",
+      "size_bytes": 8631
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/33004a9e21abc2831c26facaaf215e1e388d9963baf12582e1075d46dbdc8dfa/executable.so",
+      "size_bytes": 48880
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/33004a9e21abc2831c26facaaf215e1e388d9963baf12582e1075d46dbdc8dfa/host_kernel.cu",
+      "size_bytes": 18806
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/33004a9e21abc2831c26facaaf215e1e388d9963baf12582e1075d46dbdc8dfa/manifest.json",
+      "size_bytes": 571
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/33004a9e21abc2831c26facaaf215e1e388d9963baf12582e1075d46dbdc8dfa/params.json",
+      "size_bytes": 1779
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/491b0091c36ca7142159b3c619fc50d18a361eb728587bd709a9a18bcacbb7d8/device_kernel.cu",
+      "size_bytes": 20500
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/491b0091c36ca7142159b3c619fc50d18a361eb728587bd709a9a18bcacbb7d8/executable.so",
+      "size_bytes": 126688
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/491b0091c36ca7142159b3c619fc50d18a361eb728587bd709a9a18bcacbb7d8/host_kernel.cu",
+      "size_bytes": 26643
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/491b0091c36ca7142159b3c619fc50d18a361eb728587bd709a9a18bcacbb7d8/manifest.json",
+      "size_bytes": 573
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/491b0091c36ca7142159b3c619fc50d18a361eb728587bd709a9a18bcacbb7d8/params.json",
+      "size_bytes": 2237
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/4d326f1b63aa8e963caf07f97e8f0ae273039f2932604bd59e0758eb89a2b862/device_kernel.cu",
+      "size_bytes": 50924
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/4d326f1b63aa8e963caf07f97e8f0ae273039f2932604bd59e0758eb89a2b862/executable.so",
+      "size_bytes": 347936
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/4d326f1b63aa8e963caf07f97e8f0ae273039f2932604bd59e0758eb89a2b862/host_kernel.cu",
+      "size_bytes": 111639
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/4d326f1b63aa8e963caf07f97e8f0ae273039f2932604bd59e0758eb89a2b862/manifest.json",
+      "size_bytes": 574
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/4d326f1b63aa8e963caf07f97e8f0ae273039f2932604bd59e0758eb89a2b862/params.json",
+      "size_bytes": 4884
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/5adb403282cb56152e2c3b1228cae889b7b0fb262f75bfbc6c6d32481df0bb5f/device_kernel.cu",
+      "size_bytes": 4770
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/5adb403282cb56152e2c3b1228cae889b7b0fb262f75bfbc6c6d32481df0bb5f/executable.so",
+      "size_bytes": 52976
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/5adb403282cb56152e2c3b1228cae889b7b0fb262f75bfbc6c6d32481df0bb5f/host_kernel.cu",
+      "size_bytes": 21111
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/5adb403282cb56152e2c3b1228cae889b7b0fb262f75bfbc6c6d32481df0bb5f/manifest.json",
+      "size_bytes": 571
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/5adb403282cb56152e2c3b1228cae889b7b0fb262f75bfbc6c6d32481df0bb5f/params.json",
+      "size_bytes": 1654
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/81ee47ea85ee9eeb315498cc169bc7d7004ac902ebb3421c837940f716d73ecf/device_kernel.cu",
+      "size_bytes": 8632
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/81ee47ea85ee9eeb315498cc169bc7d7004ac902ebb3421c837940f716d73ecf/executable.so",
+      "size_bytes": 48880
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/81ee47ea85ee9eeb315498cc169bc7d7004ac902ebb3421c837940f716d73ecf/host_kernel.cu",
+      "size_bytes": 18806
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/81ee47ea85ee9eeb315498cc169bc7d7004ac902ebb3421c837940f716d73ecf/manifest.json",
+      "size_bytes": 571
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/81ee47ea85ee9eeb315498cc169bc7d7004ac902ebb3421c837940f716d73ecf/params.json",
+      "size_bytes": 1779
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/98c25e97b538f20019c3d548224f47bd352fd0aa8277ff7f23ac594dc9013169/device_kernel.cu",
+      "size_bytes": 171554
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/98c25e97b538f20019c3d548224f47bd352fd0aa8277ff7f23ac594dc9013169/executable.so",
+      "size_bytes": 1056560
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/98c25e97b538f20019c3d548224f47bd352fd0aa8277ff7f23ac594dc9013169/host_kernel.cu",
+      "size_bytes": 180738
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/98c25e97b538f20019c3d548224f47bd352fd0aa8277ff7f23ac594dc9013169/manifest.json",
+      "size_bytes": 576
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/98c25e97b538f20019c3d548224f47bd352fd0aa8277ff7f23ac594dc9013169/params.json",
+      "size_bytes": 6017
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/9edd0ac6a3b20b0daf99c032a9939c90f4b264b63079cb9bca2e06bc1d22b41e/device_kernel.cu",
+      "size_bytes": 50032
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/9edd0ac6a3b20b0daf99c032a9939c90f4b264b63079cb9bca2e06bc1d22b41e/executable.so",
+      "size_bytes": 352032
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/9edd0ac6a3b20b0daf99c032a9939c90f4b264b63079cb9bca2e06bc1d22b41e/host_kernel.cu",
+      "size_bytes": 111639
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/9edd0ac6a3b20b0daf99c032a9939c90f4b264b63079cb9bca2e06bc1d22b41e/manifest.json",
+      "size_bytes": 574
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/9edd0ac6a3b20b0daf99c032a9939c90f4b264b63079cb9bca2e06bc1d22b41e/params.json",
+      "size_bytes": 4884
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/cf526510720f3666e0cd6a332698c0ceedf5a7bffb1ff778c439863315f0ae62/device_kernel.cu",
+      "size_bytes": 4210
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/cf526510720f3666e0cd6a332698c0ceedf5a7bffb1ff778c439863315f0ae62/executable.so",
+      "size_bytes": 36592
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/cf526510720f3666e0cd6a332698c0ceedf5a7bffb1ff778c439863315f0ae62/host_kernel.cu",
+      "size_bytes": 21110
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/cf526510720f3666e0cd6a332698c0ceedf5a7bffb1ff778c439863315f0ae62/manifest.json",
+      "size_bytes": 571
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/cf526510720f3666e0cd6a332698c0ceedf5a7bffb1ff778c439863315f0ae62/params.json",
+      "size_bytes": 1654
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/f3b139e8d8419b46734f3e8d34e74096ae0293a6fbda12947d8fd8e2f2b07fb2/device_kernel.cu",
+      "size_bytes": 54950
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/f3b139e8d8419b46734f3e8d34e74096ae0293a6fbda12947d8fd8e2f2b07fb2/executable.so",
+      "size_bytes": 393008
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/f3b139e8d8419b46734f3e8d34e74096ae0293a6fbda12947d8fd8e2f2b07fb2/host_kernel.cu",
+      "size_bytes": 135279
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/f3b139e8d8419b46734f3e8d34e74096ae0293a6fbda12947d8fd8e2f2b07fb2/manifest.json",
+      "size_bytes": 574
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git8d839c70/linux-x86_64/kernels/f3b139e8d8419b46734f3e8d34e74096ae0293a6fbda12947d8fd8e2f2b07fb2/params.json",
+      "size_bytes": 5901
+    },
+    {
+      "path": "cache/tmp/torchinductor_zhaosiying/aotautograd/agst2qxgcm7hzjpm5y6i37n7glcvxmhmjw4lh3pltuae3fx3ahte/4pr7msfqckhioc7hxbyq2ikbpctsv6ksgclinappj42cxceafje",
+      "size_bytes": 81271
+    },
+    {
+      "path": "cache/tmp/torchinductor_zhaosiying/fxgraph/kq/fkqxyqoohj45oihqkcpfcpazf6oqwusiublv5owzn2hsxk6fcw36/cmufb37ml6sn35fw37rdyu34zlssaplkekofpjnia5xmy22dzm7",
+      "size_bytes": 495517
+    },
+    {
+      "path": "cache/tmp/torchinductor_zhaosiying/pk/cpk7q3aj6v36vq73a4gyeeqb4jos62prrmbrhrflnh6z35bbw53k.py",
+      "size_bytes": 9001
+    },
+    {
+      "path": "cache/tmp/torchinductor_zhaosiying/yt/9f75c46ce8ec994a6b920396c7561545bc3bd497f6a31476f72a4c63ef7e54b0.best_config",
+      "size_bytes": 256
+    },
+    {
+      "path": "cache/tmp/torchinductor_zhaosiying/yt/cytcwlnabk56gcmw67i7wakqbdq2sso5dnlegjzht3u7bxz7whpn.py",
+      "size_bytes": 3217
+    },
+    {
+      "path": "cache/triton/CTKZTL6BJVQ2YWF5GLXW26BDALDZ42ZV2ZGYVF253RP422UIB64Q/__grp__triton_per_fused__to_copy_add_mul_rsqrt_sum_0.json",
+      "size_bytes": 1892
+    },
+    {
+      "path": "cache/triton/CTKZTL6BJVQ2YWF5GLXW26BDALDZ42ZV2ZGYVF253RP422UIB64Q/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.cubin",
+      "size_bytes": 55456
+    },
+    {
+      "path": "cache/triton/CTKZTL6BJVQ2YWF5GLXW26BDALDZ42ZV2ZGYVF253RP422UIB64Q/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.json",
+      "size_bytes": 1168
+    },
+    {
+      "path": "cache/triton/CTKZTL6BJVQ2YWF5GLXW26BDALDZ42ZV2ZGYVF253RP422UIB64Q/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.llir",
+      "size_bytes": 74407
+    },
+    {
+      "path": "cache/triton/CTKZTL6BJVQ2YWF5GLXW26BDALDZ42ZV2ZGYVF253RP422UIB64Q/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ptx",
+      "size_bytes": 47258
+    },
+    {
+      "path": "cache/triton/CTKZTL6BJVQ2YWF5GLXW26BDALDZ42ZV2ZGYVF253RP422UIB64Q/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.source",
+      "size_bytes": 13518
+    },
+    {
+      "path": "cache/triton/CTKZTL6BJVQ2YWF5GLXW26BDALDZ42ZV2ZGYVF253RP422UIB64Q/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ttgir",
+      "size_bytes": 11413
+    },
+    {
+      "path": "cache/triton/CTKZTL6BJVQ2YWF5GLXW26BDALDZ42ZV2ZGYVF253RP422UIB64Q/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ttir",
+      "size_bytes": 9258
+    },
+    {
+      "path": "cache/triton/K6MESY237U52W2UHLQFFXF4O3ZAFXQRK7M7LZWUMTDPCIZ2N4FFQ/__grp__triton_per_fused__to_copy_add_mul_rsqrt_sum_0.json",
+      "size_bytes": 1892
+    },
+    {
+      "path": "cache/triton/K6MESY237U52W2UHLQFFXF4O3ZAFXQRK7M7LZWUMTDPCIZ2N4FFQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.cubin",
+      "size_bytes": 23064
+    },
+    {
+      "path": "cache/triton/K6MESY237U52W2UHLQFFXF4O3ZAFXQRK7M7LZWUMTDPCIZ2N4FFQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.json",
+      "size_bytes": 1167
+    },
+    {
+      "path": "cache/triton/K6MESY237U52W2UHLQFFXF4O3ZAFXQRK7M7LZWUMTDPCIZ2N4FFQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.llir",
+      "size_bytes": 23209
+    },
+    {
+      "path": "cache/triton/K6MESY237U52W2UHLQFFXF4O3ZAFXQRK7M7LZWUMTDPCIZ2N4FFQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ptx",
+      "size_bytes": 22238
+    },
+    {
+      "path": "cache/triton/K6MESY237U52W2UHLQFFXF4O3ZAFXQRK7M7LZWUMTDPCIZ2N4FFQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.source",
+      "size_bytes": 13447
+    },
+    {
+      "path": "cache/triton/K6MESY237U52W2UHLQFFXF4O3ZAFXQRK7M7LZWUMTDPCIZ2N4FFQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ttgir",
+      "size_bytes": 11347
+    },
+    {
+      "path": "cache/triton/K6MESY237U52W2UHLQFFXF4O3ZAFXQRK7M7LZWUMTDPCIZ2N4FFQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ttir",
+      "size_bytes": 9207
+    },
+    {
+      "path": "cache/triton/OCA5HH64GGECCRFMANUSTC3OJ3HOIBZYGATXWFNYWRKZXCOZI6BQ/__grp__triton_per_fused__to_copy_add_mul_rsqrt_sum_0.json",
+      "size_bytes": 1892
+    },
+    {
+      "path": "cache/triton/OCA5HH64GGECCRFMANUSTC3OJ3HOIBZYGATXWFNYWRKZXCOZI6BQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.cubin",
+      "size_bytes": 15888
+    },
+    {
+      "path": "cache/triton/OCA5HH64GGECCRFMANUSTC3OJ3HOIBZYGATXWFNYWRKZXCOZI6BQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.json",
+      "size_bytes": 1166
+    },
+    {
+      "path": "cache/triton/OCA5HH64GGECCRFMANUSTC3OJ3HOIBZYGATXWFNYWRKZXCOZI6BQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.llir",
+      "size_bytes": 10442
+    },
+    {
+      "path": "cache/triton/OCA5HH64GGECCRFMANUSTC3OJ3HOIBZYGATXWFNYWRKZXCOZI6BQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ptx",
+      "size_bytes": 16224
+    },
+    {
+      "path": "cache/triton/OCA5HH64GGECCRFMANUSTC3OJ3HOIBZYGATXWFNYWRKZXCOZI6BQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.source",
+      "size_bytes": 13198
+    },
+    {
+      "path": "cache/triton/OCA5HH64GGECCRFMANUSTC3OJ3HOIBZYGATXWFNYWRKZXCOZI6BQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ttgir",
+      "size_bytes": 9091
+    },
+    {
+      "path": "cache/triton/OCA5HH64GGECCRFMANUSTC3OJ3HOIBZYGATXWFNYWRKZXCOZI6BQ/triton_per_fused__to_copy_add_mul_rsqrt_sum_0.ttir",
+      "size_bytes": 8371
+    },
+    {
+      "path": "cache/triton/RQDWFVUEDBU5MZOBYZQFCOHZHL6Y55XZ27Q5RMPPT7MMJCNUTSYQ/cuda_utils.cpython-312-x86_64-linux-gnu.so",
+      "size_bytes": 60736
+    },
+    {
+      "path": "samples.jsonl",
+      "size_bytes": 112396
+    },
+    {
+      "path": "summary.json",
+      "size_bytes": 22330
+    }
+  ],
+  "utc": "2026-10-26T23:03:20.341299+00:00"
+}

@@ -1,0 +1,11 @@
+panel,direction,suite,method,best_latency,latency_unit,latency_scope,compile_count,profile_count
+GDN fwd T=8192,fwd,GDN fwd T=8192,stock-raw,0.3089919984340668,ms,confirmed,4,3
+GDN fwd T=8192,fwd,GDN fwd T=8192,z3-legal-exhaustive,0.3089919984340668,ms,confirmed,3,3
+GDN fwd T=8192,fwd,GDN fwd T=8192,z3-cm-topk,0.3089919984340668,ms,confirmed,2,2
+GDN fwd T=8192,fwd,GDN fwd T=8192,budget-raw,0.3089919984340668,ms,confirmed,2,2
+GDN fwd T=8192,fwd,GDN fwd T=8192,budget-random,0.3089919984340668,ms,confirmed,2,2
+GDN bwd T=8192,bwd,GDN bwd T=8192,stock-raw,4.230791926383972,ms,confirmed,9,6
+GDN bwd T=8192,bwd,GDN bwd T=8192,z3-legal-exhaustive,4.230791926383972,ms,confirmed,6,6
+GDN bwd T=8192,bwd,GDN bwd T=8192,z3-cm-topk,4.230791926383972,ms,confirmed,3,3
+GDN bwd T=8192,bwd,GDN bwd T=8192,budget-raw,4.379024028778076,ms,confirmed,3,3
+GDN bwd T=8192,bwd,GDN bwd T=8192,budget-random,4.233903884887695,ms,confirmed,3,3

@@ -1,0 +1,25 @@
+
+==================================== ERRORS ====================================
+__ ERROR collecting benchmark/z3_cost_model/operators/tests/test_autotune.py ___
+import file mismatch:
+imported module 'test_autotune' has this __file__ attribute:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/tests/test_autotune.py
+which is not the same as the test file we want to collect:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/operators/tests/test_autotune.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+============================= fixture duration top =============================
+total   name        num med     max    
+0:00:00 grand total   0 0:00:00 0:00:00
+============================ test call duration top ============================
+total   name        num med     max    
+0:00:00 grand total   0 0:00:00 0:00:00
+=========================== test setup duration top ============================
+total   name        num med     max    
+0:00:00 grand total   0 0:00:00 0:00:00
+========================== test teardown duration top ==========================
+total   name        num med     max    
+0:00:00 grand total   0 0:00:00 0:00:00
+=========================== short test summary info ============================
+ERROR benchmark/z3_cost_model/operators/tests/test_autotune.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.37s

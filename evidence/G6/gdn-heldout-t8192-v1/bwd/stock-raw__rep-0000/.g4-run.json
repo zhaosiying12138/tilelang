@@ -1,0 +1,1 @@
+{"arm":"stock-raw","cache_mode":"enabled","experiment_id":"ad64cadb3c86420a90f8d20157887af5","kind":"run","metadata":{"utc_created":"2026-10-26T22:37:41.493382+00:00"},"repetition":0,"root":"/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd","run_name":"stock-raw__rep-0000","schema":"tilelang.g4.search-experiment/v1"}

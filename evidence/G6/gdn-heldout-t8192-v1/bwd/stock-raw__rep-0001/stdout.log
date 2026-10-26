@@ -1,0 +1,30 @@
+2026-10-27 06:46:13,246 INFO:Auto-tuning with 1 CPU counts, 24 CPUs available, 1 CPUs will be used
+2026-10-27 06:46:13,246 WARNING:Benchmark timeout is enforced in benchmark workers by running each benchmark call in a daemon sub-thread and waiting up to the configured timeout.
+2026-10-27 06:46:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-27 06:46:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-27 06:46:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-27 06:46:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-27 06:46:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-27 06:46:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+2026-10-27 06:46:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-27 06:46:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-27 06:46:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel` with `out_idx=None`
+2026-10-27 06:46:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel`
+2026-10-27 06:46:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_group_reduce_vector_kernel` with `out_idx=None`
+2026-10-27 06:46:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_group_reduce_vector_kernel`
+2026-10-27 06:46:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-27 06:46:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-27 06:46:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_group_reduce_vector_kernel` with `out_idx=None`
+2026-10-27 06:46:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_group_reduce_vector_kernel`
+2026-10-27 06:46:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_group_reduce_vector_kernel` with `out_idx=None`
+2026-10-27 06:46:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_group_reduce_vector_kernel`
+2026-10-27 06:46:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-27 06:47:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-27 06:47:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-27 06:47:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+Tuned Latency 4.382980823516846 with config {'direction': 'bwd', 'block_DV': 128, 'prepare_h_num_stages': 1, 'group_reduce_block_size': 8} at index 0
+Tuned Latency 4.374976634979248 with config {'direction': 'bwd', 'block_DV': 128, 'prepare_h_num_stages': 1, 'group_reduce_block_size': 16} at index 1
+Tuned Latency 4.371597766876221 with config {'direction': 'bwd', 'block_DV': 128, 'prepare_h_num_stages': 1, 'group_reduce_block_size': 32} at index 2
+Tuned Latency 4.207859516143799 with config {'direction': 'bwd', 'block_DV': 128, 'prepare_h_num_stages': 2, 'group_reduce_block_size': 8} at index 3
+Tuned Latency 4.217452526092529 with config {'direction': 'bwd', 'block_DV': 128, 'prepare_h_num_stages': 2, 'group_reduce_block_size': 16} at index 4
+Tuned Latency 4.239165306091309 with config {'direction': 'bwd', 'block_DV': 128, 'prepare_h_num_stages': 2, 'group_reduce_block_size': 32} at index 5

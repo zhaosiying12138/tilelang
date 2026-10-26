@@ -1,0 +1,77 @@
+........................................................................ [ 17%]
+........................................................................ [ 34%]
+........................................................................ [ 52%]
+........................................................................ [ 69%]
+.............................................................................................................................                  [100%]
+=============================== warnings summary ===============================
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+  /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/analyze_predictions.py:29: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpbx44hpdi/no-cache/events.jsonl' mode='r' encoding='utf-8'>
+    for line in path.open(encoding="utf-8"):
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+  /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/analyze_predictions.py:29: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpbx44hpdi/warm/events.jsonl' mode='r' encoding='utf-8'>
+    for line in path.open(encoding="utf-8"):
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+benchmark/z3_cost_model/gdn/tests/test_analysis.py::AnalysisCacheTrackTest::test_prediction_collection_never_mixes_warm_or_no_cache_latencies
+  /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/analyze_predictions.py:29: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpbx44hpdi/cold/events.jsonl' mode='r' encoding='utf-8'>
+    for line in path.open(encoding="utf-8"):
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+====================================================================================== fixture duration top ======================================================================================
+total          name                                                                                                                                              num med            max           
+0:00:00.013462 grand total                                                                                                                                       434 0:00:00.000026 0:00:00.000953
+===================================================================================== test call duration top =====================================================================================
+total          name                                                                                                                                              num med            max           
+0:00:01.493017 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import             1 0:00:01.493017 0:00:01.493017
+0:00:00.871567 testing/python/transform/test_tilelang_z3_task_analysis.py::test_non_static_versioned_buffer_size_is_an_error_not_zero                              1 0:00:00.871567 0:00:00.871567
+0:00:00.572457 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_constraints_do_not_prune_raw_or_obvious_tail_configs                                3 0:00:00.190318 0:00:00.192706
+0:00:00.339831 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path                                                   1 0:00:00.339831 0:00:00.339831
+0:00:00.336677 testing/python/cuda/test_result_visualization.py::test_gdn_acceptance_has_two_panels_and_exact_input_values                                         1 0:00:00.336677 0:00:00.336677
+0:00:00.330126 testing/python/cuda/test_result_visualization.py::test_gdn_search_observed_scope_is_explicit                                                        1 0:00:00.330126 0:00:00.330126
+0:00:00.280737 testing/python/cuda/test_result_visualization.py::test_prediction_rank_displays_suite_metrics_and_joins_candidate_keys                              1 0:00:00.280737 0:00:00.280737
+0:00:00.236399 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_gemm_fixed_seed_and_independent_fp32_reference                                      1 0:00:00.236399 0:00:00.236399
+0:00:00.227249 testing/python/cuda/test_result_visualization.py::test_pruning_funnel_preserves_unknown_and_dedup_accounting                                        1 0:00:00.227249 0:00:00.227249
+0:00:00.211386 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_prim_func_factories_construct_on_cpu_without_compilation                            1 0:00:00.211386 0:00:00.211386
+0:00:00.184161 testing/python/cuda/test_result_visualization.py::test_quality_search_pareto_marks_frontier_and_same_space_oracle                                   1 0:00:00.184161 0:00:00.184161
+0:00:00.183005 testing/python/autotune/test_guided_tuner.py::test_parallel_compile_cumulative_and_wall_are_distinct                                                1 0:00:00.183005 0:00:00.183005
+0:00:00.162790 testing/python/cuda/test_result_visualization.py::test_parallel_cumulative_time_uses_independent_bars_and_warns                                     1 0:00:00.162790 0:00:00.162790
+0:00:00.153342 testing/python/cuda/test_result_visualization.py::test_additive_time_breakdown_derives_only_residual_other                                          1 0:00:00.153342 0:00:00.153342
+0:00:00.123595 testing/python/cuda/test_result_visualization.py::test_native_loop_schedule_json_generates_all_artifacts                                            1 0:00:00.123595 0:00:00.123595
+0:00:00.115218 article/tests/test_build_html.py::SyntheticArticleTests::test_check_only_cli_writes_nothing_and_missing_chapter_fails                               1 0:00:00.115218 0:00:00.115218
+0:00:00.114275 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_repeated_and_threaded_solves_are_deterministic                                    1 0:00:00.114275 0:00:00.114275
+0:00:00.104168 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_png_and_pdf_in_tmp_path                                            1 0:00:00.104168 0:00:00.104168
+0:00:00.103440 testing/python/cuda/test_result_visualization.py::test_native_straight_schedule_does_not_invent_minimum_ii_or_stage                                 1 0:00:00.103440 0:00:00.103440
+0:00:00.095254 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                        10 0:00:00.009418 0:00:00.010484
+0:00:00.070140 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                       1 0:00:00.070140 0:00:00.070140
+0:00:00.070042 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                    2 0:00:00.035021 0:00:00.036051
+0:00:00.061291 article/tests/test_build_html.py::SyntheticArticleTests::test_full_cli_writes_html_zhihu_formula_log_manifest_and_zip                               1 0:00:00.061291 0:00:00.061291
+0:00:00.037508 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering     12 0:00:00.002747 0:00:00.005558
+0:00:00.033147 benchmark/z3_cost_model/gdn/tests/test_autotune.py::GDNAutotuneCPUTest::test_five_arm_denominators_and_strict_run_json                              1 0:00:00.033147 0:00:00.033147
+0:00:00.023179 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_raw_counts_exact_domains_and_unique_ids                                             1 0:00:00.023179 0:00:00.023179
+0:00:00.018993 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum        1 0:00:00.018993 0:00:00.018993
+0:00:00.018322 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                   2 0:00:00.009161 0:00:00.009414
+0:00:00.017759 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline   1 0:00:00.017759 0:00:00.017759
+0:00:00.017154 article/tests/test_build_html.py::SyntheticArticleTests::test_html_zhihu_math_images_manifest_and_zip                                               1 0:00:00.017154 0:00:00.017154
+0:00:07.266292 grand total                                                                                                                                       413 0:00:00.000715 0:00:01.493017
+==================================================================================== test setup duration top =====================================================================================
+total          name                                                                                                                                              num med            max           
+0:00:00.049572 grand total                                                                                                                                       413 0:00:00.000057 0:00:00.003901
+=================================================================================== test teardown duration top ===================================================================================
+total          name                                                                                                                                              num med            max           
+0:00:00.018295 grand total                                                                                                                                       413 0:00:00.000034 0:00:00.000400
+413 passed, 12 warnings, 74 subtests passed in 7.78s

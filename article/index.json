@@ -15,6 +15,7 @@
     "mechanisms/08-calibration.md",
     "results/implementation-status.md",
     "results/search-protocol.md",
+    "results/gdn-acceptance.md",
     {"path": "appendix/parity-inventory.md", "id": "parity-inventory"},
     {"path": "appendix/parity-evidence.md", "id": "parity-evidence"}
   ],

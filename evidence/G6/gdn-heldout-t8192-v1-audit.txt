@@ -1,0 +1,15 @@
+{
+  "schema": "tilelang.gdn.cold-protocol-audit/v1",
+  "root": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1",
+  "repetitions": [
+    0,
+    1,
+    2
+  ],
+  "num_tokens": 8192,
+  "expected_runs": 30,
+  "observed_runs": 30,
+  "distinct_pids": 30,
+  "passed": true,
+  "errors": []
+}

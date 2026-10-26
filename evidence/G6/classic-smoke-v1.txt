@@ -1,0 +1,285 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+{
+  "R": 288,
+  "U": 256,
+  "arm": "z3-cm-topk",
+  "best": {
+    "config": {
+      "block_K": 64,
+      "block_M": 256,
+      "block_N": 128,
+      "enable_rasterization": false,
+      "num_stages": 2,
+      "threads": 256
+    },
+    "config_id": "0521f1a6057c4daf28fc6e33aa55d0e027a3c0c2a772ef562bcad480cd152511",
+    "latency_ms": 1.4351040124893188,
+    "unavailable_reason": null
+  },
+  "best_config": {
+    "block_K": 64,
+    "block_M": 256,
+    "block_N": 128,
+    "enable_rasterization": false,
+    "num_stages": 2,
+    "threads": 256
+  },
+  "best_latency_ms": 1.4351040124893188,
+  "cache": {
+    "directory": null,
+    "directory_scope": "directory/identity concern the AutoTuner result cache; pipeline_cache_directory is the isolated TileLang/CUDA/Torch cache root",
+    "enabled": false,
+    "hit": false,
+    "identity": null,
+    "key": null,
+    "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-smoke-v1/z3-cm-topk__rep-0000/cache",
+    "requested_mode": "enabled",
+    "source": null,
+    "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)"
+  },
+  "cache_identity": null,
+  "candidate_count": 1,
+  "candidate_failures": {
+    "compile": 0,
+    "profile": 0,
+    "validation": 0
+  },
+  "compile": {
+    "attempts": 1,
+    "cumulative_seconds": 2.128926227975171,
+    "fail": 0,
+    "success": 1,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 2.1290008240030147
+  },
+  "compile_attempts": 1,
+  "compile_fail": 0,
+  "compile_success": 1,
+  "compile_wall_seconds": 2.1290008240030147,
+  "duplicates": 0,
+  "end_to_end_wall_seconds": 2.99915701901773,
+  "errors": [
+    {
+      "config_id": "787f24a0c5935dad1dcec373e2963cc7fe6860fbec868f30dd6489c9eff49923",
+      "error": "gemm shared bytes 122880 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "720e004cb18fb1ce06063c208ee30543dd2e1af892b613100184457067398119",
+      "error": "gemm shared bytes 122880 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "e25e0d6a848a4d858904f0f5cb8ead0f1269a898b541444783f0a3c47939972d",
+      "error": "gemm shared bytes 122880 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "c7e58cc4731d4147f5cc9d2d3f5ae0f7f10dde380114c5c0eeab0b5440ce5a5b",
+      "error": "gemm shared bytes 122880 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "7a410c9aec44acfe4e9128c659e3ada381c2eb9af417485b9c2cebc4c6abcf9d",
+      "error": "gemm shared bytes 147456 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "7110ea41b4bc2aad0b6c5c531b20d772bdf87ebdbb009bdf075770286d06b8fa",
+      "error": "gemm shared bytes 147456 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "99c05340762daead4d9f29281095ef9eda1d94dea7c8fa085537647842c1c5a2",
+      "error": "gemm shared bytes 147456 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "8791776e6d1b25e3b182f454ba7d46b4855a552a6d6eaf9daf7765697188ae8f",
+      "error": "gemm shared bytes 147456 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "6384e876ed2629126dc1f4cb470394ff51810da15f7a44653bf688ac75984e4f",
+      "error": "gemm shared bytes 122880 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "56b21ef3f82853bf97b4dd8594ea8af9ea2b2b770fc91afacdc6e8f5a7306d5d",
+      "error": "gemm shared bytes 122880 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "005fbb8f341da1fd2a49492cca544d4b275f5d1754315abdcff14bdf39d68c85",
+      "error": "gemm shared bytes 122880 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "b598a8925c3a292c3d6f7e82cb58f4ec9b5f5c6bf3da36d90fcf30db09129f45",
+      "error": "gemm shared bytes 122880 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "87f5387e7804a1f5738332783a19e524202ee20322bde73710e61f5768d82706",
+      "error": "gemm shared bytes 147456 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "f57b2cc0ab3c29c4f89cd579d7ad68b4be48a6ce3964c02c5077e1811209c5c1",
+      "error": "gemm shared bytes 147456 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "e0b86bdc6dcd9b4f5413efade22cdda514583fbb6ef37d5b509cf2657f3ebc84",
+      "error": "gemm shared bytes 147456 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    },
+    {
+      "config_id": "066f345e8ee2bea35613bcceab84198b16515829d4bd8033c635c7a0562334ce",
+      "error": "gemm shared bytes 147456 exceed per-block opt-in 101376",
+      "index": null,
+      "kind": "model"
+    }
+  ],
+  "errors_omitted": 0,
+  "experiment": {
+    "after": "after.json",
+    "arm": "z3-cm-topk",
+    "before": "before.json",
+    "cache_mode": "enabled",
+    "events": "events.jsonl",
+    "repetition": 0,
+    "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-smoke-v1/z3-cm-topk__rep-0000"
+  },
+  "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+  "fully_instrumented": true,
+  "has_recorded_candidate_failures": true,
+  "metadata": {
+    "arm": "z3-cm-topk",
+    "cache_mode": "enabled",
+    "cache_track": "cold",
+    "operator": "gemm",
+    "repetition": 0,
+    "seed": 20261026,
+    "shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096,
+      "dtype": "f16",
+      "output_dtype": "f16"
+    },
+    "suite": "gemm_square",
+    "top_k": 1,
+    "utc_started": "2026-10-26T22:32:55.118191+00:00"
+  },
+  "model": {
+    "attempts": 256,
+    "cumulative_seconds": 0.019910326460376382,
+    "fail": 16,
+    "predictions": 256,
+    "success": 240,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "unknown": 16,
+    "wall_seconds": 0.04792156600160524
+  },
+  "model_unknown": 16,
+  "model_wall_seconds": 0.04792156600160524,
+  "observer_errors": [],
+  "operator_run": {
+    "budget": 1,
+    "cache_track": "cold",
+    "model_operator": "gemm",
+    "model_shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096,
+      "dtype": "f16",
+      "output_dtype": "f16"
+    },
+    "operator": "gemm",
+    "raw_count": 288,
+    "reference": "frozen operator module independent FP32 reference",
+    "repeat": 5,
+    "seed": 20261026,
+    "shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096
+    },
+    "suite": "gemm_square",
+    "top_k": 1,
+    "validation": "real Profiler.manual_assert_close -> frozen module.validate; max_mismatched_ratio=0",
+    "warmup": 2
+  },
+  "profile": {
+    "attempts": 1,
+    "cumulative_seconds": 0.03300003899494186,
+    "fail": 0,
+    "success": 1,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 0.033036569016985595
+  },
+  "profile_wall_seconds": 0.033036569016985595,
+  "pruner_unknown": 0,
+  "reference_latency_ms": 5.32595157623291,
+  "run_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-smoke-v1/z3-cm-topk__rep-0000/cache",
+  "schema_version": 1,
+  "selected": 1,
+  "solver": {
+    "checks": 288,
+    "completed": true,
+    "cumulative_seconds": 0.05490321799879894,
+    "invoked": true,
+    "sat": 256,
+    "timeouts": 0,
+    "unavailable_reason": null,
+    "unknown": 0,
+    "unsat": 32,
+    "wall_seconds": 0.06556589703541249
+  },
+  "solver_wall_seconds": 0.06556589703541249,
+  "status": "ok",
+  "trials": {
+    "ok": 1
+  },
+  "unavailable": {},
+  "unknown": 0,
+  "unknown_sources": {
+    "model": 16,
+    "overlap": 0,
+    "pruner": 0,
+    "total": 16
+  },
+  "unknown_total": 16,
+  "validation": {
+    "attempts": 1,
+    "cumulative_seconds": 0.5667644309578463,
+    "fail": 0,
+    "failed": 0,
+    "not_run": 0,
+    "passed": 1,
+    "success": 1,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 0.5668367359903641
+  },
+  "validation_wall_seconds": 0.5668367359903641
+}

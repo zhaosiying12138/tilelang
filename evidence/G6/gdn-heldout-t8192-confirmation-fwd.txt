@@ -1,0 +1,75 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+In file included from /home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/Python.h:12,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:9:
+/home/zhaosiying/miniforge3/envs/tilelang-cu133/include/python3.12/pyconfig.h:1874:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1874 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/triton/backends/nvidia/driver.c:1:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+2026-10-27 07:01:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-27 07:01:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-27 07:01:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-27 07:01:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-27 07:01:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-27 07:01:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+{"direction": "fwd", "record_index": 0, "pair_index": -1, "round": 0, "config_id": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 0.30671998858451843, "mean_ms": 0.45668831929564474, "min_ms": 0.2996799945831299, "max_ms": 2.0773119926452637, "samples": "samples.jsonl#record_index=0"}
+{"direction": "fwd", "record_index": 1, "pair_index": -1, "round": 1, "config_id": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 0.30883198976516724, "mean_ms": 0.3115993611514568, "min_ms": 0.30035200715065, "max_ms": 0.3283520042896271, "samples": "samples.jsonl#record_index=1"}
+{"direction": "fwd", "record_index": 2, "pair_index": -1, "round": 2, "config_id": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 0.30902400612831116, "mean_ms": 0.3133144004642963, "min_ms": 0.3007360100746155, "max_ms": 0.3356480002403259, "samples": "samples.jsonl#record_index=2"}
+{"direction": "fwd", "record_index": 3, "pair_index": -1, "round": 3, "config_id": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 0.30876800417900085, "mean_ms": 0.3100593601167202, "min_ms": 0.30054399371147156, "max_ms": 0.3314239978790283, "samples": "samples.jsonl#record_index=3"}
+{"direction": "fwd", "record_index": 4, "pair_index": -1, "round": 4, "config_id": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 0.3089919984340668, "mean_ms": 0.3139216007292271, "min_ms": 0.3007360100746155, "max_ms": 0.33561599254608154, "samples": "samples.jsonl#record_index=4"}
+{"direction": "fwd", "record_index": 5, "pair_index": -1, "round": 5, "config_id": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 0.31086400151252747, "mean_ms": 0.3146808011829853, "min_ms": 0.3017280101776123, "max_ms": 0.33740800619125366, "samples": "samples.jsonl#record_index=5"}
+{"direction": "fwd", "record_index": 6, "pair_index": -1, "round": 6, "config_id": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}", "count": 200, "median_ms": 0.310016006231308, "mean_ms": 0.31522831991314887, "min_ms": 0.3043519854545593, "max_ms": 0.34089601039886475, "samples": "samples.jsonl#record_index=6"}
+{
+  "status": "ok",
+  "acceptance": {
+    "passed": true,
+    "rule": "guided/exhaustive <= 1.02 and guided/each equal-budget control <= 1.0; identical configs are exactly equal"
+  },
+  "comparisons": [
+    {
+      "alternative_arms": [],
+      "identical_arms": [
+        "stock-raw",
+        "z3-legal-exhaustive",
+        "z3-cm-topk",
+        "budget-raw",
+        "budget-random"
+      ],
+      "config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "identical": true,
+      "relations": [
+        "same_space_exhaustive",
+        "equal_budget_control",
+        "stock_informational"
+      ],
+      "pair_index": 0,
+      "guided_median_ms": 0.3089919984340668,
+      "alternative_median_ms": 0.3089919984340668,
+      "quality_ratio_guided_over_alternative": 1.0,
+      "paired_round_differences_ms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "requirements": {
+        "within_2_percent_of_exhaustive": true,
+        "not_slower_than_equal_budget_control": true
+      },
+      "passed": true
+    }
+  ]
+}
