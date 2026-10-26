@@ -1,6 +1,13 @@
 """CUDA-specific transformation frontends."""
 
 from .. import _ffi_api
+from . import z3_scheduler  # noqa: F401  # Import registers the CUDA Z3 FFI callbacks.
+from .z3_scheduler import (
+    Z3ScheduleInfeasibleError,
+    Z3ScheduleUnknownError,
+    z3_schedule_loop_python,
+    z3_schedule_python,
+)
 
 
 def AutoWarpSpecialization():
@@ -193,4 +200,8 @@ __all__ = [
     "MaterializeWSSchedule",
     "PersistThreadblock",
     "ProducerConsumerWarpSpecialized",
+    "Z3ScheduleInfeasibleError",
+    "Z3ScheduleUnknownError",
+    "z3_schedule_loop_python",
+    "z3_schedule_python",
 ]
