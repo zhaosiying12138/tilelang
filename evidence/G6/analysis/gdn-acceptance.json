@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "plot": "gdn_acceptance",
+  "latency_unit": "ms",
+  "rows": [
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "stock-raw",
+      "best_latency": 0.15902718901634216,
+      "latency_unit": "ms",
+      "compile_count": 4,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "z3-legal-exhaustive",
+      "best_latency": 0.15848961472511292,
+      "latency_unit": "ms",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "z3-cm-topk",
+      "best_latency": 0.15857920050621033,
+      "latency_unit": "ms",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "budget-raw",
+      "best_latency": 0.15917441248893738,
+      "latency_unit": "ms",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN fwd",
+      "direction": "fwd",
+      "suite": "GDN fwd",
+      "method": "budget-random",
+      "best_latency": 0.1582976132631302,
+      "latency_unit": "ms",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "stock-raw",
+      "best_latency": 2.0462398529052734,
+      "latency_unit": "ms",
+      "compile_count": 9,
+      "profile_count": 6
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "z3-legal-exhaustive",
+      "best_latency": 2.0519490242004395,
+      "latency_unit": "ms",
+      "compile_count": 6,
+      "profile_count": 6
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "z3-cm-topk",
+      "best_latency": 2.0647358894348145,
+      "latency_unit": "ms",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "budget-raw",
+      "best_latency": 2.133164644241333,
+      "latency_unit": "ms",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN bwd",
+      "direction": "bwd",
+      "suite": "GDN bwd",
+      "method": "budget-random",
+      "best_latency": 2.050015926361084,
+      "latency_unit": "ms",
+      "compile_count": 3,
+      "profile_count": 3
+    }
+  ]
+}

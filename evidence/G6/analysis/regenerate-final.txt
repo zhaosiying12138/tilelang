@@ -1,0 +1,24 @@
+{
+  "fwd": {
+    "count": 3,
+    "spearman": 1.0,
+    "kendall_tau_b": 1.0,
+    "top1_recall": 1.0,
+    "top2_recall": 1.0,
+    "top3_recall": 1.0
+  },
+  "bwd": {
+    "count": 6,
+    "spearman": 0.9428571428571428,
+    "kendall_tau_b": 0.8666666666666667,
+    "top1_recall": 1.0,
+    "top2_recall": 1.0,
+    "top3_recall": 1.0
+  }
+}
+/home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/analyze_results.py:203: RuntimeWarning: Parallel-cumulative component timings can overlap and must not be summed to end-to-end wall time; all runs are shown as independent bars. Affected runs: fwd stock-raw, fwd z3-legal-exhaustive, fwd z3-cm-topk, fwd budget-raw, fwd budget-random, bwd stock-raw, bwd z3-legal-exhaustive, bwd z3-cm-topk, bwd budget-raw, bwd budget-random
+  viz.plot_search_time_breakdown(time_runs, output / "search-time-breakdown")
+{
+  "runs": 30,
+  "aggregates": 10
+}
