@@ -243,9 +243,36 @@ def _write_verbose_artifacts(info: dict, debug_dir) -> None:
     num_tasks = len(start_times)
     fig, ax = plt.subplots(figsize=(12, max(3, num_tasks * 0.55)))
     try:
+        is_loop = info["schedule_kind"] == "loop"
+        max_time = max(start + latency for start, latency in zip(start_times, latencies))
+        if is_loop:
+            from matplotlib.lines import Line2D
+            from matplotlib.patches import Patch
+
+            best_ii = info["minimal_II"]
+            for period in range((max_time + best_ii - 1) // best_ii):
+                if period % 2 == 0:
+                    ax.axvspan(period * best_ii, (period + 1) * best_ii, color="gray", alpha=0.06, zorder=0)
+            for boundary in range(0, max_time + best_ii, best_ii):
+                ax.axvline(boundary, color="black", linestyle="--", linewidth=0.9, alpha=0.55, zorder=1)
         for index, (start, latency, mask) in enumerate(zip(start_times, latencies, resource_flags)):
             color = plt.cm.tab20(index % 20)
-            ax.barh(index, latency, left=start, height=0.75, color=color, edgecolor="black")
+            if is_loop:
+                issue = min(info["iis"][index], latency)
+                ax.barh(index, issue, left=start, height=0.75, color=color, edgecolor="black", hatch="//", zorder=2)
+                if latency > issue:
+                    ax.barh(
+                        index,
+                        latency - issue,
+                        left=start + issue,
+                        height=0.75,
+                        color=color,
+                        edgecolor="black",
+                        alpha=0.45,
+                        zorder=2,
+                    )
+            else:
+                ax.barh(index, latency, left=start, height=0.75, color=color, edgecolor="black")
             ax.text(
                 start + max(latency, 1) / 2,
                 index,
@@ -253,6 +280,7 @@ def _write_verbose_artifacts(info: dict, debug_dir) -> None:
                 ha="center",
                 va="center",
                 fontsize=8,
+                zorder=3,
             )
         ax.invert_yaxis()
         ax.set_yticks(range(num_tasks), [f"Task {index}" for index in range(num_tasks)])
@@ -263,7 +291,20 @@ def _write_verbose_artifacts(info: dict, debug_dir) -> None:
         if info.get("fallback"):
             title += " [serial fallback]"
         ax.set_title(title)
-        ax.grid(True, axis="x", alpha=0.3)
+        ax.grid(True, axis="x", alpha=0.2, zorder=0)
+        if is_loop:
+            ax.set_xlim(0, max_time)
+            ax.legend(
+                handles=[
+                    Patch(facecolor=plt.cm.tab20(0), hatch="//", edgecolor="black", label="Issue interval"),
+                    Patch(facecolor=plt.cm.tab20(0), alpha=0.45, edgecolor="black", label="Completion tail"),
+                    Line2D([0], [0], color="black", linestyle="--", label="II boundary"),
+                ],
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.16),
+                ncol=3,
+                frameon=False,
+            )
         fig.tight_layout()
         fig.savefig(schedule_dir / "schedule_timeline.png", dpi=150, bbox_inches="tight")
         fig.savefig(schedule_dir / "schedule_timeline.pdf", bbox_inches="tight")

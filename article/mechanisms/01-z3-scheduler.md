@@ -101,7 +101,7 @@ BUFFER_RESULT [0] [3] 2
 
 对应测试 `test_loop_negative_distance_recalculates_and_reads_buffer_versions` 还分别检查了两条路径：直接使用 solver model 中的版本数，以及根据调度重新计算版本数，二者都必须得到 `[3]`。
 
-![循环依赖与多缓冲求解结果](../../evidence/G1/buffer-demo/schedule_000/schedule_timeline.png)
+![循环依赖与多缓冲求解结果，虚线为 II 边界，阴影区分发射区间与完成尾段](../../evidence/G1/buffer-demo-v3/schedule_000/schedule_timeline.png)
 
 ## 4. `unknown` 为什么不能当成“不合法”
 
@@ -138,7 +138,7 @@ raise Z3ScheduleUnknownError(
 python -m pytest -q testing/python/transform/test_tilelang_cuda_z3_scheduler.py
 ```
 
-结果为 **49 passed in 0.99s**。完整输出见 [solver-tests.txt](../../evidence/G1/solver-tests.txt)。
+结果为 **49 passed**。完整输出见 [solver-tests.txt](../../evidence/G1/solver-tests.txt)。
 
 | 机制 | 对应真实测试 |
 |---|---|

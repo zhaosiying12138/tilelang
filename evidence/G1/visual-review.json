@@ -1,0 +1,22 @@
+{
+  "schema": "tilelang-cuda-z3.visual-review",
+  "artifact": "evidence/G1/buffer-demo-v3/schedule_000/schedule_timeline.png",
+  "history": [
+    {
+      "artifact": "evidence/G1/buffer-demo/schedule_000/schedule_timeline.png",
+      "verdict": "fail",
+      "issue": "A single solid bar did not expose the II=2 boundary."
+    },
+    {
+      "artifact": "evidence/G1/buffer-demo-v2/schedule_000/schedule_timeline.png",
+      "verdict": "fail",
+      "issue": "II boundaries were visible, but legend patches were gray instead of the actual blue bar colors."
+    },
+    {
+      "artifact": "evidence/G1/buffer-demo-v3/schedule_000/schedule_timeline.png",
+      "verdict": "pass",
+      "evidence": "II=2 is marked by a dashed line and legend; issue and completion-tail patches match the bars in color, alpha and hatch; labels are complete and readable."
+    }
+  ],
+  "code_fix": "tilelang/cuda/transform/z3_scheduler.py::_write_verbose_artifacts"
+}
