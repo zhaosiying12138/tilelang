@@ -12,6 +12,7 @@ import json
 import math
 from pathlib import Path
 import sys
+import types
 
 import pytest
 
@@ -25,10 +26,25 @@ sys.modules[_SPEC.name] = cost_model
 _SPEC.loader.exec_module(cost_model)
 
 CalibrationError = cost_model.CalibrationError
+CostModelCapacityError = cost_model.CostModelCapacityError
 CostModelError = cost_model.CostModelError
 CudaCostModel = cost_model.CudaCostModel
 KernelWork = cost_model.KernelWork
 PhaseWork = cost_model.PhaseWork
+
+_GUIDED_PACKAGE = "_tilelang_cuda_capacity_guided_test"
+_AUTOTUNER_DIR = _ROOT / "tilelang" / "autotuner"
+_tilelang_package = types.ModuleType(_GUIDED_PACKAGE)
+_tilelang_package.__path__ = [str(_ROOT / "tilelang")]
+sys.modules[_GUIDED_PACKAGE] = _tilelang_package
+_autotuner_package = types.ModuleType(f"{_GUIDED_PACKAGE}.autotuner")
+_autotuner_package.__path__ = [str(_AUTOTUNER_DIR)]
+sys.modules[f"{_GUIDED_PACKAGE}.autotuner"] = _autotuner_package
+_space = importlib.import_module(f"{_GUIDED_PACKAGE}.autotuner.space")
+_guided = importlib.import_module(f"{_GUIDED_PACKAGE}.autotuner.guided")
+ConfigSpace = _space.ConfigSpace
+GuidedSearch = _guided.GuidedSearch
+Z3Pruner = _space.Z3Pruner
 
 
 def hardware(**overrides):
@@ -216,6 +232,23 @@ def test_calibration_unit_and_field_provenance_validation():
         CudaCostModel(hardware(), cal, "gemm", {"M": 64, "N": 64, "K": 64})
 
 
+def test_zero_stage_is_modeled_as_single_buffer_not_zero_capacity():
+    score, terms = gemm_model().predict(gemm_config(num_stages=0))
+    assert score > 0
+    assert terms["pipeline_stages"] == 1
+    assert terms["shared_memory_bytes_per_cta"] > 0
+
+
+def test_rasterization_is_accepted_and_explicitly_unmodeled():
+    model = gemm_model()
+    disabled_score, disabled_terms = model.predict(gemm_config(enable_rasterization=False))
+    enabled_score, enabled_terms = model.predict(gemm_config(enable_rasterization=True))
+    assert enabled_score == disabled_score
+    assert disabled_terms["fallback_count"] == 0
+    assert enabled_terms["fallback_count"] == 1
+    assert "gemm.rasterization_l2_locality_unmodeled" in model.model_card()["conditional_fallbacks"]
+
+
 def test_gemm_hand_formula_cp_async_and_tma():
     model = gemm_model(max_threads_per_multiprocessor=256)
     score, terms = model.predict(gemm_config())
@@ -389,7 +422,7 @@ def test_gdn_block_dv_and_prepare_h_stage_byte_constraints():
     assert stage3["gdn_prepare_h_shared_memory_bytes_per_cta"] == 112640
     assert stage3["shared_memory_bytes_per_cta"] == 112640
     assert stage3["gdn_prepare_h_num_stages"] == 3
-    with pytest.raises(CostModelError, match="gdn_prepare_h shared bytes 112640 exceed per-block opt-in 101376"):
+    with pytest.raises(CostModelCapacityError, match="gdn_prepare_h shared bytes 112640 exceed per-block opt-in 101376"):
         bwd.predict({"prepare_h_num_stages": 3, "registers_per_thread": 128})
 
     with pytest.raises(CostModelError, match="only|not gdn_fwd|applies"):
@@ -404,14 +437,91 @@ def test_generic_stage_capacity_and_bad_configs_raise():
         shared_memory_per_multiprocessor_bytes=16384,
     )
     model.predict(gemm_config(num_stages=2))
-    with pytest.raises(CostModelError, match="shared bytes"):
+    with pytest.raises(CostModelCapacityError, match="shared bytes"):
         model.predict(gemm_config(num_stages=3))
-    with pytest.raises(CostModelError, match="num_stages"):
-        model.predict(gemm_config(num_stages=0))
+    with pytest.raises(CostModelError, match="num_stages") as invalid_stage:
+        model.predict(gemm_config(num_stages=-1))
+    assert not isinstance(invalid_stage.value, CostModelCapacityError)
     with pytest.raises(CostModelError, match="Unknown config"):
         model.predict(gemm_config(made_up_knob=7))
     with pytest.raises(CostModelError, match="Missing config"):
         model.predict({"block_M": 32})
+
+
+def test_full_stage_capacity_unknown_survives_z3_lower_bound_and_enters_top_k():
+    opt_in = 9000
+    model = gemm_model(
+        shared_memory_per_block_optin_bytes=opt_in,
+        shared_memory_per_multiprocessor_bytes=16384,
+    )
+
+    def necessary_single_stage_capacity(config, z3, context):
+        # Any pipelined version needs at least one A/B buffer version.  This
+        # necessary bound intentionally does not multiply by num_stages.
+        single_stage = 2 * (
+            config["block_M"] * config["block_K"]
+            + config["block_K"] * config["block_N"]
+        )
+        return z3.IntVal(single_stage, ctx=context) <= z3.IntVal(opt_in, ctx=context)
+
+    space = ConfigSpace(
+        [
+            ("block_M", [256, 32]),
+            ("block_N", [32]),
+            ("block_K", [32]),
+            ("num_stages", [1, 2, 3]),
+            ("threads", [128]),
+            ("registers_per_thread", [32]),
+            ("copy_kind", ["cp_async"]),
+        ],
+        constraint_builder=necessary_single_stage_capacity,
+    )
+    search = GuidedSearch(space, model, pruner=Z3Pruner(seed=42, rlimit=10_000))
+
+    # block_M=256 has a 18432 B necessary lower bound and is UNSAT.  For
+    # block_M=32 the bound is 4096 B, so all three stages remain legal even
+    # though the full three-stage allocation is 12288 B > 9000 B opt-in.
+    assert len(search.legal_configs()) == 3
+    assert search.pruning_audit()["raw"] == 6
+    assert search.pruning_audit()["sat"] == 3
+    assert search.pruning_audit()["unsat"] == 3
+    assert search.pruning_audit()["unknown"] == 0
+    assert search.unknown_configs() == []
+
+    overfull = gemm_config(num_stages=3)
+    with pytest.raises(CostModelCapacityError, match="shared bytes 12288 exceed per-block opt-in 9000"):
+        model.predict(overfull)
+
+    records = search.predictions()
+    assert len(records) == len(search.legal_configs()) == 3
+    assert {record["config"]["num_stages"] for record in records[:2]} == {1, 2}
+    assert all(math.isfinite(record["score"]) for record in records[:2])
+    unknown = records[-1]
+    assert unknown["config"] == overfull
+    assert unknown["unknown"] is True
+    assert unknown["error_type"] == "capacity"
+    assert "shared bytes 12288" in unknown["error"]
+    assert unknown["score"] is None
+    assert unknown["terms"] == {"capacity_error": 1.0, "fallback_count": 1.0}
+    assert sum(record.get("unknown", False) for record in records) == 1
+    assert search.model_unknown_configs() == [overfull]
+    assert search.top_k(2) == [record["config"] for record in records[:2]]
+    assert search.top_k(3)[-1] == overfull
+    assert [json.loads(line) for line in search.predictions_jsonl().splitlines()] == records
+    json.dumps(records, allow_nan=False)
+
+
+def test_thread_and_register_capacity_errors_have_a_distinct_type():
+    with pytest.raises(CostModelCapacityError, match="threads_per_cta"):
+        gemm_model().predict(gemm_config(threads=2048))
+    with pytest.raises(CostModelCapacityError, match="registers_per_thread exceeds"):
+        gemm_model(max_registers_per_thread=32).predict(gemm_config(registers_per_thread=64))
+    with pytest.raises(CostModelCapacityError, match="register demand exceeds one SM"):
+        gemm_model().predict(gemm_config(registers_per_thread=1024))
+
+    with pytest.raises(CostModelError, match="Unknown config") as invalid:
+        gemm_model().predict(gemm_config(not_a_resource=True))
+    assert not isinstance(invalid.value, CostModelCapacityError)
 
 
 def test_model_and_plugin_errors_are_not_silently_dropped():
@@ -556,7 +666,7 @@ def test_gdn_group_reduce_grid_traffic_fragment_capacity_and_cost():
         costs.append(terms["gdn_group_reduce_ms"])
     assert len(set(costs)) > 1  # Formula sensitivity only, not a faster-than claim.
 
-    with pytest.raises(CostModelError, match="fragment-capacity lower bound"):
+    with pytest.raises(CostModelCapacityError, match="fragment-capacity lower bound"):
         model.predict({"group_reduce_block_size": 32, "registers_per_thread": 1})
 
 

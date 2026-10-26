@@ -242,6 +242,7 @@ ConfigSpace = _space.ConfigSpace
 PruneResult = _space.PruneResult
 Z3Pruner = _space.Z3Pruner
 GuidedAutoTuner = _guided_tuner.GuidedAutoTuner
+CostModelCapacityError = _guided.CostModelCapacityError
 CostModelError = _guided.CostModelError
 EventReporter = _report.EventReporter
 ObserverError = _report.ObserverError
@@ -503,6 +504,16 @@ def test_five_arms_use_expected_candidate_denominators(arm, expected):
     assert summary["R"] == 5
     assert summary["U"] == (None if arm == "stock-raw" else 4)
     assert summary["unknown"] == (None if arm == "stock-raw" else 1)
+    assert summary["pruner_unknown"] == summary["unknown"]
+    assert summary["model_unknown"] == (0 if arm == "z3-cm-topk" else None)
+    assert summary["unknown_total"] == (1 if arm == "z3-cm-topk" else None)
+    assert summary["unknown_sources"] == {
+        "pruner": summary["pruner_unknown"],
+        "model": summary["model_unknown"],
+        "overlap": 0 if arm == "z3-cm-topk" else None,
+        "total": summary["unknown_total"],
+    }
+    assert summary["model"]["unknown"] == summary["model_unknown"]
     assert summary["duplicates"] == 0
     assert summary["selected"] == len(expected)
     assert summary["compile_attempts"] == len(expected)
@@ -514,6 +525,66 @@ def test_five_arms_use_expected_candidate_denominators(arm, expected):
     assert summary["model"]["predictions"] == (4 if arm == "z3-cm-topk" else None)
     assert len(model.calls) == (4 if arm == "z3-cm-topk" else 0)
     json.dumps(summary, allow_nan=False)
+
+
+def test_capacity_unknown_reaches_compiler_and_summary_deduplicates_sources():
+    controls = _controls()
+    tuner, _ = _guided("z3-cm-topk", controls, top_k=4)
+
+    class CapacityModel:
+        def __init__(self):
+            self.calls = []
+
+        def predict(self, config):
+            self.calls.append(config["x"])
+            if config["x"] in {1, 2}:
+                raise CostModelCapacityError(f"shared/register capacity unknown for x={config['x']}")
+            return -float(config["x"]), {"preference": float(config["x"])}
+
+    model = CapacityModel()
+    tuner.model = model
+    events = []
+    result = tuner.run(warmup=0, rep=1, timeout=0, observer=events.append)
+    records = tuner.search.predictions()
+    unknown_records = [record for record in records if record.get("unknown", False)]
+
+    # x=0 is UNSAT; x=1 is both pruner/model unknown; x=2 is only model
+    # unknown.  All four legal candidates fit the topK budget and are compiled.
+    assert len(records) == 4
+    assert [record.get("unknown", False) for record in records] == [False, False, True, True]
+    assert all(record["score"] is None for record in unknown_records)
+    assert all(record["error_type"] == "capacity" for record in unknown_records)
+    assert tuner.configs == [record["config"] for record in records]
+    assert set(controls["compile"]) == {1, 2, 3, 4}
+    assert {1, 2} <= set(controls["compile"])
+    assert result.config == {"x": 4}
+    assert len(model.calls) == 4
+
+    summary = tuner.last_summary
+    assert summary["R"] == 5
+    assert summary["U"] == summary["model"]["predictions"] == 4
+    assert summary["selected"] == summary["compile_attempts"] == 4
+    assert summary["compile_success"] == 4
+    assert summary["unknown"] == summary["pruner_unknown"] == 1
+    assert summary["model_unknown"] == summary["model"]["unknown"] == 2
+    assert summary["unknown_total"] == 2  # Not 1 + 2: x=1 occurs in both sources.
+    assert summary["unknown_sources"] == {"pruner": 1, "model": 2, "overlap": 1, "total": 2}
+    assert summary["model"]["attempts"] == 4
+    assert summary["model"]["success"] == 2
+    assert summary["model"]["fail"] == 2
+    assert summary["status"] == "ok"
+
+    score_events = [event for event in events if event["event"] == "score"]
+    assert len(score_events) == 4
+    assert [event["unknown"] for event in score_events] == [False, False, True, True]
+    assert [event["error_type"] for event in score_events] == [None, None, "capacity", "capacity"]
+    score_end = [event for event in events if event["event"] == "score_end"]
+    assert [event["status"] for event in score_end].count("unknown") == 2
+    generation_end = next(event for event in events if event["event"] == "config_generation_end")
+    assert generation_end["unknown_sources"] == summary["unknown_sources"]
+    assert max(events.index(event) for event in score_events) < events.index(generation_end)
+    json.dumps(events, allow_nan=False)
+    json.loads(tuner.summary_json())
 
 
 def test_structured_events_jsonl_and_timing_are_complete(tmp_path):

@@ -1,0 +1,19 @@
+........................................................................ [ 84%]
+.............                                                            [100%]
+======================================================================== fixture duration top =========================================================================
+total          name                                                                                                                   num med            max           
+0:00:00.005244 grand total                                                                                                            106 0:00:00.000085 0:00:00.001319
+======================================================================= test call duration top ========================================================================
+total          name                                                                                                                   num med            max           
+0:00:00.183969 testing/python/autotune/test_guided_tuner.py::test_parallel_compile_cumulative_and_wall_are_distinct                     1 0:00:00.183969 0:00:00.183969
+0:00:00.032596 testing/python/autotune/test_guided_search.py::test_coupled_constraints_define_legal_universe_with_real_z3               1 0:00:00.032596 0:00:00.032596
+0:00:00.009785 testing/python/cuda/test_cuda_cost_model.py::test_full_stage_capacity_unknown_survives_z3_lower_bound_and_enters_top_k   1 0:00:00.009785 0:00:00.009785
+0:00:00.008424 testing/python/autotune/test_guided_tuner.py::test_five_arms_use_expected_candidate_denominators                         5 0:00:00.001782 0:00:00.001977
+0:00:00.280773 grand total                                                                                                             85 0:00:00.000398 0:00:00.183969
+======================================================================= test setup duration top =======================================================================
+total          name                                                                                                                   num med            max           
+0:00:00.011325 grand total                                                                                                             85 0:00:00.000033 0:00:00.001510
+===================================================================== test teardown duration top ======================================================================
+total          name                                                                                                                   num med            max           
+0:00:00.003068 grand total                                                                                                             85 0:00:00.000027 0:00:00.000146
+85 passed in 0.39s

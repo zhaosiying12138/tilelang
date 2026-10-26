@@ -18,7 +18,7 @@ from pathlib import Path
 import time
 from typing import Any, Literal
 
-from .guided import CandidateCostModel, GuidedSearch
+from .guided import CandidateCostModel, GuidedSearch, _is_capacity_error
 from .report import EventReporter, JsonlObserver, RunRecorder, _config_id
 from .space import ConfigSpace, PruneResult, Z3Pruner
 from .tuner import AutoTuner
@@ -108,11 +108,13 @@ class _ObservedCostModel:
         try:
             prediction = self.delegate.predict(config)
         except Exception as exc:
+            capacity_unknown = _is_capacity_error(exc)
             self.events.emit(
                 "score_end",
                 config=config,
-                status="error",
+                status="unknown" if capacity_unknown else "error",
                 error=str(exc),
+                error_type="capacity" if capacity_unknown else "model",
                 wall_seconds=time.perf_counter() - started,
             )
             raise
@@ -194,6 +196,7 @@ class GuidedAutoTuner(AutoTuner):
         self.pruner = pruner
         self.search: GuidedSearch | None = None
         self.last_summary: dict[str, Any] | None = None
+        self._unknown_counts: dict[str, int | None] | None = None
         super().__init__(fn, configs=[])
         # Assignment intentionally shadows the stock class-level dictionary.
         self._memory_cache = {}
@@ -220,7 +223,10 @@ class GuidedAutoTuner(AutoTuner):
             events.emit("config_generated", phase="raw", index=index, config=config)
 
         legal = None
-        unknown = None
+        pruner_unknown = None
+        model_unknown = None
+        unknown_overlap = None
+        unknown_total = None
         duplicates = len(raw_configs) - len(raw_ids)
         if self.arm == "stock-raw":
             selected = raw_configs
@@ -234,7 +240,8 @@ class GuidedAutoTuner(AutoTuner):
             legal = search.legal_configs()
             for index, config in enumerate(legal):
                 events.emit("config_generated", phase="legal", index=index, config=config)
-            unknown = len(search.unknown_configs())
+            pruner_unknown_configs = search.unknown_configs()
+            pruner_unknown = len(pruner_unknown_configs)
             duplicates = search.pruning_audit()["duplicates"]
 
             if self.arm == "z3-legal-exhaustive":
@@ -243,7 +250,14 @@ class GuidedAutoTuner(AutoTuner):
                 # topK is deliberately produced by GuidedSearch itself, not by
                 # re-sorting or partially scoring candidates in this wrapper.
                 selected = search.top_k(self.top_k)
-                for record in search.predictions():
+                predictions = search.predictions()
+                model_unknown_configs = search.model_unknown_configs()
+                model_unknown = len(model_unknown_configs)
+                pruner_unknown_ids = {ConfigSpace.config_id(config) for config in pruner_unknown_configs}
+                model_unknown_ids = {ConfigSpace.config_id(config) for config in model_unknown_configs}
+                unknown_overlap = len(pruner_unknown_ids & model_unknown_ids)
+                unknown_total = len(pruner_unknown_ids | model_unknown_ids)
+                for record in predictions:
                     events.emit(
                         "score",
                         index=record["universe_index"],
@@ -251,6 +265,9 @@ class GuidedAutoTuner(AutoTuner):
                         rank=record["rank"],
                         score=record["score"],
                         terms=record["terms"],
+                        unknown=record.get("unknown", False),
+                        error=record.get("error"),
+                        error_type=record.get("error_type"),
                     )
             elif self.arm == "budget-raw":
                 selected = search.candidates(self.budget, "raw")
@@ -259,17 +276,42 @@ class GuidedAutoTuner(AutoTuner):
 
         for index, config in enumerate(selected):
             events.emit("config_generated", phase="selected", index=index, config=config)
+        self._unknown_counts = {
+            "pruner": pruner_unknown,
+            "model": model_unknown,
+            "overlap": unknown_overlap,
+            "total": unknown_total,
+        }
         events.emit(
             "config_generation_end",
             status="ok",
             raw=len(raw_configs),
             legal=len(legal) if legal is not None else None,
-            unknown=unknown,
+            unknown=pruner_unknown,
+            pruner_unknown=pruner_unknown,
+            model_unknown=model_unknown,
+            unknown_total=unknown_total,
+            unknown_sources=copy.deepcopy(self._unknown_counts),
             duplicates=duplicates,
             selected=len(selected),
             wall_seconds=time.perf_counter() - started,
         )
         return selected
+
+    def _recorded_summary(self, recorder: RunRecorder) -> dict[str, Any]:
+        """Add source-specific unknown counts unavailable to the generic recorder."""
+        summary = recorder.summary()
+        counts = self._unknown_counts or {"pruner": None, "model": None, "overlap": None, "total": None}
+        summary["pruner_unknown"] = counts["pruner"]
+        summary["model_unknown"] = counts["model"]
+        summary["unknown_total"] = counts["total"]
+        summary["unknown_sources"] = copy.deepcopy(counts)
+        summary["model"]["unknown"] = counts["model"]
+        if counts["total"] is None:
+            summary["unavailable"]["unknown_total"] = (
+                "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+            )
+        return summary
 
     def run(
         self,
@@ -314,6 +356,7 @@ class GuidedAutoTuner(AutoTuner):
                 sink(event)
 
         recorder = RunRecorder(fanout if sinks else None)
+        self._unknown_counts = None
         events = EventReporter(recorder, logger)
         previous_observer = getattr(self, "_event_observer", None)
         self._event_observer = recorder
@@ -352,7 +395,7 @@ class GuidedAutoTuner(AutoTuner):
             tuner_events = getattr(self, "_last_event_reporter", None)
             if tuner_events is not None:
                 recorder.observer_errors.extend(tuner_events.errors)
-            self.last_summary = recorder.summary()
+            self.last_summary = self._recorded_summary(recorder)
             raise
         else:
             best_config = copy.deepcopy(result.config)
@@ -367,7 +410,7 @@ class GuidedAutoTuner(AutoTuner):
             tuner_events = getattr(self, "_last_event_reporter", None)
             if tuner_events is not None:
                 recorder.observer_errors.extend(tuner_events.errors)
-            self.last_summary = recorder.summary()
+            self.last_summary = self._recorded_summary(recorder)
             recorder.raise_for_observer_errors()
             return result
         finally:

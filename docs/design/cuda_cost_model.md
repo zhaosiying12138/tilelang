@@ -12,7 +12,8 @@ score, terms = model.predict(config)
 
 - `score == terms["predicted_ms"]`，单位为 ms，越小排名越靠前。
 - `terms` 是扁平 `dict[str, float]`；所有值都有限、非负、可用 `json.dumps(..., allow_nan=False)` 序列化。
-- 模型、operator 插件、非法 config、shared/register 容量和非有限结果的异常均向上传递；不把失败候选静默删除，也不把失败预测改成 0。
+- shared/register/thread 物理容量或资源不适用使分数无法给出时，`predict` 抛出专用 `CostModelCapacityError(CostModelError)`；`GuidedSearch` 只把这一类型保留为 capacity-unknown，不把它静默删除或改成 0 分。
+- 非法 config、插件结果、非有限结果及其他 `CostModelError` 仍原样失败；capacity-unknown 不代表配置合法、编译成功或性能可用。
 - `predicted_ms` 是解析排序量。没有经过独立、同条件实测验证时，**不得据此声称绝对延迟、加速比或真机最优配置**。
 - 实现不导入 TileLang/TVM/torch/CUDA，不编译、不探测 GPU，也不从候选实测时间在线拟合系数。
 
@@ -165,7 +166,7 @@ waves       = ceil(cta_count / (SM_count * occ))
 ```
 
 - 当前结构 CTA-slot 上限默认 16，可由 hardware 的 `max_ctas_per_multiprocessor` 覆盖；它不是实测标定率。
-- shared 或 register 单 CTA 需求超过物理容量、threads 超过 block 上限时直接报错，不通过 `max(1, ...)` 把非法配置伪装成合法。
+- shared 或 register 单 CTA 需求超过物理容量、threads 超过 block 上限时抛出 `CostModelCapacityError`，不通过 `max(1, ...)` 把容量不明配置伪装成有有限分数的配置；该异常不等于 Z3 UNSAT，交由下述 GuidedSearch 流程保留并验证。
 - manifest 的 `max_registers_per_thread` 可以为 null。未提供 config 的 `registers_per_thread` 时，不假装知道精确寄存器数，而令 `occ_regs=1`，并设置：
   - `registers_per_thread=0`；
   - `register_occupancy_conservative=1`；
@@ -199,7 +200,7 @@ stages >= 2: overlap = max(t_compute, t_global, t_shared)
 phase_core = overlap + t_lsu + t_bar
 ```
 
-两级以上表示理想流水重叠上限，不证明真实依赖一定允许完全重叠；一级表示无 overlap。不同阶段数同时改变 shared 容量，因此可能改变 occupancy 和 waves。
+两级以上表示理想流水重叠上限，不证明真实依赖一定允许完全重叠；一级表示无 overlap。GEMM 的 `num_stages=0` 按单缓冲、无 overlap 建模，`pipeline_stages=1`，不会把容量错误算成 0。不同阶段数同时改变 shared 容量，因此可能改变 occupancy 和 waves。
 
 ### 4.3 Launch 聚合
 
@@ -218,6 +219,37 @@ launch 间不重叠。返回的资源 `*_ms` 项已乘对应 `waves * launches`�
 - 结构：`launch_count`、`cta_count`、`waves`、`max_waves_per_kernel`、`occupancy_ctas_per_sm`、`threads_per_cta`、`registers_per_thread`、`shared_memory_bytes_per_cta`、`fragment_capacity_bytes_per_cta`、`pipeline_stages` 和 fallback/寄存器标志。
 
 `flops` 是 padded tile 工作，`useful_flops` 是不含边界 padding 的逻辑工作；两者可能相同。
+
+### 4.4 Capacity-unknown 与 GuidedSearch
+
+`CostModelCapacityError` 只用于 shared/register/thread 物理容量或资源不适用导致无法给出模型分数的情况。GEMM 的 Z3 约束可以只编码单版本 A/B buffer 等**必要容量下界**；因此某配置可能下界 SAT，但 `_gemm_like` 按完整 `num_stages` 算出的容量超过 per-block opt-in。此时直接调用 `CudaCostModel.predict` 仍抛出专用异常，而 `GuidedSearch.predictions()` 不会让整个搜索崩溃，也不会把候选从合法宇宙 `U` 删除。
+
+该候选的 prediction record 保留原有身份信息，并写成：
+
+```json
+{
+  "score": null,
+  "terms": {"capacity_error": 1.0, "fallback_count": 1.0},
+  "unknown": true,
+  "error": "原始容量异常信息",
+  "error_type": "capacity"
+}
+```
+
+`capacity_error=1` 与 `fallback_count=1` 是有限、严格的诊断计数，不包含伪造的 `predicted_ms`、occupancy 或延迟。正常候选仍返回有限 score/terms；只有这种 capacity-unknown record 的 `score=null`。NaN/Inf score 或 terms、普通 `CostModelError` 及其他模型异常仍是致命错误，不会被转换成 unknown。`predictions_jsonl()` 继续使用 `allow_nan=False`，上述 null 是合法 JSON，而 NaN/Inf 不合法。
+
+排序先比较是否有有限 score，再按 score、`config_id`、canonical JSON 确定顺序；因此所有正常有限 score 都排在 capacity-unknown 前，多个 unknown 之间也确定性地打破平局。unknown 没有被赋予“最差延迟”数值。预算覆盖到其排名时，`top_k` 仍会返回它，由后续编译器、正确性检查和实测验证；预算不足时不会优先挤占正常候选。
+
+`unknown_configs()` 始终只表示 **pruner unknown/timeout**。新增的 `model_unknown_configs()` 从缓存的 predictions 返回 capacity-unknown 子集，不重复评分或重复列出配置。GuidedAutoTuner 在 topK 生成后记录来源：
+
+- `summary["unknown"]` 与 `summary["pruner_unknown"]`：保留原有 pruner unknown 计数；
+- `summary["model_unknown"]`（亦为 `summary["model"]["unknown"]`）：容量导致的 model unknown 计数；
+- `summary["unknown_total"]`：两类 config ID 的并集大小；同一配置同时属于两类只计一次；
+- `summary["unknown_sources"]`：`pruner/model/overlap/total` 四项计数，显式给出交集与来源。
+
+去重并集只在 `z3-cm-topk` 成功完成评分后定义；未调用模型或评分失败的 arm 中它为 null，不以 0 冒充已知。`summary["model"]["predictions"]` 的分母仍是已评分合法宇宙 `U`，包括 normal 与 model-unknown，不把 unknown 排除后缩小分母。
+
+**Capacity-unknown 不是 UNSAT**：Z3 的法律性结论不被模型容量异常重写，候选仍占用 `U` 与 topK 的位置。**它不是免费通过**：不跳过编译、正确性或性能验证，也不保证能被编译器接受。**它不是性能结论**：null score 不表示 0 ms、最慢 ms、可运行性或相对快慢，最终结论只能来自后续编译和独立实测。
 
 ## 5. 流量、stage 与 copy issue
 
@@ -253,6 +285,8 @@ TMA descriptors      = 2*tk [+1 if TMA store]
 ```
 
 默认 shared 流量为 `2*load`；output staging 再加 `2*store`。`use_mma=False` 使用相同 padded FLOP 工作量，但改走 `cuda_fp32_flops_per_second`，`mma_flops=0`。
+
+`enable_rasterization`/`rasterization` 是合法配置键。当前模型不虚构 L2 locality 改善系数：开启后保留相同资源工作量，并在 `conditional_fallbacks` 中记录 `gemm.rasterization_l2_locality_unmodeled` 和 `fallback_count`。这意味着该旋钮可参与稳定排序，但其收益尚无独立标定，正文不得把模型同分解释为硬件无差异。后续若它成为主要误差来源，应使用独立 shape 做 on/off 标定。
 
 ### 6.2 `conv2d_nhwc`
 
@@ -372,7 +406,7 @@ capacity(b) = 4*S*K*e + 3*S*b*e + 2*S*S*e + K*b*e + 24*S
 capacity(p) = 57344 + 18432*p
 ```
 
-所以 p=1/2/3 分别为 75776/94208/112640 B。`evidence/G5/gdn-prepare-h-shared-memory.json` 记录三个阶段的公式值与实际 dynamic shared bytes 完全一致；在当前 SM120 manifest 的 101376 B opt-in 容量下，p=3 超容量并报错，而不是被钳制成可运行配置。该替换只改变 prepare_h 容量诊断与容量校验，不改变其工作量、流量或阶段时间语义，也不构成性能排序结论。
+所以 p=1/2/3 分别为 75776/94208/112640 B。`evidence/G5/gdn-prepare-h-shared-memory.json` 记录三个阶段的公式值与实际 dynamic shared bytes 完全一致；在当前 SM120 manifest 的 101376 B opt-in 容量下，p=3 抛出 `CostModelCapacityError`，而不是被钳制成有有限分数的配置。经 GuidedSearch 使用时它成为 capacity-unknown，仍不是 Z3 UNSAT 或免费通过。该替换只改变 prepare_h 容量诊断与容量校验，不改变其工作量、流量或阶段时间语义，也不构成性能排序结论。
 
 每 CTA、每 chunk：
 
@@ -476,6 +510,7 @@ shared 流量分别对应 fragment→shared、shared→fragment 的转置前后�
 - GDN forward/backward 阶段差异、`block_DV`、prepare_h stage bytes 与容量；
 - 全部 9 个 `prepare_h_num_stages × group_reduce_block_size` backward 组合、GQA reduce 的 CTAs/流量/成本、`Hg==H` 跳过、默认 16 与非法旋钮；
 - reverse `dg` cumsum 的 CTA、FLOP、L2/shared/fragment 流量和独立容量，以及 model card 的 public forward/backward scope；
-- 非有限插件结果和模型异常不静默。
+- 非有限插件结果和非容量模型异常不静默；
+- full-stage 超 opt-in 但单阶段 Z3 必要下界 SAT 的配置保留为 capacity-unknown，验证 null-score JSONL、unknown 最后、topK 预算、确定性 tie、计数分母与 pruner/model unknown 去重。
 
 测试不预设任何真机最快配置，不运行 GPU、不 build，也不验证绝对 ms。

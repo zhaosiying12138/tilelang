@@ -18,7 +18,7 @@ from typing import Any, Protocol, runtime_checkable
 
 from .space import Config, ConfigSpace, PruneResult, Z3Pruner, canonical_json
 
-__all__ = ["CandidateCostModel", "CostModelError", "GuidedSearch"]
+__all__ = ["CandidateCostModel", "CostModelCapacityError", "CostModelError", "GuidedSearch"]
 
 
 @runtime_checkable
@@ -27,8 +27,9 @@ class CandidateCostModel(Protocol):
 
     Implementations must return a scalar finite score and a dictionary of
     finite numeric itemized terms.  Lower scores are preferred.  ``None``, NaN,
-    infinity, and exceptions are invalid predictions, not unknown candidates to
-    silently discard.
+    infinity, and ordinary exceptions are invalid predictions.  Only the
+    dedicated :class:`CostModelCapacityError` protocol is converted by
+    :class:`GuidedSearch` into a retained, null-scored unknown record.
     """
 
     def predict(self, config: Mapping[str, Any]) -> tuple[float, dict[str, float]]:
@@ -38,6 +39,18 @@ class CandidateCostModel(Protocol):
 
 class CostModelError(RuntimeError):
     """A candidate cost model failed or returned an invalid prediction."""
+
+
+class CostModelCapacityError(CostModelError):
+    """A physical-resource limit makes a candidate's model score unknown."""
+
+    # CUDA's dependency-free model exposes the same nominal exception protocol
+    # without importing the autotuner package.  Other exceptions never opt in.
+    _tilelang_cost_model_capacity = True
+
+
+def _is_capacity_error(exc: BaseException) -> bool:
+    return isinstance(exc, CostModelCapacityError) or getattr(exc, "_tilelang_cost_model_capacity", False) is True
 
 
 def _nonnegative_int(value: int, name: str) -> int:
@@ -123,44 +136,66 @@ class GuidedSearch:
         return copy.deepcopy(self._ensure_universe().configs)
 
     def unknown_configs(self) -> list[Config]:
-        """Return the retained subset with unknown/timeout pruning verdicts."""
+        """Return only the retained subset with unknown/timeout pruning verdicts."""
         return copy.deepcopy(self._ensure_universe().unknown)
+
+    def model_unknown_configs(self) -> list[Config]:
+        """Return capacity-unknown configs once, in deterministic ranked order."""
+        return [copy.deepcopy(record["config"]) for record in self.predictions() if record.get("unknown", False)]
 
     def pruning_audit(self) -> dict[str, Any]:
         """Return a detached JSON-serializable pruning audit."""
         return copy.deepcopy(self._ensure_universe().audit)
 
-    def _score_config(self, config: Config, index: int) -> tuple[float, dict[str, float]]:
+    def _score_config(
+        self, config: Config, index: int
+    ) -> tuple[float | None, dict[str, float], str | None]:
         identity = ConfigSpace.config_id(config)
         try:
             prediction = self.model.predict(copy.deepcopy(config))
-            return _normalize_prediction(prediction)
+            score, terms = _normalize_prediction(prediction)
+            return score, terms, None
         except Exception as exc:
+            if _is_capacity_error(exc):
+                # Capacity is not a performance estimate and not permission to
+                # prune.  Keep finite diagnostics while leaving the score null.
+                return None, {"capacity_error": 1.0, "fallback_count": 1.0}, str(exc)
             raise CostModelError(f"Cost model failed for config {identity} at legal index {index}: {exc}") from exc
 
     def predictions(self) -> list[dict[str, Any]]:
         """Score all of ``U`` and return ranked JSON-serializable records.
 
         Each record has ``rank`` (one-based), ``universe_index``, ``config``,
-        ``config_id``, ``score``, and itemized ``terms``.  No timing or other
-        nondeterministic metadata is included, so repeated JSONL output is
-        byte-for-byte stable when the model is deterministic.
+        ``config_id``, ``score``, and itemized ``terms``.  Capacity-unknown
+        records additionally have ``unknown=True``, ``error``, and
+        ``error_type='capacity'``; their score is null and they rank after every
+        finite score.  No timing or other nondeterministic metadata is included,
+        so repeated JSONL output is byte-for-byte stable when the model is
+        deterministic.
         """
         if self._predictions is None:
             universe = self._ensure_universe().configs
             ranked = []
             for index, config in enumerate(universe):
-                score, terms = self._score_config(config, index)
-                ranked.append(
-                    {
-                        "universe_index": index,
-                        "config": copy.deepcopy(config),
-                        "config_id": ConfigSpace.config_id(config),
-                        "score": score,
-                        "terms": terms,
-                    }
+                score, terms, error = self._score_config(config, index)
+                record = {
+                    "universe_index": index,
+                    "config": copy.deepcopy(config),
+                    "config_id": ConfigSpace.config_id(config),
+                    "score": score,
+                    "terms": terms,
+                }
+                if error is not None:
+                    record.update({"unknown": True, "error": error, "error_type": "capacity"})
+                ranked.append(record)
+            ranked.sort(
+                key=lambda record: (
+                    record.get("unknown", False),
+                    record["score"] if record["score"] is not None else 0.0,
+                    record["config_id"],
+                    canonical_json(record["config"]),
                 )
-            ranked.sort(key=lambda record: (record["score"], record["config_id"], canonical_json(record["config"])))
+            )
             for rank, record in enumerate(ranked, start=1):
                 record["rank"] = rank
             # Validate at the production boundary, not only in tests.

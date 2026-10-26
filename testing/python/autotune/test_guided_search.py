@@ -41,6 +41,7 @@ Indeterminate = _space.Indeterminate
 Z3Pruner = _space.Z3Pruner
 canonical_json = _space.canonical_json
 CandidateCostModel = _guided.CandidateCostModel
+CostModelCapacityError = _guided.CostModelCapacityError
 CostModelError = _guided.CostModelError
 GuidedSearch = _guided.GuidedSearch
 
@@ -403,6 +404,60 @@ def test_prediction_records_and_jsonl_are_json_serializable(tmp_path):
     assert output_path.read_text(encoding="utf-8") == payload
 
 
+def test_capacity_unknown_is_last_deterministic_and_available_to_top_k():
+    class CapacityModel:
+        def __init__(self):
+            self.calls = []
+
+        def predict(self, config):
+            self.calls.append(config["x"])
+            if config["x"] >= 2:
+                raise CostModelCapacityError(f"shared capacity is uncertain for x={config['x']}")
+            return float(config["x"]), {"known": 1.0}
+
+    space = ConfigSpace({"x": [3, 2, 0, 1]})
+    model = CapacityModel()
+    search = GuidedSearch(space, model)
+    records = search.predictions()
+    expected_unknown = sorted(
+        [{"x": 2}, {"x": 3}],
+        key=lambda config: (ConfigSpace.config_id(config), canonical_json(config)),
+    )
+
+    assert [record["config"] for record in records[:2]] == [{"x": 0}, {"x": 1}]
+    assert [record["config"] for record in records[2:]] == expected_unknown
+    assert [record["rank"] for record in records] == [1, 2, 3, 4]
+    for record in records[2:]:
+        assert record["unknown"] is True
+        assert record["error_type"] == "capacity"
+        assert "shared capacity" in record["error"]
+        assert record["score"] is None
+        assert record["terms"] == {"capacity_error": 1.0, "fallback_count": 1.0}
+        json.dumps(record, allow_nan=False)
+
+    assert search.top_k(2) == [{"x": 0}, {"x": 1}]
+    assert search.top_k(3) == [{"x": 0}, {"x": 1}, expected_unknown[0]]
+    assert search.top_k(4) == [{"x": 0}, {"x": 1}, *expected_unknown]
+    assert search.model_unknown_configs() == expected_unknown
+    assert search.model_unknown_configs() == expected_unknown
+    assert model.calls == [3, 2, 0, 1]
+    assert [json.loads(line) for line in search.predictions_jsonl().splitlines()] == records
+
+    repeated = GuidedSearch(space, CapacityModel())
+    assert repeated.predictions() == records
+    assert repeated.predictions_jsonl() == search.predictions_jsonl()
+
+
+def test_non_capacity_cost_model_error_is_not_reclassified_as_unknown():
+    class BrokenModel:
+        def predict(self, _config):
+            raise CostModelError("invalid analytical formula")
+
+    search = GuidedSearch(ConfigSpace({"x": [0]}), BrokenModel())
+    with pytest.raises(CostModelError, match="legal index 0.*invalid analytical formula"):
+        search.predictions()
+
+
 def test_cost_model_exception_is_explicit_and_not_silently_dropped():
     class BrokenModel:
         def __init__(self):
@@ -433,7 +488,7 @@ def test_cost_model_exception_is_explicit_and_not_silently_dropped():
         (1.0, {"latency": float("nan")}),
     ],
 )
-def test_unknown_or_non_finite_cost_is_an_explicit_failure(bad_prediction):
+def test_null_or_non_finite_prediction_without_capacity_error_is_an_explicit_failure(bad_prediction):
     class InvalidModel:
         def predict(self, _config):
             return bad_prediction
@@ -453,6 +508,7 @@ def test_empty_legal_universe_has_empty_top_k_controls_and_jsonl():
     assert search.legal_configs() == []
     assert search.unknown_configs() == []
     assert search.predictions() == []
+    assert search.model_unknown_configs() == []
     assert search.top_k(5) == []
     assert search.candidates(5, "guided") == []
     assert search.control_candidates(5) == {"raw": [], "random": []}

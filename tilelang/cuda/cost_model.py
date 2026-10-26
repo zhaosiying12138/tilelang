@@ -35,6 +35,14 @@ class CostModelError(ValueError):
     """A model input, plugin result, or prediction is invalid."""
 
 
+class CostModelCapacityError(CostModelError):
+    """A shared/register/thread physical-resource limit prevents a score."""
+
+    # GuidedSearch recognizes this backend-neutral nominal protocol without
+    # making this dependency-free module import TileLang or the autotuner.
+    _tilelang_cost_model_capacity = True
+
+
 class CalibrationError(CostModelError):
     """Measured-only construction lacks measured calibration."""
 
@@ -213,7 +221,7 @@ _RESOURCE_CONFIG_KEYS = {
     "num_stages", "stages", "pipeline", "threads", "num_threads", "block_threads",
     "warps", "num_warps", "registers_per_thread", "num_regs", "registers",
     "copy_kind", "copy_mode", "tma", "use_tma", "tma_store", "l2_resident",
-    "output_in_shared",
+    "output_in_shared", "enable_rasterization", "rasterization",
 }
 _TILE_CONFIG_KEYS = _RESOURCE_CONFIG_KEYS | {
     "block_m", "block_n", "block_k", "block_pixels", "block_channels", "block_reduce",
@@ -246,7 +254,7 @@ def _registers(config: Mapping[str, Any]) -> int | None:
 
 
 def _stages(config: Mapping[str, Any], default: int = 1) -> int:
-    return _config_int(config, "num_stages", "stages", "pipeline", default=default)
+    return _config_int(config, "num_stages", "stages", "pipeline", default=default, minimum=0)
 
 
 def _copy_kind(config: Mapping[str, Any], default: str = "cp_async") -> str:
@@ -368,7 +376,7 @@ def _gemm_like(
     compulsory_total: float | None = None,
 ) -> KernelWork:
     bm, bn, bk = _tile_config(config)
-    stages = _stages(config)
+    stages = max(_stages(config), 1)
     dtype = _shape_dtype(shape)
     output_dtype = _shape_dtype(shape, output=True)
     if dtype == "f32":
@@ -400,9 +408,12 @@ def _gemm_like(
         tma_descriptors=2 * tiles_k, tma_store_descriptors=1 if tma_store and store else 0,
     )
     capacity = (bm * bk + bk * bn) * element_bytes * stages + (bm * bn * output_bytes if output_shared else 0)
+    rasterization = _bool(config.get("enable_rasterization", config.get("rasterization", False)), "config.enable_rasterization")
+    fallbacks = ("gemm.rasterization_l2_locality_unmodeled",) if rasterization else ()
     return KernelWork(
         name=name, cta_count=ctas, phases=(phase,), threads_per_cta=_threads(config),
         shared_memory_bytes_per_cta=capacity, registers_per_thread=_registers(config),
+        fallbacks=fallbacks,
     )
 
 
@@ -1068,6 +1079,7 @@ class CudaCostModel:
             "fallback_used": list(self.fallback_used),
             "conditional_fallbacks": [
                 "config.registers_per_thread missing: register occupancy limit is one CTA/SM",
+                "gemm.rasterization_l2_locality_unmodeled",
                 "flash_attention_fwd causal=True: full-KV upper-bound work per CTA",
                 "GDN fixed-warp roles: conservative serial source-phase composition",
                 "GDN forward shared aliases: source-lifetime estimate, not compiled allocation",
@@ -1124,18 +1136,18 @@ class CudaCostModel:
     def _occupancy(self, work: KernelWork) -> tuple[int, int, bool]:
         threads = _integer(work.threads_per_cta, f"{work.name}.threads_per_cta")
         if threads > self._max_threads_block:
-            raise CostModelError(f"{work.name} threads_per_cta exceeds hardware block limit")
+            raise CostModelCapacityError(f"{work.name} threads_per_cta exceeds hardware block limit")
         capacity = _integer(work.shared_memory_bytes_per_cta, f"{work.name}.shared_memory_bytes_per_cta", 0)
         fragment_capacity = _integer(
             work.fragment_capacity_bytes_per_cta, f"{work.name}.fragment_capacity_bytes_per_cta", 0
         )
         if capacity > self._shared_block:
-            raise CostModelError(
+            raise CostModelCapacityError(
                 f"{work.name} shared bytes {capacity} exceed per-block opt-in {self._shared_block}"
             )
         demand_shared = capacity + self._reserved_shared
         if demand_shared > self._shared_sm:
-            raise CostModelError(f"{work.name} shared allocation including reserved bytes exceeds per-SM capacity")
+            raise CostModelCapacityError(f"{work.name} shared allocation including reserved bytes exceeds per-SM capacity")
         by_threads = self._max_threads_sm // threads
         warps = (threads + self._warp_size - 1) // self._warp_size
         max_warps = self._max_threads_sm // self._warp_size
@@ -1147,19 +1159,19 @@ class CudaCostModel:
         else:
             registers = _integer(work.registers_per_thread, f"{work.name}.registers_per_thread")
             if self._max_registers_thread is not None and registers > self._max_registers_thread:
-                raise CostModelError(f"{work.name} registers_per_thread exceeds hardware limit")
+                raise CostModelCapacityError(f"{work.name} registers_per_thread exceeds hardware limit")
             demand = threads * registers
             if fragment_capacity > demand * 4:
-                raise CostModelError(
+                raise CostModelCapacityError(
                     f"{work.name} registers_per_thread is below the logical fragment-capacity lower bound"
                 )
             if demand > self._max_registers_sm:
-                raise CostModelError(f"{work.name} register demand exceeds one SM")
+                raise CostModelCapacityError(f"{work.name} register demand exceeds one SM")
             by_registers = self._max_registers_sm // demand
         limits = (by_threads, by_warps, by_registers, by_shared, self._max_ctas_sm)
         occupancy = min(limits)
         if occupancy < 1:
-            raise CostModelError(f"{work.name} does not fit one CTA on an SM: limits={limits}")
+            raise CostModelCapacityError(f"{work.name} does not fit one CTA on an SM: limits={limits}")
         ctas = _integer(work.cta_count, f"{work.name}.cta_count")
         waves = (ctas + self._sm_count * occupancy - 1) // (self._sm_count * occupancy)
         return occupancy, waves, unknown_registers
@@ -1367,6 +1379,6 @@ class CudaCostModel:
 
 
 __all__ = [
-    "CALIBRATION_SCHEMA", "CalibrationError", "CostModelError", "CudaCostModel",
+    "CALIBRATION_SCHEMA", "CalibrationError", "CostModelCapacityError", "CostModelError", "CudaCostModel",
     "HARDWARE_SCHEMA", "KernelWork", "MODEL_CARD_SCHEMA", "OperatorPlugin", "PhaseWork",
 ]
