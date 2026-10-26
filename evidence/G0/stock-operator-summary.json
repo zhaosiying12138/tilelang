@@ -1,0 +1,36 @@
+{
+  "schema": "tilelang-cuda-z3.stock-operator-baseline",
+  "evidence": "evidence/G0/stock-elementwise-reduce-norm-dynamic.txt",
+  "scope": [
+    "examples/elementwise/test_example_elementwise.py",
+    "examples/norm/test_rms_norm.py",
+    "testing/python/language/test_tilelang_language_copy.py",
+    "testing/python/language/test_tilelang_language_reduce.py",
+    "testing/python/jit/test_tilelang_jit_tvm_ffi.py::test_tvm_ffi_dynamic_shape"
+  ],
+  "passed": 169,
+  "failed": 3,
+  "warnings": 62,
+  "duration_seconds": 170.12,
+  "failures": [
+    {
+      "nodeid": "testing/python/language/test_tilelang_language_reduce.py::test_reduce[sum-float16-64x128-f2f-t256-b4]",
+      "classification": "FAIL_LOWER",
+      "reason": "ReduceOp batch=4 exceeds per-thread output element count N=2"
+    },
+    {
+      "nodeid": "testing/python/language/test_tilelang_language_reduce.py::test_reduce[sum-bfloat16-64x128-f2f-t256-b4]",
+      "classification": "FAIL_LOWER",
+      "reason": "ReduceOp batch=4 exceeds per-thread output element count N=2"
+    },
+    {
+      "nodeid": "testing/python/language/test_tilelang_language_reduce.py::test_reduce[min-float16-128x128-f2f-t256-b8]",
+      "classification": "FAIL_LOWER",
+      "reason": "ReduceOp batch=8 exceeds per-thread output element count N=4"
+    }
+  ],
+  "notes": [
+    "These are stock branch lowering/validity failures, not numerical mismatches and not Z3 regressions.",
+    "The cases remain in the regression manifest; later default and opt-in runs must report them using the same classification."
+  ]
+}

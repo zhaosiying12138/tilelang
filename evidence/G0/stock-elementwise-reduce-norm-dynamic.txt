@@ -1,0 +1,769 @@
+................................................F.F...F................. [ 41%]
+........................................................................ [ 83%]
+............................                                             [100%]
+=================================== FAILURES ===================================
+_________________ test_reduce[sum-float16-64x128-f2f-t256-b4] __________________
+
+op = 'sum', dtype = dtype('float16'), M = 64, N = 128, src_scope = 'fragment'
+dst_scope = 'fragment', threads = 256, batch = 4
+
+    @pytest.mark.parametrize(
+        ("op", "dtype", "M", "N", "src_scope", "dst_scope", "threads", "batch"),
+        REDUCE_CASES,
+        ids=[
+            f"{op}-{dtype}-{M}x{N}-{src_scope[0]}2{dst_scope[0]}-t{threads}-b{batch}"
+            for op, dtype, M, N, src_scope, dst_scope, threads, batch in REDUCE_CASES
+        ],
+    )
+    def test_reduce(op, dtype, M, N, src_scope, dst_scope, threads, batch):
+    
+        @tilelang.jit(out_idx=-1)
+        def kernel(M, N, dtype, op, src_scope, dst_scope, threads, batch):
+            @T.prim_func
+            def main(A: T.Tensor((M, N), dtype), B: T.Tensor((M,), dtype)):
+                with T.Kernel(1, threads=threads):
+                    if src_scope == "fragment":
+                        src = T.alloc_fragment((M, N), dtype)
+                    else:
+                        src = T.alloc_shared((M, N), dtype)
+                    if dst_scope == "fragment":
+                        dst = T.alloc_fragment((M,), dtype)
+                    else:
+                        dst = T.alloc_shared((M,), dtype)
+                    T.copy(A, src, disable_tma=src_scope == "shared")
+                    _reduce_op(T, op, src, dst, dim=1, batch=batch)
+                    T.copy(dst, B)
+    
+            return main
+    
+>       jit_kernel = kernel(M, N, dtype, op, src_scope, dst_scope, threads, batch)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:498: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:555: in __call__
+    kernel = self.compile(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:470: in compile
+    kernel_result = compile(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:166: in compile
+    return cached(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/__init__.py:91: in cached
+    return cache.cached(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/kernel_cache.py:427: in cached
+    kernel = JITKernel(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:140: in __init__
+    adapter = self._compile_and_create_adapter(func, out_idx)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:280: in _compile_and_create_adapter
+    self.artifact = self._compile_artifact(tilelang_func, pass_configs, compile_metadata)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:321: in _compile_artifact
+    artifact = lower_with_context(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:165: in lower_with_context
+    return _lower_with_context_impl(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:184: in _lower_with_context_impl
+    host_mod, device_mod, params, target, target_host = lower_to_host_device_ir(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:136: in lower_to_host_device_ir
+    mod = context.lower(mod)
+          ^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/module.py:214: in lower
+    return self.module.lower(mod, self.target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/module.py:115: in lower
+    return self.get_pipeline(target).lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/pass_pipeline/pipeline.py:31: in lower
+    return self._lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/pipeline.py:206: in CUDAPassPipelineBody
+    mod = CUDAPassPipelineBodyPrologue(mod, target)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/pipeline.py:177: in CUDAPassPipelineBodyPrologue
+    mod = tilelang.transform.LowerTileOp()(mod)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::transform::LowerTileOp()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext const&)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::Substitute(tvm::tirx::PrimFunc)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+    ???
+<unknown>:0: in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#10}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::EvaluateNode const*)
+    ???
+<unknown>:0: in tvm::tl::ReduceOpNode::Lower(tvm::tl::LowerArgs const&, tvm::arith::Analyzer*) const
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK_LE(batch, N_total)
+E   tvm.error.InternalError: Check failed: batch <= N_total (4 vs. 2) : ReduceOp: batch=4 exceeds per-thread output element count N=2
+
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/backend/common/op/reduce.h:960: InternalError
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 00:45:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=-1`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=-1`
+_________________ test_reduce[sum-bfloat16-64x128-f2f-t256-b4] _________________
+
+op = 'sum', dtype = dtype('bfloat16'), M = 64, N = 128, src_scope = 'fragment'
+dst_scope = 'fragment', threads = 256, batch = 4
+
+    @pytest.mark.parametrize(
+        ("op", "dtype", "M", "N", "src_scope", "dst_scope", "threads", "batch"),
+        REDUCE_CASES,
+        ids=[
+            f"{op}-{dtype}-{M}x{N}-{src_scope[0]}2{dst_scope[0]}-t{threads}-b{batch}"
+            for op, dtype, M, N, src_scope, dst_scope, threads, batch in REDUCE_CASES
+        ],
+    )
+    def test_reduce(op, dtype, M, N, src_scope, dst_scope, threads, batch):
+    
+        @tilelang.jit(out_idx=-1)
+        def kernel(M, N, dtype, op, src_scope, dst_scope, threads, batch):
+            @T.prim_func
+            def main(A: T.Tensor((M, N), dtype), B: T.Tensor((M,), dtype)):
+                with T.Kernel(1, threads=threads):
+                    if src_scope == "fragment":
+                        src = T.alloc_fragment((M, N), dtype)
+                    else:
+                        src = T.alloc_shared((M, N), dtype)
+                    if dst_scope == "fragment":
+                        dst = T.alloc_fragment((M,), dtype)
+                    else:
+                        dst = T.alloc_shared((M,), dtype)
+                    T.copy(A, src, disable_tma=src_scope == "shared")
+                    _reduce_op(T, op, src, dst, dim=1, batch=batch)
+                    T.copy(dst, B)
+    
+            return main
+    
+>       jit_kernel = kernel(M, N, dtype, op, src_scope, dst_scope, threads, batch)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:498: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:555: in __call__
+    kernel = self.compile(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:470: in compile
+    kernel_result = compile(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:166: in compile
+    return cached(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/__init__.py:91: in cached
+    return cache.cached(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/kernel_cache.py:427: in cached
+    kernel = JITKernel(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:140: in __init__
+    adapter = self._compile_and_create_adapter(func, out_idx)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:280: in _compile_and_create_adapter
+    self.artifact = self._compile_artifact(tilelang_func, pass_configs, compile_metadata)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:321: in _compile_artifact
+    artifact = lower_with_context(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:165: in lower_with_context
+    return _lower_with_context_impl(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:184: in _lower_with_context_impl
+    host_mod, device_mod, params, target, target_host = lower_to_host_device_ir(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:136: in lower_to_host_device_ir
+    mod = context.lower(mod)
+          ^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/module.py:214: in lower
+    return self.module.lower(mod, self.target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/module.py:115: in lower
+    return self.get_pipeline(target).lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/pass_pipeline/pipeline.py:31: in lower
+    return self._lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/pipeline.py:206: in CUDAPassPipelineBody
+    mod = CUDAPassPipelineBodyPrologue(mod, target)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/pipeline.py:177: in CUDAPassPipelineBodyPrologue
+    mod = tilelang.transform.LowerTileOp()(mod)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::transform::LowerTileOp()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext const&)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::Substitute(tvm::tirx::PrimFunc)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+    ???
+<unknown>:0: in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#10}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::EvaluateNode const*)
+    ???
+<unknown>:0: in tvm::tl::ReduceOpNode::Lower(tvm::tl::LowerArgs const&, tvm::arith::Analyzer*) const
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK_LE(batch, N_total)
+E   tvm.error.InternalError: Check failed: batch <= N_total (4 vs. 2) : ReduceOp: batch=4 exceeds per-thread output element count N=2
+
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/backend/common/op/reduce.h:960: InternalError
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 00:45:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=-1`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=-1`
+_________________ test_reduce[min-float16-128x128-f2f-t256-b8] _________________
+
+op = 'min', dtype = dtype('float16'), M = 128, N = 128, src_scope = 'fragment'
+dst_scope = 'fragment', threads = 256, batch = 8
+
+    @pytest.mark.parametrize(
+        ("op", "dtype", "M", "N", "src_scope", "dst_scope", "threads", "batch"),
+        REDUCE_CASES,
+        ids=[
+            f"{op}-{dtype}-{M}x{N}-{src_scope[0]}2{dst_scope[0]}-t{threads}-b{batch}"
+            for op, dtype, M, N, src_scope, dst_scope, threads, batch in REDUCE_CASES
+        ],
+    )
+    def test_reduce(op, dtype, M, N, src_scope, dst_scope, threads, batch):
+    
+        @tilelang.jit(out_idx=-1)
+        def kernel(M, N, dtype, op, src_scope, dst_scope, threads, batch):
+            @T.prim_func
+            def main(A: T.Tensor((M, N), dtype), B: T.Tensor((M,), dtype)):
+                with T.Kernel(1, threads=threads):
+                    if src_scope == "fragment":
+                        src = T.alloc_fragment((M, N), dtype)
+                    else:
+                        src = T.alloc_shared((M, N), dtype)
+                    if dst_scope == "fragment":
+                        dst = T.alloc_fragment((M,), dtype)
+                    else:
+                        dst = T.alloc_shared((M,), dtype)
+                    T.copy(A, src, disable_tma=src_scope == "shared")
+                    _reduce_op(T, op, src, dst, dim=1, batch=batch)
+                    T.copy(dst, B)
+    
+            return main
+    
+>       jit_kernel = kernel(M, N, dtype, op, src_scope, dst_scope, threads, batch)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:498: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:555: in __call__
+    kernel = self.compile(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:470: in compile
+    kernel_result = compile(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:166: in compile
+    return cached(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/__init__.py:91: in cached
+    return cache.cached(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/kernel_cache.py:427: in cached
+    kernel = JITKernel(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:140: in __init__
+    adapter = self._compile_and_create_adapter(func, out_idx)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:280: in _compile_and_create_adapter
+    self.artifact = self._compile_artifact(tilelang_func, pass_configs, compile_metadata)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:321: in _compile_artifact
+    artifact = lower_with_context(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:165: in lower_with_context
+    return _lower_with_context_impl(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:184: in _lower_with_context_impl
+    host_mod, device_mod, params, target, target_host = lower_to_host_device_ir(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:136: in lower_to_host_device_ir
+    mod = context.lower(mod)
+          ^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/module.py:214: in lower
+    return self.module.lower(mod, self.target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/module.py:115: in lower
+    return self.get_pipeline(target).lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/pass_pipeline/pipeline.py:31: in lower
+    return self._lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/pipeline.py:206: in CUDAPassPipelineBody
+    mod = CUDAPassPipelineBodyPrologue(mod, target)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/pipeline.py:177: in CUDAPassPipelineBodyPrologue
+    mod = tilelang.transform.LowerTileOp()(mod)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::transform::LowerTileOp()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext const&)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::Substitute(tvm::tirx::PrimFunc)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::AttrStmtNode const*)::{lambda()#1}::operator()() const
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::arith::IRMutatorWithAnalyzer::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+    ???
+<unknown>:0: in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#10}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::LowerTileOpPass::VisitStmt_(tvm::tirx::EvaluateNode const*)
+    ???
+<unknown>:0: in tvm::tl::ReduceOpNode::Lower(tvm::tl::LowerArgs const&, tvm::arith::Analyzer*) const
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK_LE(batch, N_total)
+E   tvm.error.InternalError: Check failed: batch <= N_total (8 vs. 4) : ReduceOp: batch=8 exceeds per-thread output element count N=4
+
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/backend/common/op/reduce.h:960: InternalError
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 00:45:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=-1`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=-1`
+=============================== warnings summary ===============================
+examples/norm/test_rms_norm.py: 1 warning
+testing/python/language/test_tilelang_language_reduce.py: 19 warnings
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/__init__.py:91: DeprecationWarning: `tl.disable_tma_lower` is deprecated. Use `T.copy(..., disable_tma=True)` per-copy instead.
+    return cache.cached(
+
+examples/norm/test_rms_norm.py: 1 warning
+testing/python/language/test_tilelang_language_reduce.py: 16 warnings
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/kernel_cache.py:427: DeprecationWarning: `tl.disable_tma_lower` is deprecated. Use `T.copy(..., disable_tma=True)` per-copy instead.
+    kernel = JITKernel(
+
+testing/python/language/test_tilelang_language_reduce.py: 14 warnings
+  /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:761: DeprecationWarning: alloc_reducer(replication=...) selects the deprecated v1 reducer; migrate to reducer_init/reducer_update/finalize_reducer(acc, dst).
+    o_reducer = T.alloc_reducer(block_M, dtype, op=op, replication="all")
+
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_short_parallel_extent
+  /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:863: DeprecationWarning: alloc_reducer(replication=...) selects the deprecated v1 reducer; migrate to reducer_init/reducer_update/finalize_reducer(acc, dst).
+    total = T.alloc_reducer((1,), T.float32, replication="all")
+
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_mixed_parallel_extents
+  /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:891: DeprecationWarning: alloc_reducer(replication=...) selects the deprecated v1 reducer; migrate to reducer_init/reducer_update/finalize_reducer(acc, dst).
+    total = T.alloc_reducer((1,), T.float32, replication="all")
+
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_epoch_inside_pipelined_loop
+  /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:926: DeprecationWarning: alloc_reducer(replication=...) selects the deprecated v1 reducer; migrate to reducer_init/reducer_update/finalize_reducer(acc, dst).
+    new_max = T.alloc_reducer((1,), T.float32, op="max", replication="all")
+
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_epoch_inside_pipelined_loop
+  /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:932: DeprecationWarning: alloc_reducer(replication=...) selects the deprecated v1 reducer; migrate to reducer_init/reducer_update/finalize_reducer(acc, dst).
+    new_sum = T.alloc_reducer((1,), T.float32, replication="all")
+
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_conditional_finalize
+  /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:999: DeprecationWarning: alloc_reducer(replication=...) selects the deprecated v1 reducer; migrate to reducer_init/reducer_update/finalize_reducer(acc, dst).
+    total = T.alloc_reducer((1,), T.float32, replication="all")
+
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_invalid_batch[zero]
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_invalid_batch[negative]
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_invalid_batch[exceeds]
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_invalid_batch[not-divisible]
+  /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:1039: DeprecationWarning: alloc_reducer(replication=...) selects the deprecated v1 reducer; migrate to reducer_init/reducer_update/finalize_reducer(acc, dst).
+    o_reducer = T.alloc_reducer(block_M, T.float32, op="sum", replication="all")
+
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_rejects_subbyte_accumulator[legacy-float4_e2m1fn]
+testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_rejects_subbyte_accumulator[legacy-int4]
+  /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py:1323: DeprecationWarning: alloc_reducer(replication=...) selects the deprecated v1 reducer; migrate to reducer_init/reducer_update/finalize_reducer(acc, dst).
+    acc = T.alloc_reducer((1,), dtype, op="sum", replication="all" if legacy else None)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================================================================== fixture duration top ========================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.009939 grand total                                                                                                           521 0:00:00.000023 0:00:00.000089
+======================================================================= test call duration top =======================================================================
+total          name                                                                                                                  num med            max           
+0:00:34.875768 testing/python/language/test_tilelang_language_reduce.py::test_reduce                                                  28 0:00:01.335901 0:00:01.853647
+0:00:13.687518 testing/python/language/test_tilelang_language_reduce.py::test_reduce_keepdim                                          10 0:00:01.366704 0:00:01.484774
+0:00:11.303421 testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_codegen                                 6 0:00:01.698445 0:00:02.959751
+0:00:08.149442 testing/python/language/test_tilelang_language_reduce.py::test_allreduce_power_of_two_width_runtime                     6 0:00:01.346684 0:00:01.471165
+0:00:08.062526 testing/python/jit/test_tilelang_jit_tvm_ffi.py::test_tvm_ffi_dynamic_shape                                             1 0:00:08.062526 0:00:08.062526
+0:00:08.041425 testing/python/language/test_tilelang_language_reduce.py::test_reduce_fp4_input_wider_accumulator_runtime               6 0:00:01.339018 0:00:01.362578
+0:00:06.180999 testing/python/language/test_tilelang_language_reduce.py::test_reduce_clear                                             4 0:00:01.531319 0:00:01.645114
+0:00:04.450712 testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_correctness                             3 0:00:01.460647 0:00:01.562072
+0:00:03.943480 testing/python/language/test_tilelang_language_copy.py::test_tilelang_copy                                              1 0:00:03.943480 0:00:03.943480
+0:00:03.806356 testing/python/language/test_tilelang_language_reduce.py::test_reduce_local_packed_correctness                          3 0:00:01.263424 0:00:01.289363
+0:00:03.637515 testing/python/language/test_tilelang_language_copy.py::test_tilelang_copy_fp4                                          1 0:00:03.637515 0:00:03.637515
+0:00:02.747876 testing/python/language/test_tilelang_language_reduce.py::test_reduce_partial_thread_barrier_offset_thread_range        3 0:00:01.202896 0:00:01.208564
+0:00:02.744067 testing/python/language/test_tilelang_language_reduce.py::test_reduce_packed_max_nan_batch_runtime                      1 0:00:02.744067 0:00:02.744067
+0:00:02.737275 testing/python/language/test_tilelang_language_reduce.py::test_reduce_fp8_e4m3_dst_runtime                              2 0:00:01.368637 0:00:01.413632
+0:00:02.683846 testing/python/language/test_tilelang_language_reduce.py::test_allreduce_scale_greater_than_one_valid_runtime           2 0:00:01.341923 0:00:01.359816
+0:00:02.636333 testing/python/language/test_tilelang_language_copy.py::test_tilelang_copy_cross_dtype                                  1 0:00:02.636333 0:00:02.636333
+0:00:02.450099 testing/python/language/test_tilelang_language_reduce.py::test_blackwell_non_finite_const_matches_runtime_conversion    2 0:00:01.225049 0:00:01.230664
+0:00:02.393831 testing/python/language/test_tilelang_language_copy.py::test_tilelang_copy_with_stride                                  1 0:00:02.393831 0:00:02.393831
+0:00:02.269129 examples/elementwise/test_example_elementwise.py::test_example_elementwise_add                                          1 0:00:02.269129 0:00:02.269129
+0:00:02.166835 testing/python/language/test_tilelang_language_copy.py::test_tilelang_copy_bufferload_cross_dtype                       1 0:00:02.166835 0:00:02.166835
+0:00:01.947671 testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_epoch_inside_pipelined_loop             1 0:00:01.947671 0:00:01.947671
+0:00:01.587035 testing/python/language/test_tilelang_language_reduce.py::test_fp8_non_finite_const_matches_runtime_conversion          2 0:00:00.793517 0:00:01.288515
+0:00:01.562247 testing/python/language/test_tilelang_language_reduce.py::test_reduce_packed_max_nan_propagate_runtime                  1 0:00:01.562247 0:00:01.562247
+0:00:01.522383 examples/norm/test_rms_norm.py::test_rms_norm                                                                           1 0:00:01.522383 0:00:01.522383
+0:00:01.494742 testing/python/language/test_tilelang_language_reduce.py::test_reduce_packed_min_nan_propagate_runtime                  1 0:00:01.494742 0:00:01.494742
+0:00:01.346670 testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_mixed_parallel_extents                  1 0:00:01.346670 0:00:01.346670
+0:00:01.330172 testing/python/language/test_tilelang_language_reduce.py::test_reduce_packed_absmax_nan_propagate_uses_nan_intrinsics   1 0:00:01.330172 0:00:01.330172
+0:00:01.328123 testing/python/language/test_tilelang_language_reduce.py::test_reduce_packed_fp8_to_float16_absmax_runtime              1 0:00:01.328123 0:00:01.328123
+0:00:01.327065 testing/python/language/test_tilelang_language_reduce.py::test_finalize_reducer_default_alloc_v1_syntax                 1 0:00:01.327065 0:00:01.327065
+0:00:01.317281 testing/python/language/test_tilelang_language_copy.py::test_tilelang_copy_oob_safe_value_lexical_scope                 1 0:00:01.317281 0:00:01.317281
+0:02:47.910949 grand total                                                                                                           172 0:00:01.231998 0:00:08.062526
+====================================================================== test setup duration top =======================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.010864 testing/python/language/test_tilelang_language_reduce.py::test_reduce                                                  28 0:00:00.000374 0:00:00.000652
+0:00:00.038903 grand total                                                                                                           172 0:00:00.000061 0:00:00.000652
+===================================================================== test teardown duration top =====================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.018440 grand total                                                                                                           172 0:00:00.000081 0:00:00.000432
+=========================== short test summary info ============================
+FAILED ../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py::test_reduce[sum-float16-64x128-f2f-t256-b4]
+FAILED ../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py::test_reduce[sum-bfloat16-64x128-f2f-t256-b4]
+FAILED ../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_language_reduce.py::test_reduce[min-float16-128x128-f2f-t256-b8]
+3 failed, 169 passed, 62 warnings in 170.12s (0:02:50)
