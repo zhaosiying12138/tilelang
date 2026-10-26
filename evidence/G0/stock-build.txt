@@ -1,0 +1,662 @@
+Using pip 26.2.2 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Obtaining file:///home/zhaosiying/codebase/tilelang-cuda-z3
+  Checking if build backend supports build_editable: started
+  Running command Checking if build backend supports build_editable
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Running command Preparing editable metadata (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-26 23:48:22,440 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (metadata_editable)
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: tilelang
+  Building editable for tilelang (pyproject.toml): started
+  Running command Building editable for tilelang (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-26 23:48:22,596 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (editable)
+  *** Configuring CMake...
+  loading initial cache file build/CMakeInit.txt
+  -- Using ccache: /usr/bin/ccache with base_dir=/home/zhaosiying/codebase/tilelang-cuda-z3
+  -- Using TVM source: /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm
+  -- CUDA Backend is enabled
+  -- Ascend Backend is enabled
+  -- CANN aprof_pub.h was not found; building Ascend without native profiling. Set ASCEND_HOME_PATH to the CANN SDK root and reconfigure to enable CANN Node reporting.
+  -- Find Z3 in path: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3
+  -- Found Z3 include dir: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/include
+  -- Found Z3 library: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/lib/libz3.so
+  -- Forbidding undefined symbols in shared library, using -Wl,--no-undefined on platform Linux
+  -- Build with RPC support...
+  -- Build Alloc alignment set to 64
+  -- CMAKE_C_COMPILER_LAUNCHER already defined.  Not using ccache.
+  -- Custom CUDA_PATH=/usr/local/cuda-13.3
+  -- Found CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-13.3
+  -- Found CUDA_CUDA_LIBRARY=/usr/local/cuda-13.3/targets/x86_64-linux/lib/stubs/libcuda.so
+  -- Found CUDA_CUDART_LIBRARY=cudart_stub
+  -- Found CUDA_CUDNN_INCLUDE_DIRS=
+  -- Found CUDA_CUDNN_LIBRARY=
+  -- Found CUDA_CUBLAS_LIBRARY=/usr/local/cuda-13.3/lib64/libcublas.so
+  -- Found CUDA_CURAND_LIBRARY=/usr/local/cuda-13.3/lib64/libcurand.so
+  -- Found CUDA_CUBLASLT_LIBRARY=/usr/local/cuda-13.3/lib64/libcublasLt.so
+  -- Found CUDA_NVTX_LIBRARY=/usr/local/cuda-13.3/lib64/libnvtx3interop.so
+  -- Found CUDA_nvToolsExt_LIBRARY=
+  -- Build with CUDA  support
+  -- Build with contrib.random
+  -- Build with contrib.sort
+  -- Git found: /usr/bin/git
+  -- Found TVM_GIT_COMMIT_HASH=4211874e9e4b8770fd20ad0d98ab80afd1df5028
+  -- Found TVM_GIT_COMMIT_TIME=2026-09-28 19:01:43 +0800
+  -- Detected target triple: x86_64-linux-gnu
+  -- Setting C++ macro TVM_FFI_USE_LIBBACKTRACE - 1
+  -- Setting C++ macro TVM_FFI_BACKTRACE_ON_SEGFAULT - 1
+  -- Build with thread support...
+  -- Added "-fuse-ld=mold" to linker flags
+  -- Configuring done (6.8s)
+  -- Generating done (0.1s)
+  -- Build files have been written to: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+  *** Building project with Ninja...
+  [0/2] Re-checking globbed directories...
+  [1/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/convert_layout.cc.o
+  [2/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/dataflow_inplace.cc.o
+  [3/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/dead_code_elimination.cc.o
+  [4/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/decompose_ops.cc.o
+  [5/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/eliminate_common_subexpr.cc.o
+  [6/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/expand_matmul_of_sum.cc.o
+  [7/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/expand_tuple_arguments.cc.o
+  [8/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/fold_constant.cc.o
+  [9/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/fuse_ops.cc.o
+  [10/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/fuse_tir.cc.o
+  [11/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/gradient_simplifier.cc.o
+  [12/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/gradient.cc.o
+  [13/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/infer_amp_utils.cc.o
+  [14/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/infer_layout_utils.cc.o
+  [15/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/inline_functions.cc.o
+  [16/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/kill_after_last_use.cc.o
+  [17/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/lambda_lift.cc.o
+  [18/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/lazy_transform_params.cc.o
+  [19/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/legalize_ops.cc.o
+  [20/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/lower_alloc_tensor.cc.o
+  [21/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/lift_transform_params.cc.o
+  [22/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/meta_schedule.cc.o
+  [23/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/merge_composite_functions.cc.o
+  [24/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/normalize.cc.o
+  [25/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/realize_vdevice.cc.o
+  [26/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/remove_purity_checking.cc.o
+  [27/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/remove_unused_outputs.cc.o
+  [28/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/remove_unused_parameters.cc.o
+  [29/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/reorder_permute_dims_after_concat.cc.o
+  [30/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/replace_global_vars.cc.o
+  [31/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/reorder_take_after_matmul.cc.o
+  [32/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/rewrite_dataflow_reshape.cc.o
+  [33/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/rewrite_cuda_graph.cc.o
+  [34/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/run_codegen.cc.o
+  [35/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/specialize_primfunc_based_on_callsite.cc.o
+  [36/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/split_layout_rewrite_preproc.cc.o
+  [37/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/split_call_tir_by_pattern.cc.o
+  [38/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/static_plan_block_memory.cc.o
+  [39/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/to_mixed_precision.cc.o
+  [40/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/to_non_dataflow.cc.o
+  [41/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/topological_sort.cc.o
+  [42/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/update_param_struct_info.cc.o
+  [43/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/update_vdevice.cc.o
+  [44/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/transform/utils.cc.o
+  [45/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/relax/utils.cc.o
+  [46/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/calculate_allocated_memory.cc.o
+  [47/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/estimate_flops.cc.o
+  [48/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/find_anchor_sblock.cc.o
+  [49/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/identify_memcpy.cc.o
+  [50/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/is_pure_function.cc.o
+  [51/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/oob_checker.cc.o
+  [52/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/sblock_access_region_detector.cc.o
+  [53/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/sblock_buffer_access_lca_detector.cc.o
+  [54/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/analysis/verify_gpu_code.cc.o
+  [55/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/backend/adreno/inject_texture_alloc.cc.o
+  [56/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/backend/adreno/texture_flatten.cc.o
+  [57/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/data_layout.cc.o
+  [58/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/arg_info.cc.o
+  [59/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/builder/builder.cc.o
+  [60/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/cost_model/cost_model.cc.o
+  [61/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/database/database_utils.cc.o
+  [62/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/database/database.cc.o
+  [63/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/database/json_database.cc.o
+  [64/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/database/memory_database.cc.o
+  [65/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/database/ordered_union_database.cc.o
+  [66/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/database/schedule_fn_database.cc.o
+  [67/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/database/union_database.cc.o
+  [68/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/extracted_task.cc.o
+  [69/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/feature_extractor/feature_extractor.cc.o
+  [70/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/measure_callback/add_to_database.cc.o
+  [71/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/feature_extractor/per_store_feature.cc.o
+  [72/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/measure_callback/measure_callback.cc.o
+  [73/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/measure_callback/remove_build_artifact.cc.o
+  [74/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/module_equality.cc.o
+  [75/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/measure_callback/update_cost_model.cc.o
+  [76/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/mutator/mutate_compute_location.cc.o
+  [77/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/mutator/mutate_parallel.cc.o
+  [78/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/mutator/mutate_thread_binding.cc.o
+  [79/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/mutator/mutate_tile_size.cc.o
+  [80/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/mutator/mutate_unroll.cc.o
+  [81/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/mutator/mutator.cc.o
+  [82/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/disallow_async_strided_mem_copy.cc.o
+  [83/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/disallow_dynamic_loop.cc.o
+  [84/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/postproc.cc.o
+  [85/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/rewrite_cooperative_fetch.cc.o
+  [86/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/rewrite_layout.cc.o
+  [87/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/rewrite_parallel_vectorize_unroll.cc.o
+  [88/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/rewrite_reduction_block.cc.o
+  [89/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/rewrite_tensorize.cc.o
+  [90/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/rewrite_unbound_block.cc.o
+  [91/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/verify_gpu_code.cc.o
+  [92/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/postproc/verify_vtcm_limit.cc.o
+  [93/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/profiler.cc.o
+  [94/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/runner/runner.cc.o
+  [95/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule/cpu/winograd.cc.o
+  [96/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule/cuda/thread_bind.cc.o
+  [97/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule/cuda/winograd.cc.o
+  [98/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule/generic/winograd.cc.o
+  [99/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/add_rfactor.cc.o
+  [100/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/apply_custom_rule.cc.o
+  [101/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/auto_bind.cc.o
+  [102/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/auto_inline.cc.o
+  [103/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/cross_thread_reduction.cc.o
+  [104/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/multi_level_tiling.cc.o
+  [105/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/multi_level_tiling_tensor_core.cc.o
+  [106/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/multi_level_tiling_wide_vector.cc.o
+  [107/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/parallel_vectorize_unroll.cc.o
+  [108/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/multi_level_tiling_with_intrin.cc.o
+  [109/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/random_compute_location.cc.o
+  [110/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/schedule_rule/schedule_rule.cc.o
+  [111/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/search_strategy/evolutionary_search.cc.o
+  [112/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/search_strategy/replay_func.cc.o
+  [113/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/search_strategy/replay_trace.cc.o
+  [114/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/search_strategy/search_strategy.cc.o
+  [115/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/space_generator/post_order_apply.cc.o
+  [116/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/space_generator/schedule_fn.cc.o
+  [117/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/space_generator/space_generator.cc.o
+  [118/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/space_generator/space_generator_union.cc.o
+  [119/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/task_scheduler/round_robin.cc.o
+  [120/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/task_scheduler/gradient_based.cc.o
+  [121/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/trace_apply.cc.o
+  [122/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/task_scheduler/task_scheduler.cc.o
+  [123/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/meta_schedule/tune_context.cc.o
+  [124/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/sblock_dependence_info.cc.o
+  [125/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/sblock_scope.cc.o
+  [126/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/analysis/layout.cc.o
+  [127/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/analysis/analysis.cc.o
+  [128/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/analysis/reducer.cc.o
+  [129/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/analysis/verify.cc.o
+  [130/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/error.cc.o
+  [131/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/concrete_schedule.cc.o
+  [132/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/instruction.cc.o
+  [133/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/ir_comparator.cc.o
+  [134/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/annotate.cc.o
+  [135/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/annotate_buffer_access.cc.o
+  [136/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/block_annotate.cc.o
+  [137/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/blockize_tensorize.cc.o
+  [138/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/cache_index.cc.o
+  [139/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/cache_index_helpers.cc.o
+  [140/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/compute_at.cc.o
+  [141/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/cache_read_write.cc.o
+  [142/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/compute_inline.cc.o
+  [143/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/decompose_padding.cc.o
+  [144/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/for_kind.cc.o
+  [145/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/get_block_loop.cc.o
+  [146/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/hide_buffer_access.cc.o
+  [147/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/layout_transformation.cc.o
+  [148/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/loop_transformation.cc.o
+  [149/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/pad_einsum.cc.o
+  [150/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/read_write_at.cc.o
+  [151/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/reorder_block_iter_var.cc.o
+  [152/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/reduction.cc.o
+  [153/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/rolling_buffer.cc.o
+  [154/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/primitive/sampling.cc.o
+  [155/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/schedule.cc.o
+  [156/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/state.cc.o
+  [157/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/traced_schedule.cc.o
+  [158/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/trace.cc.o
+  [159/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/annotate_irregular_loop.cc.o
+  [160/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/schedule/transform.cc.o
+  [161/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/bound_checker.cc.o
+  [162/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/canonicalize_loop.cc.o
+  [163/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/convert_blocks_to_opaque.cc.o
+  [164/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/decorate_device_scope.cc.o
+  [165/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/compact_buffer_region.cc.o
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/s_tir/transform/compact_buffer_region.cc:32:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/tirx/stmt_functor.h:154:16: warning: ‘virtual void tvm::tirx::StmtVisitor::VisitBufferDef(const tvm::tirx::Buffer&, bool)’ was hidden [-Woverloaded-virtual=]
+    154 |   virtual void VisitBufferDef(const Buffer& buffer, bool alloc_data);
+        |                ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/s_tir/transform/compact_buffer_region.cc:339:8: note:   by ‘void tvm::s_tir::BufferAccessRegionCollector::VisitBufferDef(const tvm::tirx::Var&)’
+    339 |   void VisitBufferDef(const Var& buffer_data) {
+        |        ^~~~~~~~~~~~~~
+  [166/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/default_gpu_schedule.cc.o
+  [167/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/hoist_expression.cc.o
+  [168/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/inject_double_buffer.cc.o
+  [169/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/inject_permuted_layout.cc.o
+  [170/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/inject_ptx_async_copy.cc.o
+  [171/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/inject_ptx_ldg32.cc.o
+  [172/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/inject_virtual_thread.cc.o
+  [173/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/inject_software_pipeline.cc.o
+  [174/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/lift_thread_binding.cc.o
+  [175/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/loop_partition.cc.o
+  [176/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/lower_async_dma.cc.o
+  [177/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/lower_init_block.cc.o
+  [178/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/lower_cross_thread_reduction.cc.o
+  [179/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/lower_match_buffer.cc.o
+  [180/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/lower_opaque_block.cc.o
+  [181/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/lower_vtcm_alloc.cc.o
+  [182/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/lower_thread_allreduce.cc.o
+  [183/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/manifest_shared_memory_local_stage.cc.o
+  [184/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/memhammer_coalesce.cc.o
+  [185/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/memhammer_intermediate_stage.cc.o
+  [186/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/memhammer_lower_auto_copy.cc.o
+  [187/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/memhammer_tensorcore_rewrite.cc.o
+  [188/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/merge_shared_memory_allocations.cc.o
+  [189/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/plan_update_buffer_allocation_location.cc.o
+  [190/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/profile_instrumentation.cc.o
+  [191/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/remove_store_undef.cc.o
+  [192/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/remove_weight_layout_rewrite_block.cc.o
+  [193/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/renew_defs.cc.o
+  [194/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/renormalize_split_pattern.cc.o
+  [195/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/rewrite_unsafe_select.cc.o
+  [196/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/storage_access.cc.o
+  [197/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/tensorcore_infer_fragment.cc.o
+  [198/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/thread_storage_sync.cc.o
+  [199/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/transform_mma_buffer_layout.cc.o
+  [200/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/unify_thread_binding.cc.o
+  [201/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/ir_builder/base.cc.o
+  [202/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/s_tir/transform/using_assume_to_reduce_branches.cc.o
+  [203/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/ir_builder/ir/frame.cc.o
+  [204/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/printer/config.cc.o
+  [205/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/ir_builder/ir/ir.cc.o
+  [206/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/printer/doc_printer/base_doc_printer.cc.o
+  [207/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/printer/doc_printer/python_doc_printer.cc.o
+  [208/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/printer/ir/distributed.cc.o
+  [209/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/printer/doc.cc.o
+  [210/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/printer/ir/misc.cc.o
+  [211/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/printer/ir/ir.cc.o
+  [212/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/script/printer/ir_docsifier.cc.o
+  [213/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/te/operation/compute_op.cc.o
+  [214/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/te/operation/extern_op.cc.o
+  [215/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/te/operation/create_primfunc.cc.o
+  [216/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/te/operation/graph.cc.o
+  [217/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/te/operation/placeholder_op.cc.o
+  [218/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/te/operation/scan_op.cc.o
+  [219/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/te/tensor.cc.o
+  [220/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/check_contains.cc.o
+  [221/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/collect_call_map.cc.o
+  [222/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/deep_equal.cc.o
+  [223/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/control_flow_graph.cc.o
+  [224/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/expr_complexity.cc.o
+  [225/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/side_effect.cc.o
+  [226/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/stmt_finding.cc.o
+  [227/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/var_touch.cc.o
+  [228/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/var_use_def_analysis.cc.o
+  [229/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/verify_memory.cc.o
+  [230/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/verify_ssa.cc.o
+  [231/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/analysis/verify_well_formed.cc.o
+  [232/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/buffer.cc.o
+  [233/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/data_type_rewriter.cc.o
+  [234/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/expr_functor.cc.o
+  [235/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/function.cc.o
+  [236/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/index_map.cc.o
+  [237/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/expr.cc.o
+  [238/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/script/script_complete.cc.o
+  [239/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/specialize.cc.o
+  [240/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/stmt.cc.o
+  [241/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/stmt_functor.cc.o
+  [242/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/py_functor.cc.o
+  [243/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/tir_visitor_with_path.cc.o
+  [244/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/ir/transform.cc.o
+  [245/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/op/builtin.cc.o
+  [246/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/op/runtime.cc.o
+  [247/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/builder/frame.cc.o
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/tirx/script/builder/frame.cc:24:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/tirx/script/builder/./utils.h:81:1: warning: ‘/*’ within comment [-Wcomment]
+     81 | /*!
+  [248/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/op/op.cc.o
+  [249/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/printer/block.cc.o
+  [250/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/printer/buffer.cc.o
+  [251/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/builder/ir.cc.o
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/tirx/script/builder/ir.cc:28:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/tirx/script/builder/./utils.h:81:1: warning: ‘/*’ within comment [-Wcomment]
+     81 | /*!
+  [252/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/printer/for_loop.cc.o
+  [253/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/printer/expr.cc.o
+  [254/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/printer/function.cc.o
+  [255/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/printer/ir.cc.o
+  [256/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/script/printer/stmt.cc.o
+  [257/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/annotate_device_regions.cc.o
+  [258/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/bind_target.cc.o
+  [259/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/common_subexpr_elim.cc.o
+  [260/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/dtype_conversion.cc.o
+  [261/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/flatten_buffer.cc.o
+  [262/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/force_narrow_index_to_i32.cc.o
+  [263/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/inline_private_functions.cc.o
+  [264/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/ir_utils.cc.o
+  [265/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/lower_custom_datatypes.cc.o
+  [266/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/lower_device_kernel_launch.cc.o
+  [267/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/lower_intrin.cc.o
+  [268/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/lower_tvm_builtin.cc.o
+  [269/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/lower_warp_memory.cc.o
+  [270/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/make_packed_api.cc.o
+  [271/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/primfunc_utils.cc.o
+  [272/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/narrow_datatype.cc.o
+  [273/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/remove_assume.cc.o
+  [274/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/remap_thread_axis.cc.o
+  [275/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/replace_global_vars.cc.o
+  [276/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/remove_no_op.cc.o
+  [277/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/replace_selected_expr.cc.o
+  [278/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/simplify.cc.o
+  [279/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/skip_assert.cc.o
+  [280/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/split_host_device.cc.o
+  [281/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/storage_rewrite.cc.o
+  [282/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/tvm_ffi_binder.cc.o
+  [283/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/unroll_loop.cc.o
+  [284/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/unsupported_dtype_legalize.cc.o
+  [285/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/update_pointer_storage_scope.cc.o
+  [286/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/tirx/transform/vectorize_loop.cc.o
+  [287/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/topi/einsum.cc.o
+  [288/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/topi/broadcast.cc.o
+  [289/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/topi/elemwise.cc.o
+  [290/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/topi/reduction.cc.o
+  [291/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/topi/nn.cc.o
+  [292/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/topi/utils.cc.o
+  [293/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/topi/transform.cc.o
+  [294/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/canonicalizer/llvm/arm_aprofile.cc.o
+  [295/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/topi/vision.cc.o
+  [296/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/canonicalizer/llvm/canonicalize.cc.o
+  [297/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/canonicalizer/llvm/arm_mprofile.cc.o
+  [298/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/codegen.cc.o
+  [299/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/cuda/cuda_fallback_module.cc.o
+  [300/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/cuda/intrin_rule_cuda.cc.o
+  [301/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/cuda/ptx.cc.o
+  [302/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/cuda/codegen_cuda.cc.o
+  [303/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/hexagon/hexagon_fallback_module.cc.o
+  [304/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/intrin_rule.cc.o
+  [305/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/metal/intrin_rule_metal.cc.o
+  [306/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/metal/metal_fallback_module.cc.o
+  [307/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/metal/codegen_metal.cc.o
+  [308/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/opencl/intrin_rule_opencl.cc.o
+  [309/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/opencl/opencl_fallback_module.cc.o
+  [310/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/rocm/rocm_fallback_module.cc.o
+  [311/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/opencl/codegen_opencl.cc.o
+  [312/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/source/codegen_c.cc.o
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/target/source/codegen_c.cc: In member function ‘virtual void tvm::codegen::CodeGenC::VisitExpr_(const tvm::tirx::StringImmNode*, std::ostream&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/target/source/codegen_c.cc:510:21: warning: ‘tvm::ffi::String tvm::ffi::EscapeString(const String&)’ is deprecated: Use EscapeStringJSON instead [-Wdeprecated-declarations]
+    510 |   os << EscapeString(op->value);
+        |         ~~~~~~~~~~~~^~~~~~~~~~~
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/any.h:27,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/function.h:40,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/op.h:29,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/target/source/codegen_c.h:27,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/target/source/codegen_c.cc:23:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:883:62: note: declared here
+    883 | [[deprecated("Use EscapeStringJSON instead")]] inline String EscapeString(const String& value) {
+        |                                                              ^~~~~~~~~~~~
+  [313/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/source/codegen_params.cc.o
+  [314/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/source/codegen_c_host.cc.o
+  [315/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/source/codegen_source_base.cc.o
+  [316/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/source/source_module.cc.o
+  [317/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/tag.cc.o
+  [318/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/target.cc.o
+  [319/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/target_kind.cc.o
+  [320/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/vulkan/vulkan_fallback_module.cc.o
+  [321/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/virtual_device.cc.o
+  [322/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/webgpu/intrin_rule_webgpu.cc.o
+  [323/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/webgpu/webgpu_fallback_module.cc.o
+  [324/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/datatype/registry.cc.o
+  [325/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/datatype/myfloat/myfloat.cc.o
+  [326/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/webgpu/codegen_webgpu.cc.o
+  [327/540] Linking CXX shared library lib/libtvm_runtime.so
+  [328/540] Building CXX object CMakeFiles/nvrtc_stub.dir/src/cuda/stubs/nvrtc.cc.o
+  [329/540] Building CXX object tvm/CMakeFiles/tvm_objs.dir/src/target/z3/z3_prover_on.cc.o
+  [330/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/backend/common/codegen/codegen_c_host.cc.o
+  [331/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/backend/common/codegen/codegen_utils.cc.o
+  [332/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/backend/common/target_utils.cc.o
+  [333/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/backend/common/codegen/codegen_py.cc.o
+  [334/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ir.cc.o
+  [335/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/layout/cute_layout.cc.o
+  [336/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/layout/gemm_layouts.cc.o
+  [337/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/layout/swizzle_mode.cc.o
+  [338/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/layout/tcgen05_layout.cc.o
+  [339/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/layout/layout.cc.o
+  [340/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/layout/utils.cc.o
+  [341/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/atomic_add.cc.o
+  [342/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/atomic_reduce.cc.o
+  [343/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/builtin.cc.o
+  [344/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/fill.cc.o
+  [345/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/copy.cc.o
+  [346/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/gemm.cc.o
+  [347/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/gemm_blockscaled.cc.o
+  [348/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/logical.cc.o
+  [349/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/gemm_sp.cc.o
+  [350/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/math.cc.o
+  [351/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/operator.cc.o
+  [352/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/reduce.cc.o
+  [353/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/parallel.cc.o
+  [354/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/scan.cc.o
+  [355/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/reducer.cc.o
+  [356/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/utils.cc.o
+  [357/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/op/transpose.cc.o
+  [358/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/span_utils.cc.o
+  [359/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/annotate_device_regions.cc.o
+  [360/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/annotate_read_only_params.cc.o
+  [361/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/common/assume.cc.o
+  [362/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/canonicalize_legacy_reducer.cc.o
+  [363/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/config_index_bitwidth.cc.o
+  [364/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/constr_set_analysis.cc.o
+  [365/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/flatten_buffer.cc.o
+  [366/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/frontend_legalize.cc.o
+  [367/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/hoist_global_buffer_allocations.cc.o
+  [368/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/hoist_nonrestrict_params.cc.o
+  [369/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/inject_assumes.cc.o
+  [370/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/if_stmt_binding.cc.o
+  [371/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/layout_inference/layout_cost_model.cc.o
+  [372/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o
+  [373/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/layout_inference/layout_inference.cc.o
+  [374/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/legalize_negative_index.cc.o
+  [375/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/legalize_safe_memory_access.cc.o
+  [376/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/legalize_vectorized_loop.cc.o
+  [377/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/loop_partition.cc.o
+  [378/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/loop_unswitching.cc.o
+  [379/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/lower_access_ptr.cc.o
+  [380/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/loop_vectorize.cc.o
+  [381/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/lower_device_kernel_launch.cc.o
+  [382/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/lower_intrin.cc.o
+  [383/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/lower_opaque_block.cc.o
+  [384/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/lower_thread_allreduce.cc.o
+  [385/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/lower_tile_op.cc.o
+  [386/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/materialize_kernel_launch.cc.o
+  [387/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/make_packed_api.cc.o
+  [388/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/merge_if_stmt.cc.o
+  [389/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/merge_shared_memory_allocations.cc.o
+  [390/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/pipeline_planning.cc.o
+  [391/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/plan_update_buffer_allocation_location.cc.o
+  [392/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/reducer_plan_materialize.cc.o
+  [393/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/simplify.cc.o
+  [394/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/split_host_device.cc.o
+  [395/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/storage_rewrite.cc.o
+  [396/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/thread_storage_sync.cc.o
+  [397/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/tvm_ffi_binder.cc.o
+  [398/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/unroll_loop.cc.o
+  [399/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/vectorize_loop.cc.o
+  [400/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/verify_buffer_init.cc.o
+  [401/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/verify_reducer_consumed.cc.o
+  [402/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/verify_parallel_loop.cc.o
+  [403/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/runtime/error_helpers.cc.o
+  [404/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/verify_reducer_epoch.cc.o
+  [405/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/codegen/codegen_c.cc.o
+  [406/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/codegen/rt_mod_c.cc.o
+  [407/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/op/atomic_add.cc.o
+  [408/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/op/atomic_reduce.cc.o
+  [409/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/op/builtin.cc.o
+  [410/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/op/copy.cc.o
+  [411/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/op/gemm.cc.o
+  [412/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/op/fill.cc.o
+  [413/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/op/reduce.cc.o
+  [414/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/target_utils.cc.o
+  [415/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/op/transpose.cc.o
+  [416/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/transform/lower_cpu_atomics.cc.o
+  [417/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/transform/lower_cpu_kernel_launch.cc.o
+  [418/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/transform/mark_cpu_atomics.cc.o
+  [419/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/codegen/intrin_rule_cuda.cc.o
+  [420/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cpu/transform/materialize_cpu_parallel_grid.cc.o
+  [421/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/builtin.cc.o
+  [422/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/copy_analysis.cc.o
+  [423/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/target_utils.cc.o
+  [424/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/ptx_async_copy_injector.cc.o
+  [425/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/codegen/codegen_cutedsl.cc.o
+  [426/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/codegen/codegen_cuda.cc.o
+  [427/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/codegen/ptx.cc.o
+  [428/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/codegen/rt_mod_cutedsl.cc.o
+  [429/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/codegen/rt_mod_cuda.cc.o
+  [430/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/atomic_add.cc.o
+  [431/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/atomic_reduce.cc.o
+  [432/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/fill.cc.o
+  [433/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/finalize_reducer.cc.o
+  [434/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/gemm.cc.o
+  [435/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/copy.cc.o
+  [436/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/gemm_sp.cc.o
+  [437/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/gemm_blockscaled.cc.o
+  [438/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/scan.cc.o
+  [439/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/tma_layout.cc.o
+  [440/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/reduce.cc.o
+  [441/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/runtime.cc.o
+  [442/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/op/transpose.cc.o
+  [443/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/annotate_device_bound_tma_copies.cc.o
+  [444/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/annotate_warp_group_reg_alloc.cc.o
+  [445/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/auto_schedule.cc.o
+  [446/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/auto_schedule/preprocess_ir.cc.o
+  [447/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/auto_schedule/role_based_scheduler.cc.o
+  [448/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/fuse_mbarrier_arrive_expect_tx.cc.o
+  [449/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/inject_fence_proxy.cc.o
+  [450/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/inject_tcgen05_fence.cc.o
+  [451/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/lower_blackwell_2sm.cc.o
+  [452/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/lower_hopper_intrin.cc.o
+  [453/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/lower_l2_persistent_annotation.cc.o
+  [454/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/lower_ldg_stg.cc.o
+  [455/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/lower_pdl.cc.o
+  [456/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/lower_shared_barrier.cc.o
+  [457/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/lower_shared_tmem.cc.o
+  [458/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/materialize_ws_schedule.cc.o
+  [459/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/multi_version_buffer_rewriter.cc.o
+  [460/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/persist_threadblock.cc.o
+  [461/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/ws_analysis.cc.o
+  [462/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/rocm/codegen/intrin_rule_hip.cc.o
+  [463/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/producer_consumer_ws.cc.o
+  [464/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/rocm/op/builtin.cc.o
+  [465/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/rocm/target_utils.cc.o
+  [466/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/metal/op/builtin.cc.o
+  [467/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/metal/op/copy.cc.o
+  [468/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/metal/op/fill.cc.o
+  [469/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/metal/codegen/codegen_metal.cc.o
+  [470/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/metal/op/gemm.cc.o
+  [471/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/metal/target_utils.cc.o
+  [472/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/webgpu/op/copy.cc.o
+  [473/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/metal/op/transpose.cc.o
+  [474/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/webgpu/op/fill.cc.o
+  [475/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/webgpu/op/transpose.cc.o
+  [476/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/ir.cc.o
+  [477/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/target_utils.cc.o
+  [478/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/layout/ascend_layouts.cc.o
+  [479/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/codegen/codegen_ascend.cc.o
+  [480/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/codegen/intrin_rule_ascend.cc.o
+  [481/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/codegen/rt_mod_ascend.cc.o
+  [482/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/codegen/codegen_pto.cc.o
+  [483/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/codegen/rt_mod_pto.cc.o
+  [484/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/op/builtin.cc.o
+  [485/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/op/fill.cc.o
+  [486/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/op/finalize_reducer.cc.o
+  [487/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/op/copy.cc.o
+  [488/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/op/gemm.cc.o
+  [489/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/op/gemm_blockscaled.cc.o
+  [490/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/op/oob_padding.cc.o
+  [491/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/runtime/ascend_device_api.cc.o
+  [492/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/op/reduce.cc.o
+  [493/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/runtime/ascend_module.cc.o
+  [494/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/target.cc.o
+  [495/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/annotate_multi_buffer_eligible.cc.o
+  [496/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/ascend_simdvf_lower_parallel.cc.o
+  [497/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/auto_schedule.cc.o
+  [498/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/assign_core.cc.o
+  [499/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/auto_schedule/dependency_analysis.cc.o
+  [500/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/auto_schedule/ir_structure.cc.o
+  [501/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/auto_schedule/scheduled_tir.cc.o
+  [502/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/estimate_latency.cc.o
+  [503/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/infer_buffer_aliases.cc.o
+  [504/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/insert_nd2nz.cc.o
+  [505/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/insert_oob_padding.cc.o
+  [506/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/layout_inference.cc.o
+  [507/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/insert_sync.cc.o
+  [508/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/legalize_simd_merging.cc.o
+  [509/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/lower_scheduled_tir.cc.o
+  [510/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/lower_tile_op.cc.o
+  [511/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/mark_scalar_dcache_bypass.cc.o
+  [512/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/materialize_multi_buffer.cc.o
+  [513/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/materialize_schedule_units.cc.o
+  [514/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/normalize_buffer_version.cc.o
+  [515/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/merge_ub_allocations.cc.o
+  [516/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/normalize_conflict_hints.cc.o
+  [517/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/normalize_control_flow_for_schedule.cc.o
+  [518/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/normalize_fractal_storage.cc.o
+  [519/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/remove_no_op.cc.o
+  [520/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/prepare_multi_buffer.cc.o
+  [521/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/restore_while_loops.cc.o
+  [522/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/resolve_core.cc.o
+  [523/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/rewrite_buffer_version_layout.cc.o
+  [524/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/rewrite_dual_copy.cc.o
+  [525/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/rewrite_flag_to_buf.cc.o
+  [526/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/rewrite_fp4_to_fp4x2.cc.o
+  [527/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/unroll_loop_skip_vf.cc.o
+  [528/540] Building CXX object CMakeFiles/tilelang_cython_wrapper.dir/tilelang_cython_wrapper.cpp.o
+  [529/540] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/thread_storage_sync.cc.o
+  [530/540] Building CXX object CMakeFiles/tilelang_ascend_npu_exchange.dir/tilelang_ascend_npu_exchange.cpp.o
+  [531/540] Building CXX object CMakeFiles/tilelang_pto_wrapper.dir/tilelang_pto_wrapper.cpp.o
+  [532/540] Linking CXX shared library lib/libtvm_compiler.so
+  [533/540] Linking CXX shared library lib/libstub_nvrtc.so
+  [534/540] Building C object CMakeFiles/tilelang_deepgemm_heuristics.dir/tilelang_deepgemm_heuristics.c.o
+  [535/540] Linking CXX shared module lib/tilelang_cython_wrapper.abi3.so
+  [536/540] Linking CXX shared module lib/tilelang_pto_wrapper.abi3.so
+  [537/540] Linking CXX shared library lib/libtilelang.so
+  [538/540] Linking CXX shared module lib/tilelang_ascend_npu_exchange.abi3.so
+  [539/540] Linking C shared module lib/tilelang_deepgemm_heuristics.abi3.so
+  *** Installing project into wheel...
+  -- Install configuration: "Release"
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/tilelang_deepgemm_heuristics.abi3.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/tilelang_deepgemm_heuristics.abi3.so" to ""
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/tilelang_cython_wrapper.abi3.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/tilelang_cython_wrapper.abi3.so" to ""
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/tilelang_pto_wrapper.abi3.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/tilelang_pto_wrapper.abi3.so" to ""
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/tilelang_ascend_npu_exchange.abi3.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/tilelang_ascend_npu_exchange.abi3.so" to ""
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libtilelang.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libtvm_runtime.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libtvm_compiler.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libstub_cuda.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libstub_cudart.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libstub_nvrtc.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libstub_ascendcl.so
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libtilelang.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libtilelang.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libtvm_runtime.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libtvm_runtime.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libtvm_compiler.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libtvm_compiler.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libstub_cuda.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libstub_cuda.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libstub_cudart.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libstub_cudart.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libstub_nvrtc.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libstub_nvrtc.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libstub_ascendcl.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmp78qncy5c/wheel/platlib/tilelang/lib/libstub_ascendcl.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  *** Making editable...
+  *** Created tilelang-0.1.15+cuda.gitde2a407e-cp39-abi3-linux_x86_64.whl
+  Building editable for tilelang (pyproject.toml): finished with status 'done'
+  Created wheel for tilelang: filename=tilelang-0.1.15+cuda.gitde2a407e-cp39-abi3-linux_x86_64.whl size=41060945 sha256=3e7196d06f39b3345df6e0a8cb8cab87560f9b4a7700ffa533b9b8d06a052876
+  Stored in directory: /tmp/pip-ephem-wheel-cache-bazsl4d2/wheels/03/5c/04/3508ade3e027b4fc751207ca74b5c49a494d2856cda16bbb64
+Successfully built tilelang
+Installing collected packages: tilelang
+Successfully installed tilelang-0.1.15+cuda.gitde2a407e

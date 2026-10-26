@@ -1,0 +1,71 @@
+........................................................................ [ 10%]
+........................................................................ [ 20%]
+........................................................................ [ 30%]
+........................................................................ [ 40%]
+........................................................................ [ 50%]
+........................................................................ [ 61%]
+........................................................................ [ 71%]
+........................................................................ [ 81%]
+........................................................................ [ 91%]
+..........................................................               [100%]
+=============================== warnings summary ===============================
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/testing/utils.py:630: PytestUnknownMarkWarning: Unknown pytest.mark.ascend - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    yield getattr(pytest.mark, self.name)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================================================================ fixture duration top =================================================================================
+total          name                                                                                                                                  num  med            max           
+0:00:00.034051 grand total                                                                                                                           1567 0:00:00.000021 0:00:00.004053
+=============================================================================== test call duration top ================================================================================
+total          name                                                                                                                                  num  med            max           
+0:00:06.680169 testing/ascend/auto_schedule/test_schedule_integration.py::test_subcore_roles_survive_complete_lowering                                  4 0:00:01.666028 0:00:02.995691
+0:00:01.790834 testing/ascend/auto_schedule/test_buffer_lifetimes.py::test_buffer_lifetimes_alias_contract                                             26 0:00:00.052071 0:00:00.296994
+0:00:01.623947 testing/ascend/auto_schedule/test_flag_allocation.py::test_serial_protocols_fit_hardware_flag_budget                                     2 0:00:00.811973 0:00:01.247383
+0:00:01.192782 testing/ascend/auto_schedule/test_buffer_epochs.py::test_iteration_clock_requires_single_owner                                           1 0:00:01.192782 0:00:01.192782
+0:00:00.772984 testing/ascend/auto_schedule/test_buffer_lifetimes.py::test_ring_generation_lifetimes                                                   12 0:00:00.061831 0:00:00.102690
+0:00:00.725744 testing/ascend/auto_schedule/test_schedule_integration.py::test_sf_group_owners_survive_a_plain_gemm_sibling                             2 0:00:00.362872 0:00:00.383491
+0:00:00.344790 testing/ascend/auto_schedule/test_flag_allocation.py::test_sibling_counter_owners_share_one_release_ring                                 1 0:00:00.344790 0:00:00.344790
+0:00:00.333615 testing/ascend/auto_schedule/test_schedule_integration.py::test_holes_and_versions_cannot_exceed_physical_capacity                       2 0:00:00.166807 0:00:00.172919
+0:00:00.331397 testing/ascend/auto_schedule/test_schedule_units.py::test_dynamic_tail_regions_preserve_only_required_recurrences                        6 0:00:00.055597 0:00:00.070538
+0:00:00.298602 testing/ascend/auto_schedule/test_schedule_integration.py::test_mixed_kernel_uses_requested_vector_count                                 2 0:00:00.149301 0:00:00.170319
+0:00:00.286974 testing/ascend/auto_schedule/test_access_footprints.py::test_access_footprints_alias_contract                                           13 0:00:00.022371 0:00:00.031423
+0:00:00.284458 testing/ascend/auto_schedule/test_schedule_integration.py::test_sibling_l0_rings_survive_layout_lowering                                 2 0:00:00.142229 0:00:00.154058
+0:00:00.273865 testing/ascend/auto_schedule/test_buffer_lifetimes.py::test_parent_writer_and_nested_reader_keep_periodic_lifetime                       8 0:00:00.032105 0:00:00.046758
+0:00:00.271592 testing/ascend/auto_schedule/test_sync_boundaries.py::test_missing_counter_channel_keeps_lexical_handshake                               8 0:00:00.036764 0:00:00.039762
+0:00:00.263252 testing/ascend/auto_schedule/test_schedule_integration.py::test_single_version_sibling_protocol_survives_reuse_and_lowering              1 0:00:00.263252 0:00:00.263252
+0:00:00.246180 testing/ascend/auto_schedule/test_schedule_units.py::test_single_version_sibling_owners_preserve_dependency_kind                         4 0:00:00.059190 0:00:00.072061
+0:00:00.221180 testing/ascend/auto_schedule/test_schedule_integration.py::test_nested_loop_break_is_emitted_on_every_core                               1 0:00:00.221180 0:00:00.221180
+0:00:00.218494 testing/ascend/auto_schedule/test_cross_core_flags.py::test_alternating_epilogue_uses_each_aiv_flag_bank                                 2 0:00:00.109247 0:00:00.134567
+0:00:00.215553 testing/ascend/auto_schedule/test_access_footprints.py::test_nd2nz_post_copy_keeps_the_last_required_element_live                       16 0:00:00.013345 0:00:00.015538
+0:00:00.211145 testing/ascend/auto_schedule/test_schedule_integration.py::test_mmad_direction_reaches_only_cube_and_precedes_its_gemm                   1 0:00:00.211145 0:00:00.211145
+0:00:00.205881 testing/ascend/auto_schedule/test_schedule_integration.py::test_ub_placement_survives_version_and_vf_lowering                            3 0:00:00.054169 0:00:00.110409
+0:00:00.183248 testing/ascend/auto_schedule/test_buffer_lifetimes.py::test_local_ring_generations_can_share_whole_allocation                            3 0:00:00.060539 0:00:00.079124
+0:00:00.180745 testing/ascend/auto_schedule/test_sync_access_footprints.py::test_expanded_footprint_preserves_explicit_conflict                        18 0:00:00.009904 0:00:00.011095
+0:00:00.170138 testing/ascend/auto_schedule/test_schedule_integration.py::test_pipeline_preserves_addresses_across_versions_layout_remap_and_flatten    1 0:00:00.170138 0:00:00.170138
+0:00:00.165716 testing/ascend/auto_schedule/test_sync_access_footprints.py::test_padded_source_hint_survives_loop_scheduling                            4 0:00:00.040883 0:00:00.044565
+0:00:00.164946 testing/ascend/auto_schedule/test_cross_core_flags.py::test_alternating_aiv_writers_without_cube_ordering_are_rejected                   2 0:00:00.082473 0:00:00.085992
+0:00:00.158564 testing/ascend/auto_schedule/test_schedule_integration.py::test_fractal_padding_is_included_in_the_physical_footprint                    1 0:00:00.158564 0:00:00.158564
+0:00:00.154740 testing/ascend/auto_schedule/test_schedule_integration.py::test_overlap_is_checked_after_automatic_versions_expand                       1 0:00:00.154740 0:00:00.154740
+0:00:00.128327 testing/ascend/auto_schedule/test_flag_allocation.py::test_distinct_counter_channels_keep_exclusive_rings_and_spill                      1 0:00:00.128327 0:00:00.128327
+0:00:00.121584 testing/ascend/auto_schedule/test_sync_dependencies.py::test_ring_flags_use_the_data_clock                                               3 0:00:00.032181 0:00:00.077659
+0:00:22.406811 grand total                                                                                                                            706 0:00:00.007733 0:00:02.995691
+=============================================================================== test setup duration top ===============================================================================
+total          name                                                                                                                                  num  med            max           
+0:00:00.013497 testing/ascend/auto_schedule/test_core_resolution.py::test_projected_fixpipe_route_rejects_repeated_external_effects                    63 0:00:00.000157 0:00:00.001800
+0:00:00.005940 testing/ascend/auto_schedule/test_buffer_lifetimes.py::test_parent_writer_and_nested_reader_keep_periodic_lifetime                       8 0:00:00.000223 0:00:00.004409
+0:00:00.005656 testing/ascend/auto_schedule/test_buffer_lifetimes.py::test_buffer_lifetimes_alias_contract                                             26 0:00:00.000202 0:00:00.000405
+0:00:00.005141 testing/ascend/auto_schedule/test_buffer_version_annotations.py::test_placement_requires_an_explicit_version_count                       5 0:00:00.000225 0:00:00.004271
+0:00:00.131819 grand total                                                                                                                            706 0:00:00.000116 0:00:00.004409
+============================================================================= test teardown duration top ==============================================================================
+total          name                                                                                                                                  num  med            max           
+0:00:00.054069 grand total                                                                                                                            706 0:00:00.000056 0:00:00.000811
+706 passed, 31 deselected, 9 warnings in 23.42s
