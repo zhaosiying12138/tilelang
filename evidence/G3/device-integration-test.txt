@@ -1,0 +1,258 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_default_off_and_opt_in_real_solver_and_numerics _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-31/test_default_off_and_opt_in_re0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x797b113b9c70>
+
+    @tilelang.testing.requires_cuda
+    def test_default_off_and_opt_in_real_solver_and_numerics(tmp_path, monkeypatch):
+        block = 128
+        iterations = 4
+    
+        def make_func():
+            @T.prim_func
+            def main(
+                A: T.Tensor((block * iterations,), "float32"),
+                B: T.Tensor((block * iterations,), "float32"),
+                C: T.Tensor((block * iterations,), "float32"),
+            ):
+                with T.Kernel(1, threads=128):
+                    a_shared = T.alloc_shared((block,), "float32")
+                    b_shared = T.alloc_shared((block,), "float32")
+                    c_fragment = T.alloc_fragment((block,), "float32")
+                    annotations = z3_pipeline_annotations(
+                        latencies=[4, 4, 2, 2],
+                        iis=[1, 1, 1, 1],
+                        resource_flags=[1, 1, 16, 2],
+                        data_deps=[(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)],
+                        resource_deps=[(0, 1)],
+                        enable_offset=False,
+                        verbose=True,
+                        debug_dir=str(tmp_path),
+                    )
+                    for k in T.Pipelined(iterations, num_stages=2, annotations=annotations):
+                        T.copy(A[k * block : (k + 1) * block], a_shared)
+                        T.copy(B[k * block : (k + 1) * block], b_shared)
+                        for i in T.Parallel(block):
+                            c_fragment[i] = a_shared[i] + b_shared[i]
+                        T.copy(c_fragment, C[k * block : (k + 1) * block])
+    
+            return main
+    
+        original = z3_scheduler.z3_schedule_loop_python
+        calls = []
+    
+        def counted_solve(*args, **kwargs):
+            result = original(*args, **kwargs)
+            calls.append(result)
+            return result
+    
+        monkeypatch.setattr(z3_scheduler, "z3_schedule_loop_python", counted_solve)
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+    
+        def compile_and_run(enabled):
+            func = make_func()
+            kernel = tilelang.compile(
+                func,
+                target="cuda",
+                out_idx=[2],
+                execution_backend="tvm_ffi",
+                pass_configs={config_key: enabled},
+            )
+            a = torch.arange(block * iterations, dtype=torch.float32, device="cuda") / 100
+            b = torch.arange(block * iterations, dtype=torch.float32, device="cuda") / 50
+            actual = kernel(a, b)
+            torch.testing.assert_close(actual, a + b, rtol=0, atol=0)
+    
+        compile_and_run(False)
+        assert calls == [], "Default-off compilation must not call the CUDA Z3 solver"
+    
+>       compile_and_run(True)
+
+/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_cuda_z3_pipeline.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_cuda_z3_pipeline.py:65: in compile_and_run
+    kernel = tilelang.compile(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/__init__.py:166: in compile
+    return cached(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/__init__.py:91: in cached
+    return cache.cached(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cache/kernel_cache.py:350: in cached
+    return JITKernel(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:140: in __init__
+    adapter = self._compile_and_create_adapter(func, out_idx)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:280: in _compile_and_create_adapter
+    self.artifact = self._compile_artifact(tilelang_func, pass_configs, compile_metadata)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/kernel.py:321: in _compile_artifact
+    artifact = lower_with_context(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:165: in lower_with_context
+    return _lower_with_context_impl(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:184: in _lower_with_context_impl
+    host_mod, device_mod, params, target, target_host = lower_to_host_device_ir(
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/engine/lower.py:136: in lower_to_host_device_ir
+    mod = context.lower(mod)
+          ^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/module.py:214: in lower
+    return self.module.lower(mod, self.target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/module.py:115: in lower
+    return self.get_pipeline(target).lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/backend/pass_pipeline/pipeline.py:31: in lower
+    return self._lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/pipeline.py:226: in CUDAPassPipelineBody
+    mod = CUDAPassPipelineBodyPrologue(mod, target)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/pipeline.py:185: in CUDAPassPipelineBodyPrologue
+    mod = tilelang.transform.InjectSoftwarePipeline()(mod)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::InjectSoftwarePipeline()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext const&)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::InjectPipeline(tvm::tirx::PrimFunc const&)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineInjector::Inject(tvm::tirx::PrimFunc const&)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineInjector::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineInjector::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineInjector::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::RewritePipeline(tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void>, tvm::ffi::Array<tvm::tirx::Buffer, void> const&, tvm::ffi::Array<tvm::tirx::Buffer, void> const&, tvm::tirx::For const&, std::unordered_map<tvm::tirx::Var, int, tvm::ffi::ObjectPtrHash, tvm::ffi::ObjectPtrEqual, std::allocator<std::pair<tvm::tirx::Var const, int> > >, std::unordered_map<tvm::tirx::SBlock, tvm::tl::software_pipeline::PipelineAnnotation, tvm::ffi::ObjectPtrHash, tvm::ffi::ObjectPtrEqual, std::allocator<std::pair<tvm::tirx::SBlock const, tvm::tl::software_pipeline::PipelineAnnotation> > > const&, tvm::ffi::Array<tvm::tirx::SBlock, void> const&, tvm::ffi::Optional<tvm::Target, void>, tvm::ffi::Map<tvm::tirx::Var, tvm::arith::IntSet, void>)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineRewriter::BuildPipeline()
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineRewriter::EmitImpl(tvm::PrimExpr const&, tvm::PrimExpr const&, bool, bool)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineRewriter::EmitImpl(tvm::PrimExpr const&, tvm::PrimExpr const&, bool, bool)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(producer_stage_idx == -1 || producer_stage_idx == kv.first)
+E   tvm.error.InternalError: Check failed: (producer_stage_idx == -1 || producer_stage_idx == kv.first) is false: A dependency on multiple async stages is not supported
+
+/home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:2666: InternalError
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 01:47:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+2026-10-27 01:47:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 01:47:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: [(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: [(0, 1)]
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=7
+[CUDA Python Z3 Loop] Testing II=4
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=2, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=1, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=2, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 2: start=6, latency=2, II=1, resource=0b0010000
+[CUDA Python Z3 Loop] Task 3: start=8, latency=2, II=1, resource=0b0000010
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `main`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+===================================================================== fixture duration top =====================================================================
+total          name                                                                                                            num med            max           
+0:00:00.004974 grand total                                                                                                       3 0:00:00.000079 0:00:00.004878
+==================================================================== test call duration top ====================================================================
+total          name                                                                                                            num med            max           
+0:00:04.199024 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_default_off_and_opt_in_real_solver_and_numerics   1 0:00:04.199024 0:00:04.199024
+0:00:04.199024 grand total                                                                                                       1 0:00:04.199024 0:00:04.199024
+=================================================================== test setup duration top ====================================================================
+total          name                                                                                                            num med            max           
+0:00:00.005322 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_default_off_and_opt_in_real_solver_and_numerics   1 0:00:00.005322 0:00:00.005322
+0:00:00.005322 grand total                                                                                                       1 0:00:00.005322 0:00:00.005322
+================================================================== test teardown duration top ==================================================================
+total          name                                                                                                            num med            max           
+0:00:00.000146 grand total                                                                                                       1 0:00:00.000146 0:00:00.000146
+=========================== short test summary info ============================
+FAILED ../../../../../../../home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_default_off_and_opt_in_real_solver_and_numerics
+1 failed in 4.91s
