@@ -1,0 +1,12 @@
+empty_launch: complete
+dram_copy: complete
+l2_resident_copy: complete
+shared_read: complete
+shared_write: complete
+bf16_mma_gemm: complete
+f16_mma_gemm: complete
+tf32_mma_gemm: complete
+cuda_fp32_fma: complete
+sfu_exp2: complete
+barrier: complete
+Wrote complete calibration to /home/zhaosiying/codebase/tilelang-cuda-z3/manifest/calibration-sm120.json; missing=[]

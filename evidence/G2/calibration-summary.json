@@ -1,0 +1,136 @@
+{
+  "status": "measured",
+  "complete_benchmarks": [
+    "barrier",
+    "bf16_mma_gemm",
+    "cuda_fp32_fma",
+    "dram_copy",
+    "empty_launch",
+    "f16_mma_gemm",
+    "l2_resident_copy",
+    "sfu_exp2",
+    "shared_read",
+    "shared_write",
+    "tf32_mma_gemm"
+  ],
+  "rates": {
+    "barrier_ns": {
+      "source": "measured",
+      "unit": "ns",
+      "value": 7.079101578710834
+    },
+    "clock_hz": {
+      "source": "measured",
+      "unit": "Hz",
+      "value": 3090000000.0
+    },
+    "cuda_fp32_flops_per_second": {
+      "source": "measured",
+      "unit": "FLOP/s",
+      "value": 36169200562493.83
+    },
+    "dram_bytes_per_second": {
+      "source": "measured",
+      "unit": "B/s",
+      "value": 765925525232.4492
+    },
+    "l2_bytes_per_second": {
+      "source": "measured",
+      "unit": "B/s",
+      "value": 972141352155.4594
+    },
+    "launch_ns": {
+      "source": "measured",
+      "unit": "ns",
+      "value": 4752.000095322728
+    },
+    "lsu_warp_instructions_per_second": {
+      "source": "measured",
+      "unit": "warp-instruction/s",
+      "value": 108650288811.83264
+    },
+    "mma_bf16_flops_per_second": {
+      "source": "measured",
+      "unit": "FLOP/s",
+      "value": 116835624724654.8
+    },
+    "mma_f16_flops_per_second": {
+      "source": "measured",
+      "unit": "FLOP/s",
+      "value": 117040608914344.7
+    },
+    "mma_tf32_flops_per_second": {
+      "source": "measured",
+      "unit": "FLOP/s",
+      "value": 58328867221478.305
+    },
+    "sfu_exp2_operations_per_second": {
+      "source": "measured",
+      "unit": "exp2/s",
+      "value": 20768896157500.402
+    },
+    "shared_bytes_per_second": {
+      "source": "measured",
+      "unit": "B/s",
+      "value": 13907236967914.578
+    }
+  },
+  "benchmarks": {
+    "barrier": {
+      "median_ms": 0.12332800030708313,
+      "iqr_ms": 0.0024239979684352875,
+      "sample_count": 50
+    },
+    "bf16_mma_gemm": {
+      "median_ms": 0.5372160077095032,
+      "iqr_ms": 0.006816014647483826,
+      "sample_count": 50
+    },
+    "cuda_fp32_fma": {
+      "median_ms": 0.1594879999756813,
+      "iqr_ms": 0.010079994797706604,
+      "sample_count": 50
+    },
+    "dram_copy": {
+      "median_ms": 0.7082880139350891,
+      "iqr_ms": 0.0020720213651657104,
+      "sample_count": 50
+    },
+    "empty_launch": {
+      "median_ms": 0.007344000041484833,
+      "iqr_ms": 0.0017839998472481966,
+      "sample_count": 50
+    },
+    "f16_mma_gemm": {
+      "median_ms": 0.5362879931926727,
+      "iqr_ms": 0.004535987973213196,
+      "sample_count": 50
+    },
+    "l2_resident_copy": {
+      "median_ms": 0.1454080045223236,
+      "iqr_ms": 0.01383199542760849,
+      "sample_count": 50
+    },
+    "sfu_exp2": {
+      "median_ms": 0.023904000408947468,
+      "iqr_ms": 0.002039999235421419,
+      "sample_count": 50
+    },
+    "shared_read": {
+      "median_ms": 0.3835360109806061,
+      "iqr_ms": 0.0055119916796684265,
+      "sample_count": 50
+    },
+    "shared_write": {
+      "median_ms": 0.4225279986858368,
+      "iqr_ms": 0.004503987729549408,
+      "sample_count": 50
+    },
+    "tf32_mma_gemm": {
+      "median_ms": 1.0687040090560913,
+      "iqr_ms": 0.022919923067092896,
+      "sample_count": 50
+    }
+  },
+  "gdn_fwd_block_DV_64_prediction_ms": 0.5185692027562198
+}
