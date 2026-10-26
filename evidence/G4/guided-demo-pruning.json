@@ -1,0 +1,233 @@
+{
+  "checked": 9,
+  "duplicates": 0,
+  "kept": 6,
+  "pruned": 3,
+  "raw": 9,
+  "records": [
+    {
+      "config": {
+        "block_M": 32,
+        "num_stages": 1
+      },
+      "config_id": "7eac179385706c107f17771ef57f508660aca706547e0ce3b64bc32cacbbfefe",
+      "index": 0,
+      "reason": "sat",
+      "resource_limited": false,
+      "stats": {
+        "elim-unconstrained": 2,
+        "max memory": 25.73,
+        "memory": 17.6,
+        "num allocs": 27806,
+        "rlimit count": 91,
+        "sat decisions": 1,
+        "sat mk var": 3,
+        "sat units": 2,
+        "time": 0.007
+      },
+      "status": "sat",
+      "timeout": false,
+      "wall_seconds": 0.008897022053133696
+    },
+    {
+      "config": {
+        "block_M": 32,
+        "num_stages": 2
+      },
+      "config_id": "6cd4ea3cd10d9388bbc8b63737c65cc2ce1e1a7fe7a8cee00b90d0999091f019",
+      "index": 1,
+      "reason": "sat",
+      "resource_limited": false,
+      "stats": {
+        "elim-unconstrained": 2,
+        "max memory": 25.73,
+        "memory": 17.6,
+        "num allocs": 108917,
+        "rlimit count": 182,
+        "sat decisions": 1,
+        "sat mk var": 3,
+        "sat units": 2,
+        "time": 0.005
+      },
+      "status": "sat",
+      "timeout": false,
+      "wall_seconds": 0.00690766196930781
+    },
+    {
+      "config": {
+        "block_M": 32,
+        "num_stages": 3
+      },
+      "config_id": "41798b068c20031a150583444cf244de2146da0999050b5ff8118a01122df169",
+      "index": 2,
+      "reason": "sat",
+      "resource_limited": false,
+      "stats": {
+        "elim-unconstrained": 2,
+        "max memory": 25.73,
+        "memory": 17.6,
+        "num allocs": 241025,
+        "rlimit count": 273,
+        "sat decisions": 1,
+        "sat mk var": 3,
+        "sat units": 2,
+        "time": 0.005
+      },
+      "status": "sat",
+      "timeout": false,
+      "wall_seconds": 0.00663507601711899
+    },
+    {
+      "config": {
+        "block_M": 64,
+        "num_stages": 1
+      },
+      "config_id": "4af7405b2cfecb8984e2aa3fd2975891ddf9d3f2e54f1bc35ee6d6b36ab5036f",
+      "index": 3,
+      "reason": "sat",
+      "resource_limited": false,
+      "stats": {
+        "elim-unconstrained": 2,
+        "max memory": 25.73,
+        "memory": 17.6,
+        "num allocs": 424104,
+        "rlimit count": 364,
+        "sat decisions": 1,
+        "sat mk var": 3,
+        "sat units": 2,
+        "time": 0.002
+      },
+      "status": "sat",
+      "timeout": false,
+      "wall_seconds": 0.0034990269923582673
+    },
+    {
+      "config": {
+        "block_M": 64,
+        "num_stages": 2
+      },
+      "config_id": "3be3b683b82f347dd8dc292ea24ae7e5590d1955bdf1fb8bcdc9a5e2788d8d3e",
+      "index": 4,
+      "reason": "sat",
+      "resource_limited": false,
+      "stats": {
+        "elim-unconstrained": 2,
+        "max memory": 25.73,
+        "memory": 17.6,
+        "num allocs": 658137,
+        "rlimit count": 455,
+        "sat decisions": 1,
+        "sat mk var": 3,
+        "sat units": 2,
+        "time": 0.002
+      },
+      "status": "sat",
+      "timeout": false,
+      "wall_seconds": 0.0030489580240100622
+    },
+    {
+      "config": {
+        "block_M": 64,
+        "num_stages": 3
+      },
+      "config_id": "29ce1e75a5e904ce3950f139562d0c6d24774d2d6ba6e5895ec45e73d60070e3",
+      "index": 5,
+      "reason": "unsat",
+      "resource_limited": false,
+      "stats": {
+        "max memory": 25.73,
+        "memory": 17.54,
+        "num allocs": 900571,
+        "rlimit count": 489
+      },
+      "status": "unsat",
+      "timeout": false,
+      "wall_seconds": 0.0006726909778080881
+    },
+    {
+      "config": {
+        "block_M": 128,
+        "num_stages": 1
+      },
+      "config_id": "8e03df804c2a40cc2ae3c564c84fa4f03545e2fcd8a14c780fa08a7ad72edac3",
+      "index": 6,
+      "reason": "sat",
+      "resource_limited": false,
+      "stats": {
+        "elim-unconstrained": 2,
+        "max memory": 25.73,
+        "memory": 17.6,
+        "num allocs": 1206402,
+        "rlimit count": 580,
+        "sat decisions": 1,
+        "sat mk var": 3,
+        "sat units": 2,
+        "time": 0.002
+      },
+      "status": "sat",
+      "timeout": false,
+      "wall_seconds": 0.002958291966933757
+    },
+    {
+      "config": {
+        "block_M": 128,
+        "num_stages": 2
+      },
+      "config_id": "34368e399bbd847a626c4ce63de66ba05dd2cd6bd64904ed4ff56fbdef0505c8",
+      "index": 7,
+      "reason": "unsat",
+      "resource_limited": false,
+      "stats": {
+        "max memory": 25.73,
+        "memory": 17.54,
+        "num allocs": 1529157,
+        "rlimit count": 614
+      },
+      "status": "unsat",
+      "timeout": false,
+      "wall_seconds": 0.0006104509811848402
+    },
+    {
+      "config": {
+        "block_M": 128,
+        "num_stages": 3
+      },
+      "config_id": "d6e97473004e57674490dff9730b3d11592252e5fbb6a9677783970813424a75",
+      "index": 8,
+      "reason": "unsat",
+      "resource_limited": false,
+      "stats": {
+        "max memory": 25.73,
+        "memory": 17.54,
+        "num allocs": 1861093,
+        "rlimit count": 648
+      },
+      "status": "unsat",
+      "timeout": false,
+      "wall_seconds": 0.0004115999909117818
+    }
+  ],
+  "resource_limited": 0,
+  "resource_limited_config_ids": [],
+  "rlimit": 1000000,
+  "sat": 6,
+  "seed": 42,
+  "stats": {
+    "elim-unconstrained": 12,
+    "max memory": 231.56999999999996,
+    "memory": 158.21999999999997,
+    "num allocs": 6957212,
+    "rlimit count": 3696,
+    "sat decisions": 6,
+    "sat mk var": 18,
+    "sat units": 12,
+    "time": 0.023000000000000007
+  },
+  "timeout_config_ids": [],
+  "timeouts": 0,
+  "unique": 9,
+  "unknown": 0,
+  "unknown_config_ids": [],
+  "unsat": 3,
+  "wall_seconds": 0.04297480802051723
+}

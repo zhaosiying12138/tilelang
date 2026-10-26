@@ -1,0 +1,6 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+RAW 9 LEGAL 6 UNSAT 3
+GUIDED_TOP2 [{'block_M': 128, 'num_stages': 1}, {'block_M': 64, 'num_stages': 2}]
+RAW_TOP2 [{'block_M': 32, 'num_stages': 1}, {'block_M': 32, 'num_stages': 2}]
+RANDOM_TOP2 [{'block_M': 128, 'num_stages': 1}, {'block_M': 32, 'num_stages': 1}]
+PREDICTED_RANKS [(1, {'block_M': 128, 'num_stages': 1}, 1.78125), (2, {'block_M': 64, 'num_stages': 2}, 2.0625), (3, {'block_M': 64, 'num_stages': 1}, 2.5625), (4, {'block_M': 32, 'num_stages': 3}, 3.4583333333333335), (5, {'block_M': 32, 'num_stages': 2}, 3.625), (6, {'block_M': 32, 'num_stages': 1}, 4.125)]

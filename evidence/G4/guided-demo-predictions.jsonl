@@ -1,0 +1,6 @@
+{"config":{"block_M":128,"num_stages":1},"config_id":"8e03df804c2a40cc2ae3c564c84fa4f03545e2fcd8a14c780fa08a7ad72edac3","rank":1,"score":1.78125,"terms":{"stage_penalty":1.0,"tile_penalty":0.78125},"universe_index":5}
+{"config":{"block_M":64,"num_stages":2},"config_id":"3be3b683b82f347dd8dc292ea24ae7e5590d1955bdf1fb8bcdc9a5e2788d8d3e","rank":2,"score":2.0625,"terms":{"stage_penalty":0.5,"tile_penalty":1.5625},"universe_index":4}
+{"config":{"block_M":64,"num_stages":1},"config_id":"4af7405b2cfecb8984e2aa3fd2975891ddf9d3f2e54f1bc35ee6d6b36ab5036f","rank":3,"score":2.5625,"terms":{"stage_penalty":1.0,"tile_penalty":1.5625},"universe_index":3}
+{"config":{"block_M":32,"num_stages":3},"config_id":"41798b068c20031a150583444cf244de2146da0999050b5ff8118a01122df169","rank":4,"score":3.4583333333333335,"terms":{"stage_penalty":0.3333333333333333,"tile_penalty":3.125},"universe_index":2}
+{"config":{"block_M":32,"num_stages":2},"config_id":"6cd4ea3cd10d9388bbc8b63737c65cc2ce1e1a7fe7a8cee00b90d0999091f019","rank":5,"score":3.625,"terms":{"stage_penalty":0.5,"tile_penalty":3.125},"universe_index":1}
+{"config":{"block_M":32,"num_stages":1},"config_id":"7eac179385706c107f17771ef57f508660aca706547e0ce3b64bc32cacbbfefe","rank":6,"score":4.125,"terms":{"stage_penalty":1.0,"tile_penalty":3.125},"universe_index":0}
