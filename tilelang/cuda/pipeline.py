@@ -24,6 +24,42 @@ from tilelang.contrib.nvcc import (
 from tilelang.transform import PassContext
 
 
+_Z3_PIPELINE_CONFIG = "tl.enable_z3_pipeline_planning"
+_AUTO_WS_CONFIG = "tl.enable_auto_warp_specialization"
+
+
+def _module_has_z3_pipeline_annotations(mod: IRModule) -> bool:
+    """Return whether any loop explicitly requests the CUDA Z3 loop adapter."""
+    found = False
+
+    def visit(node):
+        nonlocal found
+        if isinstance(node, tirx.For) and "tl_z3_pipeline" in node.annotations:
+            found = True
+
+    for _, func in mod.functions.items():
+        if isinstance(func, PrimFunc):
+            post_order_visit(func.body, visit)
+    return found
+
+
+def _module_has_existing_warp_specialization(mod: IRModule) -> bool:
+    """Return whether a handwritten or materialized WS schedule is present."""
+    found = False
+
+    def visit(node):
+        nonlocal found
+        if isinstance(node, SBlock) and "tl.ws_schedule" in node.annotations:
+            found = True
+        elif isinstance(node, tirx.AttrStmt) and node.attr_key in ("warp_specialize", "kWarpSpecializationScope"):
+            found = True
+
+    for _, func in mod.functions.items():
+        if isinstance(func, PrimFunc):
+            post_order_visit(func.body, visit)
+    return found
+
+
 def allow_warp_specialized(pass_ctx: PassContext | None = None, target: Target | None = None) -> bool:
     # Avoid importing jit.adapter.utils at module import time.
     from tilelang.jit.adapter.utils import is_cuda_target
@@ -66,6 +102,18 @@ def _module_has_shared_barrier(mod: IRModule) -> bool:
 
 
 def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
+    pass_ctx = tilelang.transform.get_pass_context()
+    z3_pipeline_enabled = pass_ctx.config.get(_Z3_PIPELINE_CONFIG, False)
+    z3_pipeline_module = bool(z3_pipeline_enabled) and _module_has_z3_pipeline_annotations(mod)
+    if z3_pipeline_module and _module_has_existing_warp_specialization(mod):
+        raise ValueError("CUDA Z3 pipeline planning cannot overwrite an existing warp-specialization schedule")
+    if z3_pipeline_module and pass_ctx.config.get(_AUTO_WS_CONFIG) is not None:
+        raise ValueError(
+            "CUDA Z3 pipeline planning and automatic warp specialization cannot "
+            "schedule the same annotated module. Disable "
+            "tl.enable_auto_warp_specialization or tl.enable_z3_pipeline_planning."
+        )
+
     mod = tirx.transform.BindTarget(target)(mod)
     mod = tilelang.transform.MaterializeKernelLaunch(lower_thread_binding=True, default_threads=128)(mod)
     # Record body-bound global bases before optional let inlining obscures
@@ -103,7 +151,10 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     # AutoWarpSpecialization: derive a WSSchedule for kernels without one, using the scheduler named by tl.enable_auto_warp_specialization (opt-in; no-op when unset).
     # MaterializeWSSchedule: Materialize a user-provided warp-specialization schedule (T.annotate_ws_schedule).
     # ProducerConsumerWarpSpecialized: The pass classifies copy ops as TMA/cp.async/sync inline. Shared buffers are multi-versioned internally only for functions where the WS transformation actually applies.
-    if allow_warp_specialized(target=target):
+    # G3 owns annotated modules before this legacy/automatic WS rewrite point.
+    # In particular, ProducerConsumerWarpSpecialized can consume num_stages even
+    # when no auto-scheduler is named, so it must not rewrite a G3 loop first.
+    if allow_warp_specialized(target=target) and not z3_pipeline_module:
         mod = tilelang.cuda.transform.AutoWarpSpecialization()(mod)
         mod = tilelang.cuda.transform.MaterializeWSSchedule()(mod)
         mod = tilelang.cuda.transform.ProducerConsumerWarpSpecialized()(mod)
@@ -126,6 +177,10 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
 
     # Run pipeline planning and software-pipeline rewriting before layout
     # inference so inferred layouts see the final pipelined structure directly.
+    # The Z3 pass also checks its config internally; keeping the call gated here
+    # makes the default CUDA pipeline identical to the stock pass sequence.
+    if z3_pipeline_enabled:
+        mod = tilelang.transform.Z3PipelinePlanning()(mod)
     mod = tilelang.transform.PipelinePlanning()(mod)
     mod = tilelang.transform.InjectSoftwarePipeline()(mod)
     mod = tilelang.transform.Simplify()(mod)

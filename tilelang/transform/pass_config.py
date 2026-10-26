@@ -80,6 +80,13 @@ class PassConfigKey(str, Enum):
     """Name of the automatic warp-specialization scheduler to run (e.g.
     "role_based"). Default: unset (disabled)."""
 
+    TL_ENABLE_Z3_PIPELINE_PLANNING = "tl.enable_z3_pipeline_planning"
+    """Enable CUDA Z3 planning for loops carrying ``tl_z3_pipeline`` annotations.
+
+    Opt-in; default False. Automatic warp specialization must not be enabled for
+    the same annotated module because the two schedulers cannot own one loop.
+    """
+
     TL_ENABLE_FAST_MATH = "tl.enable_fast_math"
     """
         Enable fast math optimization. Default: False

@@ -19,6 +19,7 @@
 #include "span_utils.h"
 
 #include <algorithm>
+#include <limits>
 #include <map>
 #include <memory>
 #include <optional>
@@ -58,6 +59,8 @@ using BufferMap =
     std::unordered_map<Buffer, Buffer, ObjectPtrHash, ObjectPtrEqual>;
 using BufferShapeMap =
     std::unordered_map<Buffer, PrimExpr, ObjectPtrHash, ObjectPtrEqual>;
+using BufferVersionOverrideMap =
+    std::unordered_map<Var, int, ObjectPtrHash, ObjectPtrEqual>;
 using BufferCommitGroupMap =
     std::unordered_map<Buffer, int, ObjectPtrHash, ObjectPtrEqual>;
 using BlockDependencyGraph =
@@ -1179,6 +1182,89 @@ private:
 };
 
 /*!
+ * \brief Read and validate explicit per-buffer version overrides.
+ *
+ * Validation is deliberately done for the whole map before any allocation is
+ * rewritten. Otherwise an unused or out-of-scope entry could be silently
+ * ignored, and a malformed entry could leave a partially rewritten pipeline.
+ */
+BufferVersionOverrideMap ReadBufferVersionOverrides(
+    const For &pipeline_loop, const Array<Buffer> &pipeline_allocs,
+    const Map<Var, Buffer> &buffer_data_to_buffer) {
+  BufferVersionOverrideMap overrides;
+  auto annotation = pipeline_loop->annotations.Get(kPipelineBufferVersions);
+  if (!annotation.has_value()) {
+    return overrides;
+  }
+
+  auto raw_overrides = annotation.value().as<Map<Any, Any>>();
+  ICHECK(raw_overrides.has_value())
+      << "ValueError: InjectSoftwarePipeline annotation '"
+      << kPipelineBufferVersions
+      << "' must be Map<Var, IntImm> keyed by Buffer.data Vars.";
+
+  for (const auto &[key, value] : raw_overrides.value()) {
+    auto var = key.as<Var>();
+    ICHECK(var.has_value())
+        << "ValueError: InjectSoftwarePipeline annotation '"
+        << kPipelineBufferVersions
+        << "' has a non-Var key; expected Buffer.data Vars.";
+    auto version = value.as<IntImm>();
+    ICHECK(version.has_value())
+        << "ValueError: InjectSoftwarePipeline annotation '"
+        << kPipelineBufferVersions << "' for Buffer.data Var " << var.value()
+        << " must have an IntImm version count.";
+    ICHECK_GT(version.value()->value, 0)
+        << "ValueError: InjectSoftwarePipeline annotation '"
+        << kPipelineBufferVersions << "' for Buffer.data Var " << var.value()
+        << " must be positive, got " << version.value()->value << ".";
+    ICHECK_LE(version.value()->value, std::numeric_limits<int>::max())
+        << "ValueError: InjectSoftwarePipeline annotation '"
+        << kPipelineBufferVersions << "' for Buffer.data Var " << var.value()
+        << " exceeds the supported integer range.";
+    auto inserted = overrides.emplace(
+        var.value(), static_cast<int>(version.value()->value));
+    ICHECK(inserted.second)
+        << "ValueError: InjectSoftwarePipeline annotation '"
+        << kPipelineBufferVersions
+        << "' contains duplicate mappings for Buffer.data Var " << var.value()
+        << ".";
+  }
+
+  std::unordered_map<Var, Buffer, ObjectPtrHash, ObjectPtrEqual> current_buffers;
+  VarSet ambiguous_buffers;
+  for (const Buffer &buffer : pipeline_allocs) {
+    auto inserted = current_buffers.emplace(buffer->data, buffer);
+    if (!inserted.second && !inserted.first->second.same_as(buffer)) {
+      ambiguous_buffers.insert(buffer->data);
+    }
+  }
+
+  for (const auto &[var, num_versions] : overrides) {
+    (void)num_versions;
+    ICHECK(!ambiguous_buffers.count(var))
+        << "ValueError: InjectSoftwarePipeline annotation '"
+        << kPipelineBufferVersions
+        << "' has duplicate or ambiguous buffer mappings for Buffer.data Var "
+        << var << ".";
+    if (current_buffers.count(var)) {
+      continue;
+    }
+    auto known_buffer = buffer_data_to_buffer.Get(var);
+    ICHECK(known_buffer.has_value())
+        << "ValueError: InjectSoftwarePipeline annotation '"
+        << kPipelineBufferVersions << "' refers to unknown Buffer.data Var "
+        << var << ".";
+    ICHECK(false) << "ValueError: InjectSoftwarePipeline annotation '"
+                  << kPipelineBufferVersions << "' refers to buffer "
+                  << known_buffer.value()
+                  << ", which is not an allocated buffer in the current "
+                     "pipeline.";
+  }
+  return overrides;
+}
+
+/*!
  * \brief Rewriter for the software pipeline that rewrite a loop into a
  * pipelined one.
  */
@@ -1195,6 +1281,7 @@ public:
    * Buffers in pipeline_allocs but not in local_allocs are allocated in outer
    * blocks and should not be re-allocated.
    * \param pipeline_loop The original loop to be software pipelined.
+   * \param buffer_version_overrides Validated explicit per-buffer version counts.
    * \param pipeline_info The pipeline annotation information.
    * \param scalar_binding_blocks Replayable scalar Bind statements from the
    * pipeline body.
@@ -1204,6 +1291,7 @@ public:
   PipelineRewriter(Map<Var, Buffer> buffer_data_to_buffer,
                    const Array<Buffer> &pipeline_allocs,
                    const Array<Buffer> &local_allocs, const For &pipeline_loop,
+                   BufferVersionOverrideMap buffer_version_overrides,
                    const PipelineInfo &pipeline_info,
                    const Array<SBlock> &scalar_binding_blocks,
                    Optional<Target> target,
@@ -1212,6 +1300,7 @@ public:
         pipeline_allocs_(pipeline_allocs), local_allocs_(local_allocs),
         pipeline_loop_(pipeline_loop), pipeline_info_(pipeline_info),
         scalar_binding_blocks_(scalar_binding_blocks),
+        buffer_version_overrides_(std::move(buffer_version_overrides)),
         target_(std::move(target)), thread_domains_(std::move(thread_domains)) {
   }
 
@@ -1222,11 +1311,14 @@ public:
         infos = GetBufferAccessInfo();
     for (const Buffer &buffer : pipeline_allocs_) {
       auto it = infos.find(buffer);
-      if (it == infos.end()) {
-        // Buffer is not accessed in the pipeline blocks, skip it
+      bool has_override = buffer_version_overrides_.count(buffer->data) > 0;
+      if (it == infos.end() && !has_override) {
+        // Buffer is not accessed in the pipeline blocks, skip it unless an
+        // explicit version count was requested for this pipeline allocation.
         continue;
       }
-      int num_versions = ComputeBufferVersions(buffer, it->second);
+      int num_versions = ComputeBufferVersions(
+          buffer, it != infos.end() ? it->second : BufferAccessInfo{});
       if (num_versions > 1) {
         buffer_remap_.Set(buffer, RewriteAllocBuffer(buffer, num_versions));
       }
@@ -1464,12 +1556,10 @@ private:
    * \brief Compute the number of versions need to maintain for buffer accessed
    * in the software pipeline.
    *
-   * This method applies liveness analysis to the target buffer to compute the
-   * number of versions need to maintain during the software pipeline.
-   * Annotation `attr::double_buffer_scope` is handled here which provides a way
-   * to override the result of the analysis. Additional double buffering in the
-   * software pipeline can be useful to eliminate synchronizations in GPU
-   * devices.
+   * Annotation `kPipelineBufferVersions` overrides the analysis for selected
+   * buffers. An explicit positive count is returned before the external-buffer
+   * and double-buffering heuristics, so it is never adjusted implicitly.
+   * Unannotated buffers retain the liveness analysis below.
    *
    * \param buffer The target buffer
    * \param buffer_info The access information of the target buffer.
@@ -1477,6 +1567,11 @@ private:
    */
   int ComputeBufferVersions(const Buffer &buffer,
                             const BufferAccessInfo &buffer_info) {
+    auto explicit_version = buffer_version_overrides_.find(buffer->data);
+    if (explicit_version != buffer_version_overrides_.end()) {
+      return explicit_version->second;
+    }
+
     if (buffer_info.def == -1) {
       // Keep the original number of versions as buffers defined outside the
       // software pipeline should not be mutated.
@@ -3023,7 +3118,7 @@ private:
             kv.first != kPipelineAsyncProducerGroups &&
             kv.first != kPipelineTmaCopies &&
             kv.first != kPipelineReplayableScalarBinds &&
-            kv.first != "num_stages") {
+            kv.first != kPipelineBufferVersions && kv.first != "num_stages") {
           preserved_annotations.Set(key, kv.second);
         }
       }
@@ -3052,6 +3147,7 @@ private:
   Array<SBlock> scalar_binding_blocks_;
   int max_stage_ = -1;
   Map<Buffer, Buffer> buffer_remap_;
+  BufferVersionOverrideMap buffer_version_overrides_;
   Optional<Target> target_;
   Map<Var, arith::IntSet> thread_domains_;
   Array<SBlock> ordered_stmts_;
@@ -3063,11 +3159,14 @@ private:
 PipelineRewriteResult RewritePipeline(
     Map<Var, Buffer> buffer_data_to_buffer,
     const Array<Buffer> &pipeline_allocs, const Array<Buffer> &local_allocs,
-    const For &pipeline_loop, const PipelineInfo &pipeline_info,
+    const For &pipeline_loop,
+    BufferVersionOverrideMap buffer_version_overrides,
+    const PipelineInfo &pipeline_info,
     const Array<SBlock> &scalar_binding_blocks, Optional<Target> target,
     Map<Var, arith::IntSet> thread_domains) {
   PipelineRewriter rewriter(std::move(buffer_data_to_buffer), pipeline_allocs,
-                            local_allocs, pipeline_loop, pipeline_info,
+                            local_allocs, pipeline_loop,
+                            std::move(buffer_version_overrides), pipeline_info,
                             scalar_binding_blocks, std::move(target),
                             std::move(thread_domains));
   PipelineRewriteResult result;
@@ -3407,7 +3506,8 @@ private:
           key != s_tir::attr::software_pipeline_async_stages &&
           key != kPipelineAsyncProducers &&
           key != kPipelineAsyncProducerGroups && key != kPipelineTmaCopies &&
-          key != kPipelineReplayableScalarBinds && key != "num_stages" &&
+          key != kPipelineReplayableScalarBinds &&
+          key != kPipelineBufferVersions && key != "num_stages" &&
           key != "tl_pipelined_num_stages") {
         preserved_annotations.Set(key, kv.second);
       }
@@ -3554,6 +3654,9 @@ private:
     pipeline_allocs =
         CollectUsedPipelineBuffers(MakePipelineBody(pipeline_body_stmts),
                                    buffer_data_to_buffer_, allocated_buffers_);
+    BufferVersionOverrideMap buffer_version_overrides =
+        ReadBufferVersionOverrides(for_node, pipeline_allocs,
+                                   buffer_data_to_buffer_);
 
     Optional<Array<Integer>> replayable_bind_mask;
     if (auto replayable_bind_anno =
@@ -3857,7 +3960,8 @@ private:
 
     PipelineRewriteResult rewrite_result = RewritePipeline(
         buffer_data_to_buffer_, pipeline_allocs, local_allocs, for_node,
-        pipeline_info, scalar_binding_blocks, target_, thread_domains_);
+        std::move(buffer_version_overrides), pipeline_info,
+        scalar_binding_blocks, target_, thread_domains_);
     Stmt pipeline = rewrite_result.pipeline;
 
     subtree_modified_ = true;

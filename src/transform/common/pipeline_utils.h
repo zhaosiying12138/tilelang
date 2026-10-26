@@ -40,6 +40,9 @@ static constexpr const char *kPipelineAsyncProducerGroups =
 /*! Per-original-statement replayable scalar Bind flag (1 = replayable). */
 static constexpr const char *kPipelineReplayableScalarBinds =
     "software_pipeline_replayable_scalar_binds";
+/*! Explicit per-buffer version counts: Map<Var, IntImm>, keyed by Buffer.data. */
+static constexpr const char *kPipelineBufferVersions =
+    "tl_pipeline_buffer_versions";
 
 /*! \brief Whether a flat TIRX statement declares pipeline-local buffer storage.
  *

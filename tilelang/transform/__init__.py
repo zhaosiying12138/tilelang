@@ -27,6 +27,20 @@ def PipelinePlanning():
     return _ffi_api.PipelinePlanning()  # type: ignore
 
 
+def Z3PipelinePlanning():
+    """Plan explicitly annotated CUDA loops with the registered Z3 FFI solver.
+
+    The pass is disabled unless ``tl.enable_z3_pipeline_planning`` is true.
+    Loops without ``tl_z3_pipeline`` annotations are left unchanged.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.Z3PipelinePlanning()  # type: ignore
+
+
 def LayoutInference():
     """LayoutInference
 

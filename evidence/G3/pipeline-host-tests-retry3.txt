@@ -1,0 +1,45 @@
+........................................................................ [ 55%]
+..........................................................               [100%]
+============================================================================================= fixture duration top ==============================================================================================
+total          name                                                                                                                                                             num med            max           
+0:00:00.003580 grand total                                                                                                                                                      223 0:00:00.000015 0:00:00.000091
+============================================================================================ test call duration top =============================================================================================
+total          name                                                                                                                                                             num med            max           
+0:00:00.957840 testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_flat_non_identity_schedule_rejects_buffer_dependencies                              1 0:00:00.957840 0:00:00.957840
+0:00:00.259629 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                                   2 0:00:00.129815 0:00:00.134185
+0:00:00.106224 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                                       10 0:00:00.010644 0:00:00.011456
+0:00:00.084528 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline                  1 0:00:00.084528 0:00:00.084528
+0:00:00.058615 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                                  2 0:00:00.029307 0:00:00.033210
+0:00:00.058150 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum                       1 0:00:00.058150 0:00:00.058150
+0:00:00.056695 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering                    12 0:00:00.003176 0:00:00.016205
+0:00:00.050870 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                                3 0:00:00.017124 0:00:00.017503
+0:00:00.042611 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_waits_before_dependent_copy                                          1 0:00:00.042611 0:00:00.042611
+0:00:00.041859 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_reaches_mixed_dependency_fixed_point                                 1 0:00:00.041859 0:00:00.041859
+0:00:00.039861 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_does_not_propagate_disjoint_buffer_region                            1 0:00:00.039861 0:00:00.039861
+0:00:00.039550 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_propagates_buffer_producer_through_bind                              1 0:00:00.039550 0:00:00.039550
+0:00:00.039261 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                                  2 0:00:00.019631 0:00:00.019733
+0:00:00.037559 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_redirects_copy_anchor_through_copy_producer                          1 0:00:00.037559 0:00:00.037559
+0:00:00.024534 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer              2 0:00:00.012267 0:00:00.012471
+0:00:00.023819 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_loop_local_alloc_plan                                   1 0:00:00.023819 0:00:00.023819
+0:00:00.018904 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_relaxes_loop_wait_and_descends_trailing_drain                    1 0:00:00.018904 0:00:00.018904
+0:00:00.011903 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_ignores_legacy_scalar_bind_annotation_slot             1 0:00:00.011903 0:00:00.011903
+0:00:00.011062 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_replays_scalar_bind_without_annotation_slot            1 0:00:00.011062 0:00:00.011062
+0:00:00.011029 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_replays_scalar_bind_dependencies                       1 0:00:00.011029 0:00:00.011029
+0:00:00.011000 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_copy_gemm_num_stages_plan                               1 0:00:00.011000 0:00:00.011000
+0:00:00.010536 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_tcgen05_gemm_plan                                       1 0:00:00.010536 0:00:00.010536
+0:00:00.010289 testing/python/transform/test_tilelang_transform_pipeline_buffer_versions.py::test_explicit_buffer_version_override                                               12 0:00:00.000684 0:00:00.002352
+0:00:00.009838 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_waits_for_individual_physical_commit_group                       1 0:00:00.009838 0:00:00.009838
+0:00:00.008777 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_wgmma_gemm_plan                                         1 0:00:00.008777 0:00:00.008777
+0:00:00.007624 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_mbarrier_arrive_wait_plan                               1 0:00:00.007624 0:00:00.007624
+0:00:00.006893 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_only_wraps_producer_statements_from_explicit_group_annotations   1 0:00:00.006893 0:00:00.006893
+0:00:00.006779 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_tma_copy_plan                                           1 0:00:00.006779 0:00:00.006779
+0:00:00.006065 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_expands_annotated_layout                               1 0:00:00.006065 0:00:00.006065
+0:00:00.006044 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_groups_multiple_copy_producers                                   1 0:00:00.006044 0:00:00.006044
+0:00:02.150732 grand total                                                                                                                                                      130 0:00:00.003315 0:00:00.957840
+============================================================================================ test setup duration top ============================================================================================
+total          name                                                                                                                                                             num med            max           
+0:00:00.014552 grand total                                                                                                                                                      130 0:00:00.000044 0:00:00.000558
+========================================================================================== test teardown duration top ===========================================================================================
+total          name                                                                                                                                                             num med            max           
+0:00:00.007275 grand total                                                                                                                                                      130 0:00:00.000043 0:00:00.000499
+130 passed in 3.62s
