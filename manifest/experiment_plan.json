@@ -66,6 +66,13 @@
       "raw_domains": {"block_DV": [16, 32, 64, 128], "prepare_h_num_stages": [2], "group_reduce_block_size": [16]},
       "raw_count": 4,
       "top_k": 2,
+      "resource_validated": {
+        "legal_count": 3,
+        "unsat_count": 1,
+        "unknown_but_retained_count": 3,
+        "shared_memory_formula": "dynamic_shared_bytes = 38912 + 576 * block_DV",
+        "evidence": "evidence/G5/gdn-fwd-shared-memory.json"
+      },
       "acceptance_outputs": ["o", "final_state"]
     },
     "gdn_backward": {
@@ -75,6 +82,13 @@
       "raw_domains": {"block_DV": [128], "prepare_h_num_stages": [1, 2, 3], "group_reduce_block_size": [8, 16, 32]},
       "raw_count": 9,
       "top_k": 3,
+      "resource_validated": {
+        "legal_count": 6,
+        "unsat_count": 3,
+        "unknown_but_retained_count": 6,
+        "prepare_h_shared_memory_formula": "dynamic_shared_bytes = 57344 + 18432 * prepare_h_num_stages",
+        "evidence": "evidence/G5/gdn-prepare-h-shared-memory.json"
+      },
       "acceptance_outputs": ["dq", "dk", "dv", "db", "dg", "dh0"]
     }
   },
