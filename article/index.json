@@ -12,7 +12,8 @@
     "mechanisms/05-pipeline-adapter.md",
     "mechanisms/06-gdn-resource-pruning.md",
     "mechanisms/07-gdn-correctness.md",
-    "mechanisms/08-calibration.md"
+    "mechanisms/08-calibration.md",
+    "results/search-protocol.md"
   ],
   "katex": {
     "directory": "/home/zhaosiying/.vscode-server/bin/4fe60c8b1cdac1c4c174f2fb180d0d758272d713/node_modules/katex/dist"

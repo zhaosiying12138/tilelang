@@ -152,7 +152,39 @@ python benchmark/z3_cost_model/gdn/analyze_results.py \
 
 聚合器默认只统计 cold。warm 和 no-cache 必须显式指定，不能混入主表分母。cold 表示独立的 TileLang/CUDA JIT 实验缓存起点，不表示整台机器的 OS 缓存被清空。
 
-## 六、广泛编译矩阵
+## 六、经典 TileLang 算子搜索
+
+固定 suite 为 `gemm_square`、`gemm_short_k`、`conv2d_stride_tail` 和 `flash_attention_causal`。主预算均为 top-10，三次 cold repetition；方形 GEMM 另外执行预注册的 top-1/5/20 敏感性。每次子进程只运行一个 suite/arm/repetition，父进程阻塞等待上一个子进程退出后再启动下一个。
+
+```bash
+CLASSIC=evidence/G6/classic-repro
+test ! -e "$CLASSIC"
+
+for suite in gemm_square gemm_short_k conv2d_stride_tail flash_attention_causal; do
+  for repetition in 0 1 2; do
+    python benchmark/z3_cost_model/operators/repeat_search.py \
+      --suite "$suite" --arm all --repetition "$repetition" \
+      --top-k 10 --cache-mode cold --warmup 10 --repeat 50 \
+      --output-dir "$CLASSIC/$suite-rep-$repetition"
+  done
+done
+
+for top_k in 1 5 20; do
+  for repetition in 0 1 2; do
+    python benchmark/z3_cost_model/operators/repeat_search.py \
+      --suite gemm_square --arm all --repetition "$repetition" \
+      --top-k "$top_k" --cache-mode cold --warmup 10 --repeat 50 \
+      --output-dir "$CLASSIC/sensitivity-k$top_k-rep-$repetition"
+  done
+done
+
+python benchmark/z3_cost_model/operators/analyze_results.py \
+  --root "$CLASSIC" --output "$CLASSIC/analysis"
+```
+
+GEMM 两个空间的 raw/legal 为 288/256，Conv 为 144/128，FA 为 54/54。SM120 未猜测 stock atom 规则；这些未编码条件与 solver 返回的 UNKNOWN 分开记录，不能用 unknown=0 推断所有编译合法性都已证明。`compile_attempts`、实际成功 profile、失败候选和 cache-only 结果分别入账。预测相关只在完整 oracle 的配置集合上计算。
+
+## 七、广泛编译矩阵
 
 冻结清单为 host 77 行、quick 126 行、full 729 行。`--collect` 只验证 pytest 节点和依赖分类，不能写成执行通过。
 
@@ -165,7 +197,7 @@ bash scripts/run_compile_matrix.sh \
 
 full 执行可使用 `--only` 指定清单中的精确 row/group/file ID，分批完成后再汇总。每行结果区分 `FAIL_LOWER`、`FAIL_DEVICE_COMPILE`、`FAIL_LAUNCH`、`FAIL_NUMERIC`、`SKIP_DEP` 和真实 pass。GDN smoke 不计入六梯度数值验收。
 
-## 七、资源与缓存纪律
+## 八、资源与缓存纪律
 
 - 每个 GPU 阶段前检查 `free -g`；可用主机内存低于 16 GiB 不启动。`nvidia-smi` 确认没有其他计算进程，全局最多一个后台 GPU 任务。
 - 禁止 nsys 和注入式 profiler。性能测量使用 CUDA event 或 TileLang Profiler。
