@@ -1,0 +1,53 @@
+....                                                                     [100%]
+==================================== PASSES ====================================
+__________ test_fp8_gemm_rejects_pre_sm89_target[float8_e4m3fn-sm_80] __________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:48:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+----------------------------- Captured stderr call -----------------------------
+[07:48:45] /home/zhaosiying/codebase/tilelang-cuda-z3/src/cuda/op/gemm.cc:182: Fatal: T.gemm() with fp8 operands requires a CUDA target with fp8 mma.sync atoms (SM89+), but got target={"kind":"cuda","tag":"","keys":["cuda","gpu"],"host":{"kind":"c","tag":"","keys":["cpu"]},"max_num_threads":1024,"thread_warp_size":32,"arch":"sm_80"} with A(dtype=float8_e4m3fn), B(dtype=float8_e4m3fn). SM80/SM86 have no .e4m3/.e5m2 mma instruction; the kernel would compile and then trap at launch.
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py:32:1
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+__________ test_fp8_gemm_rejects_pre_sm89_target[float8_e4m3fn-sm_86] __________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:48:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+----------------------------- Captured stderr call -----------------------------
+[07:48:46] /home/zhaosiying/codebase/tilelang-cuda-z3/src/cuda/op/gemm.cc:182: Fatal: T.gemm() with fp8 operands requires a CUDA target with fp8 mma.sync atoms (SM89+), but got target={"kind":"cuda","tag":"","keys":["cuda","gpu"],"host":{"kind":"c","tag":"","keys":["cpu"]},"max_num_threads":1024,"thread_warp_size":32,"arch":"sm_86"} with A(dtype=float8_e4m3fn), B(dtype=float8_e4m3fn). SM80/SM86 have no .e4m3/.e5m2 mma instruction; the kernel would compile and then trap at launch.
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py:32:1
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+___________ test_fp8_gemm_rejects_pre_sm89_target[float8_e5m2-sm_80] ___________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:48:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+----------------------------- Captured stderr call -----------------------------
+[07:48:46] /home/zhaosiying/codebase/tilelang-cuda-z3/src/cuda/op/gemm.cc:182: Fatal: T.gemm() with fp8 operands requires a CUDA target with fp8 mma.sync atoms (SM89+), but got target={"kind":"cuda","tag":"","keys":["cuda","gpu"],"host":{"kind":"c","tag":"","keys":["cpu"]},"max_num_threads":1024,"thread_warp_size":32,"arch":"sm_80"} with A(dtype=float8_e5m2), B(dtype=float8_e5m2). SM80/SM86 have no .e4m3/.e5m2 mma instruction; the kernel would compile and then trap at launch.
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py:32:1
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+___________ test_fp8_gemm_rejects_pre_sm89_target[float8_e5m2-sm_86] ___________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:48:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+----------------------------- Captured stderr call -----------------------------
+[07:48:46] /home/zhaosiying/codebase/tilelang-cuda-z3/src/cuda/op/gemm.cc:182: Fatal: T.gemm() with fp8 operands requires a CUDA target with fp8 mma.sync atoms (SM89+), but got target={"kind":"cuda","tag":"","keys":["cuda","gpu"],"host":{"kind":"c","tag":"","keys":["cpu"]},"max_num_threads":1024,"thread_warp_size":32,"arch":"sm_86"} with A(dtype=float8_e5m2), B(dtype=float8_e5m2). SM80/SM86 have no .e4m3/.e5m2 mma instruction; the kernel would compile and then trap at launch.
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py:32:1
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+================================================================= fixture duration top =================================================================
+total          name                                                                                                    num med            max           
+0:00:00.000298 grand total                                                                                               8 0:00:00.000024 0:00:00.000121
+================================================================ test call duration top ================================================================
+total          name                                                                                                    num med            max           
+0:00:01.058749 testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp8_gemm_rejects_pre_sm89_target   4 0:00:00.007621 0:00:01.037889
+0:00:01.058749 grand total                                                                                               4 0:00:00.007621 0:00:01.037889
+=============================================================== test setup duration top ================================================================
+total          name                                                                                                    num med            max           
+0:00:00.000968 grand total                                                                                               4 0:00:00.000239 0:00:00.000336
+============================================================== test teardown duration top ==============================================================
+total          name                                                                                                    num med            max           
+0:00:00.000506 grand total                                                                                               4 0:00:00.000087 0:00:00.000272
+=========================== short test summary info ============================
+PASSED testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp8_gemm_rejects_pre_sm89_target[float8_e4m3fn-sm_80]
+PASSED testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp8_gemm_rejects_pre_sm89_target[float8_e4m3fn-sm_86]
+PASSED testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp8_gemm_rejects_pre_sm89_target[float8_e5m2-sm_80]
+PASSED testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp8_gemm_rejects_pre_sm89_target[float8_e5m2-sm_86]
+4 passed in 1.80s

@@ -1,0 +1,29 @@
+............                                                             [100%]
+==================================== PASSES ====================================
+==================================================================================== fixture duration top =====================================================================================
+total          name                                                                                                                                           num med            max           
+0:00:00.000840 grand total                                                                                                                                     48 0:00:00.000012 0:00:00.000092
+=================================================================================== test call duration top ====================================================================================
+total          name                                                                                                                                           num med            max           
+0:00:01.012150 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering  12 0:00:00.003824 0:00:00.940368
+0:00:01.012150 grand total                                                                                                                                     12 0:00:00.003824 0:00:00.940368
+=================================================================================== test setup duration top ===================================================================================
+total          name                                                                                                                                           num med            max           
+0:00:00.002720 grand total                                                                                                                                     12 0:00:00.000197 0:00:00.000395
+================================================================================= test teardown duration top ==================================================================================
+total          name                                                                                                                                           num med            max           
+0:00:00.001118 grand total                                                                                                                                     12 0:00:00.000055 0:00:00.000326
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[unmaterialized-1-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[unmaterialized-1-stages1-orders1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[unmaterialized-32-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[unmaterialized-32-stages1-orders1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[attr-1-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[attr-1-stages1-orders1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[attr-32-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[attr-32-stages1-orders1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[for-1-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[for-1-stages1-orders1]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[for-32-stages0-orders0]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering[for-32-stages1-orders1]
+12 passed in 1.70s

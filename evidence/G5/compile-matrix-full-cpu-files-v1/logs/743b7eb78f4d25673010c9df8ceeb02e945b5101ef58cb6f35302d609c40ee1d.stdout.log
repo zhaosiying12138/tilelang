@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+================================================================ fixture duration top ================================================================
+total          name                                                                                                  num med            max           
+       0:00:00 grand total                                                                                             0        0:00:00        0:00:00
+=============================================================== test call duration top ===============================================================
+total          name                                                                                                  num med            max           
+0:00:00.014323 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_stage_order_changes_minimum_ii   1 0:00:00.014323 0:00:00.014323
+0:00:00.014323 grand total                                                                                             1 0:00:00.014323 0:00:00.014323
+============================================================== test setup duration top ===============================================================
+total          name                                                                                                  num med            max           
+0:00:00.000075 grand total                                                                                             1 0:00:00.000075 0:00:00.000075
+============================================================= test teardown duration top =============================================================
+total          name                                                                                                  num med            max           
+0:00:00.000074 grand total                                                                                             1 0:00:00.000074 0:00:00.000074
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_stage_order_changes_minimum_ii
+1 passed in 0.18s

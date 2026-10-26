@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+================================================================= fixture duration top ==================================================================
+total          name                                                                                                     num med            max           
+0:00:00.001532 grand total                                                                                                4 0:00:00.000045 0:00:00.001428
+================================================================ test call duration top =================================================================
+total          name                                                                                                     num med            max           
+0:00:00.021054 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_debug_failure_does_not_change_schedule   1 0:00:00.021054 0:00:00.021054
+0:00:00.021054 grand total                                                                                                1 0:00:00.021054 0:00:00.021054
+================================================================ test setup duration top ================================================================
+total          name                                                                                                     num med            max           
+0:00:00.001820 grand total                                                                                                1 0:00:00.001820 0:00:00.001820
+============================================================== test teardown duration top ===============================================================
+total          name                                                                                                     num med            max           
+0:00:00.000178 grand total                                                                                                1 0:00:00.000178 0:00:00.000178
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_debug_failure_does_not_change_schedule
+1 passed in 0.17s

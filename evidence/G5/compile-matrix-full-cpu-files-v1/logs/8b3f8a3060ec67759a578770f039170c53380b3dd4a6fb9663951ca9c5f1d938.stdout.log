@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+====================================================================== fixture duration top ======================================================================
+total          name                                                                                                              num med            max           
+       0:00:00 grand total                                                                                                         0        0:00:00        0:00:00
+===================================================================== test call duration top =====================================================================
+total          name                                                                                                              num med            max           
+0:00:00.267847 testing/python/transform/test_tilelang_transform_im2col_fallback.py::test_im2col_tall_pixel_block_uses_single_box   1 0:00:00.267847 0:00:00.267847
+0:00:00.267847 grand total                                                                                                         1 0:00:00.267847 0:00:00.267847
+==================================================================== test setup duration top =====================================================================
+total          name                                                                                                              num med            max           
+0:00:00.000072 grand total                                                                                                         1 0:00:00.000072 0:00:00.000072
+=================================================================== test teardown duration top ===================================================================
+total          name                                                                                                              num med            max           
+0:00:00.000063 grand total                                                                                                         1 0:00:00.000063 0:00:00.000063
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_im2col_fallback.py::test_im2col_tall_pixel_block_uses_single_box
+1 passed in 0.96s

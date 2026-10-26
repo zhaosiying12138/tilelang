@@ -1,0 +1,25 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+_____________________ test_fp16_gemm_on_sm80_is_unaffected _____________________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:48:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+2026-10-27 07:48:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `main`
+================================================================ fixture duration top =================================================================
+total          name                                                                                                   num med            max           
+       0:00:00 grand total                                                                                              0        0:00:00        0:00:00
+=============================================================== test call duration top ================================================================
+total          name                                                                                                   num med            max           
+0:00:01.468260 testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp16_gemm_on_sm80_is_unaffected   1 0:00:01.468260 0:00:01.468260
+0:00:01.468260 grand total                                                                                              1 0:00:01.468260 0:00:01.468260
+=============================================================== test setup duration top ===============================================================
+total          name                                                                                                   num med            max           
+0:00:00.000073 grand total                                                                                              1 0:00:00.000073 0:00:00.000073
+============================================================= test teardown duration top ==============================================================
+total          name                                                                                                   num med            max           
+0:00:00.000067 grand total                                                                                              1 0:00:00.000067 0:00:00.000067
+=========================== short test summary info ============================
+PASSED testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp16_gemm_on_sm80_is_unaffected
+1 passed in 2.08s

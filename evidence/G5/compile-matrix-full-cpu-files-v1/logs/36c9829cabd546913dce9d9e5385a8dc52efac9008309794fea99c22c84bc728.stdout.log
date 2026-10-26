@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+====================================================================== fixture duration top =======================================================================
+total          name                                                                                                               num med            max           
+       0:00:00 grand total                                                                                                          0        0:00:00        0:00:00
+===================================================================== test call duration top ======================================================================
+total          name                                                                                                               num med            max           
+0:00:00.009693 testing/python/language/test_tilelang_language_strided_view.py::test_view_accepts_explicit_strides_for_rank_change   1 0:00:00.009693 0:00:00.009693
+0:00:00.009693 grand total                                                                                                          1 0:00:00.009693 0:00:00.009693
+===================================================================== test setup duration top =====================================================================
+total          name                                                                                                               num med            max           
+0:00:00.000064 grand total                                                                                                          1 0:00:00.000064 0:00:00.000064
+=================================================================== test teardown duration top ====================================================================
+total          name                                                                                                               num med            max           
+0:00:00.000066 grand total                                                                                                          1 0:00:00.000066 0:00:00.000066
+=========================== short test summary info ============================
+PASSED testing/python/language/test_tilelang_language_strided_view.py::test_view_accepts_explicit_strides_for_rank_change
+1 passed in 0.61s

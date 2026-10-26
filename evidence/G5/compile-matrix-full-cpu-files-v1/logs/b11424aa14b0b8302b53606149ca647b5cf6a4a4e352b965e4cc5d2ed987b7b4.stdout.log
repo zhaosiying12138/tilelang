@@ -1,0 +1,26 @@
+..........                                                               [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+0:00:00.000209 grand total  10 0:00:00.000016 0:00:00.000050
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000578 grand total  10 0:00:00.000052 0:00:00.000082
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000946 grand total  10 0:00:00.000070 0:00:00.000238
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000325 grand total  10 0:00:00.000030 0:00:00.000044
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments0]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments1]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments2]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments3]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments4]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments5]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments6]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments7]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments8]
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_strict_input_validation[arguments9]
+10 passed in 0.16s

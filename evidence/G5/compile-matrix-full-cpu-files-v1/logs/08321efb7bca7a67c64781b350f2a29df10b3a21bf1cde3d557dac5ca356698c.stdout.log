@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+0:00:00.000031 grand total   1 0:00:00.000031 0:00:00.000031
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000084 grand total   1 0:00:00.000084 0:00:00.000084
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000162 grand total   1 0:00:00.000162 0:00:00.000162
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000054 grand total   1 0:00:00.000054 0:00:00.000054
+=========================== short test summary info ============================
+PASSED testing/python/language/test_tilelang_language_fp8.py::test_determine_fp8_type_uses_requested_rocm_device
+1 passed in 0.67s

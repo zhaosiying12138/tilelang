@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+=========================================================================== fixture duration top ===========================================================================
+total          name                                                                                                                        num med            max           
+       0:00:00 grand total                                                                                                                   0        0:00:00        0:00:00
+========================================================================== test call duration top ==========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.988023 testing/python/transform/test_tilelang_transform_im2col_fallback.py::test_im2col_single_channel_rejects_pixel_inner_pairing   1 0:00:00.988023 0:00:00.988023
+0:00:00.988023 grand total                                                                                                                   1 0:00:00.988023 0:00:00.988023
+========================================================================= test setup duration top ==========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.000095 grand total                                                                                                                   1 0:00:00.000095 0:00:00.000095
+======================================================================== test teardown duration top ========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.000066 grand total                                                                                                                   1 0:00:00.000066 0:00:00.000066
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_im2col_fallback.py::test_im2col_single_channel_rejects_pixel_inner_pairing
+1 passed in 1.59s

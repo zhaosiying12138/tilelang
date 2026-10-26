@@ -1,0 +1,29 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+_____________________ test_verbose_writes_json_in_tmp_path _____________________
+----------------------------- Captured stdout call -----------------------------
+[CUDA Python Z3 Loop] Scheduling 1 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=1, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=2, II=1, resource=0b0000000
+============================================================== fixture duration top ==============================================================
+total          name                                                                                              num med            max           
+0:00:00.001794 grand total                                                                                         2 0:00:00.000897 0:00:00.001762
+============================================================= test call duration top =============================================================
+total          name                                                                                              num med            max           
+0:00:00.932571 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path   1 0:00:00.932571 0:00:00.932571
+0:00:00.932571 grand total                                                                                         1 0:00:00.932571 0:00:00.932571
+============================================================ test setup duration top =============================================================
+total          name                                                                                              num med            max           
+0:00:00.002002 grand total                                                                                         1 0:00:00.002002 0:00:00.002002
+=========================================================== test teardown duration top ===========================================================
+total          name                                                                                              num med            max           
+0:00:00.000076 grand total                                                                                         1 0:00:00.000076 0:00:00.000076
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path
+1 passed in 1.07s

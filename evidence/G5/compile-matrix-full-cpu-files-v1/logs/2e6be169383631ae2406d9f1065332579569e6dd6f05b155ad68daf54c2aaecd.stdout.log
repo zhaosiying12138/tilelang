@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+===================================================================================== fixture duration top =====================================================================================
+total          name                                                                                                                                            num med            max           
+       0:00:00 grand total                                                                                                                                       0        0:00:00        0:00:00
+==================================================================================== test call duration top ====================================================================================
+total          name                                                                                                                                            num med            max           
+0:00:00.023036 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_relaxes_loop_wait_and_descends_trailing_drain   1 0:00:00.023036 0:00:00.023036
+0:00:00.023036 grand total                                                                                                                                       1 0:00:00.023036 0:00:00.023036
+=================================================================================== test setup duration top ====================================================================================
+total          name                                                                                                                                            num med            max           
+0:00:00.000067 grand total                                                                                                                                       1 0:00:00.000067 0:00:00.000067
+================================================================================== test teardown duration top ==================================================================================
+total          name                                                                                                                                            num med            max           
+0:00:00.000073 grand total                                                                                                                                       1 0:00:00.000073 0:00:00.000073
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_relaxes_loop_wait_and_descends_trailing_drain
+1 passed in 0.66s

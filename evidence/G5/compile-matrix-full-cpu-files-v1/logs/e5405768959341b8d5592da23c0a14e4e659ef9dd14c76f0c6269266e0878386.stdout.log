@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+===================================================================== fixture duration top ======================================================================
+total          name                                                                                                             num med            max           
+       0:00:00 grand total                                                                                                        0        0:00:00        0:00:00
+==================================================================== test call duration top =====================================================================
+total          name                                                                                                             num med            max           
+0:00:00.128755 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_repeated_and_threaded_solves_are_deterministic   1 0:00:00.128755 0:00:00.128755
+0:00:00.128755 grand total                                                                                                        1 0:00:00.128755 0:00:00.128755
+==================================================================== test setup duration top ====================================================================
+total          name                                                                                                             num med            max           
+0:00:00.000157 grand total                                                                                                        1 0:00:00.000157 0:00:00.000157
+================================================================== test teardown duration top ===================================================================
+total          name                                                                                                             num med            max           
+0:00:00.000072 grand total                                                                                                        1 0:00:00.000072 0:00:00.000072
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_repeated_and_threaded_solves_are_deterministic
+1 passed in 0.26s

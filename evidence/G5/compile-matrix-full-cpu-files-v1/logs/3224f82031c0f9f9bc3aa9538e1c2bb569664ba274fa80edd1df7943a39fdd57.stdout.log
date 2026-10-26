@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000567 grand total   1 0:00:00.000567 0:00:00.000567
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000075 grand total   1 0:00:00.000075 0:00:00.000075
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000046 grand total   1 0:00:00.000046 0:00:00.000046
+=========================== short test summary info ============================
+PASSED testing/python/language/test_tilelang_language_strided_view.py::test_view_ignores_singleton_dimension_stride
+1 passed in 0.72s

@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+====================================================================== fixture duration top ======================================================================
+total          name                                                                                                              num med            max           
+       0:00:00 grand total                                                                                                         0        0:00:00        0:00:00
+===================================================================== test call duration top =====================================================================
+total          name                                                                                                              num med            max           
+0:00:00.807383 testing/python/transform/test_tilelang_transform_im2col_fallback.py::test_im2col_uses_simt_fallback_before_hopper   1 0:00:00.807383 0:00:00.807383
+0:00:00.807383 grand total                                                                                                         1 0:00:00.807383 0:00:00.807383
+==================================================================== test setup duration top =====================================================================
+total          name                                                                                                              num med            max           
+0:00:00.000086 grand total                                                                                                         1 0:00:00.000086 0:00:00.000086
+=================================================================== test teardown duration top ===================================================================
+total          name                                                                                                              num med            max           
+0:00:00.000056 grand total                                                                                                         1 0:00:00.000056 0:00:00.000056
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_im2col_fallback.py::test_im2col_uses_simt_fallback_before_hopper
+1 passed in 1.45s

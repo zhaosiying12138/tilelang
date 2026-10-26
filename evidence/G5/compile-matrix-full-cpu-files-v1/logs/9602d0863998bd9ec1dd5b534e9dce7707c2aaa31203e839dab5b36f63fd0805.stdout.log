@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000787 grand total   1 0:00:00.000787 0:00:00.000787
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000073 grand total   1 0:00:00.000073 0:00:00.000073
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000043 grand total   1 0:00:00.000043 0:00:00.000043
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_zero_bandwidth_is_explicit_fallback_not_free
+1 passed in 0.02s

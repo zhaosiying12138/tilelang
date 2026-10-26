@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000392 grand total   1 0:00:00.000392 0:00:00.000392
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000068 grand total   1 0:00:00.000068 0:00:00.000068
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000038 grand total   1 0:00:00.000038 0:00:00.000038
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_memory_completion_sums_accesses_while_ii_takes_path_max
+1 passed in 0.02s

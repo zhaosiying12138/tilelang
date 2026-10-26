@@ -1,0 +1,19 @@
+..                                                                       [100%]
+==================================== PASSES ====================================
+============================================================================== fixture duration top ==============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.000076 grand total                                                                                                                         2 0:00:00.000038 0:00:00.000043
+============================================================================= test call duration top =============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.035992 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch   2 0:00:00.017996 0:00:00.025605
+0:00:00.035992 grand total                                                                                                                         2 0:00:00.017996 0:00:00.025605
+============================================================================ test setup duration top =============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.000355 grand total                                                                                                                         2 0:00:00.000178 0:00:00.000186
+=========================================================================== test teardown duration top ===========================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.000174 grand total                                                                                                                         2 0:00:00.000087 0:00:00.000099
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch[2]
+PASSED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch[3]
+2 passed in 0.68s

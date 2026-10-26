@@ -1,0 +1,33 @@
+..                                                                       [100%]
+==================================== PASSES ====================================
+_____________ test_fp8_gemm_keeps_mma_path_on_sm89[float8_e4m3fn] ______________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:48:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+2026-10-27 07:48:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `main`
+______________ test_fp8_gemm_keeps_mma_path_on_sm89[float8_e5m2] _______________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:48:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+2026-10-27 07:48:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=[2]`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `main`
+================================================================ fixture duration top =================================================================
+total          name                                                                                                   num med            max           
+0:00:00.000066 grand total                                                                                              2 0:00:00.000033 0:00:00.000035
+=============================================================== test call duration top ================================================================
+total          name                                                                                                   num med            max           
+0:00:03.020992 testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp8_gemm_keeps_mma_path_on_sm89   2 0:00:01.510496 0:00:01.546571
+0:00:03.020992 grand total                                                                                              2 0:00:01.510496 0:00:01.546571
+=============================================================== test setup duration top ===============================================================
+total          name                                                                                                   num med            max           
+0:00:00.000375 grand total                                                                                              2 0:00:00.000187 0:00:00.000209
+============================================================= test teardown duration top ==============================================================
+total          name                                                                                                   num med            max           
+0:00:00.000189 grand total                                                                                              2 0:00:00.000094 0:00:00.000104
+=========================== short test summary info ============================
+PASSED testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp8_gemm_keeps_mma_path_on_sm89[float8_e4m3fn]
+PASSED testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py::test_fp8_gemm_keeps_mma_path_on_sm89[float8_e5m2]
+2 passed in 3.69s

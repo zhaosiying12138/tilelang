@@ -1,0 +1,33 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+_______________________________ test_valid_loop ________________________________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:52:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-27 07:52:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 07:52:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-27 07:52:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 07:52:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-27 07:52:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `main`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `main`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `main`
+===================================================== fixture duration top =====================================================
+total          name                                                                            num med            max           
+       0:00:00 grand total                                                                       0        0:00:00        0:00:00
+==================================================== test call duration top ====================================================
+total          name                                                                            num med            max           
+0:00:03.321212 testing/python/analysis/test_tilelang_fragment_loop_checker.py::test_valid_loop   1 0:00:03.321212 0:00:03.321212
+0:00:03.321212 grand total                                                                       1 0:00:03.321212 0:00:03.321212
+=================================================== test setup duration top ====================================================
+total          name                                                                            num med            max           
+0:00:00.000067 grand total                                                                       1 0:00:00.000067 0:00:00.000067
+================================================== test teardown duration top ==================================================
+total          name                                                                            num med            max           
+0:00:00.000079 grand total                                                                       1 0:00:00.000079 0:00:00.000079
+=========================== short test summary info ============================
+PASSED testing/python/analysis/test_tilelang_fragment_loop_checker.py::test_valid_loop
+1 passed in 3.94s

@@ -1,0 +1,18 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+==================================================================== fixture duration top =====================================================================
+total          name                                                                                                           num med            max           
+       0:00:00 grand total                                                                                                      0        0:00:00        0:00:00
+=================================================================== test call duration top ====================================================================
+total          name                                                                                                           num med            max           
+0:00:00.013130 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_manual_stages_are_fixed_then_normalized   1 0:00:00.013130 0:00:00.013130
+0:00:00.013130 grand total                                                                                                      1 0:00:00.013130 0:00:00.013130
+=================================================================== test setup duration top ===================================================================
+total          name                                                                                                           num med            max           
+0:00:00.000069 grand total                                                                                                      1 0:00:00.000069 0:00:00.000069
+================================================================= test teardown duration top ==================================================================
+total          name                                                                                                           num med            max           
+0:00:00.000061 grand total                                                                                                      1 0:00:00.000061 0:00:00.000061
+=========================== short test summary info ============================
+PASSED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_manual_stages_are_fixed_then_normalized
+1 passed in 0.15s

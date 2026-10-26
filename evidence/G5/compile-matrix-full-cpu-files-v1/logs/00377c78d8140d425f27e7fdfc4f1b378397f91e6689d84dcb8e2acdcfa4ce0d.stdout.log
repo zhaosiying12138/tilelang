@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000623 grand total   1 0:00:00.000623 0:00:00.000623
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000063 grand total   1 0:00:00.000063 0:00:00.000063
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000037 grand total   1 0:00:00.000037 0:00:00.000037
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_integer_overflow_and_invalid_values_are_rejected
+1 passed in 0.02s

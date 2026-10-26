@@ -1,0 +1,30 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+________________ test_dynamic_shared_memory_varies_across_calls ________________
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 07:49:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-27 07:49:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+----------------------------- Captured stderr call -----------------------------
+[07:49:26] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/verify_buffer_init.cc:394: Warning: Buffer read before initialization: 1 buffer(s) read before anything writes them
+  [1] `buffer_shared` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py:20:1
+Initialize the buffer before its first read (for example with `T.clear`, `T.fill`, or a `T.copy` into it). If you believe this is a false positive, disable the check by setting `PassConfigKey.TL_DISABLE_BUFFER_INIT_CHECK` in the pass config.
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `main` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `main`
+======================================================================== fixture duration top ========================================================================
+total          name                                                                                                                  num med            max           
+       0:00:00 grand total                                                                                                             0        0:00:00        0:00:00
+======================================================================= test call duration top =======================================================================
+total          name                                                                                                                  num med            max           
+0:00:01.396944 testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py::test_dynamic_shared_memory_varies_across_calls   1 0:00:01.396944 0:00:01.396944
+0:00:01.396944 grand total                                                                                                             1 0:00:01.396944 0:00:01.396944
+====================================================================== test setup duration top =======================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.000082 grand total                                                                                                             1 0:00:00.000082 0:00:00.000082
+===================================================================== test teardown duration top =====================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.000061 grand total                                                                                                             1 0:00:00.000061 0:00:00.000061
+=========================== short test summary info ============================
+PASSED testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py::test_dynamic_shared_memory_varies_across_calls
+1 passed in 1.99s

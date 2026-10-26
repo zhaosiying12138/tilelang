@@ -1,0 +1,19 @@
+...                                                                      [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+0:00:00.000067 grand total   3 0:00:00.000020 0:00:00.000031
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.002656 grand total   3 0:00:00.000794 0:00:00.001242
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000323 grand total   3 0:00:00.000087 0:00:00.000161
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000133 grand total   3 0:00:00.000044 0:00:00.000050
+=========================== short test summary info ============================
+PASSED testing/python/language/test_tilelang_language_persistent.py::test_persistent_full_last_dimension_group_preserves_row_major_order[domain0]
+PASSED testing/python/language/test_tilelang_language_persistent.py::test_persistent_full_last_dimension_group_preserves_row_major_order[domain1]
+PASSED testing/python/language/test_tilelang_language_persistent.py::test_persistent_full_last_dimension_group_preserves_row_major_order[domain2]
+3 passed in 0.64s

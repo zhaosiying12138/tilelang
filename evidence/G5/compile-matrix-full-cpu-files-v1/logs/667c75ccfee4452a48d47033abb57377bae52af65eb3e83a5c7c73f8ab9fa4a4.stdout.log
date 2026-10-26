@@ -1,0 +1,17 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+============================= fixture duration top =============================
+total          name        num med            max           
+       0:00:00 grand total   0        0:00:00        0:00:00
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.000055 grand total   1 0:00:00.000055 0:00:00.000055
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000114 grand total   1 0:00:00.000114 0:00:00.000114
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000036 grand total   1 0:00:00.000036 0:00:00.000036
+=========================== short test summary info ============================
+PASSED testing/python/cuda/test_cuda_latency_model.py::test_resource_bits_match_z3_seven_bit_contract
+1 passed in 0.02s
