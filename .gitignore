@@ -130,3 +130,7 @@ maint/host_checks/logs/*
 
 # uv Lockfile
 uv.lock
+
+# Experiment-owned runtime caches
+evidence/**/*-cache/
+evidence/**/cache/
