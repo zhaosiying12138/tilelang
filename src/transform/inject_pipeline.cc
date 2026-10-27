@@ -1074,10 +1074,12 @@ public:
    */
   PipelineBodyRewriter(const Map<Var, Buffer> &buffer_data_to_buffer,
                        const Map<Buffer, Buffer> &buffer_remap,
-                       For pipeline_loop, bool access_all_versions)
+                       For pipeline_loop, bool access_all_versions,
+                       Map<Var, PrimExpr> prepared_clocks)
       : buffer_data_to_buffer_(buffer_data_to_buffer),
         pipeline_loop_(std::move(pipeline_loop)),
-        access_all_versions_(access_all_versions) {
+        access_all_versions_(access_all_versions),
+        prepared_clocks_(std::move(prepared_clocks)) {
     for (const auto &kv : buffer_remap) {
       auto inserted = storage_remap_.emplace(
           kv.first->data, RemappedStorage{kv.first, kv.second});
@@ -1152,6 +1154,15 @@ public:
     return MakeVersionedView(buffer, it->second);
   }
 
+  PrimExpr VersionIndex(const Var &storage,
+                        const PrimExpr &num_versions) const {
+    auto prepared = prepared_clocks_.find(storage);
+    PrimExpr clock = prepared != prepared_clocks_.end()
+                         ? (*prepared).second
+                         : pipeline_loop_->loop_var - pipeline_loop_->min;
+    return floormod(clock, num_versions);
+  }
+
   BufferRegion
   RewritePipelineBufferRegion(const BufferRegion &buffer_region) const {
     if (Optional<Buffer> new_buffer =
@@ -1163,8 +1174,8 @@ public:
           access_all_versions_
               ? Range::FromMinExtent(0, new_buffer.value()->shape[0])
               : Range::FromMinExtent(
-                    floormod((pipeline_loop_->loop_var - pipeline_loop_->min),
-                             new_buffer.value()->shape[0]),
+                    VersionIndex(buffer_region->buffer->data,
+                                 new_buffer.value()->shape[0]),
                     Integer(1));
       new_region.insert(new_region.begin(), accessed_version);
       return BufferRegion(new_buffer.value(), new_region);
@@ -1189,9 +1200,7 @@ public:
                               : new_buffer.value()->strides[0];
         PrimExpr new_index =
             old_index +
-            floormod((pipeline_loop_->loop_var - pipeline_loop_->min),
-                     new_buffer.value()->shape[0]) *
-                offset;
+            VersionIndex(buffer->data, new_buffer.value()->shape[0]) * offset;
         new_args.Set(i + 1, new_index);
       }
     }
@@ -1224,9 +1233,8 @@ public:
     }
     auto *n = store.CopyOnWrite();
     n->buffer = new_buffer.value();
-    PrimExpr version = floormod(
-        (pipeline_loop_->loop_var - pipeline_loop_->min),
-        new_buffer.value()->shape[0]);
+    PrimExpr version =
+        VersionIndex(store->buffer->data, new_buffer.value()->shape[0]);
     n->indices.insert(n->indices.begin(), version);
     return store;
   }
@@ -1239,9 +1247,8 @@ public:
     }
     auto *n = load.CopyOnWrite();
     n->buffer = new_buffer.value();
-    PrimExpr version = floormod(
-        (pipeline_loop_->loop_var - pipeline_loop_->min),
-        new_buffer.value()->shape[0]);
+    PrimExpr version =
+        VersionIndex(load->buffer->data, new_buffer.value()->shape[0]);
     n->indices.insert(n->indices.begin(), version);
     return load;
   }
@@ -1275,6 +1282,7 @@ public:
       storage_remap_;
   For pipeline_loop_;
   bool access_all_versions_;
+  Map<Var, PrimExpr> prepared_clocks_;
 };
 
 /*!
@@ -1388,6 +1396,7 @@ public:
                    const Array<Buffer> &pipeline_allocs,
                    const Array<Buffer> &local_allocs, const For &pipeline_loop,
                    BufferVersionOverrideMap buffer_version_overrides,
+                   Map<Var, PrimExpr> prepared_clocks,
                    const PipelineInfo &pipeline_info,
                    const Array<SBlock> &scalar_binding_blocks,
                    Optional<Target> target,
@@ -1397,6 +1406,7 @@ public:
         pipeline_loop_(pipeline_loop), pipeline_info_(pipeline_info),
         scalar_binding_blocks_(scalar_binding_blocks),
         buffer_version_overrides_(std::move(buffer_version_overrides)),
+        prepared_clocks_(std::move(prepared_clocks)),
         target_(std::move(target)), thread_domains_(std::move(thread_domains)) {
   }
 
@@ -1589,7 +1599,8 @@ private:
     const ScalarBinding &binding = scalar_bindings_[binding_index];
     Stmt bind = Bind(binding.var, binding.value, binding.span);
     bind = PipelineBodyRewriter(buffer_data_to_buffer_, buffer_remap_,
-                                pipeline_loop_, max_stage_ != 1)(bind);
+                                pipeline_loop_, max_stage_ != 1,
+                                prepared_clocks_)(bind);
     bind = Substitute(bind, {{pipeline_loop_->loop_var, access_index}});
     return bind;
   }
@@ -3462,7 +3473,7 @@ private:
           Downcast<SBlock>(AnnotateTileOpMbarPhase(block, mbar_phase));
       SBlock new_block = Downcast<SBlock>(PipelineBodyRewriter(
           buffer_data_to_buffer_, buffer_remap_, pipeline_loop_,
-          max_stage_ != 1)(annotated_block));
+          max_stage_ != 1, prepared_clocks_)(annotated_block));
 
       PrimExpr delta = start - pipeline_loop_->min;
       PrimExpr normalized_access_index =
@@ -3640,6 +3651,7 @@ private:
   int max_stage_ = -1;
   Map<Buffer, Buffer> buffer_remap_;
   BufferVersionOverrideMap buffer_version_overrides_;
+  Map<Var, PrimExpr> prepared_clocks_;
   Optional<Target> target_;
   Map<Var, arith::IntSet> thread_domains_;
   Array<SBlock> ordered_stmts_;
@@ -3655,12 +3667,14 @@ PipelineRewriteResult RewritePipeline(
     const Array<Buffer> &pipeline_allocs, const Array<Buffer> &local_allocs,
     const For &pipeline_loop,
     BufferVersionOverrideMap buffer_version_overrides,
+    Map<Var, PrimExpr> prepared_clocks,
     const PipelineInfo &pipeline_info,
     const Array<SBlock> &scalar_binding_blocks, Optional<Target> target,
     Map<Var, arith::IntSet> thread_domains) {
   PipelineRewriter rewriter(std::move(buffer_data_to_buffer), pipeline_allocs,
                             local_allocs, pipeline_loop,
-                            std::move(buffer_version_overrides), pipeline_info,
+                            std::move(buffer_version_overrides),
+                            std::move(prepared_clocks), pipeline_info,
                             scalar_binding_blocks, std::move(target),
                             std::move(thread_domains));
   PipelineRewriteResult result;
@@ -4365,6 +4379,23 @@ private:
     if (!HasPipelineAnnotation(op)) {
       return for_node;
     }
+    if (op->annotations.count("tl.cuda_z3_recursive_prepared") != 0) {
+      // A one-stage prepared Control is only a structural parent. Its children
+      // have already been injected, so re-flattening the rewritten subtree
+      // would mismatch this Control's direct-child order/stage annotations.
+      auto stages = Downcast<Array<Integer>>(
+          op->annotations.at(s_tir::attr::software_pipeline_stage));
+      bool single_stage = !stages.empty();
+      for (const Integer &stage : stages) {
+        single_stage = single_stage && stage->value == stages.front()->value;
+      }
+      if (single_stage) {
+        return For(for_node->loop_var, for_node->min, for_node->extent,
+                   for_node->kind, for_node->body, for_node->thread_binding,
+                   StripPipelineAnnotations(for_node->annotations),
+                   for_node->step, for_node->span);
+      }
+    }
     // Step 2: Find the body and buffer allocations of the pipeline.
     Stmt pipeline_body_root = for_node->body;
     Array<Buffer> pipeline_allocs;
@@ -4699,10 +4730,16 @@ private:
                         schedule.nested_local_allocs.begin(),
                         schedule.nested_local_allocs.end());
 
+    Map<Var, PrimExpr> prepared_clocks;
+    bool recursive_prepared =
+        for_node->annotations.count("tl.cuda_z3_recursive_prepared") != 0;
+    if (recursive_prepared && prepared_clock_map_.defined()) {
+      prepared_clocks = prepared_clock_map_.value();
+    }
     PipelineRewriteResult rewrite_result = RewritePipeline(
         buffer_data_to_buffer_, pipeline_allocs, local_allocs, for_node,
-        std::move(buffer_version_overrides), pipeline_info,
-        scalar_binding_blocks, target_, thread_domains_);
+        std::move(buffer_version_overrides), std::move(prepared_clocks),
+        pipeline_info, scalar_binding_blocks, target_, thread_domains_);
     Stmt pipeline = rewrite_result.pipeline;
 
     subtree_modified_ = true;
@@ -4823,7 +4860,13 @@ private:
     bool outer_flag = subtree_modified_;
     size_t layout_remap_mark = pending_layout_remapped_allocs_.size();
     subtree_modified_ = false;
+    Optional<Map<Var, PrimExpr>> outer_prepared_clock_map =
+        prepared_clock_map_;
+    if (auto clocks = op->annotations.Get("tl.cuda_z3_prepared_clock_map")) {
+      prepared_clock_map_ = Downcast<Map<Var, PrimExpr>>(clocks.value());
+    }
     SBlock block = Downcast<SBlock>(StmtExprMutator::VisitStmt_(op));
+    prepared_clock_map_ = std::move(outer_prepared_clock_map);
     bool children_modified = subtree_modified_;
     // Propagate to parent: if this subtree was modified, parent should know.
     subtree_modified_ = outer_flag || children_modified;
@@ -5040,6 +5083,7 @@ private:
   std::vector<std::pair<Buffer, Buffer>> pending_layout_remapped_allocs_;
   Optional<Target> target_;
   Optional<String> global_symbol_;
+  Optional<Map<Var, PrimExpr>> prepared_clock_map_;
   Map<Var, arith::IntSet> thread_domains_;
   // Track whether any pipeline was actually injected in the current
   // subtree.  Used to avoid unnecessary reads/writes recalculation

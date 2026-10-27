@@ -1066,8 +1066,17 @@ private:
     auto stage_anno = loop->annotations.Get("tl_pipeline_stage");
     auto num_stages_anno = loop->annotations.Get("num_stages");
     if (order_anno && stage_anno) {
+      // Recursive Z3 lowering annotates every Control independently. Plan
+      // child Controls before their parent so nested prepared loops reach
+      // InjectSoftwarePipeline in the same bottom-up order as the scheduler.
+      For nested_loop = Downcast<For>(StmtExprMutator::VisitStmt_(loop));
+      loop = nested_loop.get();
+      order_anno = loop->annotations.Get("tl_pipeline_order");
+      stage_anno = loop->annotations.Get("tl_pipeline_stage");
       auto order_array = Downcast<Array<Integer>>(order_anno.value());
       auto stage_array = Downcast<Array<Integer>>(stage_anno.value());
+      const bool recursive_prepared =
+          loop->annotations.count("tl.cuda_z3_recursive_prepared") != 0;
 
       Map<String, Any> annotations;
       for (const auto &[key, value] : loop->annotations) {
@@ -1075,7 +1084,8 @@ private:
           annotations.Set(key, value);
         }
       }
-      if (TargetHasAsyncCopy(target_) && use_async_copy_) {
+      if (!recursive_prepared && TargetHasAsyncCopy(target_) &&
+          use_async_copy_) {
         // Legacy explicit stage/order annotations do not carry per-statement
         // async producer metadata yet, so keep the previous stage-level
         // behavior as a fallback for these loops.
@@ -1111,9 +1121,14 @@ private:
                           analysis.replayable_bind_mask);
         }
       }
-      MaybeAnnotateLegacyAsyncPipelineLoop(analysis.scheduled_stmts,
-                                           filtered_order_array,
-                                           filtered_stage_array, &annotations);
+      if (!recursive_prepared) {
+        // A prepared recursive plan already carries its authoritative
+        // per-statement async/owner metadata. Do not synthesize legacy
+        // stage-level async ownership or overwrite those explicit fields.
+        MaybeAnnotateLegacyAsyncPipelineLoop(
+            analysis.scheduled_stmts, filtered_order_array,
+            filtered_stage_array, &annotations);
+      }
       auto for_node = GetRef<For>(loop);
       auto *n = for_node.CopyOnWrite();
       n->annotations = annotations;

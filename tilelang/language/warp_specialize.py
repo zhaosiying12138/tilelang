@@ -72,11 +72,12 @@ class WSPipeline(Node):
     The producer waits for the empty barrier and signals the full barrier;
     the consumer waits for the full barrier and signals the empty barrier.
     A legacy pipeline synchronizes exactly one scope, between exactly two roles.
-    The restricted owner-ring form instead names two ordered sibling scopes
-    that share one barrier pair and one continuous phase. Multiple buffers can
-    share one pipeline; conversely, a legacy buffer may be bound to several
-    pipelines whose scopes are strictly nested — its version count is then the
-    product of their depths (outer-major slots).
+    The counter-clock form instead names an ordered nonempty frontier of sibling
+    scopes that share one barrier pair and one continuous phase. One owner,
+    two owners, and longer frontiers use the same counter arithmetic. Multiple
+    buffers can share one pipeline; conversely, a legacy buffer may be bound to
+    several pipelines whose scopes are strictly nested — its version count is
+    then the product of their depths (outer-major slots).
 
     Parameters
     ----------
@@ -87,8 +88,8 @@ class WSPipeline(Node):
     depth : int
         The number of versions this pipeline contributes to each buffer.
     owner_scopes : tuple[str, ...] or list[str], optional
-        Explicit ordered sibling scope IDs for the restricted two-owner ring.
-        Empty retains the legacy single-scope pipeline behavior. This metadata
+        Explicit ordered nonempty sibling scope IDs for a counter-clock
+        frontier. Empty retains the legacy single-scope pipeline behavior. This metadata
         is consumed by ``MaterializeWSSchedule``; no owner frontier is inferred.
     """
 
@@ -132,28 +133,32 @@ class WSSync(WSInstr):
     that stage's iteration offset.
     """
 
-    def __init__(self, kind: WSSyncKind, pipeline: str, stage: int = 0):
-        self.__init_handle_by_constructor__(_ffi_api.WSSync, kind, pipeline, stage)
+    def __init__(self, kind: WSSyncKind, pipeline: str, stage: int = 0, *, guard=None):
+        if guard is None:
+            # Preserve the original three-argument FFI constructor and serialized form.
+            self.__init_handle_by_constructor__(_ffi_api.WSSync, kind, pipeline, stage)
+        else:
+            self.__init_handle_by_constructor__(_ffi_api.WSSyncWithGuard, kind, pipeline, stage, guard)
 
     @classmethod
-    def producer_acquire(cls, pipeline: str, stage: int = 0) -> WSSync:
+    def producer_acquire(cls, pipeline: str, stage: int = 0, *, guard=None) -> WSSync:
         """Wait for the empty barrier; binds the stage's buffer versions."""
-        return cls(WSSyncKind.PRODUCER_ACQUIRE, pipeline, stage)
+        return cls(WSSyncKind.PRODUCER_ACQUIRE, pipeline, stage, guard=guard)
 
     @classmethod
-    def producer_commit(cls, pipeline: str, stage: int = 0) -> WSSync:
+    def producer_commit(cls, pipeline: str, stage: int = 0, *, guard=None) -> WSSync:
         """Signal the full barrier; ends the producer's span."""
-        return cls(WSSyncKind.PRODUCER_COMMIT, pipeline, stage)
+        return cls(WSSyncKind.PRODUCER_COMMIT, pipeline, stage, guard=guard)
 
     @classmethod
-    def consumer_wait(cls, pipeline: str, stage: int = 0) -> WSSync:
+    def consumer_wait(cls, pipeline: str, stage: int = 0, *, guard=None) -> WSSync:
         """Wait for the full barrier; binds the stage's buffer versions."""
-        return cls(WSSyncKind.CONSUMER_WAIT, pipeline, stage)
+        return cls(WSSyncKind.CONSUMER_WAIT, pipeline, stage, guard=guard)
 
     @classmethod
-    def consumer_release(cls, pipeline: str, stage: int = 0) -> WSSync:
+    def consumer_release(cls, pipeline: str, stage: int = 0, *, guard=None) -> WSSync:
         """Signal the empty barrier; ends the consumer's span."""
-        return cls(WSSyncKind.CONSUMER_RELEASE, pipeline, stage)
+        return cls(WSSyncKind.CONSUMER_RELEASE, pipeline, stage, guard=guard)
 
 
 @tvm_ffi.register_object("tl.WSScope")

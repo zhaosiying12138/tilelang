@@ -1,5 +1,10 @@
 """CUDA-specific transformation frontends."""
 
+from tvm import tirx
+from tvm.target import Target
+from tvm.tirx.stmt_functor import ir_transform, post_order_visit
+from tvm.tirx.transform import prim_func_pass
+
 from .. import _ffi_api
 from . import z3_scheduler  # noqa: F401  # Import registers the CUDA Z3 FFI callbacks.
 from .z3_scheduler import (
@@ -8,6 +13,91 @@ from .z3_scheduler import (
     z3_schedule_loop_python,
     z3_schedule_python,
 )
+
+
+def _default_recursive_roles():
+    from tilelang import language as T
+
+    # Role IDs are the fixed Worker/Load/MMA/Store convention shared with the
+    # native role planner. The builder computes the used subset and warp layout.
+    return [
+        T.WSRole("Worker", warps_lo=0, warps_hi=4),
+        T.WSRole("Load", warps_lo=4, warps_hi=5),
+        T.WSRole("MMA", warps_lo=5, warps_hi=6),
+        T.WSRole("Store", warps_lo=6, warps_hi=7),
+    ]
+
+
+def _recursive_root_pass(name, rewrite):
+    """Apply an SBlock FFI rewrite only to materialized recursive roots."""
+
+    def pass_fn(func, _mod, _ctx):
+        def rewrite_root(stmt):
+            if not isinstance(stmt, tirx.SBlock) or stmt.name_hint != "tilelang_root":
+                return None
+            found = False
+
+            def visit(node):
+                nonlocal found
+                if isinstance(node, tirx.AttrStmt) and node.attr_key == "tl.schedule_unit":
+                    found = True
+
+            post_order_visit(stmt.body, visit)
+            return rewrite(stmt) if found else None
+
+        body = ir_transform(func.body, None, rewrite_root, ["tirx.SBlock"])
+        return func if body.same_as(func.body) else func.with_body(body)
+
+    return prim_func_pass(pass_fn, opt_level=0, name=name)
+
+
+def NormalizeZ3ControlFlow():
+    """Normalize recursive scheduling control flow before unit materialization."""
+    return _ffi_api.NormalizeZ3ControlFlow()  # type: ignore
+
+
+def MaterializeZ3ScheduleUnits():
+    """Materialize the explicitly selected recursive Task/Control grammar."""
+    return _ffi_api.MaterializeZ3ScheduleUnits()  # type: ignore
+
+
+def AnalyzeZ3BufferLifetimes(target: Target):
+    """Resolve recursive roles/epochs and attach positive lifetime aliases."""
+    roles = _default_recursive_roles()
+
+    def analyze(root):
+        return _ffi_api.Z3AnalyzeRecursiveLifetimes(root, roles, 0, str(target))
+
+    return _recursive_root_pass("tl.cuda.AnalyzeZ3BufferLifetimes", analyze)
+
+
+def BuildZ3WSSchedule(target: Target, worker_warps: int = 0, widen_cpasync_load: bool = False):
+    """Project a solved recursive tree to WS metadata when multiple roles need it."""
+    roles = _default_recursive_roles()
+
+    def build(root):
+        built = _ffi_api.Z3BuildWSSchedule(
+            root,
+            roles,
+            0,
+            str(target),
+            worker_warps,
+            widen_cpasync_load,
+        )
+        schedule = built.annotations.get("tl.ws_schedule")
+        if schedule is not None and len(schedule.roles) == 1 and len(schedule.pipelines) == 0:
+            # The inspection build proves role/epoch feasibility. A one-role result
+            # needs neither WS dispatch nor builder-added IDs, so retain Slice E's
+            # original solved tree for the stock-only projection.
+            return root
+        return built
+
+    return _recursive_root_pass("tl.cuda.BuildZ3WSSchedule", build)
+
+
+def LowerZ3ScheduleUnits():
+    """Project solved recursive units onto the stock prepared-loop contract."""
+    return _ffi_api.LowerZ3ScheduleUnits()  # type: ignore
 
 
 def AutoWarpSpecialization():
@@ -184,9 +274,11 @@ def PersistThreadblock():
 
 
 __all__ = [
+    "AnalyzeZ3BufferLifetimes",
     "AnnotateDeviceBoundTmaCopies",
     "AutoWarpSpecialization",
     "AnnotateWarpGroupRegAlloc",
+    "BuildZ3WSSchedule",
     "FuseMBarrierArriveExpectTx",
     "InjectFenceProxy",
     "InjectTcgen05Fence",
@@ -196,8 +288,11 @@ __all__ = [
     "LowerL2Persistent",
     "LowerSharedBarrier",
     "LowerSharedTmem",
+    "LowerZ3ScheduleUnits",
     "MarkCudaSyncCalls",
     "MaterializeWSSchedule",
+    "MaterializeZ3ScheduleUnits",
+    "NormalizeZ3ControlFlow",
     "PersistThreadblock",
     "ProducerConsumerWarpSpecialized",
     "Z3ScheduleInfeasibleError",

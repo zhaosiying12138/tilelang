@@ -112,6 +112,11 @@ def InjectSoftwarePipeline():
     return _ffi_api.InjectSoftwarePipeline()  # type: ignore
 
 
+def RestoreWhileLoops():
+    """Restore synthetic scheduling loops after software-pipeline injection."""
+    return _ffi_api.RestoreWhileLoops()  # type: ignore
+
+
 def LegalizeNegativeIndex():
     """Legalize negative indices in buffer loads.
 

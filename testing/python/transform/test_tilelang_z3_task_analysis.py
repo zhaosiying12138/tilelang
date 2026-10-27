@@ -24,6 +24,7 @@ from tvm.tirx.stmt_functor import post_order_visit
 _CONFIG = "tl.enable_z3_task_analysis"
 _Z3_CONFIG = "tl.enable_z3_pipeline_planning"
 _ESTIMATOR = "tl.cuda.estimate_task"
+_COMPOSED_ESTIMATOR = "tl.cuda.estimate_composed_task"
 _CAPACITIES = "tl.cuda.z3_memory_group_capacities"
 _SOLVER = "tl.cuda.transform.z3_schedule_loop_python"
 _SM80 = tvm.target.Target({"kind": "cuda", "arch": "sm_80"})
@@ -94,7 +95,7 @@ _CALIBRATION = {
 
 @pytest.fixture(autouse=True)
 def _restore_ffi():
-    names = (_ESTIMATOR, _CAPACITIES, _SOLVER)
+    names = (_ESTIMATOR, _COMPOSED_ESTIMATOR, _CAPACITIES, _SOLVER)
     previous = {name: tvm_ffi.get_global_func(name, allow_missing=True) for name in names}
     yield
     for name in names:
@@ -209,8 +210,14 @@ def _nested_ints(values):
     return [_ints(group) for group in values]
 
 
+class _ModelCalls(list):
+    def __init__(self):
+        super().__init__()
+        self.composed = []
+
+
 def _install_model_mock():
-    calls = []
+    calls = _ModelCalls()
 
     def estimator(features, hardware, calibration, require_measured=False):
         calls.append(features)
@@ -218,7 +225,14 @@ def _install_model_mock():
         assert calibration == "mock-calibration.json"
         return task_cost.estimate_task(features, _HARDWARE, _CALIBRATION, require_measured)
 
+    def composed_estimator(tree, hardware, calibration, require_measured=False):
+        calls.composed.append(tree)
+        assert hardware == "mock-hardware.json"
+        assert calibration == "mock-calibration.json"
+        return task_cost.estimate_composed_task(tree, _HARDWARE, _CALIBRATION, require_measured)
+
     tvm_ffi.register_global_func(_ESTIMATOR, f=estimator, override=True)
+    tvm_ffi.register_global_func(_COMPOSED_ESTIMATOR, f=composed_estimator, override=True)
     tvm_ffi.register_global_func(
         _CAPACITIES,
         f=lambda hardware: task_cost.memory_group_capacities(_HARDWARE),
@@ -232,6 +246,15 @@ def _mock_paths():
         "tl_z3_pipeline_hardware": "mock-hardware.json",
         "tl_z3_pipeline_calibration": "mock-calibration.json",
     }
+
+
+def _model_annotations():
+    annotations = _complete_annotations([0])
+    annotations.pop("tl_z3_pipeline_latencies")
+    annotations.pop("tl_z3_pipeline_iis")
+    annotations.pop("tl_z3_pipeline_resource_flags")
+    annotations.update(_mock_paths())
+    return annotations
 
 
 def _write_specs(tmp_path: Path):
@@ -788,8 +811,12 @@ def test_task_cost_overrides_are_independent_and_task_body_is_one_model_input():
 
     loop = _find_pipeline_loop(_run_infer(func)["main"])
 
-    assert len(calls) == 1, "A fully overridden task must not require the cost model"
-    assert len(calls[0]["copies"]) == 3, "The serial multi-statement task is one aggregate model input"
+    assert len(calls) == 0, "A fully overridden task and a composed task use no flat estimator"
+    assert len(calls.composed) == 1, "The serial multi-statement task is one composed model input"
+    tree = task_cost._plain(calls.composed[0])
+    assert tree["kind"] == "serial"
+    leaves = [child for child in tree["children"] if child["kind"] == "leaf"]
+    assert sum(len(leaf["features"]["copies"]) for leaf in leaves) == 3
     assert _ints(loop.annotations["tl_z3_pipeline_latencies"]) == [7, 50]
     assert _ints(loop.annotations["tl_z3_pipeline_iis"])[0] == 2
     assert _ints(loop.annotations["tl_z3_pipeline_iis"])[1] > 0
@@ -839,6 +866,222 @@ def test_task_cost_overrides_do_not_waive_dependency_footprints():
         _run_infer(func)
 
 
+def test_native_serial_repeat_branch_tree_and_structural_resource_union():
+    tir = tvm.tirx
+    a = tir.decl_buffer((8,), "float32", name="tree_A")
+    b = tir.decl_buffer((8,), "float32", name="tree_B")
+    shared = tir.decl_buffer((8,), "float32", name="tree_shared", scope="shared")
+    j = tir.Var("tree_j", "int32")
+    k = tir.Var("tree_k", "int32")
+    repeated = tir.For(j, 0, 2, tir.ForKind.SERIAL, tir.BufferStore(a, 1.0, [k]))
+    selected = tir.IfThenElse(
+        k < 1,
+        tir.BufferStore(b, 2.0, [k]),
+        tir.BufferStore(shared, 3.0, [k]),
+    )
+    task = _task(tir.SeqStmt([repeated, selected]))
+    func = _make_store_func(
+        [task], [a, b, shared], _model_annotations(), loop_var=k, local_buffers=[shared]
+    )
+    calls = _install_model_mock()
+
+    loop = _find_pipeline_loop(_run_infer(func)["main"])
+
+    assert len(calls) == 0
+    assert len(calls.composed) == 1
+    tree = task_cost._plain(calls.composed[0])
+    assert tree["kind"] == "serial"
+    assert tree["children"][0]["kind"] == "repeat"
+    assert tree["children"][0]["trips"] == 2
+    conditional = tree["children"][1]
+    assert conditional["kind"] == "serial"
+    branch = conditional["children"][1]
+    assert branch["kind"] == "branch"
+    assert branch["then"]["kind"] == "leaf"
+    assert branch["else"]["kind"] == "leaf"
+    resources = _ints(loop.annotations["tl_z3_pipeline_resource_flags"])[0]
+    assert resources & 2  # Global store in one arm.
+    assert resources & 4  # Shared-memory arm remains structurally visible.
+
+
+def test_loop_invariant_bind_is_once_but_buffer_load_bind_is_repeated():
+    tir = tvm.tirx
+    out = tir.decl_buffer((8,), "int32", name="invariant_out")
+    source = tir.decl_buffer((8,), "int32", name="invariant_source")
+    k = tir.Var("invariant_k", "int32")
+
+    def infer_with_bind(value, name):
+        j = tir.Var(name + "_j", "int32")
+        bound = tir.Var(name + "_value", "int32")
+        body = tir.SeqStmt(
+            [
+                tir.Bind(bound, value),
+                tir.BufferStore(out, bound, [k]),
+            ]
+        )
+        task = _task(tir.For(j, 0, 3, tir.ForKind.SERIAL, body))
+        func = _make_store_func([task], [out, source], _model_annotations(), loop_var=k)
+        calls = _install_model_mock()
+        _run_infer(func)
+        assert len(calls.composed) == 1
+        return task_cost._plain(calls.composed[0])
+
+    invariant = infer_with_bind(k + 4, "pure_invariant")
+    assert invariant["kind"] == "serial"
+    assert invariant["children"][0]["kind"] == "leaf"
+    assert invariant["children"][0]["features"]["scalar"] == 1
+    repeated = invariant["children"][1]
+    assert repeated["kind"] == "repeat" and repeated["trips"] == 3
+    assert repeated["body"]["features"]["scalar"] == 0
+
+    buffer_read = infer_with_bind(tir.BufferLoad(source, [k]) + 1, "buffer_variant")
+    assert buffer_read["kind"] == "repeat"
+    bind_leaf = buffer_read["body"]["children"][0]
+    assert bind_leaf["kind"] == "leaf"
+    assert bind_leaf["features"]["scalar"] == 1
+    assert len(bind_leaf["features"]["copies"]) == 1
+
+
+def test_dynamic_serial_trips_use_assumptions_and_explicit_bounds():
+    tir = tvm.tirx
+    out = tir.decl_buffer((8,), "int32", name="dynamic_trip_out")
+    n = tir.Var("dynamic_trip_n", "int32")
+    j = tir.Var("dynamic_trip_j", "int32")
+    k = tir.Var("dynamic_trip_k", "int32")
+    body = tir.For(j, 0, n, tir.ForKind.SERIAL, tir.BufferStore(out, 1, [k]))
+    assumed = tir.AttrStmt(n <= 3, "tl.assume", 1, body)
+    func = _make_store_func(
+        [_task(assumed)], [out], _model_annotations(), extra_params=[n], loop_var=k
+    )
+    calls = _install_model_mock()
+    loop = _find_pipeline_loop(_run_infer(func)["main"])
+    tree = task_cost._plain(calls.composed[0])
+    assert tree["kind"] == "repeat"
+    assert tree["trips"] == {"upper_bound": 3, "reliability": "upper_bound"}
+    assert list(loop.annotations["tl_z3_pipeline_cost_reliability"]) == ["upper_bound"]
+
+    unbounded = _make_store_func(
+        [_task(body)], [out], _model_annotations(), extra_params=[n], loop_var=k
+    )
+    with pytest.raises(Exception, match="finite trip upper bound"):
+        _run_infer(unbounded)
+
+    bounded = tir.For(
+        j,
+        0,
+        n,
+        tir.ForKind.SERIAL,
+        tir.BufferStore(out, 1, [k]),
+        annotations={"tl.cuda_z3_trip_bound": tir.IntImm("int32", 4)},
+    )
+    bounded_func = _make_store_func(
+        [_task(bounded)], [out], _model_annotations(), extra_params=[n], loop_var=k
+    )
+    bounded_calls = _install_model_mock()
+    _run_infer(bounded_func)
+    bounded_tree = task_cost._plain(bounded_calls.composed[0])
+    assert bounded_tree["trips"] == {"upper_bound": 4, "reliability": "upper_bound"}
+
+
+def test_dynamic_copy_extent_uses_assumption_and_static_buffer_shape():
+    def build(with_assume):
+        annotations = {"tl_z3_pipeline": True, **_mock_paths()}
+
+        @T.prim_func
+        def main(n: T.int32, A: T.Tensor((16,), "float32")):
+            with T.Kernel(1, threads=32):
+                shared = T.alloc_shared((16,), "float32")
+                for _ in T.Pipelined(1, num_stages=2, annotations=annotations):
+                    if with_assume:
+                        with T.attr(n <= 8, "tl.assume", 1):
+                            T.copy(A[0:n], shared[0:n])
+                    else:
+                        T.copy(A[0:n], shared[0:n])
+
+        return main
+
+    for with_assume, expected_bytes in [(True, 32), (False, 64)]:
+        calls = _install_model_mock()
+        loop = _find_pipeline_loop(_run_infer(build(with_assume))["main"])
+        assert len(calls) == 1
+        access = task_cost._plain(calls[0])["copies"][0]
+        assert access["bytes"] == {
+            "upper_bound": expected_bytes,
+            "reliability": "upper_bound",
+        }
+        assert list(loop.annotations["tl_z3_pipeline_cost_reliability"]) == ["upper_bound"]
+
+
+def test_bounded_while_composes_and_unbounded_while_requires_both_overrides():
+    tir = tvm.tirx
+    pred = tir.decl_buffer((1,), "int32", name="while_pred")
+    out = tir.decl_buffer((8,), "int32", name="while_out")
+    k = tir.Var("while_k", "int32")
+    condition = tir.BufferLoad(pred, [0]) > 0
+    body = tir.BufferStore(out, 1, [k])
+    bounded_body = tir.AttrStmt(
+        tir.IntImm("int32", 3),
+        "tl.cuda_z3_trip_bound",
+        tir.IntImm("int32", 1),
+        tir.While(condition, body),
+    )
+    bounded_func = _make_store_func(
+        [_task(bounded_body)], [pred, out], _model_annotations(), loop_var=k
+    )
+    calls = _install_model_mock()
+    loop = _find_pipeline_loop(_run_infer(bounded_func)["main"])
+    tree = task_cost._plain(calls.composed[0])
+    assert tree["kind"] == "repeat"
+    assert tree["trips"] == {"upper_bound": 3, "reliability": "upper_bound"}
+    assert list(loop.annotations["tl_z3_pipeline_cost_reliability"]) == ["upper_bound"]
+
+    unbounded = tir.While(condition, body)
+    for override in ({"latency": 9}, {"ii": 3}, {}):
+        task = _task(unbounded, **override)
+        func = _make_store_func([task], [pred, out], _model_annotations(), loop_var=k)
+        with pytest.raises(Exception, match="While requires a finite trip upper bound"):
+            _run_infer(func)
+
+    overridden = _task(unbounded, latency=9, ii=3)
+    overridden_func = _make_store_func(
+        [overridden], [pred, out], _model_annotations(), loop_var=k
+    )
+    overridden_calls = _install_model_mock()
+    overridden_loop = _find_pipeline_loop(_run_infer(overridden_func)["main"])
+    assert _ints(overridden_loop.annotations["tl_z3_pipeline_latencies"]) == [9]
+    assert _ints(overridden_loop.annotations["tl_z3_pipeline_iis"]) == [3]
+    placeholder = task_cost._plain(overridden_calls.composed[0])
+    assert placeholder["kind"] == "serial"
+    assert "repeat" not in json.dumps(placeholder)
+
+
+def test_unbounded_while_full_overrides_still_require_complete_footprints():
+    tir = tvm.tirx
+    pred = tir.decl_buffer((1,), "int32", name="while_footprint_pred")
+    k = tir.Var("while_footprint_k", "int32")
+    opaque = tir.Evaluate(tir.call_extern("int32", "opaque_inside_unbounded_while"))
+    body = tir.While(tir.BufferLoad(pred, [0]) > 0, opaque)
+    annotations = _model_annotations()
+    annotations.pop("tl_z3_pipeline_data_deps")
+    func = _make_store_func(
+        [_task(body, latency=9, ii=3)], [pred], annotations, loop_var=k
+    )
+    with pytest.raises(Exception, match="opaque|stateful"):
+        _run_infer(func)
+
+
+def test_zero_trip_composition_fails_final_schedulable_task_validation():
+    tir = tvm.tirx
+    out = tir.decl_buffer((8,), "int32", name="zero_trip_out")
+    j = tir.Var("zero_trip_j", "int32")
+    k = tir.Var("zero_trip_k", "int32")
+    body = tir.For(j, 0, 0, tir.ForKind.SERIAL, tir.BufferStore(out, 1, [k]))
+    func = _make_store_func([_task(body)], [out], _model_annotations(), loop_var=k)
+    _install_model_mock()
+    with pytest.raises(Exception, match="invalid task cost"):
+        _run_infer(func)
+
+
 def test_regular_package_import_registers_task_cost_ffi_without_explicit_import():
     import subprocess
     import sys
@@ -846,6 +1089,7 @@ def test_regular_package_import_registers_task_cost_ffi_without_explicit_import(
     code = (
         "import tilelang, tvm_ffi; "
         "assert tvm_ffi.get_global_func('tl.cuda.estimate_task'); "
+        "assert tvm_ffi.get_global_func('tl.cuda.estimate_composed_task'); "
         "assert tvm_ffi.get_global_func('tl.cuda.z3_memory_group_capacities')"
     )
     subprocess.run([sys.executable, "-c", code], check=True, capture_output=True, text=True, timeout=60)

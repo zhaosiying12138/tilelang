@@ -35,6 +35,7 @@
 #include <tvm/ffi/enum.h>
 #include <tvm/ffi/string.h>
 #include <tvm/tirx/buffer.h>
+#include <tvm/tirx/expr.h>
 
 #include "support/check.h"
 
@@ -101,10 +102,10 @@ public:
   /*! \brief Number of buffer versions. */
   int64_t depth;
   /*!
-   * \brief Ordered sibling scopes sharing this pipeline, or empty for legacy.
+   * \brief Ordered nonempty sibling scopes sharing this pipeline, or empty for legacy.
    *
-   * This is explicit runtime metadata, not an inferred owner frontier. The
-   * restricted CUDA materializer accepts exactly two owner scopes.
+   * One scope is a counter-clock single-owner protocol, two preserve the
+   * original owner ring, and longer vectors are generalized owner frontiers.
    */
   ffi::Array<ffi::String> owner_scopes;
 
@@ -205,6 +206,13 @@ public:
   ffi::String pipeline;
   /*! \brief Software-pipeline stage of this sync point. */
   int64_t stage;
+  /*!
+   * \brief Optional active-epoch predicate for waits, arrivals, and counters.
+   *
+   * PerRole alternatives carry the enclosing epoch predicate conjoined with
+   * their original candidate guard. Null preserves legacy unconditional sync.
+   */
+  ffi::Optional<PrimExpr> guard;
 
   static void RegisterReflection();
   TVM_FFI_DECLARE_OBJECT_INFO_FINAL("tl.WSSync", WSSyncNode, WSInstrNode);
@@ -213,6 +221,8 @@ public:
 class WSSync : public WSInstr {
 public:
   TVM_DLL WSSync(WSSyncKind kind, ffi::String pipeline, int64_t stage);
+  TVM_DLL WSSync(WSSyncKind kind, ffi::String pipeline, int64_t stage,
+                 ffi::Optional<PrimExpr> guard);
   TVM_FFI_DEFINE_OBJECT_REF_METHODS_NULLABLE(WSSync, WSInstr, WSSyncNode);
 };
 

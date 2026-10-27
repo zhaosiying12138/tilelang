@@ -443,11 +443,16 @@ void WSOpRefNode::RegisterReflection() {
   refl::ObjectDef<WSOpRefNode>().def_ro("id", &WSOpRefNode::id);
 }
 
-WSSync::WSSync(WSSyncKind kind, String pipeline, int64_t stage) {
+WSSync::WSSync(WSSyncKind kind, String pipeline, int64_t stage)
+    : WSSync(std::move(kind), std::move(pipeline), stage, std::nullopt) {}
+
+WSSync::WSSync(WSSyncKind kind, String pipeline, int64_t stage,
+               Optional<PrimExpr> guard) {
   auto n = make_object<WSSyncNode>();
   n->kind = std::move(kind);
   n->pipeline = std::move(pipeline);
   n->stage = stage;
+  n->guard = std::move(guard);
   data_ = std::move(n);
 }
 
@@ -456,7 +461,8 @@ void WSSyncNode::RegisterReflection() {
   refl::ObjectDef<WSSyncNode>()
       .def_ro("kind", &WSSyncNode::kind)
       .def_ro("pipeline", &WSSyncNode::pipeline)
-      .def_ro("stage", &WSSyncNode::stage);
+      .def_ro("stage", &WSSyncNode::stage)
+      .def_ro("guard", &WSSyncNode::guard);
 }
 
 WSScope::WSScope(String id, Map<String, Array<WSInstr>> bodies) {
@@ -536,6 +542,12 @@ TVM_FFI_STATIC_INIT_BLOCK() {
       .def("tl.WSSync",
            [](WSSyncKind kind, String pipeline, int64_t stage) {
              return WSSync(std::move(kind), std::move(pipeline), stage);
+           })
+      .def("tl.WSSyncWithGuard",
+           [](WSSyncKind kind, String pipeline, int64_t stage,
+              Optional<PrimExpr> guard) {
+             return WSSync(std::move(kind), std::move(pipeline), stage,
+                           std::move(guard));
            })
       .def("tl.WSScope",
            [](String id, Map<String, Array<WSInstr>> bodies) {

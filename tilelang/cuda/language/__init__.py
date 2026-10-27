@@ -63,6 +63,7 @@ from tilelang.language.kernel import ClusterKernel, CUDASourceCodeKernel  # noqa
 # T.atomic_add (use_tma), T.Parallel (prefer_async) and T.unroll
 # (unroll_factor). Semantics match the common versions; the extra keywords
 # are recorded on the op and consumed by the CUDA pipeline.
+from .annotations import annotate_buffer_versions  # noqa: F401
 from .kernel import Kernel  # noqa: F401
 from .reduce_op import reduce_absmax, reduce_max, reduce_min  # noqa: F401
 from .schedule_hint import Stage, Task  # noqa: F401
@@ -154,6 +155,7 @@ _CUDA_API_ALL = (
     "alloc_cluster_barrier",
     "alloc_descriptor",
     "alloc_tmem",
+    "annotate_buffer_versions",
     "annotate_consumer_reg_alloc",
     "annotate_l2_hit_ratio",
     "annotate_min_blocks_per_sm",

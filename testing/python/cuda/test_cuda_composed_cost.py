@@ -245,7 +245,7 @@ def test_non_object_tree_and_invalid_options_are_rejected():
         lm.estimate_composed_task(_serial(), params={})
 
 
-def test_task_cost_internal_json_api_is_ready_for_native_binding():
+def test_task_cost_internal_json_api_matches_composed_ffi_contract():
     tree = _branch(
         _leaf(20, 4, **_copy_resource()),
         _leaf(30, 3, vector={"add": 1}),
@@ -264,6 +264,21 @@ def test_task_cost_internal_json_api_is_ready_for_native_binding():
     assert result["terms"]["composition"]["kind"] == "branch"
     assert result["terms"]["composition"]["then"]["features"]["copies"][0]["bytes"] == 64
     assert json.loads(json.dumps(result, allow_nan=False, sort_keys=True)) == result
+
+
+def test_task_cost_composed_ffi_global_round_trip():
+    if tc._tvm_ffi is None:
+        pytest.skip("tvm_ffi is unavailable")
+    tree = _branch(
+        _leaf(20, 4, **_copy_resource()),
+        _leaf(30, 3, vector={"add": 1}),
+    )
+    ffi = tc._tvm_ffi.get_global_func("tl.cuda.estimate_composed_task")
+    result = ffi(json.dumps(tree), _hardware(), _measured_calibration(), True)
+    assert (result["latency"], result["ii"]) == (30, 4)
+    assert result["resource_flags"] == int(lm.Resource.GLOBAL_LOAD | lm.Resource.CUDA_CORE)
+    assert result["terms"]["composition"]["kind"] == "branch"
+    assert json.loads(json.dumps(tc._plain(result), allow_nan=False, sort_keys=True)) == tc._plain(result)
 
 
 def test_task_cost_json_api_rejects_dynamic_unmeasured_trips():

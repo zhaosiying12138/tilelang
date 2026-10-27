@@ -203,19 +203,19 @@ def estimate_task(
     return decoded
 
 
+@_register_global("tl.cuda.estimate_composed_task")
 def estimate_composed_task(
     tree: Mapping[str, Any] | str,
     hardware: Mapping[str, Any] | str | os.PathLike[str],
     calibration: Mapping[str, Any] | str | os.PathLike[str],
     require_measured: bool = False,
 ) -> dict[str, Any]:
-    """Evaluate a composed cost tree for the future native analyzer.
+    """Evaluate a native or Python composed cost tree.
 
-    This intentionally is not registered as an FFI global yet.  The later
-    ``tl.cuda.estimate_composed_task`` binding can call this function directly
-    after the native ``NativeCostExpr`` extractor is available.  Inputs and
-    results otherwise follow the same strict JSON, hardware, calibration, and
-    measured-only contracts as :func:`estimate_task`.
+    Registered as ``tl.cuda.estimate_composed_task`` for the native
+    ``NativeCostExpr`` extractor. Inputs and results follow the same strict
+    JSON, hardware, calibration, and measured-only contracts as
+    :func:`estimate_task`.
     """
 
     if not isinstance(require_measured, bool):

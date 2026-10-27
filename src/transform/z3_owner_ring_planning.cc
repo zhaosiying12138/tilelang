@@ -32,6 +32,25 @@ using namespace ffi;
 
 using VarSet = std::unordered_set<Var, ObjectPtrHash, ObjectPtrEqual>;
 
+namespace cuda::z3 {
+
+ffi::Tuple<ffi::Array<int64_t>, ffi::Array<int64_t>, int64_t>
+SolveRecursiveOwnerRingList(
+    int64_t num_stages, ffi::Array<int64_t> latencies, ffi::Array<int64_t> iis,
+    ffi::Array<int64_t> resource_flags,
+    ffi::Array<ffi::Array<int64_t>> data_deps,
+    ffi::Array<ffi::Array<int64_t>> resource_deps,
+    ffi::Array<ffi::Array<int64_t>> owner_exclusion_deps,
+    ffi::Array<ffi::Array<int64_t>> pipe_order_deps,
+    ffi::Array<int64_t> buffer_sizes,
+    ffi::Array<ffi::Array<int64_t>> memory_groups,
+    ffi::Array<ffi::Array<int64_t>> stage_order_deps, bool enable_offset,
+    ffi::Array<int64_t> manual_stages, bool manual_schedule,
+    int64_t resource_bits, int64_t seed, bool recalculate_buffer_versions,
+    bool verbose, ffi::Optional<ffi::String> debug_dir);
+
+}  // namespace cuda::z3
+
 namespace {
 
 constexpr const char *kZ3PipelineConfig = "tl.enable_z3_pipeline_planning";
@@ -351,52 +370,21 @@ PrimFunc ValidateAndConsume(PrimFunc func) {
   OwnerProblem first = ReadProblem(owners[0]);
   OwnerProblem second = ReadProblem(owners[1]);
   RequireSameProblem(first, second);
-  auto scheduler = ffi::Function::GetGlobal("tl.cuda.transform.z3_schedule_loop_python");
-  ICHECK(scheduler.has_value())
-      << "Z3OwnerRingPlanning: tl.cuda.transform.z3_schedule_loop_python is not registered";
   using SolverResult = ffi::Tuple<ffi::Array<int64_t>, ffi::Array<int64_t>, int64_t>;
-  SolverResult result = scheduler.value()(
+  SolverResult result = cuda::z3::SolveRecursiveOwnerRingList(
       pipeline->depth,
       Array<int64_t>({first.latencies[0], second.latencies[0]}),
       Array<int64_t>({first.iis[0], second.iis[0]}),
       Array<int64_t>({first.resource_flags[0], second.resource_flags[0]}),
       Array<Array<int64_t>>(), Array<Array<int64_t>>(), ToFFI(first.owner),
-      Array<Array<int64_t>>({Array<int64_t>({0, 1})}), ToFFI(first.buffer_sizes), ToFFI(first.memory_groups),
-      Array<Array<int64_t>>(), first.enable_offset, Array<int64_t>(), false,
-      first.resource_bits, first.seed, first.recalculate, first.verbose, first.debug_dir)
-      .cast<SolverResult>();
+      Array<Array<int64_t>>({Array<int64_t>({0, 1})}), ToFFI(first.buffer_sizes),
+      ToFFI(first.memory_groups), Array<Array<int64_t>>(), first.enable_offset,
+      Array<int64_t>(), false, first.resource_bits, first.seed, first.recalculate,
+      first.verbose, first.debug_dir);
   Array<int64_t> starts = result.get<0>();
-  Array<int64_t> versions = result.get<1>();
   int64_t ii = result.get<2>();
   ICHECK_EQ(starts.size(), 2);
   ICHECK_GT(ii, 0);
-  int64_t left_residue = starts[0] % ii;
-  int64_t right_residue = starts[1] % ii;
-  ICHECK(starts[0] >= 0 && starts[1] >= 0 && left_residue >= 0 && right_residue >= 0);
-  ICHECK(starts[0] < ii && starts[1] < ii)
-      << "Z3OwnerRingPlanning: owner epochs must remain in stage zero";
-  int64_t latency_lr = first.owner[0][2];
-  int64_t latency_rl = first.owner[0][3];
-  ICHECK(right_residue - left_residue >= latency_lr &&
-         left_residue - right_residue + ii >= latency_rl)
-      << "Z3OwnerRingPlanning: declared owner order 0 -> 1 does not satisfy "
-         "forward and reverse hand-off constraints; refusing to reorder";
-  for (int64_t version : versions) {
-    ICHECK(version >= 1 && version <= pipeline->depth)
-        << "Z3OwnerRingPlanning: solver buffer version exceeds runtime ring depth";
-  }
-  for (const auto &group : first.memory_groups) {
-    ICHECK(!group.empty());
-    int64_t used = 0;
-    for (size_t member = 1; member < group.size(); ++member) {
-      int64_t buffer = group[member];
-      ICHECK(buffer >= 0 && buffer < static_cast<int64_t>(versions.size()) &&
-             buffer < static_cast<int64_t>(first.buffer_sizes.size()));
-      used += versions[buffer] * first.buffer_sizes[buffer];
-    }
-    ICHECK(used <= group[0])
-        << "Z3OwnerRingPlanning: selected versions exceed declared memory capacity";
-  }
 
   func.CopyOnWrite()->body = OwnerRingRewriter(owners, schedule_block, ii, starts)(func->body);
   return func;

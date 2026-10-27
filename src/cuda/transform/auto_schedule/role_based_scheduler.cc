@@ -52,6 +52,7 @@
 #include <vector>
 
 #include "./memory_detector.h"
+#include "./role_layout.h"
 #include "cuda/op/builtin.h"
 #include "cuda/target_utils.h"
 #include "cuda/transform/ws_analysis.h"
@@ -75,11 +76,6 @@ enum class Role : uint8_t { kWorker = 0, kLoad = 1, kMma = 2, kStore = 3 };
 constexpr int kNumRoles = 4;
 constexpr std::array<Role, kNumRoles> kAllRoles = {Role::kWorker, Role::kLoad,
                                                    Role::kMma, Role::kStore};
-
-constexpr int kAuxiliaryRoleNumRegisters = 24;
-
-// Registers for a widened cp.async Load warpgroup's addressing work.
-constexpr int kCpAsyncLoadNumRegisters = 48;
 
 // Occupancy estimate cap, and the per-SM capacities bounding it.
 constexpr int kHeuristicBlocksPerSM = 4;
@@ -1072,7 +1068,7 @@ private:
       return 0;
     int budget = num_warps / 4 * avg;
     for (int wg = worker_warps / 4; wg < num_warps / 4; ++wg) {
-      int nreg = kAuxiliaryRoleNumRegisters; // idle warps donate too
+      int nreg = kCudaAuxiliaryRoleNumRegisters; // idle warps donate too
       for (const RolePlan &p : plans)
         if (p.role != Role::kWorker && p.warp_lo < (wg + 1) * 4 &&
             wg * 4 < p.warp_hi)
@@ -1120,26 +1116,19 @@ private:
     return std::max<int64_t>(1, blocks);
   }
 
-  // Plan the active roles in warp order: worker low, one warp per
-  // auxiliary role, a cp.async Load widened to a full warpgroup.
+  // Plan the active roles through the same warp-range and auxiliary-budget
+  // policy used by recursive WS construction.
   std::vector<RolePlan> PlanRoles(RoleMask active) const {
-    int worker_warps = worker_threads_ / 32;
+    std::vector<CudaRoleLayout> layout =
+        PlanCudaRoleLayout(active.bits, worker_threads_ / 32, HasCpAsyncLoad());
     std::vector<RolePlan> plans;
-    int cursor = active.Contains(Role::kWorker) ? worker_warps : 0;
-    for (Role role : kAllRoles) {
-      if (!active.Contains(role))
-        continue;
-      if (role == Role::kWorker) {
-        plans.push_back({role, 0, worker_warps, 0});
-        continue;
-      }
-      bool wide = role == Role::kLoad && HasCpAsyncLoad();
-      plans.push_back(
-          {role, cursor, cursor + (wide ? 4 : 1),
-           wide ? kCpAsyncLoadNumRegisters : kAuxiliaryRoleNumRegisters});
-      cursor = plans.back().warp_hi;
-    }
-    int num_warps = (cursor + 3) / 4 * 4;
+    for (const CudaRoleLayout &entry : layout)
+      plans.push_back({static_cast<Role>(static_cast<unsigned>(entry.role)), entry.warp_lo,
+                       entry.warp_hi, entry.max_nreg});
+    int num_warps = 0;
+    for (const RolePlan &p : plans)
+      num_warps = std::max(num_warps, p.warp_hi);
+    num_warps = (num_warps + 3) / 4 * 4;
     // Registers per thread at the occupancy target.
     int num_threads = num_warps * 32;
     int avg = 65536 / (EstimateBlocksPerSM(num_threads) * num_threads) / 8 * 8;

@@ -26,8 +26,10 @@ namespace tl {
  *  - optional ``tl_z3_pipeline_require_measured`` (default false).
  *
  * The Python module ``tilelang.cuda.task_cost`` must be imported so its
- * ``tl.cuda.estimate_task`` and ``tl.cuda.z3_memory_group_capacities`` FFI
- * callbacks are registered. Unsupported or opaque analyses fail explicitly;
+ * ``tl.cuda.estimate_task``, ``tl.cuda.estimate_composed_task``, and
+ * ``tl.cuda.z3_memory_group_capacities`` FFI callbacks are registered.
+ * Recursive serial/repeat/branch and bounded-While costs use finite Extent
+ * objects for dynamic values. Unsupported or opaque analyses fail explicitly;
  * no default hardware capacity, zero byte count, or dropped dependency is
  * substituted.
  */

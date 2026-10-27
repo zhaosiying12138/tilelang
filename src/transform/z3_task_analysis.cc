@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <limits>
 #include <map>
+#include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -35,12 +37,15 @@
 #include "../cuda/transform/z3_dependency_analysis.h"
 #include "../op/builtin.h"
 #include "../op/copy.h"
+#include "../op/fill.h"
 #include "../op/gemm.h"
 #include "../op/operator.h"
 #include "../op/parallel.h"
 #include "../op/utils.h"
 #include "common/bind_utils.h"
 #include "common/pipeline_utils.h"
+#include "common/z3_buffer_versions.h"
+#include "common/z3_cost_expression.h"
 #include "common/z3_schedule_hints.h"
 
 namespace tvm {
@@ -48,6 +53,47 @@ namespace tl {
 
 using namespace tirx;
 using namespace ffi;
+
+ffi::Any NativeExtent::ToFFI() const {
+  ICHECK_GE(upper_bound, 0);
+  if (!dynamic) return Integer(upper_bound);
+  Map<String, Any> result;
+  result.Set("upper_bound", Integer(upper_bound));
+  result.Set("reliability", String(reliability));
+  return result;
+}
+
+Map<String, Any> NativeCostExpr::ToFFI() const {
+  Map<String, Any> result;
+  switch (kind) {
+    case Kind::kLeaf:
+      result.Set("kind", String("leaf"));
+      result.Set("features", features);
+      break;
+    case Kind::kSerial: {
+      Array<Any> children_ffi;
+      for (const NativeCostExpr &child : children) {
+        children_ffi.push_back(child.ToFFI());
+      }
+      result.Set("kind", String("serial"));
+      result.Set("children", children_ffi);
+      break;
+    }
+    case Kind::kRepeat:
+      ICHECK_EQ(children.size(), 1U);
+      result.Set("kind", String("repeat"));
+      result.Set("trips", trips.ToFFI());
+      result.Set("body", children[0].ToFFI());
+      break;
+    case Kind::kBranch:
+      ICHECK_EQ(children.size(), 2U);
+      result.Set("kind", String("branch"));
+      result.Set("then", children[0].ToFFI());
+      result.Set("else", children[1].ToFFI());
+      break;
+  }
+  return result;
+}
 
 namespace {
 
@@ -177,6 +223,83 @@ bool KnownModelScope(const std::string &scope) {
          scope == "tmem";
 }
 
+NativeExtent MultiplyExtents(const NativeExtent &left,
+                             const NativeExtent &right, const char *what) {
+  int64_t upper = CheckedMul(left.upper_bound, right.upper_bound, what);
+  if (!left.dynamic && !right.dynamic) return NativeExtent::Exact(upper);
+  std::string reliability =
+      left.reliability == "unknown" || right.reliability == "unknown"
+          ? "unknown"
+          : (left.reliability == "estimated" ||
+                     right.reliability == "estimated"
+                 ? "estimated"
+                 : "upper_bound");
+  return NativeExtent::UpperBound(upper, reliability);
+}
+
+NativeExtent MaximumExtent(const NativeExtent &left,
+                           const NativeExtent &right) {
+  if (!left.dynamic && !right.dynamic) {
+    return NativeExtent::Exact(std::max(left.upper_bound, right.upper_bound));
+  }
+  return NativeExtent::UpperBound(
+      std::max(left.upper_bound, right.upper_bound),
+      left.reliability == "unknown" || right.reliability == "unknown"
+          ? "unknown"
+          : "upper_bound");
+}
+
+/* Return a provably finite extent without treating a dtype-wide bound as
+ * useful dynamic information. A static allocation dimension is an independent
+ * cap, matching the actual region rather than replacing its extent wholesale. */
+std::optional<NativeExtent> TryFiniteExtent(
+    const PrimExpr &expr, arith::Analyzer *analyzer,
+    std::optional<int64_t> shape_bound, const char *what) {
+  ICHECK(analyzer != nullptr);
+  PrimExpr simplified = analyzer->Simplify(expr);
+  if (const int64_t *value = as_const_int(simplified)) {
+    ICHECK_GE(*value, 0) << "InferZ3PipelineProblem: negative " << what;
+    if (shape_bound.has_value()) {
+      ICHECK_GE(*shape_bound, 0);
+      ICHECK_LE(*value, *shape_bound)
+          << "InferZ3PipelineProblem: " << what
+          << " exceeds its static buffer-shape bound";
+    }
+    return NativeExtent::Exact(*value);
+  }
+
+  std::optional<int64_t> upper = shape_bound;
+  arith::ConstIntBound bound = analyzer->const_int_bound(expr);
+  arith::Analyzer unconstrained_analyzer;
+  Var unconstrained("z3_unconstrained_extent", expr.dtype());
+  int64_t unconstrained_max =
+      unconstrained_analyzer.const_int_bound(unconstrained)->max_value;
+  bool useful = bound->max_value >= 0 &&
+                bound->max_value != arith::ConstIntBound::kPosInf &&
+                bound->max_value < unconstrained_max;
+  if (useful) {
+    upper = upper.has_value() ? std::min(*upper, bound->max_value)
+                              : bound->max_value;
+  }
+  if (!upper.has_value()) return std::nullopt;
+  ICHECK_GE(*upper, 0) << "InferZ3PipelineProblem: negative " << what;
+  return NativeExtent::UpperBound(*upper);
+}
+
+NativeExtent RequireFiniteExtent(const PrimExpr &expr,
+                                 arith::Analyzer *analyzer,
+                                 std::optional<int64_t> shape_bound,
+                                 const char *what) {
+  std::optional<NativeExtent> result =
+      TryFiniteExtent(expr, analyzer, shape_bound, what);
+  ICHECK(result.has_value())
+      << "InferZ3PipelineProblem: " << what
+      << " requires a finite dynamic extent upper_bound from constraints, "
+         "assumptions, static buffer shape, or "
+      << kZ3CudaTripBound;
+  return result.value();
+}
+
 /* The flattener intentionally mirrors the pipeline adapter. Buffer accesses
  * use the same strict collector as nested CUDA Z3 analysis. */
 
@@ -279,6 +402,17 @@ struct NativeTaskFeatures {
   bool unknown{false};
   bool upper_bound{false};
 
+  bool Empty() const {
+    if (!copies.empty() || !gemms.empty() || scalar != 0 ||
+        structural_resource_mask != 0 || unknown) {
+      return false;
+    }
+    for (const auto &[_, count] : vector) {
+      if (count != 0) return false;
+    }
+    return true;
+  }
+
   Map<String, Any> ToFFI() const {
     Map<String, Any> vector_ffi;
     for (const auto &[name, count] : vector) {
@@ -334,8 +468,14 @@ TaskCostOverride GetTaskCostOverride(const Stmt &stmt) {
 
 class TaskFeatureExtractor : public StmtExprVisitor {
 public:
-  static NativeTaskFeatures Extract(const Stmt &stmt) {
+  static NativeTaskFeatures Extract(const Stmt &stmt, int64_t scale = 1,
+                                    int vector_depth = 0,
+                                    arith::Analyzer *analyzer = nullptr) {
     TaskFeatureExtractor extractor;
+    arith::Analyzer local_analyzer;
+    extractor.scale_ = scale;
+    extractor.vector_depth_ = vector_depth;
+    extractor.analyzer_ = analyzer == nullptr ? &local_analyzer : analyzer;
     extractor(stmt);
     return std::move(extractor.features_);
   }
@@ -363,11 +503,15 @@ private:
   }
 
   void AddMemoryAccess(const std::string &src, const std::string &dst,
-                       int64_t bytes, const std::string &geometry,
+                       const NativeExtent &bytes, const std::string &geometry,
                        int64_t width) {
     if (src == "register" && dst == "register") {
+      ICHECK(!bytes.dynamic)
+          << "InferZ3PipelineProblem: dynamic register vector read bytes "
+             "require composed loop extraction";
       int64_t &read_bytes = features_.vector["read_bytes"];
-      read_bytes = CheckedAdd(read_bytes, bytes, "register vector read bytes");
+      read_bytes = CheckedAdd(read_bytes, bytes.upper_bound,
+                              "register vector read bytes");
       features_.structural_resource_mask |= 16;
       return;
     }
@@ -375,24 +519,51 @@ private:
       features_.structural_resource_mask |= kAllResources;
       features_.unknown = true;
     }
+    features_.upper_bound = features_.upper_bound || bytes.dynamic;
     Map<String, Any> access;
     access.Set("src_scope", String(src));
     access.Set("dst_scope", String(dst));
-    access.Set("bytes", Integer(bytes));
+    access.Set("bytes", bytes.ToFFI());
     access.Set("geometry", String(geometry));
     access.Set("width", Integer(width));
-    access.Set("reliability", String("measured"));
+    access.Set("reliability",
+               String(bytes.dynamic ? bytes.reliability : "measured"));
     features_.copies.push_back(std::move(access));
   }
 
-  int64_t RegionElements(const Array<Range> &ranges, int64_t multiplier) {
-    int64_t elements = multiplier;
-    for (const Range &range : ranges) {
-      elements = CheckedMul(elements,
-                            StaticNonnegative(range->extent, "copy region extent"),
-                            "copy region elements");
+  void AddMemoryAccess(const std::string &src, const std::string &dst,
+                       int64_t bytes, const std::string &geometry,
+                       int64_t width) {
+    AddMemoryAccess(src, dst, NativeExtent::Exact(bytes), geometry, width);
+  }
+
+  NativeExtent RegionElements(const Buffer &buffer, const Array<Range> &ranges,
+                              int64_t multiplier) {
+    NativeExtent elements = NativeExtent::Exact(multiplier);
+    for (size_t i = 0; i < ranges.size(); ++i) {
+      std::optional<int64_t> shape;
+      if (i < buffer->shape.size()) {
+        PrimExpr simplified = analyzer_->Simplify(buffer->shape[i]);
+        const int64_t *shape_extent = as_const_int(simplified);
+        if (shape_extent != nullptr) {
+          ICHECK_GE(*shape_extent, 0);
+          shape = *shape_extent;
+        }
+      }
+      NativeExtent extent =
+          RequireFiniteExtent(ranges[i]->extent, analyzer_, shape,
+                              "copy region extent");
+      elements = MultiplyExtents(elements, extent, "copy region elements");
     }
     return elements;
+  }
+
+  NativeExtent ElementsBytes(const NativeExtent &elements, DataType dtype) {
+    NativeExtent bits = MultiplyExtents(
+        elements, NativeExtent::Exact(DTypeBits(dtype)), "copy payload bits");
+    int64_t bytes = (CheckedAdd(bits.upper_bound, 7, "copy payload rounding")) / 8;
+    return bits.dynamic ? NativeExtent::UpperBound(bytes, bits.reliability)
+                        : NativeExtent::Exact(bytes);
   }
 
   int64_t ElementsBytes(int64_t elements, DataType dtype) {
@@ -401,12 +572,17 @@ private:
   }
 
   void HandleCopy(const CopyNode *copy) {
-    int64_t src_elements = RegionElements(copy->src_range, scale_);
-    int64_t dst_elements = RegionElements(copy->dst_range, scale_);
-    int64_t src_bytes = ElementsBytes(src_elements, copy->src->dtype);
-    int64_t dst_bytes = ElementsBytes(dst_elements, copy->dst->dtype);
-    if (src_bytes != dst_bytes) features_.upper_bound = true;
-    int64_t bytes = std::max(src_bytes, dst_bytes);
+    NativeExtent src_elements =
+        RegionElements(copy->src, copy->src_range, scale_);
+    NativeExtent dst_elements =
+        RegionElements(copy->dst, copy->dst_range, scale_);
+    NativeExtent src_bytes = ElementsBytes(src_elements, copy->src->dtype);
+    NativeExtent dst_bytes = ElementsBytes(dst_elements, copy->dst->dtype);
+    if (src_bytes.upper_bound != dst_bytes.upper_bound || src_bytes.dynamic ||
+        dst_bytes.dynamic) {
+      features_.upper_bound = true;
+    }
+    NativeExtent bytes = MaximumExtent(src_bytes, dst_bytes);
     std::string geometry = "unknown";
     int64_t width = 0;
     if (auto annotated = copy->annotations.Get("coalesced_width")) {
@@ -418,6 +594,14 @@ private:
     }
     AddMemoryAccess(ModelScope(copy->src), ModelScope(copy->dst), bytes,
                     geometry, width);
+  }
+
+  void HandleFill(const FillNode *fill) {
+    NativeExtent elements = RegionElements(fill->dst, fill->region, scale_);
+    NativeExtent bytes = ElementsBytes(elements, fill->dst->dtype);
+    AddMemoryAccess("register", ModelScope(fill->dst), bytes, "unknown",
+                    DTypeBytes(fill->dst->dtype));
+    this->VisitExpr(fill->value);
   }
 
   void HandleGemm(const GemmNode *gemm) {
@@ -487,6 +671,8 @@ private:
     if (auto tile_op = ParseOperator(GetRef<Call>(op)); tile_op.defined()) {
       if (const auto *copy = tile_op.as<CopyNode>()) {
         HandleCopy(copy);
+      } else if (const auto *fill = tile_op.as<FillNode>()) {
+        HandleFill(fill);
       } else if (const auto *gemm = tile_op.as<GemmNode>()) {
         HandleGemm(gemm);
       } else if (const auto *parallel = tile_op.as<ParallelOpNode>()) {
@@ -568,10 +754,421 @@ private:
     StmtExprVisitor::VisitExpr_(op);
   }
 
+  void VisitExpr_(const CastNode *op) final {
+    // VectorOps has no separate cast counter; logic is the calibrated CUDA-core
+    // conversion bucket. Keeping it non-free avoids silently dropping casts.
+    CountOperation("logic", op->dtype);
+    StmtExprVisitor::VisitExpr_(op);
+  }
+
   NativeTaskFeatures features_;
   int64_t scale_{1};
   int vector_depth_{0};
+  arith::Analyzer *analyzer_{nullptr};
 };
+
+class NativeCostExprExtractor {
+public:
+  static NativeCostExpr Extract(const Stmt &stmt,
+                                bool allow_unbounded_while = false) {
+    arith::Analyzer analyzer;
+    NativeCostExprExtractor extractor(allow_unbounded_while);
+    return extractor.ExtractImpl(stmt, &analyzer, 1, 0);
+  }
+
+private:
+  explicit NativeCostExprExtractor(bool allow_unbounded_while)
+      : allow_unbounded_while_(allow_unbounded_while) {}
+
+  static void AppendSequence(const Stmt &stmt, Array<Stmt> *output) {
+    if (!stmt.defined()) return;
+    if (const auto *seq = stmt.as<SeqStmtNode>()) {
+      for (const Stmt &child : seq->seq) AppendSequence(child, output);
+    } else {
+      output->push_back(stmt);
+    }
+  }
+
+  static Stmt MakeSequence(const Array<Stmt> &statements) {
+    if (statements.empty()) return Stmt();
+    if (statements.size() == 1) return statements[0];
+    return SeqStmt(statements);
+  }
+
+  static bool UsesVar(const PrimExpr &expr, const Var &wanted) {
+    bool found = false;
+    PostOrderVisit(expr, [&](const ObjectRef &node) {
+      if (const auto *var = node.as<VarNode>()) {
+        found = found || GetRef<Var>(var).same_as(wanted);
+      }
+    });
+    return found;
+  }
+
+  static int64_t ReadTripBoundValue(const Any &value) {
+    const auto *imm = value.as<IntImmNode>();
+    ICHECK(imm != nullptr)
+        << "InferZ3PipelineProblem: " << kZ3CudaTripBound
+        << " must be a non-negative IntImm";
+    ICHECK_GE(imm->value, 0)
+        << "InferZ3PipelineProblem: " << kZ3CudaTripBound
+        << " must be non-negative";
+    return imm->value;
+  }
+
+  static std::optional<int64_t> ForTripBound(const ForNode *loop) {
+    auto value = loop->annotations.Get(kZ3CudaTripBound);
+    if (!value.has_value()) return std::nullopt;
+    return ReadTripBoundValue(value.value());
+  }
+
+  NativeExtent InferForTrips(const ForNode *loop, arith::Analyzer *analyzer,
+                             std::optional<int64_t> explicit_bound) {
+    std::optional<NativeExtent> extent =
+        TryFiniteExtent(loop->extent, analyzer, std::nullopt,
+                        "serial loop trip extent");
+    PrimExpr step = loop->step.has_value()
+                        ? loop->step.value()
+                        : IntImm(loop->loop_var.dtype(), 1);
+    const int64_t *constant_step = as_const_int(analyzer->Simplify(step));
+    int64_t minimum_step = 1;
+    bool exact_step = constant_step != nullptr;
+    if (constant_step != nullptr) {
+      ICHECK_GT(*constant_step, 0)
+          << "InferZ3PipelineProblem: serial loop step must be positive for "
+             "finite trip inference";
+      minimum_step = *constant_step;
+    } else {
+      arith::ConstIntBound bound = analyzer->const_int_bound(step);
+      ICHECK_GT(bound->min_value, 0)
+          << "InferZ3PipelineProblem: symbolic serial loop step requires a "
+             "provably positive lower bound or an explicit "
+          << kZ3CudaTripBound;
+      minimum_step = bound->min_value;
+    }
+
+    std::optional<NativeExtent> actual;
+    if (extent.has_value()) {
+      int64_t upper = extent->upper_bound / minimum_step +
+                      (extent->upper_bound % minimum_step != 0);
+      actual = extent->dynamic || !exact_step
+                   ? NativeExtent::UpperBound(upper)
+                   : NativeExtent::Exact(upper);
+    }
+    if (!explicit_bound.has_value()) {
+      ICHECK(actual.has_value())
+          << "InferZ3PipelineProblem: serial For requires a finite trip upper "
+             "bound; use constraints, assumptions, or "
+          << kZ3CudaTripBound
+          << " instead of converting an unknown extent to one";
+      return actual.value();
+    }
+    if (!actual.has_value()) {
+      return NativeExtent::UpperBound(*explicit_bound);
+    }
+    if (!actual->dynamic) {
+      ICHECK_LE(actual->upper_bound, *explicit_bound)
+          << "InferZ3PipelineProblem: static serial trip count exceeds "
+          << kZ3CudaTripBound;
+      return actual.value();
+    }
+    return NativeExtent::UpperBound(
+        std::min(actual->upper_bound, *explicit_bound));
+  }
+
+  NativeCostExpr Leaf(const Stmt &stmt, arith::Analyzer *analyzer,
+                      int64_t scale, int vector_depth) {
+    NativeTaskFeatures features =
+        TaskFeatureExtractor::Extract(stmt, scale, vector_depth, analyzer);
+    return NativeCostExpr::Leaf(features.ToFFI(),
+                                features.structural_resource_mask);
+  }
+
+  NativeCostExpr ConditionCost(const PrimExpr &condition,
+                               arith::Analyzer *analyzer, int64_t scale,
+                               int vector_depth) {
+    NativeTaskFeatures features = TaskFeatureExtractor::Extract(
+        Evaluate(condition), scale, vector_depth, analyzer);
+    if (features.Empty()) return NativeCostExpr::Serial({});
+    return NativeCostExpr::Leaf(features.ToFFI(),
+                                features.structural_resource_mask);
+  }
+
+  std::vector<char> FindInvariantBinds(const Array<Stmt> &statements,
+                                       const Var &loop_var) {
+    ScalarVarSet local_definitions;
+    for (const Stmt &stmt : statements) {
+      PostOrderVisit(stmt, [&](const ObjectRef &node) {
+        if (const auto *bind = node.as<BindNode>()) {
+          local_definitions.insert(bind->var);
+        }
+      });
+    }
+    ScalarVarSet invariant_definitions;
+    std::vector<char> result(statements.size(), 0);
+    for (size_t i = 0; i < statements.size(); ++i) {
+      const auto *bind = statements[i].as<BindNode>();
+      if (bind == nullptr || !HasCloneableScalarBindType(bind) ||
+          !IsProvenDuplicatableScalarValue(bind->value) ||
+          SideEffect(bind->value) != CallEffectKind::kPure ||
+          UsesVar(bind->value, loop_var)) {
+        continue;
+      }
+      bool depends_on_variant_local = false;
+      for (const Var &local : local_definitions) {
+        if (!invariant_definitions.count(local) &&
+            UsesVar(bind->value, local)) {
+          depends_on_variant_local = true;
+          break;
+        }
+      }
+      if (depends_on_variant_local) continue;
+      result[i] = 1;
+      invariant_definitions.insert(bind->var);
+    }
+    return result;
+  }
+
+  NativeCostExpr ExtractSerialFor(const ForNode *loop,
+                                  arith::Analyzer *analyzer, int64_t scale,
+                                  int vector_depth,
+                                  std::optional<int64_t> explicit_bound) {
+    NativeExtent trips = InferForTrips(loop, analyzer, explicit_bound);
+    std::unique_ptr<arith::Analyzer> context = analyzer->Clone();
+    context->Bind(loop->loop_var,
+                  Range::FromMinExtent(loop->min, loop->extent));
+
+    Array<Stmt> statements;
+    AppendSequence(loop->body, &statements);
+    std::vector<char> hoist = FindInvariantBinds(statements, loop->loop_var);
+    Array<Stmt> remaining;
+    std::vector<NativeCostExpr> prefix;
+    for (size_t i = 0; i < statements.size(); ++i) {
+      if (!hoist[i]) {
+        remaining.push_back(statements[i]);
+        continue;
+      }
+      prefix.push_back(ExtractImpl(statements[i], context.get(), scale,
+                                   vector_depth));
+      const auto *bind = statements[i].as<BindNode>();
+      ICHECK(bind != nullptr);
+      context->Bind(bind->var, bind->value);
+    }
+    NativeCostExpr repeated = NativeCostExpr::Repeat(
+        trips, ExtractImpl(MakeSequence(remaining), context.get(), scale,
+                           vector_depth));
+    if (prefix.empty()) return repeated;
+    prefix.push_back(std::move(repeated));
+    return NativeCostExpr::Serial(std::move(prefix));
+  }
+
+  NativeCostExpr ExtractFor(const ForNode *loop, arith::Analyzer *analyzer,
+                            int64_t scale, int vector_depth,
+                            std::optional<int64_t> explicit_bound) {
+    if (loop->kind == ForKind::kSerial || loop->kind == ForKind::kUnrolled) {
+      return ExtractSerialFor(loop, analyzer, scale, vector_depth,
+                              explicit_bound);
+    }
+    ICHECK(!explicit_bound.has_value())
+        << "InferZ3PipelineProblem: " << kZ3CudaTripBound
+        << " is only valid on serial/unrolled For or While cost recursion";
+    int64_t extent = StaticNonnegative(loop->extent, "task loop extent");
+    int64_t nested_scale =
+        CheckedMul(scale, extent, "task loop trip count");
+    bool parallel = loop->kind == ForKind::kParallel ||
+                    loop->kind == ForKind::kVectorized ||
+                    loop->kind == ForKind::kThreadBinding;
+    std::unique_ptr<arith::Analyzer> context = analyzer->Clone();
+    context->Bind(loop->loop_var,
+                  Range::FromMinExtent(loop->min, loop->extent));
+    return ExtractImpl(loop->body, context.get(), nested_scale,
+                       vector_depth + (parallel ? 1 : 0));
+  }
+
+  NativeCostExpr ExtractWhile(const WhileNode *loop,
+                              arith::Analyzer *analyzer, int64_t scale,
+                              int vector_depth,
+                              std::optional<int64_t> explicit_bound) {
+    NativeCostExpr condition =
+        ConditionCost(loop->condition, analyzer, scale, vector_depth);
+    std::unique_ptr<arith::Analyzer> body_context = analyzer->Clone();
+    NativeCostExpr body;
+    {
+      With<arith::ConstraintContext> scope(body_context.get(), loop->condition);
+      body = ExtractImpl(loop->body, body_context.get(), scale, vector_depth);
+    }
+    NativeCostExpr iteration =
+        NativeCostExpr::Serial({std::move(condition), std::move(body)});
+
+    const int64_t *constant_condition =
+        as_const_int(analyzer->Simplify(loop->condition));
+    if (constant_condition != nullptr && *constant_condition == 0) {
+      return NativeCostExpr::Repeat(NativeExtent::Exact(0), iteration);
+    }
+    if (explicit_bound.has_value()) {
+      return NativeCostExpr::Repeat(
+          NativeExtent::UpperBound(*explicit_bound), iteration);
+    }
+    ICHECK(allow_unbounded_while_)
+        << "InferZ3PipelineProblem: While requires a finite trip upper bound; "
+           "provide "
+        << kZ3CudaTripBound
+        << " or both T.Task latency and II overrides. Explicit costs do not "
+           "waive dependency/state footprints";
+    // Only structural resources are consumed from this placeholder tree. The
+    // caller replaces both latency and II with task-level overrides.
+    iteration.contains_unbounded_while = true;
+    return iteration;
+  }
+
+  NativeCostExpr ExtractImpl(const Stmt &stmt, arith::Analyzer *analyzer,
+                             int64_t scale, int vector_depth) {
+    if (!stmt.defined()) return NativeCostExpr::Serial({});
+    if (const auto *seq = stmt.as<SeqStmtNode>()) {
+      std::unique_ptr<arith::Analyzer> context = analyzer->Clone();
+      std::vector<NativeCostExpr> children;
+      children.reserve(seq->seq.size());
+      for (const Stmt &child : seq->seq) {
+        children.push_back(
+            ExtractImpl(child, context.get(), scale, vector_depth));
+        const auto *bind = child.as<BindNode>();
+        if (bind != nullptr &&
+            SideEffect(bind->value) == CallEffectKind::kPure) {
+          context->Bind(bind->var, bind->value);
+        }
+      }
+      return NativeCostExpr::Serial(std::move(children));
+    }
+    if (const auto *attr = stmt.as<AttrStmtNode>()) {
+      if (attr->attr_key == "tl.assume" ||
+          attr->attr_key == "tl.assume_requires_runtime_check") {
+        const auto *condition = attr->node.as<PrimExprNode>();
+        ICHECK(condition != nullptr)
+            << "InferZ3PipelineProblem: assumption node must be a PrimExpr";
+        std::unique_ptr<arith::Analyzer> context = analyzer->Clone();
+        With<arith::ConstraintContext> scope(
+            context.get(), GetRef<PrimExpr>(condition), true);
+        return ExtractImpl(attr->body, context.get(), scale, vector_depth);
+      }
+      if (attr->attr_key == kZ3CudaTripBound) {
+        // Accept the conventional node=bound/value=1 spelling as well as a
+        // direct value=bound attribute; For annotations always carry the bound
+        // directly in their annotation value.
+        const Any &bound_value = attr->node.as<IntImmNode>() != nullptr
+                                     ? attr->node
+                                     : attr->value;
+        int64_t bound = ReadTripBoundValue(bound_value);
+        if (const auto *loop = attr->body.as<ForNode>()) {
+          return ExtractFor(loop, analyzer, scale, vector_depth, bound);
+        }
+        if (const auto *loop = attr->body.as<WhileNode>()) {
+          return ExtractWhile(loop, analyzer, scale, vector_depth, bound);
+        }
+        LOG(FATAL) << "InferZ3PipelineProblem: " << kZ3CudaTripBound
+                   << " must directly wrap a For or While statement";
+      }
+      return ExtractImpl(attr->body, analyzer, scale, vector_depth);
+    }
+    if (const auto *loop = stmt.as<ForNode>()) {
+      return ExtractFor(loop, analyzer, scale, vector_depth,
+                        ForTripBound(loop));
+    }
+    if (const auto *loop = stmt.as<WhileNode>()) {
+      return ExtractWhile(loop, analyzer, scale, vector_depth, std::nullopt);
+    }
+    if (const auto *branch = stmt.as<IfThenElseNode>()) {
+      NativeCostExpr condition = ConditionCost(branch->condition, analyzer,
+                                               scale, vector_depth);
+      std::unique_ptr<arith::Analyzer> then_context = analyzer->Clone();
+      NativeCostExpr then_expr;
+      {
+        With<arith::ConstraintContext> scope(then_context.get(),
+                                             branch->condition);
+        then_expr = ExtractImpl(branch->then_case, then_context.get(), scale,
+                                vector_depth);
+      }
+      NativeCostExpr else_expr = NativeCostExpr::Serial({});
+      if (branch->else_case.defined()) {
+        std::unique_ptr<arith::Analyzer> else_context = analyzer->Clone();
+        With<arith::ConstraintContext> scope(else_context.get(),
+                                             Not(branch->condition));
+        else_expr = ExtractImpl(branch->else_case.value(), else_context.get(),
+                                scale, vector_depth);
+      }
+      return NativeCostExpr::Serial(
+          {std::move(condition),
+           NativeCostExpr::Branch(std::move(then_expr),
+                                  std::move(else_expr))});
+    }
+    if (const auto *block = stmt.as<SBlockNode>()) {
+      std::vector<NativeCostExpr> children;
+      if (block->init.defined()) {
+        children.push_back(
+            ExtractImpl(block->init.value(), analyzer, scale, vector_depth));
+      }
+      children.push_back(
+          ExtractImpl(block->body, analyzer, scale, vector_depth));
+      return NativeCostExpr::Serial(std::move(children));
+    }
+    if (const auto *realize = stmt.as<SBlockRealizeNode>()) {
+      return ExtractImpl(realize->block, analyzer, scale, vector_depth);
+    }
+    if (const auto *evaluate = stmt.as<EvaluateNode>()) {
+      if (const auto *call = evaluate->value.as<CallNode>()) {
+        if (auto tile_op = ParseOperator(GetRef<Call>(call));
+            tile_op.defined()) {
+          if (const auto *parallel = tile_op.as<ParallelOpNode>()) {
+            return ExtractImpl(parallel->GetRoot(), analyzer, scale,
+                               vector_depth);
+          }
+        }
+      }
+    }
+    return Leaf(stmt, analyzer, scale, vector_depth);
+  }
+
+  bool allow_unbounded_while_{false};
+};
+
+int CostReliabilityRank(const std::string &reliability) {
+  if (reliability == "measured") return 0;
+  if (reliability == "estimated") return 1;
+  if (reliability == "upper_bound") return 2;
+  ICHECK_EQ(reliability, "unknown")
+      << "InferZ3PipelineProblem: invalid cost reliability " << reliability;
+  return 3;
+}
+
+std::string WorstCostReliability(const std::string &left,
+                                 const std::string &right) {
+  return CostReliabilityRank(left) >= CostReliabilityRank(right) ? left : right;
+}
+
+/* Recover the reliability carried by the composed native expression itself.
+ * The leaf evaluator may additionally report calibrated geometry fallbacks;
+ * those remain visible in fallback_used and are handled at the FFI boundary. */
+std::string NativeComposedReliability(const NativeCostExpr &expr) {
+  if (expr.IsLeaf()) {
+    auto reliability = expr.features.Get("reliability");
+    ICHECK(reliability.has_value());
+    return reliability.value().cast<String>().operator std::string();
+  }
+  std::string result = expr.kind == NativeCostExpr::Kind::kRepeat
+                           ? expr.trips.reliability
+                           : "measured";
+  for (const NativeCostExpr &child : expr.children) {
+    result = WorstCostReliability(result, NativeComposedReliability(child));
+  }
+  return result;
+}
+
+bool OnlyCalibratedGeometryFallbacks(const Array<String> &fallbacks) {
+  if (fallbacks.empty()) return false;
+  for (const String &fallback : fallbacks) {
+    if (std::string(fallback).rfind("memory_geometry[", 0) != 0) return false;
+  }
+  return true;
+}
 
 struct InferredBuffers {
   Array<Var> vars;
@@ -621,17 +1218,33 @@ private:
   }
 
   InferredBuffers InferBuffers(const ScheduledTaskAnalysis &analysis,
-                               bool compute_sizes) const {
+                               bool compute_sizes,
+                               const Map<String, Any> &annotations) const {
     InferredBuffers result;
     std::unordered_set<Var, ObjectPtrHash, ObjectPtrEqual> seen;
+    std::unordered_set<Var, ObjectPtrHash, ObjectPtrEqual> explicitly_requested;
+    Z3BufferVersionCountMap requests = ReadZ3BufferVersionCounts(
+        annotations, kZ3BufferVersionRequests, "InferZ3PipelineProblem");
+    Z3BufferVersionModeMap modes = ReadZ3BufferVersionModes(
+        annotations, kZ3BufferVersionModeRequests, "InferZ3PipelineProblem");
+    for (const auto &[storage, _] : requests) {
+      if (!IsZ3BareOneRequest(storage, requests, modes)) {
+        explicitly_requested.insert(storage);
+      }
+    }
+    for (const auto &[storage, _] : modes) explicitly_requested.insert(storage);
     std::unordered_map<Var, std::vector<Buffer>, ObjectPtrHash, ObjectPtrEqual>
         views;
     auto record = [&](const Array<BufferRegion> &regions, bool writes) {
       for (const BufferRegion &region : regions) {
-        views[region->buffer->data].push_back(region->buffer);
-        if (!writes || !IsSharedBuffer(region->buffer)) continue;
-        if (seen.insert(region->buffer->data).second) {
-          result.vars.push_back(region->buffer->data);
+        const Var &storage = region->buffer->data;
+        views[storage].push_back(region->buffer);
+        if ((!writes || !IsSharedBuffer(region->buffer)) &&
+            !explicitly_requested.count(storage)) {
+          continue;
+        }
+        if (seen.insert(storage).second) {
+          result.vars.push_back(storage);
         }
       }
     };
@@ -1095,6 +1708,7 @@ private:
       String calibration;
       bool require_measured = GetBool(annotations, kZ3RequireMeasured, false);
       Optional<ffi::Function> estimator;
+      Optional<ffi::Function> composed_estimator;
       if (any_model_required) {
         hardware = GetRequiredPath(annotations, kZ3Hardware);
         calibration = GetRequiredPath(annotations, kZ3Calibration);
@@ -1117,12 +1731,27 @@ private:
         String reliability = "explicit";
         Array<String> fallback;
         if (model_required) {
-          NativeTaskFeatures native =
-              TaskFeatureExtractor::Extract(analysis.scheduled_stmts[i]);
-          Map<String, Any> result =
-              estimator.value()(native.ToFFI(), hardware, calibration,
-                                require_measured)
-                  .cast<Map<String, Any>>();
+          bool allow_unbounded_while =
+              override.latency >= 0 && override.ii >= 0;
+          NativeCostExpr native = NativeCostExprExtractor::Extract(
+              analysis.scheduled_stmts[i], allow_unbounded_while);
+          Map<String, Any> result;
+          if (native.IsLeaf()) {
+            result = estimator.value()(native.features, hardware, calibration,
+                                       require_measured)
+                         .cast<Map<String, Any>>();
+          } else {
+            if (!composed_estimator.has_value()) {
+              composed_estimator =
+                  ffi::Function::GetGlobal("tl.cuda.estimate_composed_task");
+              ICHECK(composed_estimator.has_value())
+                  << "InferZ3PipelineProblem: import tilelang.cuda.task_cost "
+                     "to register tl.cuda.estimate_composed_task";
+            }
+            result = composed_estimator.value()(native.ToFFI(), hardware,
+                                                calibration, require_measured)
+                         .cast<Map<String, Any>>();
+          }
           auto get_int = [&](const char *key) -> int64_t {
             auto value = result.Get(key);
             ICHECK(value.has_value()) << "Task estimator omitted " << key;
@@ -1138,6 +1767,15 @@ private:
           auto model_fallback = result.Get("fallback_used");
           ICHECK(model_fallback.has_value());
           fallback = model_fallback.value().cast<Array<String>>();
+          if (reliability == "unknown" &&
+              NativeComposedReliability(native) == "upper_bound" &&
+              OnlyCalibratedGeometryFallbacks(fallback)) {
+            // A finite native Extent remains an upper bound when the only
+            // additional evaluator fallback is the explicitly calibrated
+            // unknown-geometry bandwidth path. Genuine unknown operations,
+            // missing paths, and unmeasured calibration still win.
+            reliability = "upper_bound";
+          }
         }
 
         int64_t latency = need_latencies
@@ -1169,7 +1807,7 @@ private:
 
     InferredBuffers inferred;
     bool buffers_needed = need_buffer_vars || need_data || need_groups;
-    if (buffers_needed) inferred = InferBuffers(analysis, need_buffer_vars);
+    if (buffers_needed) inferred = InferBuffers(analysis, need_buffer_vars, annotations);
     Array<Var> buffer_vars = need_buffer_vars
                                  ? inferred.vars
                                  : GetExplicitBufferVars(annotations);

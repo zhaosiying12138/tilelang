@@ -44,6 +44,22 @@ def _module_has_z3_pipeline_annotations(mod: IRModule) -> bool:
     return found
 
 
+def _module_has_recursive_z3_schedule_annotations(mod: IRModule) -> bool:
+    """Return whether a module explicitly selects the recursive task schema."""
+    found = False
+    recursive_markers = {"tl.cuda_task", "tl.cuda_per_role_task", "tl.cuda_stage"}
+
+    def visit(node):
+        nonlocal found
+        if isinstance(node, tirx.AttrStmt) and node.attr_key in recursive_markers:
+            found = True
+
+    for _, func in mod.functions.items():
+        if isinstance(func, PrimFunc):
+            post_order_visit(func.body, visit)
+    return found
+
+
 def _module_has_z3_owner_ring_annotations(mod: IRModule) -> bool:
     """Return whether any loop carries an explicit owner-ring index."""
     found = False
@@ -138,7 +154,8 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     z3_task_analysis_enabled = pass_ctx.config.get(_Z3_TASK_ANALYSIS_CONFIG, False)
     has_z3_loop_annotations = _module_has_z3_pipeline_annotations(mod)
     z3_requested = z3_pipeline_enabled or z3_task_analysis_enabled
-    has_z3_annotations = z3_requested and has_z3_loop_annotations
+    has_recursive_z3_annotations = z3_requested and _module_has_recursive_z3_schedule_annotations(mod)
+    has_z3_annotations = z3_requested and (has_z3_loop_annotations or has_recursive_z3_annotations)
     normalize_z3_units = z3_requested
     z3_pipeline_module = bool(z3_pipeline_enabled) and has_z3_annotations
     if z3_task_analysis_enabled and has_z3_annotations and not z3_pipeline_enabled:
@@ -213,10 +230,12 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     # pipeline body extraction focused on canonical SeqStmt bodies.
     mod = tilelang.transform.IfStmtBinding()(mod)
 
-    # Public task/stage markers are normalized before unrolling so the latter
-    # can preserve the resulting atomic task bodies. With Z3 disabled this pass
-    # is not run and the stock CUDA behavior remains unchanged.
-    if normalize_z3_units:
+    # Flat public task/stage markers are normalized before unrolling so the latter
+    # can preserve the resulting atomic task bodies. Recursive markers instead
+    # use their native control/materialization passes after unroll/Simplify.
+    # With Z3 disabled neither path runs and stock CUDA behavior is unchanged.
+    if normalize_z3_units and not has_recursive_z3_annotations:
+        mod = tilelang.transform._ffi_api.NormalizeZ3BufferVersions()(mod)
         mod = tilelang.transform.NormalizeZ3ScheduleUnits()(mod)
 
     # Expand only explicitly requested unroll loops before pipeline planning
@@ -229,17 +248,31 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     # Simplify the unrolled loop bodies.
     mod = tilelang.transform.Simplify()(mod)
 
+    # Recursive public requests are consumed directly by Slice E. In particular,
+    # do not run the flat loop-annotation normalizer over the nested schema.
+    if has_recursive_z3_annotations:
+        mod = tilelang.cuda.transform.NormalizeZ3ControlFlow()(mod)
+        mod = tilelang.cuda.transform.MaterializeZ3ScheduleUnits()(mod)
+
     # Infer after unroll/Simplify so analysis and planning see the same tasks.
     # Both passes are opt-in; the stock CUDA pass sequence is unchanged by default.
     if z3_task_analysis_enabled and has_z3_annotations:
         mod = tilelang.transform.InferZ3PipelineProblem()(mod)
     if z3_pipeline_enabled:
-        mod = tilelang.transform.Z3OwnerRingPlanning()(mod)
+        if not has_recursive_z3_annotations:
+            mod = tilelang.transform.Z3OwnerRingPlanning()(mod)
         mod = tilelang.transform.Z3PipelinePlanning()(mod)
-    if z3_pipeline_module and _module_has_z3_owner_ring_validated(mod):
+    if has_recursive_z3_annotations:
+        mod = tilelang.cuda.transform.BuildZ3WSSchedule(target)(mod)
+        mod = tilelang.cuda.transform.LowerZ3ScheduleUnits()(mod)
+        if _module_has_existing_warp_specialization(mod):
+            mod = tilelang.cuda.transform.MaterializeWSSchedule()(mod)
+    elif z3_pipeline_module and _module_has_z3_owner_ring_validated(mod):
         mod = tilelang.cuda.transform.MaterializeWSSchedule()(mod)
     mod = tilelang.transform.PipelinePlanning()(mod)
     mod = tilelang.transform.InjectSoftwarePipeline()(mod)
+    if has_recursive_z3_annotations:
+        mod = tilelang.transform.RestoreWhileLoops()(mod)
     mod = tilelang.transform.Simplify()(mod)
 
     # Infer memory layouts for fragments and shared memory
