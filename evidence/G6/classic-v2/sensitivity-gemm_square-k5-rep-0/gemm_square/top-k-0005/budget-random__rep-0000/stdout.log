@@ -1,0 +1,17 @@
+2026-10-27 09:50:22,585 INFO:Auto-tuning with 1 CPU counts, 24 CPUs available, 1 CPUs will be used
+2026-10-27 09:50:22,585 WARNING:Benchmark timeout is enforced in benchmark workers by running each benchmark call in a daemon sub-thread and waiting up to the configured timeout.
+2026-10-27 09:50:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 09:50:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 09:50:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 09:50:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 09:50:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 09:50:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 09:50:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 09:50:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 09:50:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 09:50:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+Tuned Latency 1.7681735754013062 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 0
+Tuned Latency 1.654892086982727 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 1
+Tuned Latency 1.4838316440582275 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 2
+Tuned Latency 3.6594502925872803 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 3
+Tuned Latency 1.6430566310882568 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 4
