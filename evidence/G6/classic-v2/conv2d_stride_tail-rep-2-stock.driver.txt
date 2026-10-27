@@ -1,0 +1,506 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+{
+  "R": 144,
+  "U": null,
+  "arm": "stock-raw",
+  "best": {
+    "config": {
+      "block_K": 32,
+      "block_M": 64,
+      "block_N": 64,
+      "num_stages": 0,
+      "threads": 256
+    },
+    "config_id": "b7a9be788509e890454b0e67268d25d3a925980fbef7421b2aae3e3627c5bc11",
+    "latency_ms": 0.013634559698402882,
+    "unavailable_reason": null
+  },
+  "best_config": {
+    "block_K": 32,
+    "block_M": 64,
+    "block_N": 64,
+    "num_stages": 0,
+    "threads": 256
+  },
+  "best_latency_ms": 0.013634559698402882,
+  "cache": {
+    "directory": null,
+    "directory_scope": "directory/identity concern the AutoTuner result cache; pipeline_cache_directory is the isolated TileLang/CUDA/Torch cache root",
+    "enabled": false,
+    "hit": false,
+    "identity": null,
+    "key": null,
+    "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/conv2d_stride_tail-rep-2-stock/stock-raw__rep-0002/cache",
+    "requested_mode": "enabled",
+    "source": null,
+    "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)"
+  },
+  "cache_identity": null,
+  "candidate_count": 144,
+  "candidate_failures": {
+    "compile": 0,
+    "profile": 0,
+    "validation": 24
+  },
+  "compile": {
+    "attempts": 144,
+    "cumulative_seconds": 298.52257857564837,
+    "fail": 0,
+    "success": 144,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 298.5582601019996
+  },
+  "compile_attempts": 144,
+  "compile_fail": 0,
+  "compile_success": 144,
+  "compile_wall_seconds": 298.5582601019996,
+  "duplicates": 0,
+  "end_to_end_wall_seconds": 331.76842669199686,
+  "errors": [
+    {
+      "config_id": "fd2e2251d6304c1a46358039e8bc1bb8449ed403fe80a3bccd07c818509ea0ae",
+      "error": "Failed to set the allowed dynamic shared memory size to 122880",
+      "index": 46,
+      "kind": "validation"
+    },
+    {
+      "config_id": "f6a15e21e19f8b4418a4ed4fa2b119b8a489f953a019a0fd0b911cc2c741ce2c",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 46,
+      "kind": "trial"
+    },
+    {
+      "config_id": "bba922266330ab6cfa2f2a394c5f763dee1c4ce6310bbea2e98c38962aeefae4",
+      "error": "Failed to set the allowed dynamic shared memory size to 122880",
+      "index": 47,
+      "kind": "validation"
+    },
+    {
+      "config_id": "8ba39a8548f0d29751dba2df35ba89abf38b09bc3bb63646516c2f55e3f3fb25",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 47,
+      "kind": "trial"
+    },
+    {
+      "config_id": "19bbe09a9747a8a47e6e6c9ab8e2831e17808527f409dec7048dda2d0fe55295",
+      "error": "Failed to set the allowed dynamic shared memory size to 147456",
+      "index": 94,
+      "kind": "validation"
+    },
+    {
+      "config_id": "0c73a0d430973efd82c711c3d1b56885cfe064ac3a13c922118f3c03532df77b",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 94,
+      "kind": "trial"
+    },
+    {
+      "config_id": "1dc92f37b1238a852cd11bd623dad6929edc5fdfcde6d3c60e0f2386d82bdf0c",
+      "error": "Failed to set the allowed dynamic shared memory size to 147456",
+      "index": 95,
+      "kind": "validation"
+    },
+    {
+      "config_id": "3da1437cab84bf20fa8bbd3a61f05e4e1378426d500606b3ff2bd08ddbe9a56a",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 95,
+      "kind": "trial"
+    },
+    {
+      "config_id": "004d5d6c3977c1849bbae12042f6282f1b74548d74dddb28dda51189fce5aef6",
+      "error": "Failed to set the allowed dynamic shared memory size to 122880",
+      "index": 110,
+      "kind": "validation"
+    },
+    {
+      "config_id": "131771f5b61da9c14e0f809d2ccf64e75ad7ca0b9734c6c7eb3a4a9bdc71e008",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 110,
+      "kind": "trial"
+    },
+    {
+      "config_id": "9d2ae40b86275b695eb5da9b0c5c986c682d762a95d0e9f3c844da60fb87fb0d",
+      "error": "Failed to set the allowed dynamic shared memory size to 122880",
+      "index": 111,
+      "kind": "validation"
+    },
+    {
+      "config_id": "969c90d996367ccb24f4fdeb65c886cbc1cc792ada0621dd1e6f7aec15c82a37",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 111,
+      "kind": "trial"
+    },
+    {
+      "config_id": "db7e6def26fbb2997d3e88a9ea80f1b03f050609f355fea3829f5e9b990966bd",
+      "error": "Failed to set the allowed dynamic shared memory size to 147456",
+      "index": 126,
+      "kind": "validation"
+    },
+    {
+      "config_id": "62c5293167c8ab022cf010f264aa25099f1273f7d3d3450e056c7b6bbbd08860",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 126,
+      "kind": "trial"
+    },
+    {
+      "config_id": "9dc32ba43f8a9992a680e09e216cd8d13d0b120c5cbd38fe2d39809a48cce0e4",
+      "error": "Failed to set the allowed dynamic shared memory size to 147456",
+      "index": 127,
+      "kind": "validation"
+    },
+    {
+      "config_id": "f9b1413de8e19652fcbb052bc6b5da13f4425cd0ec41b582321eb38c73f8bdf5",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 127,
+      "kind": "trial"
+    },
+    {
+      "config_id": "4c77c661edcec30500f34cdbdd7f878e45f7a0241bd3349cb36dc9081846ffe0",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 128,
+      "kind": "validation"
+    },
+    {
+      "config_id": "ed3c635927d1625407cc24bc965373d1a3dc18acc110e6cd8c2814786f01b960",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 128,
+      "kind": "trial"
+    },
+    {
+      "config_id": "3a4a2314e9c48a60b637e419d6e759a0dfc64b6837175b73707a2061780a61c9",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 129,
+      "kind": "validation"
+    },
+    {
+      "config_id": "68fa38eec849ebbdd78236d3d4f1129f7836945d19f53077a10c316f5ec872d7",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 129,
+      "kind": "trial"
+    },
+    {
+      "config_id": "a29a0fa8135e7d3bffcd8d94ea5dbcac59ce50ad728860b8d4de345f5ae33e92",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 130,
+      "kind": "validation"
+    },
+    {
+      "config_id": "71da3328aac94dcd77d43bfcb61c4d86194411e93e1bc15925e73da77430c652",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 130,
+      "kind": "trial"
+    },
+    {
+      "config_id": "ad1edf30ec88e442f48699478eef8fb9e3f9c06ccec1e9349e7637bf7d04d52d",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 131,
+      "kind": "validation"
+    },
+    {
+      "config_id": "273d7603b8bbaf5f1b8b5cd310b147d8237afe8c32d5c6a34ce781b75052a5c4",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 131,
+      "kind": "trial"
+    },
+    {
+      "config_id": "9f9b1f8d0d016d458be9157846e74350c9cea3b1447e5d7b60701be1b5749b42",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 132,
+      "kind": "validation"
+    },
+    {
+      "config_id": "e3dbc1edcface5502da6d335c591d324155958dea782ce41c270754f829d6a45",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 132,
+      "kind": "trial"
+    },
+    {
+      "config_id": "557675e3738d806b1ef54911b3ee3da75e6e44a012b44c92a8e9c9cf1b7c3c8a",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 133,
+      "kind": "validation"
+    },
+    {
+      "config_id": "fee4f400d296d28244ad4e001d8944d92c7394a87e78fab10cfaa75d924b5fc4",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 133,
+      "kind": "trial"
+    },
+    {
+      "config_id": "fc2e2e195d73fb5f13f5ba2b6d7035691bf1c6b9bc87910aef2da2e421acd698",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 134,
+      "kind": "validation"
+    },
+    {
+      "config_id": "b044b9853c756e219f67f81cadc0a2be7ef8db4e8264f2e01860b072a50c07bd",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 134,
+      "kind": "trial"
+    },
+    {
+      "config_id": "5fd33ff330651ee10a9a8f39acd0298367791637de90dce68da1a608ef7c5dc0",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 135,
+      "kind": "validation"
+    },
+    {
+      "config_id": "2902116468b785b9ae141938a4ac1bc47040b53d769a862f381d421914c98570",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 135,
+      "kind": "trial"
+    },
+    {
+      "config_id": "22cf2e2e960fdf8da82e0d44a826214224f36fd208780bf20d0e074a2cd73699",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 136,
+      "kind": "validation"
+    },
+    {
+      "config_id": "177a3181c23c9378ed2c67d5de213f21730d2d667c6a587ae0f8885f20089f12",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 136,
+      "kind": "trial"
+    },
+    {
+      "config_id": "4cccb4696485bbbec2ba562870e469d6debf0bb761d81f7f90ec26c581474ae6",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 137,
+      "kind": "validation"
+    },
+    {
+      "config_id": "23b726f9300390a6127abfe5ac98f8bb933e8238d4fba8eea0a14a616b4b4734",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 137,
+      "kind": "trial"
+    },
+    {
+      "config_id": "73d04f8117943ccd432d5c70487fa316b7f25728da52a01dd02bdf1173b6b0b3",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 138,
+      "kind": "validation"
+    },
+    {
+      "config_id": "06993621fef81f9d8a57c23704e17deb6cc46e19fddeff0ad3efc0aa2e2a4146",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 138,
+      "kind": "trial"
+    },
+    {
+      "config_id": "db16e859e215804b9d9e034d1d868793449ec94613d1f095ef9f76d2d51b6345",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 139,
+      "kind": "validation"
+    },
+    {
+      "config_id": "487b69fc6e91f9b781c666291520ead981b91c33590a9dbc6a0f4cf34308fa69",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 139,
+      "kind": "trial"
+    },
+    {
+      "config_id": "07f86195e1193bc4c6c1e4a64ebe08f6b143c379613faf32a391d62d6b0aef99",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 140,
+      "kind": "validation"
+    },
+    {
+      "config_id": "9aa13494cb16c78041fd6eba6094c98f184ca24e6dc84b915042e24ad6387c8a",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 140,
+      "kind": "trial"
+    },
+    {
+      "config_id": "accf04035ff38c917cc402b068a7f741f79c1dfce648641b607e1487eab71f38",
+      "error": "Failed to set the allowed dynamic shared memory size to 131072",
+      "index": 141,
+      "kind": "validation"
+    },
+    {
+      "config_id": "1b56c8942aac763218167d684e4511edf6defd6273fefe815418bf836d95f83f",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 141,
+      "kind": "trial"
+    },
+    {
+      "config_id": "112c5f43a6fc1b6c83983ecc5dbb8667ef3bf3b44c73f16dc036513b2b231335",
+      "error": "Failed to set the allowed dynamic shared memory size to 196608",
+      "index": 142,
+      "kind": "validation"
+    },
+    {
+      "config_id": "9c527dae39d94840d6e5413e842e57f9614810c745b82917665097594aa23c01",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 142,
+      "kind": "trial"
+    },
+    {
+      "config_id": "0eda386cafb5512fe25fc65bfec38aa126201ffab8e124ee5d9d2bc6e8b141c7",
+      "error": "Failed to set the allowed dynamic shared memory size to 196608",
+      "index": 143,
+      "kind": "validation"
+    },
+    {
+      "config_id": "8dc9bc63dccccecb2a02c5ba4dc44c4a539b2cf1ae9e402769dee47fe2a6533d",
+      "error": "Traceback (most recent call last):\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 722, in _run_benchmark_target\n    latency, worker_ref_latency = _call_benchmark_target(_jit_kernel, _worker_state)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 693, in _call_benchmark_target\n    return invoke()\n           ^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 682, in invoke\n    return benchmark_target(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/tuner.py\", line 840, in _benchmark_target\n    profiler.manual_assert_close(ref_prog, input_tensors=jit_input_tensors_cache, manual_check_prog=manual_check_prog)\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/profiler/__init__.py\", line 205, in manual_assert_close\n    lib_outs = self.func(*ins)\n               ^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/base.py\", line 126, in __call__\n    return self.func(*args, **kwds)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/jit/adapter/tvm_ffi.py\", line 388, in func\n    result = self._get_executable()(*inputs, allocator_anchor)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/runtime/executable.py\", line 46, in __call__\n    return self.jit().main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"python/tvm_ffi/cython/function.pxi\", line 968, in tvm_ffi.core.Function.__call__\n  File \"/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src/runtime/cuda/cuda_module.cc\", line 271, in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const\n    TVM_FFI_THROW(InternalError)\n    \ntvm.error.InternalError: Failed to set the allowed d",
+      "index": 143,
+      "kind": "trial"
+    }
+  ],
+  "errors_omitted": 0,
+  "experiment": {
+    "after": "after.json",
+    "arm": "stock-raw",
+    "before": "before.json",
+    "cache_mode": "enabled",
+    "events": "events.jsonl",
+    "repetition": 2,
+    "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/conv2d_stride_tail-rep-2-stock/stock-raw__rep-0002"
+  },
+  "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+  "fully_instrumented": true,
+  "has_recorded_candidate_failures": true,
+  "metadata": {
+    "arm": "stock-raw",
+    "cache_mode": "enabled",
+    "cache_track": "cold",
+    "operator": "conv2d_nhwc",
+    "repetition": 2,
+    "seed": 20261026,
+    "shape": {
+      "C": 64,
+      "H": 33,
+      "K": 96,
+      "N": 4,
+      "R": 3,
+      "S": 3,
+      "W": 33,
+      "dilation_h": 1,
+      "dilation_w": 1,
+      "dtype": "f16",
+      "output_dtype": "f16",
+      "pad_h": 1,
+      "pad_w": 1,
+      "stride_h": 2,
+      "stride_w": 2
+    },
+    "suite": "conv2d_stride_tail",
+    "top_k": 10,
+    "utc_started": "2026-10-27T02:54:51.106540+00:00"
+  },
+  "model": {
+    "attempts": null,
+    "cumulative_seconds": null,
+    "fail": null,
+    "predictions": null,
+    "success": null,
+    "unavailable_reason": "this arm does not invoke the candidate cost model",
+    "unknown": null,
+    "wall_seconds": null
+  },
+  "model_unknown": null,
+  "model_wall_seconds": null,
+  "observer_errors": [],
+  "operator_run": {
+    "budget": 10,
+    "cache_track": "cold",
+    "model_operator": "conv2d_nhwc",
+    "model_shape": {
+      "C": 64,
+      "H": 33,
+      "K": 96,
+      "N": 4,
+      "R": 3,
+      "S": 3,
+      "W": 33,
+      "dilation_h": 1,
+      "dilation_w": 1,
+      "dtype": "f16",
+      "output_dtype": "f16",
+      "pad_h": 1,
+      "pad_w": 1,
+      "stride_h": 2,
+      "stride_w": 2
+    },
+    "operator": "convolution_nhwc_implicit_gemm",
+    "raw_count": 144,
+    "reference": "frozen operator module independent FP32 reference",
+    "repeat": 50,
+    "seed": 20261026,
+    "shape": {
+      "C": 64,
+      "D": 1,
+      "F": 96,
+      "H": 33,
+      "K": 3,
+      "N": 4,
+      "OH": 17,
+      "OW": 17,
+      "P": 1,
+      "S": 2,
+      "W": 33,
+      "reduction": 576
+    },
+    "suite": "conv2d_stride_tail",
+    "top_k": 10,
+    "validation": "real Profiler.manual_assert_close -> frozen module.validate; max_mismatched_ratio=0",
+    "warmup": 10
+  },
+  "profile": {
+    "attempts": 120,
+    "cumulative_seconds": 3.130318000621628,
+    "fail": 0,
+    "success": 120,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 26.161702793033328
+  },
+  "profile_wall_seconds": 26.161702793033328,
+  "pruner_unknown": null,
+  "reference_latency_ms": 0.3967142403125763,
+  "run_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/conv2d_stride_tail-rep-2-stock/stock-raw__rep-0002/cache",
+  "schema_version": 1,
+  "selected": 144,
+  "solver": {
+    "checks": null,
+    "completed": null,
+    "cumulative_seconds": null,
+    "invoked": false,
+    "unavailable_reason": "this arm does not invoke solver pruning",
+    "wall_seconds": null
+  },
+  "solver_wall_seconds": null,
+  "status": "ok",
+  "trials": {
+    "benchmark_error": 24,
+    "ok": 120
+  },
+  "unavailable": {
+    "U": "stock-raw does not construct the Z3 legal universe",
+    "model": "this arm does not invoke the candidate cost model",
+    "solver": "this arm does not invoke solver pruning",
+    "unknown": "unknown solver verdicts are only defined for a completed pruning pass",
+    "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+  },
+  "unknown": null,
+  "unknown_sources": {
+    "model": null,
+    "overlap": null,
+    "pruner": null,
+    "total": null
+  },
+  "unknown_total": null,
+  "validation": {
+    "attempts": 144,
+    "cumulative_seconds": 29.88166234199889,
+    "fail": 24,
+    "failed": 24,
+    "not_run": 0,
+    "passed": 120,
+    "success": 120,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 33.19379943900276
+  },
+  "validation_wall_seconds": 33.19379943900276
+}
