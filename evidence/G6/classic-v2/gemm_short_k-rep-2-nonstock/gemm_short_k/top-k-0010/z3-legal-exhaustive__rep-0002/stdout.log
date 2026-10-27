@@ -1,0 +1,722 @@
+2026-10-27 10:14:01,173 INFO:Auto-tuning with 1 CPU counts, 24 CPUs available, 1 CPUs will be used
+2026-10-27 10:14:01,179 WARNING:Benchmark timeout is enforced in benchmark workers by running each benchmark call in a daemon sub-thread and waiting up to the configured timeout.
+2026-10-27 10:14:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:14:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:14:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:15:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:15:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:16:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:16:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:17:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:17:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:18:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:18:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:19:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:19:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 10:20:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 10:20:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+Tuned Latency 0.44277119636535645 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 0
+Tuned Latency 0.4428333044052124 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 1
+Tuned Latency 0.4524582624435425 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 2
+Tuned Latency 0.45051902532577515 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 3
+Tuned Latency 0.7548480033874512 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 4
+Tuned Latency 0.7587571740150452 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 5
+Tuned Latency 0.7686291337013245 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 6
+Tuned Latency 0.7722246646881104 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 7
+Tuned Latency 0.6332051157951355 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 8
+Tuned Latency 0.6387366652488708 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 9
+Tuned Latency 0.601240336894989 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 10
+Tuned Latency 0.6241958737373352 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 11
+Tuned Latency 0.6455711126327515 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 12
+Tuned Latency 0.6648671627044678 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 13
+Tuned Latency 0.5794637203216553 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 14
+Tuned Latency 0.5900160074234009 with config {'block_K': 32, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 15
+Tuned Latency 0.4412870407104492 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 16
+Tuned Latency 0.4416857659816742 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 17
+Tuned Latency 0.4687865972518921 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 18
+Tuned Latency 0.4651385545730591 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 19
+Tuned Latency 0.7116620540618896 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 20
+Tuned Latency 0.7178278565406799 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 21
+Tuned Latency 0.7190451622009277 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 22
+Tuned Latency 0.7482419013977051 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 23
+Tuned Latency 0.6097708940505981 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 24
+Tuned Latency 0.6445836424827576 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 25
+Tuned Latency 0.5924563407897949 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 26
+Tuned Latency 0.6150188446044922 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 27
+Tuned Latency 0.6293286681175232 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 28
+Tuned Latency 0.6516895890235901 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 29
+Tuned Latency 0.6032364368438721 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 30
+Tuned Latency 0.6296231150627136 with config {'block_K': 64, 'block_M': 64, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 31
+Tuned Latency 0.4788300693035126 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 32
+Tuned Latency 0.4229024052619934 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 33
+Tuned Latency 0.4368172585964203 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 34
+Tuned Latency 0.437720388174057 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 35
+Tuned Latency 0.541629433631897 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 36
+Tuned Latency 0.5598848462104797 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 37
+Tuned Latency 0.5981599688529968 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 38
+Tuned Latency 0.6058713793754578 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 39
+Tuned Latency 0.5151136517524719 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 40
+Tuned Latency 0.5191897749900818 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 41
+Tuned Latency 0.48714110255241394 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 42
+Tuned Latency 0.4932543933391571 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 43
+Tuned Latency 0.523119330406189 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 44
+Tuned Latency 0.5373139381408691 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 45
+Tuned Latency 0.4965100586414337 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 46
+Tuned Latency 0.5069184303283691 with config {'block_K': 32, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 47
+Tuned Latency 0.4161171317100525 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 48
+Tuned Latency 0.4192793369293213 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 49
+Tuned Latency 0.5263603329658508 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 50
+Tuned Latency 0.5361388921737671 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 51
+Tuned Latency 0.5399436354637146 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 52
+Tuned Latency 0.5617407560348511 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 53
+Tuned Latency 0.5849926471710205 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 54
+Tuned Latency 0.5933868288993835 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 55
+Tuned Latency 0.5134828090667725 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 56
+Tuned Latency 0.5251372456550598 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 57
+Tuned Latency 0.5019334554672241 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 58
+Tuned Latency 0.5157612562179565 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 59
+Tuned Latency 0.5394726395606995 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 60
+Tuned Latency 0.5462841391563416 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 61
+Tuned Latency 0.5252467393875122 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 62
+Tuned Latency 0.5373664498329163 with config {'block_K': 64, 'block_M': 64, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 63
+Tuned Latency 0.46368321776390076 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 64
+Tuned Latency 0.4499903917312622 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 65
+Tuned Latency 0.4847154915332794 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 66
+Tuned Latency 0.49652099609375 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 67
+Tuned Latency 0.4658259153366089 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 68
+Tuned Latency 0.47477245330810547 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 69
+Tuned Latency 0.4913605749607086 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 70
+Tuned Latency 0.5015469193458557 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 71
+Tuned Latency 0.4618707001209259 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 72
+Tuned Latency 0.4698265790939331 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 73
+Tuned Latency 0.441299170255661 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 74
+Tuned Latency 0.4448300898075104 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 75
+Tuned Latency 0.46993470191955566 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 76
+Tuned Latency 0.47686272859573364 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 77
+Tuned Latency 0.4538739323616028 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 78
+Tuned Latency 0.4566086530685425 with config {'block_K': 32, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 79
+Tuned Latency 0.42461439967155457 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 80
+Tuned Latency 0.43751296401023865 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 81
+Tuned Latency 0.5302585363388062 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 82
+Tuned Latency 0.5577536225318909 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 83
+Tuned Latency 0.4762457609176636 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 84
+Tuned Latency 0.4878227114677429 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 85
+Tuned Latency 0.5036422610282898 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 86
+Tuned Latency 0.5059718489646912 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 87
+Tuned Latency 0.4746105670928955 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 88
+Tuned Latency 0.47913211584091187 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 89
+Tuned Latency 0.4648416042327881 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 90
+Tuned Latency 0.46755585074424744 with config {'block_K': 64, 'block_M': 64, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 91
+Tuned Latency 0.46942341327667236 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 92
+Tuned Latency 0.42761024832725525 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 93
+Tuned Latency 0.4446457624435425 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 94
+Tuned Latency 0.4399033486843109 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 95
+Tuned Latency 0.5620012879371643 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 96
+Tuned Latency 0.5600690841674805 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 97
+Tuned Latency 0.6053311824798584 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 98
+Tuned Latency 0.6211999654769897 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 99
+Tuned Latency 0.5238374471664429 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 100
+Tuned Latency 0.532573401927948 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 101
+Tuned Latency 0.49778565764427185 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 102
+Tuned Latency 0.5034732818603516 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 103
+Tuned Latency 0.523854672908783 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 104
+Tuned Latency 0.5357062816619873 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 105
+Tuned Latency 0.5014041662216187 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 106
+Tuned Latency 0.5215398669242859 with config {'block_K': 32, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 107
+Tuned Latency 0.40204542875289917 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 108
+Tuned Latency 0.4227552115917206 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 109
+Tuned Latency 0.5309907793998718 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 110
+Tuned Latency 0.541136622428894 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 111
+Tuned Latency 0.5674002766609192 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 112
+Tuned Latency 0.575276792049408 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 113
+Tuned Latency 0.5815570950508118 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 114
+Tuned Latency 0.6007500290870667 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 115
+Tuned Latency 0.5176806449890137 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 116
+Tuned Latency 0.5290969610214233 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 117
+Tuned Latency 0.5066489577293396 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 118
+Tuned Latency 0.5182994604110718 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 119
+Tuned Latency 0.5412768125534058 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 120
+Tuned Latency 0.5514182448387146 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 121
+Tuned Latency 0.5285056233406067 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 122
+Tuned Latency 0.5412108898162842 with config {'block_K': 64, 'block_M': 128, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 123
+Tuned Latency 0.4205740988254547 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 124
+Tuned Latency 0.41206595301628113 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 125
+Tuned Latency 0.4713119864463806 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 126
+Tuned Latency 0.46560126543045044 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 127
+Tuned Latency 0.46001601219177246 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 128
+Tuned Latency 0.46107903122901917 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 129
+Tuned Latency 0.48215043544769287 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 130
+Tuned Latency 0.48592257499694824 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 131
+Tuned Latency 0.44833987951278687 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 132
+Tuned Latency 0.45359811186790466 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 133
+Tuned Latency 0.43823105096817017 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 134
+Tuned Latency 0.4433434009552002 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 135
+Tuned Latency 0.4549497663974762 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 136
+Tuned Latency 0.46284544467926025 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 137
+Tuned Latency 0.4446893036365509 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 138
+Tuned Latency 0.4451187551021576 with config {'block_K': 32, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 139
+Tuned Latency 0.40455615520477295 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 140
+Tuned Latency 0.42226624488830566 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 141
+Tuned Latency 0.3968217372894287 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 142
+Tuned Latency 0.4156768023967743 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 143
+Tuned Latency 0.46862080693244934 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 144
+Tuned Latency 0.4757952094078064 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 145
+Tuned Latency 0.493438720703125 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 146
+Tuned Latency 0.5010432600975037 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 147
+Tuned Latency 0.45706436038017273 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 148
+Tuned Latency 0.4605606198310852 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 149
+Tuned Latency 0.44784003496170044 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 150
+Tuned Latency 0.4534547030925751 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 151
+Tuned Latency 0.4705152213573456 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 152
+Tuned Latency 0.4729587435722351 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 153
+Tuned Latency 0.4621856212615967 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 154
+Tuned Latency 0.4661376178264618 with config {'block_K': 64, 'block_M': 128, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 155
+Tuned Latency 0.7309747338294983 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 156
+Tuned Latency 0.7503359317779541 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 157
+Tuned Latency 0.49063166975975037 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 158
+Tuned Latency 0.5115622878074646 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 159
+Tuned Latency 1.280725121498108 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 160
+Tuned Latency 1.2571539878845215 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 161
+Tuned Latency 0.43174657225608826 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 162
+Tuned Latency 0.4378150701522827 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 163
+Tuned Latency 1.1319667100906372 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 164
+Tuned Latency 1.1938892602920532 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 165
+Tuned Latency 0.4265766441822052 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 166
+Tuned Latency 0.42008063197135925 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 167
+Tuned Latency 1.427465558052063 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 168
+Tuned Latency 1.4009132385253906 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 169
+Tuned Latency 0.4182022511959076 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 170
+Tuned Latency 0.4207186996936798 with config {'block_K': 32, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 171
+Tuned Latency 1.0910239219665527 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 172
+Tuned Latency 1.0715315341949463 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 173
+Tuned Latency 0.4625599980354309 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 174
+Tuned Latency 0.4844627380371094 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 175
+Tuned Latency 2.0463318824768066 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 176
+Tuned Latency 2.0556862354278564 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 177
+Tuned Latency 0.43876034021377563 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 178
+Tuned Latency 0.44487425684928894 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 179
+Tuned Latency 1.5543802976608276 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 180
+Tuned Latency 1.5544248819351196 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 181
+Tuned Latency 0.42367038130760193 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 182
+Tuned Latency 0.42887234687805176 with config {'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 183
+Tuned Latency 0.45918911695480347 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 184
+Tuned Latency 0.48260611295700073 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 185
+Tuned Latency 0.4552397131919861 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 186
+Tuned Latency 0.6315968036651611 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 187
+Tuned Latency 0.47953087091445923 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 188
+Tuned Latency 0.49116989970207214 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 189
+Tuned Latency 0.49054908752441406 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 190
+Tuned Latency 0.511271059513092 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 191
+Tuned Latency 0.46324992179870605 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 192
+Tuned Latency 0.47171837091445923 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 193
+Tuned Latency 0.45611071586608887 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 194
+Tuned Latency 0.46138814091682434 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 195
+Tuned Latency 0.47030529379844666 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 196
+Tuned Latency 0.47677311301231384 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 197
+Tuned Latency 0.46000128984451294 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 198
+Tuned Latency 0.471836119890213 with config {'block_K': 32, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 199
+Tuned Latency 0.42013633251190186 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 200
+Tuned Latency 0.46553531289100647 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 201
+Tuned Latency 0.5322086215019226 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 202
+Tuned Latency 0.5704614520072937 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 203
+Tuned Latency 0.4902367889881134 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 204
+Tuned Latency 0.5039231777191162 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 205
+Tuned Latency 0.5077779293060303 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 206
+Tuned Latency 0.5233363509178162 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 207
+Tuned Latency 0.47267651557922363 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 208
+Tuned Latency 0.48031237721443176 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 209
+Tuned Latency 0.4701721668243408 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 210
+Tuned Latency 0.47767746448516846 with config {'block_K': 64, 'block_M': 256, 'block_N': 64, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 211
+Tuned Latency 0.7942693829536438 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 212
+Tuned Latency 0.7869356274604797 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 213
+Tuned Latency 0.5160057544708252 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 214
+Tuned Latency 0.5584627389907837 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 215
+Tuned Latency 1.5107142925262451 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 216
+Tuned Latency 1.4624742269515991 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 217
+Tuned Latency 0.4383475184440613 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 218
+Tuned Latency 0.44991615414619446 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 219
+Tuned Latency 1.3529369831085205 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 220
+Tuned Latency 1.373044490814209 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 221
+Tuned Latency 0.4249913692474365 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 222
+Tuned Latency 0.4243084788322449 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 223
+Tuned Latency 0.9402150511741638 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 128} at index 224
+Tuned Latency 0.9630074501037598 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 128} at index 225
+Tuned Latency 0.42131903767585754 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 3, 'threads': 256} at index 226
+Tuned Latency 0.42627325654029846 with config {'block_K': 32, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 3, 'threads': 256} at index 227
+Tuned Latency 1.102064609527588 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 128} at index 228
+Tuned Latency 1.0680480003356934 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 128} at index 229
+Tuned Latency 0.4667673408985138 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 0, 'threads': 256} at index 230
+Tuned Latency 0.502729594707489 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 0, 'threads': 256} at index 231
+Tuned Latency 1.7740038633346558 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 128} at index 232
+Tuned Latency 1.8030645847320557 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 128} at index 233
+Tuned Latency 0.4378463625907898 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 1, 'threads': 256} at index 234
+Tuned Latency 0.4448646605014801 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 1, 'threads': 256} at index 235
+Tuned Latency 1.6794682741165161 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 128} at index 236
+Tuned Latency 1.6412593126296997 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 128} at index 237
+Tuned Latency 0.43836864829063416 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256} at index 238
+Tuned Latency 0.43459200859069824 with config {'block_K': 64, 'block_M': 256, 'block_N': 128, 'enable_rasterization': True, 'num_stages': 2, 'threads': 256} at index 239
