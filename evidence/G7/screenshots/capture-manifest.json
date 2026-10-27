@@ -1,0 +1,27 @@
+{
+  "schema": "tilelang.capture-manifest/v1",
+  "approved_sample": "tilelang-cuda-z3-sample-v3.png",
+  "original_fullscreen": "tilelang-cuda-z3-sample-v3-original.png",
+  "source_script": "tilelang-cuda-z3-sample-v2.sh",
+  "raw_log": "tilelang-cuda-z3-sample-v3.log",
+  "capture_metadata": "tilelang-cuda-z3-sample-v3.json",
+  "window_binding": "tilelang-cuda-z3-sample-v3.png.window-binding.json",
+  "crop_metadata": "tilelang-cuda-z3-sample-v3.crop.json",
+  "source_dimensions": [3840, 2400],
+  "cropped_dimensions": [3840, 2280],
+  "source_sha256_before_crop": "8bead52b9b888bfb1933ee4ddb9579a1130f9da9c54b2aadafe486fec65b6b6f",
+  "cropped_sha256": "423a51d7a6168fe2fb6c04d841bada2796b8740cc35c640bf3d13b48543911f6",
+  "method_approval": "Reuse the previously user-confirmed 4K full-screen purple Ubuntu capture method; the current sample was independently revalidated for this task.",
+  "sample_review": {
+    "status": "passed",
+    "foreground_at_launch_return": true,
+    "foreground_before_capture_return": true,
+    "foreground_owner": "WindowsTerminal",
+    "visible_command_and_output": "15 passed and git rev-parse HEAD match the raw log",
+    "theme": "purple Ubuntu terminal",
+    "traceback_or_popup_contamination": false,
+    "review_basis": "actual PNG inspection, raw-log comparison, window binding and SHA256/crop metadata"
+  },
+  "focus_recovery": "An ordinary Shift key input restored Windows foreground permission; no lock or power policy was changed.",
+  "usage": "This approved sample covers subsequent captures with the same display, theme and managed capture_session.ps1 method. Each later image still requires individual content and log review."
+}
