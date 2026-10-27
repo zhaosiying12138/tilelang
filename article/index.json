@@ -9,7 +9,6 @@
     "mechanisms/03-guided-search.md",
     "mechanisms/04-hardware-probe.md",
     "mechanisms/05-pipeline-adapter.md",
-    "mechanisms/05-pipeline-adapter.md",
     "mechanisms/06-gdn-resource-pruning.md",
     "mechanisms/07-gdn-correctness.md",
     "mechanisms/08-calibration.md",
@@ -18,6 +17,7 @@
     "results/gdn-acceptance.md",
     "results/classic-search.md",
     "results/compile-matrix.md",
+    "results/summary.md",
     {"path": "appendix/parity-inventory.md", "id": "parity-inventory"},
     {"path": "appendix/parity-evidence.md", "id": "parity-evidence"}
   ],
