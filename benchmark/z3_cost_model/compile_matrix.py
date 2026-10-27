@@ -632,6 +632,7 @@ def classify_skip(text: str) -> tuple[str, str]:
         r"\bSM[_ ]?\d+.*(required|required only|unsupported)",
         r"(Hopper|Blackwell|Ampere|Turing|Volta).*required",
         r"GPU.*(not available|required)",
+        r"Run-time support for .*not present",
         r"architecture.*(unsupported|required)",
     )
     has_dep = _matches_any(text, dependency_patterns)

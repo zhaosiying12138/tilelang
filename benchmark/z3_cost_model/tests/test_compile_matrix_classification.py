@@ -41,6 +41,7 @@ def test_all_skipped_arch_exit_five_is_arch_skip_not_infra():
     for text in (
         "SKIPPED [1] test_atom.py:322: Requires CUDA compute lt 11.0, but have 12.0",
         "SKIPPED [1] test_nvrtc.py:406: Test requires Hopper GPU (compute capability 9.0)",
+        "SKIPPED [2] test_warp_sync.py:185: Run-time support for ROCm not present",
     ):
         status, reason = cm.classify_result(
             _row(), action="run", exit_code=5, text=text, counts=_counts()
