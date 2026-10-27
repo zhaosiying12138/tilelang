@@ -51,6 +51,7 @@ doc/doxygen/man/*
 doc/doxygen/latex/*
 doc/doxygen/xml/*
 doc/doxygen/html/*
+article/_build/
 
 # git merge
 *.orig
