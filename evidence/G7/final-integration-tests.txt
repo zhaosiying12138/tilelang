@@ -1,0 +1,45 @@
+........................................................................ [ 67%]
+..................................                                   [100%]
+=================================================================================== fixture duration top ====================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.007037 grand total                                                                                                                                  100 0:00:00.000094 0:00:00.000791
+================================================================================== test call duration top ===================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:02.331921 benchmark/z3_cost_model/operators/tests/test_confirm.py::test_write_analysis_emits_json_csv_and_usable_plots                                   1 0:00:02.331921 0:00:02.331921
+0:00:00.505595 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_constraints_do_not_prune_raw_or_obvious_tail_configs                           3 0:00:00.169682 0:00:00.170362
+0:00:00.356574 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_gemm_fixed_seed_and_independent_fp32_reference                                 1 0:00:00.356574 0:00:00.356574
+0:00:00.339370 testing/python/cuda/test_result_visualization.py::test_gdn_search_observed_scope_is_explicit                                                   1 0:00:00.339370 0:00:00.339370
+0:00:00.333872 testing/python/cuda/test_result_visualization.py::test_gdn_acceptance_has_two_panels_and_exact_input_values                                    1 0:00:00.333872 0:00:00.333872
+0:00:00.330754 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_real_sm120_models_and_constraints_cover_every_frozen_suite                      1 0:00:00.330754 0:00:00.330754
+0:00:00.308006 testing/python/cuda/test_result_visualization.py::test_prediction_rank_displays_suite_metrics_and_joins_candidate_keys                         1 0:00:00.308006 0:00:00.308006
+0:00:00.290329 testing/python/cuda/test_result_visualization.py::test_quality_search_pareto_marks_frontier_and_same_space_oracle                              1 0:00:00.290329 0:00:00.290329
+0:00:00.249892 testing/python/cuda/test_result_visualization.py::test_pruning_funnel_preserves_unknown_and_dedup_accounting                                   1 0:00:00.249892 0:00:00.249892
+0:00:00.245432 testing/python/cuda/test_result_visualization.py::test_gdn_confirmation_differences_preserve_rounds_ranges_and_pair_scopes                     1 0:00:00.245432 0:00:00.245432
+0:00:00.171417 testing/python/cuda/test_result_visualization.py::test_parallel_cumulative_time_uses_independent_bars_and_warns                                1 0:00:00.171417 0:00:00.171417
+0:00:00.153962 testing/python/cuda/test_result_visualization.py::test_additive_time_breakdown_derives_only_residual_other                                     1 0:00:00.153962 0:00:00.153962
+0:00:00.127805 testing/python/cuda/test_result_visualization.py::test_native_loop_schedule_json_generates_all_artifacts                                       1 0:00:00.127805 0:00:00.127805
+0:00:00.119096 article/tests/test_build_html.py::SyntheticArticleTests::test_check_only_cli_writes_nothing_and_missing_chapter_fails                          1 0:00:00.119096 0:00:00.119096
+0:00:00.109833 testing/python/cuda/test_result_visualization.py::test_native_straight_schedule_does_not_invent_minimum_ii_or_stage                            1 0:00:00.109833 0:00:00.109833
+0:00:00.108167 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_prim_func_factories_construct_on_cpu_without_compilation                       1 0:00:00.108167 0:00:00.108167
+0:00:00.061979 article/tests/test_build_html.py::SyntheticArticleTests::test_full_cli_writes_html_zhihu_formula_log_manifest_and_zip                          1 0:00:00.061979 0:00:00.061979
+0:00:00.029506 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_complete_sixty_run_root_passes                          1 0:00:00.029506 0:00:00.029506
+0:00:00.024719 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_five_arms_budgets_real_driver_wiring_and_run_evidence                           1 0:00:00.024719 0:00:00.024719
+0:00:00.024452 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_pipeline_and_tilelang_cache_escapes_are_both_reported   1 0:00:00.024452 0:00:00.024452
+0:00:00.023332 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_raw_counts_exact_domains_and_unique_ids                                        1 0:00:00.023332 0:00:00.023332
+0:00:00.019947 article/tests/test_build_html.py::SyntheticArticleTests::test_html_zhihu_math_images_manifest_and_zip                                          1 0:00:00.019947 0:00:00.019947
+0:00:00.017867 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_cache_modes_are_run_owned_and_warm_uses_fresh_tuners                            1 0:00:00.017867 0:00:00.017867
+0:00:00.017846 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_missing_run_writes_audit_and_returns_failure            1 0:00:00.017846 0:00:00.017846
+0:00:00.017359 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_pid_reuse_fails_despite_complete_identities             1 0:00:00.017359 0:00:00.017359
+0:00:00.017102 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_sensitivity_summaries_are_ignored_and_counted           1 0:00:00.017102 0:00:00.017102
+0:00:00.013070 benchmark/z3_cost_model/tests/test_archive_matrix_logs.py::test_archive_manifest_exclusions_and_cli_summary                                    1 0:00:00.013070 0:00:00.013070
+0:00:00.009612 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_flash_attention_fp32_reference_and_strict_lower_triangle                       1 0:00:00.009612 0:00:00.009612
+0:00:00.008027 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_nonempty_run_conflict_and_failures_are_preserved                                1 0:00:00.008027 0:00:00.008027
+0:00:00.006289 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_exact_necessary_shared_memory_lower_bound                                      3 0:00:00.002014 0:00:00.002349
+0:00:06.452944 grand total                                                                                                                                  106 0:00:00.001459 0:00:02.331921
+================================================================================== test setup duration top ==================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.020114 grand total                                                                                                                                  106 0:00:00.000106 0:00:00.004431
+================================================================================ test teardown duration top =================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.005021 grand total                                                                                                                                  106 0:00:00.000042 0:00:00.000155
+106 passed, 4 subtests passed in 7.23s

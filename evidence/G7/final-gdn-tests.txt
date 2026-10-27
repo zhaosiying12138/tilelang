@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn
+configfile: pytest.ini
+plugins: xdist-3.8.0, platformdirs-4.13.5, durations-1.10.0, timeout-2.4.0
+collected 57 items
+
+benchmark/z3_cost_model/gdn/tests/test_config.py ......................  [ 38%]
+benchmark/z3_cost_model/gdn/tests/test_resource_search.py ......         [ 49%]
+benchmark/z3_cost_model/gdn/tests/test_autotune.py .........             [ 64%]
+benchmark/z3_cost_model/gdn/tests/test_confirmation.py ........          [ 78%]
+benchmark/z3_cost_model/gdn/tests/test_analysis.py ........              [ 92%]
+benchmark/z3_cost_model/gdn/tests/test_audit_cold.py ....                [100%]
+
+========================================================== fixture duration top ===========================================================
+total          name                                                                                       num med            max           
+0:00:00.000198 grand total                                                                                  7 0:00:00.000025 0:00:00.000048
+========================================================= test call duration top ==========================================================
+total          name                                                                                       num med            max           
+0:00:00.033538 tests/test_autotune.py::GDNAutotuneCPUTest::test_five_arm_denominators_and_strict_run_json   1 0:00:00.033538 0:00:00.033538
+0:00:00.012392 tests/test_config.py::ConfigSpaceTest::test_fused_bwd_has_no_block_DV_parameter              1 0:00:00.012392 0:00:00.012392
+0:00:00.007951 tests/test_autotune.py::GDNAutotuneCPUTest::test_failures_are_logged_and_reraised            1 0:00:00.007951 0:00:00.007951
+0:00:00.108111 grand total                                                                                 57 0:00:00.000500 0:00:00.033538
+========================================================= test setup duration top =========================================================
+total          name                                                                                       num med            max           
+0:00:00.005748 grand total                                                                                 57 0:00:00.000059 0:00:00.002239
+======================================================= test teardown duration top ========================================================
+total          name                                                                                       num med            max           
+0:00:00.001716 grand total                                                                                 57 0:00:00.000026 0:00:00.000124
+============================== 57 passed in 0.19s ==============================
