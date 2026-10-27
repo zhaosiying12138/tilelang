@@ -1,0 +1,31 @@
+......................................................                   [100%]
+============================================================================= fixture duration top =============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.002306 grand total                                                                                                                      41 0:00:00.000021 0:00:00.001342
+============================================================================ test call duration top ============================================================================
+total          name                                                                                                                            num med            max           
+0:00:02.238209 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_schedule_results_are_stable_across_processes                    1 0:00:02.238209 0:00:02.238209
+0:00:00.384742 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path                                 1 0:00:00.384742 0:00:00.384742
+0:00:00.119375 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_repeated_and_threaded_solves_are_deterministic                  1 0:00:00.119375 0:00:00.119375
+0:00:00.098946 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_png_and_pdf_in_tmp_path                          1 0:00:00.098946 0:00:00.098946
+0:00:00.052960 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_solver_lock_serializes_feasibility_checks_across_entry_points   1 0:00:00.052960 0:00:00.052960
+0:00:00.015142 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_start_is_k_ii_plus_r                                       1 0:00:00.015142 0:00:00.015142
+0:00:00.013315 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_minimizes_makespan_and_stable_tie                 1 0:00:00.013315 0:00:00.013315
+0:00:00.013226 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_negative_distance_recalculates_and_reads_buffer_versions   1 0:00:00.013226 0:00:00.013226
+0:00:00.009493 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_owner_equal_residue_has_explicit_valid_runtime_direction   2 0:00:00.004746 0:00:00.004820
+0:00:00.008929 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_fixed_cross_iteration_distance                             1 0:00:00.008929 0:00:00.008929
+0:00:00.008328 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_private_context_loop_seed_and_rlimit                            1 0:00:00.008328 0:00:00.008328
+0:00:00.007848 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_enable_offset_controls_cross_stage_resource_spread         1 0:00:00.007848 0:00:00.007848
+0:00:00.007513 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_data_latency_and_resource_exclusion               1 0:00:00.007513 0:00:00.007513
+0:00:00.007204 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_debug_failure_does_not_change_schedule                          1 0:00:00.007204 0:00:00.007204
+0:00:00.006752 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_ffi_registration_conversion_and_return_shapes                   1 0:00:00.006752 0:00:00.006752
+0:00:00.005401 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_owner_forward_and_wraparound_exclusion                     1 0:00:00.005401 0:00:00.005401
+0:00:00.005156 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_stage_order_changes_minimum_ii                             1 0:00:00.005156 0:00:00.005156
+0:00:03.037466 grand total                                                                                                                      54 0:00:00.004951 0:00:02.238209
+=========================================================================== test setup duration top ============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.005491 grand total                                                                                                                      54 0:00:00.000035 0:00:00.001551
+========================================================================== test teardown duration top ==========================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.002774 grand total                                                                                                                      54 0:00:00.000041 0:00:00.000515
+54 passed in 3.19s

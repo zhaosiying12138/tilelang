@@ -1,0 +1,23 @@
+..........                                                               [100%]
+=========================================================================================== fixture duration top ============================================================================================
+total          name                                                                                                                                                         num med            max           
+0:00:00.000112 grand total                                                                                                                                                    4 0:00:00.000026 0:00:00.000042
+========================================================================================== test call duration top ===========================================================================================
+total          name                                                                                                                                                         num med            max           
+0:00:00.988875 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_async_consumer_with_async_dependencies   1 0:00:00.988875 0:00:00.988875
+0:00:00.040638 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer                 1 0:00:00.040638 0:00:00.040638
+0:00:00.034897 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_full_commit_wait_placement                       2 0:00:00.017448 0:00:00.023154
+0:00:00.023411 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides                  1 0:00:00.023411 0:00:00.023411
+0:00:00.016732 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_conditional_async_producer               1 0:00:00.016732 0:00:00.016732
+0:00:00.012365 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_shared_writer_across_async_stages        1 0:00:00.012365 0:00:00.012365
+0:00:00.012030 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_underprovisioned_version_override        1 0:00:00.012030 0:00:00.012030
+0:00:00.011996 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_underprovisioned_b_version_override      1 0:00:00.011996 0:00:00.011996
+0:00:00.009530 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_buffer_changing_commit_group             1 0:00:00.009530 0:00:00.009530
+0:00:01.150473 grand total                                                                                                                                                   10 0:00:00.016732 0:00:00.988875
+========================================================================================== test setup duration top ==========================================================================================
+total          name                                                                                                                                                         num med            max           
+0:00:00.000817 grand total                                                                                                                                                   10 0:00:00.000040 0:00:00.000244
+======================================================================================== test teardown duration top =========================================================================================
+total          name                                                                                                                                                         num med            max           
+0:00:00.000764 grand total                                                                                                                                                   10 0:00:00.000063 0:00:00.000142
+10 passed, 52 deselected in 1.96s

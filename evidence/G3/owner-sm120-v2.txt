@@ -1,0 +1,239 @@
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+.2026-10-27 19:20:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `kernel` with `out_idx=[1]`
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=1
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+2026-10-27 19:20:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `kernel`
+F2026-10-27 19:20:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `kernel` with `out_idx=[1]`
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+2026-10-27 19:20:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `kernel`
+F2026-10-27 19:20:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `kernel` with `out_idx=[1]`
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=3
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+2026-10-27 19:20:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `kernel`
+F
+=================================== FAILURES ===================================
+____________ test_sm120_owner_ring_forward_wraparound_and_reuse[1] _____________
+
+depth = 1
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-128/test_sm120_owner_ring_forward_0')
+
+    @tilelang.testing.requires_cuda_compute_version_eq(12, 0)
+    @pytest.mark.parametrize("depth", [1, 2, 3])
+    def test_sm120_owner_ring_forward_wraparound_and_reuse(depth, tmp_path):
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_120a",
+                "max_shared_memory_per_block": int(
+                    torch.cuda.get_device_properties(0).shared_memory_per_block_optin
+                ),
+            }
+        )
+        kernel = tilelang.compile(
+            _owner_kernel(depth, str(tmp_path)),
+            target=target,
+            out_idx=[1],
+            execution_backend="tvm_ffi",
+            pass_configs={config_key: True},
+        )
+        a = torch.arange(64, dtype=torch.float32, device="cuda")
+        b = torch.full((64,), -7.0, dtype=torch.float32, device="cuda")
+        expected = b.clone()
+        for owner, extent in enumerate((3, 5)):
+            for index in range(extent):
+                expected[index * 4 : (index + 1) * 4] = index
+        for _ in range(4):
+>           actual = kernel(a, b)
+                     ^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+inputs = (tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11., 12., 13.,
+        14., 15., 16., 17., 18., 19., 2...., -7., -7., -7., -7., -7., -7., -7., -7., -7., -7.,
+        -7., -7., -7., -7., -7., -7., -7., -7.], device='cuda:0'))
+
+    def func(*inputs: torch.Tensor | Any):
+        nonlocal current_device_functor
+        if len(inputs) != expected_inputs:
+>           raise ValueError(f"Kernel expected {expected_inputs} inputs, but {len(inputs)} are provided.")
+E           ValueError: Kernel expected 1 inputs, but 2 are provided.
+
+tilelang/jit/adapter/tvm_ffi.py:365: ValueError
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `kernel` with `out_idx=[1]`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `kernel`
+____________ test_sm120_owner_ring_forward_wraparound_and_reuse[2] _____________
+
+depth = 2
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-128/test_sm120_owner_ring_forward_1')
+
+    @tilelang.testing.requires_cuda_compute_version_eq(12, 0)
+    @pytest.mark.parametrize("depth", [1, 2, 3])
+    def test_sm120_owner_ring_forward_wraparound_and_reuse(depth, tmp_path):
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_120a",
+                "max_shared_memory_per_block": int(
+                    torch.cuda.get_device_properties(0).shared_memory_per_block_optin
+                ),
+            }
+        )
+        kernel = tilelang.compile(
+            _owner_kernel(depth, str(tmp_path)),
+            target=target,
+            out_idx=[1],
+            execution_backend="tvm_ffi",
+            pass_configs={config_key: True},
+        )
+        a = torch.arange(64, dtype=torch.float32, device="cuda")
+        b = torch.full((64,), -7.0, dtype=torch.float32, device="cuda")
+        expected = b.clone()
+        for owner, extent in enumerate((3, 5)):
+            for index in range(extent):
+                expected[index * 4 : (index + 1) * 4] = index
+        for _ in range(4):
+>           actual = kernel(a, b)
+                     ^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+inputs = (tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11., 12., 13.,
+        14., 15., 16., 17., 18., 19., 2...., -7., -7., -7., -7., -7., -7., -7., -7., -7., -7.,
+        -7., -7., -7., -7., -7., -7., -7., -7.], device='cuda:0'))
+
+    def func(*inputs: torch.Tensor | Any):
+        nonlocal current_device_functor
+        if len(inputs) != expected_inputs:
+>           raise ValueError(f"Kernel expected {expected_inputs} inputs, but {len(inputs)} are provided.")
+E           ValueError: Kernel expected 1 inputs, but 2 are provided.
+
+tilelang/jit/adapter/tvm_ffi.py:365: ValueError
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `kernel` with `out_idx=[1]`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `kernel`
+____________ test_sm120_owner_ring_forward_wraparound_and_reuse[3] _____________
+
+depth = 3
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-128/test_sm120_owner_ring_forward_2')
+
+    @tilelang.testing.requires_cuda_compute_version_eq(12, 0)
+    @pytest.mark.parametrize("depth", [1, 2, 3])
+    def test_sm120_owner_ring_forward_wraparound_and_reuse(depth, tmp_path):
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_120a",
+                "max_shared_memory_per_block": int(
+                    torch.cuda.get_device_properties(0).shared_memory_per_block_optin
+                ),
+            }
+        )
+        kernel = tilelang.compile(
+            _owner_kernel(depth, str(tmp_path)),
+            target=target,
+            out_idx=[1],
+            execution_backend="tvm_ffi",
+            pass_configs={config_key: True},
+        )
+        a = torch.arange(64, dtype=torch.float32, device="cuda")
+        b = torch.full((64,), -7.0, dtype=torch.float32, device="cuda")
+        expected = b.clone()
+        for owner, extent in enumerate((3, 5)):
+            for index in range(extent):
+                expected[index * 4 : (index + 1) * 4] = index
+        for _ in range(4):
+>           actual = kernel(a, b)
+                     ^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+inputs = (tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11., 12., 13.,
+        14., 15., 16., 17., 18., 19., 2...., -7., -7., -7., -7., -7., -7., -7., -7., -7., -7.,
+        -7., -7., -7., -7., -7., -7., -7., -7.], device='cuda:0'))
+
+    def func(*inputs: torch.Tensor | Any):
+        nonlocal current_device_functor
+        if len(inputs) != expected_inputs:
+>           raise ValueError(f"Kernel expected {expected_inputs} inputs, but {len(inputs)} are provided.")
+E           ValueError: Kernel expected 1 inputs, but 2 are provided.
+
+tilelang/jit/adapter/tvm_ffi.py:365: ValueError
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `kernel` with `out_idx=[1]`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `kernel`
+============================================================================== fixture duration top ==============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.002336 grand total                                                                                                                         8 0:00:00.000082 0:00:00.001582
+============================================================================= test call duration top =============================================================================
+total          name                                                                                                                              num med            max           
+0:00:05.287948 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_sm120_owner_ring_forward_wraparound_and_reuse         3 0:00:01.693691 0:00:02.077369
+0:00:00.793601 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization   1 0:00:00.793601 0:00:00.793601
+0:00:06.081549 grand total                                                                                                                         4 0:00:01.243646 0:00:02.077369
+============================================================================ test setup duration top =============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.003156 grand total                                                                                                                         4 0:00:00.001126 0:00:00.001868
+=========================================================================== test teardown duration top ===========================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.000418 grand total                                                                                                                         4 0:00:00.000095 0:00:00.000151
+=========================== short test summary info ============================
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_sm120_owner_ring_forward_wraparound_and_reuse[1]
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_sm120_owner_ring_forward_wraparound_and_reuse[2]
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_sm120_owner_ring_forward_wraparound_and_reuse[3]
+3 failed, 1 passed in 7.49s

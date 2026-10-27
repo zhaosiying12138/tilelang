@@ -1,0 +1,458 @@
+...................................FF.FF................................ [ 25%]
+........................................................................ [ 50%]
+................................................FF...................... [ 75%]
+......................................................................   [100%]
+=================================== FAILURES ===================================
+________ test_clone_order_survives_independent_post_consumer_overwrite _________
+
+    def test_clone_order_survives_independent_post_consumer_overwrite():
+        tir = tvm.tirx
+        a = tir.decl_buffer((8,), "int32", name="ordered_A")
+        b = tir.decl_buffer((8,), "int32", name="ordered_B")
+        k = tir.Var("k", "int32")
+        value = tir.Var("ordered_value", "int32")
+        statements = [
+            tir.BufferStore(a, 1, [k]),
+            tir.Bind(value, tir.BufferLoad(a, [k]) + 1),
+            tir.BufferStore(b, value, [k]),
+            # This independent task follows the consumer in the original body but
+            # is scheduled between the clone and consumer in the augmented order.
+            tir.BufferStore(a, 99, [k]),
+        ]
+        annotations = _annotations(latencies=[1] * 4, iis=[1] * 4, resource_flags=[0] * 4)
+        func = _make_statement_func(statements, [a, b], annotations, k)
+    
+        def solver_result(call):
+            starts = {
+                4: [0, 1, 18, 17],
+                5: [0, 1, 18, 17, 16],
+            }
+            return starts[len(call["latencies"])], [], 16
+    
+        calls = _install_solver(solver_result)
+>       planned = _run_z3(func)
+                  ^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py:541: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py:187: in _run_z3
+    return tl.transform.Z3PipelinePlanning()(mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tl::(anonymous namespace)::Z3PipelinePlanner::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::Z3PipelinePlanner::PlanLoop(tvm::tirx::ForNode const*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(actual >= required)
+E   tvm.error.InternalError: Check failed: (actual >= required) is false: Z3PipelinePlanning: solver result violates augmented data dependency (2, 1, 1, 1)
+
+src/transform/z3_pipeline_planning.cc:937: InternalError
+________ test_flat_declarations_are_mapped_before_clone_materialization ________
+
+    def test_flat_declarations_are_mapped_before_clone_materialization():
+        tir = tvm.tirx
+        scratch = tir.decl_buffer((8,), "int32", name="flat_scratch")
+        declared_view = tir.decl_buffer((8,), "int32", name="flat_declared_view")
+        b = tir.decl_buffer((8,), "int32", name="flat_B")
+        k = tir.Var("k", "int32")
+        value = tir.Var("flat_value", "int32")
+        statements = [
+            tir.AllocBuffer(scratch),
+            tir.DeclBuffer(declared_view),
+            tir.BufferStore(scratch, 1, [k]),
+            tir.Bind(value, tir.BufferLoad(scratch, [k]) + 1),
+            tir.BufferStore(b, value, [k]),
+        ]
+        annotations = _annotations(latencies=[1] * 3, iis=[1] * 3, resource_flags=[0] * 3)
+        annotations["num_stages"] = tir.IntImm("int32", 2)
+        loop = tir.For(k, 0, 4, tir.ForKind.SERIAL, tir.SeqStmt(statements), annotations=annotations)
+        func = tir.PrimFunc([b.data], loop, buffer_map={b.data: b}).with_attr("global_symbol", "main")
+    
+        def solver_result(call):
+            starts = {3: [1, 2, 5], 4: [1, 2, 5, 4]}
+            return starts[len(call["latencies"])], [], 4
+    
+        calls = _install_solver(solver_result)
+        planned = _run_z3(func)
+        loop = _find_loop(planned["main"])
+        assert len(calls) == 2
+        assert _ints(loop.annotations["tl_pipeline_scalar_clone_original_flat_indices"]) == [2, 3, 4]
+        plan = _clone_plan(loop)
+        assert len(plan) == 1
+        assert int(plan[0]["definition_stmt"]) == 3
+        assert int(plan[0]["consumer_stmt"]) == 4
+    
+        stock, injected = _project_and_inject(planned)
+        stock_loop = _find_loop(stock["main"])
+>       assert _ints(stock_loop.annotations["software_pipeline_order"]) == [0, 1, 3]
+E       assert [2, 3, 1] == [0, 1, 3]
+E         
+E         At index 0 diff: 2 != 0
+E         
+E         Full diff:
+E           [
+E         -     0,
+E         ?     ^
+E         +     2,
+E         ?     ^
+E         +     3,
+E               1,
+E         -     3,
+E           ]
+
+testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py:619: AssertionError
+__________ test_chained_lets_converge_to_a_consumer_site_clone_chain ___________
+
+    def test_chained_lets_converge_to_a_consumer_site_clone_chain():
+        tir = tvm.tirx
+        a = tir.decl_buffer((8,), "int32", name="chain_A")
+        b = tir.decl_buffer((8,), "int32", name="chain_B")
+        k = tir.Var("k", "int32")
+        x = tir.Var("chain_x", "int32")
+        y = tir.Var("chain_y", "int32")
+        statements = [
+            tir.BufferStore(a, 1, [k]),
+            tir.Bind(x, tir.BufferLoad(a, [k]) + 1),
+            tir.Bind(y, x + 1),
+            tir.BufferStore(b, y, [k]),
+        ]
+        annotations = _annotations(latencies=[1] * 4, iis=[1] * 4, resource_flags=[0] * 4)
+        func = _make_statement_func(statements, [a, b], annotations, k)
+    
+        def solver_result(call):
+            starts = {
+                4: [1, 2, 5, 20],
+                5: [1, 2, 5, 20, 16],
+                6: [1, 2, 5, 20, 17, 16],
+            }
+            return starts[len(call["latencies"])], [], 16
+    
+        calls = _install_solver(solver_result)
+        planned = _run_z3(func)
+        loop = _find_loop(planned["main"])
+        assert len(calls) == 3
+        assert int(loop.annotations["tl_z3_pipeline_audit_clone_rounds"]) == 3
+        assert int(loop.annotations["tl_pipeline_scalar_clone_original_task_count"]) == 4
+        assert _ints(loop.annotations["tl_pipeline_scalar_clone_original_flat_indices"]) == [0, 1, 2, 3]
+        assert _ints(loop.annotations["tl_z3_pipeline_audit_starts"]) == [1, 2, 5, 20]
+    
+        plan = _clone_plan(loop)
+        assert len(plan) == 2
+        by_definition = {int(entry["definition_task"]): entry for entry in plan}
+        assert set(by_definition) == {1, 2}
+        assert all(int(entry["consumer_task"]) == 3 for entry in plan)
+        assert all(int(entry["stage"]) == 1 for entry in plan)
+        assert _ints(by_definition[2]["scalar_inputs"]) == [5]
+        assert _ints(by_definition[1]["scalar_inputs"]) == []
+        assert int(by_definition[1]["schedule_position"]) < int(by_definition[2]["schedule_position"])
+    
+        stock, injected = _project_and_inject(planned)
+        stock_loop = _find_loop(stock["main"])
+>       assert _ints(stock_loop.annotations["software_pipeline_order"]) == [0, 1, 2, 5]
+E       assert [2, 3, 5, 4] == [0, 1, 2, 5]
+E         
+E         At index 0 diff: 2 != 0
+E         
+E         Full diff:
+E           [
+E         -     0,
+E         -     1,
+E               2,
+E         +     3,
+E               5,
+E         +     4,
+E           ]
+
+testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py:719: AssertionError
+_____________ test_diamond_lets_share_one_clone_per_consumer_chain _____________
+
+    def test_diamond_lets_share_one_clone_per_consumer_chain():
+        tir = tvm.tirx
+        a = tir.decl_buffer((8,), "int32", name="diamond_A")
+        b = tir.decl_buffer((8,), "int32", name="diamond_B")
+        k = tir.Var("k", "int32")
+        x = tir.Var("diamond_x", "int32")
+        y = tir.Var("diamond_y", "int32")
+        z = tir.Var("diamond_z", "int32")
+        w = tir.Var("diamond_w", "int32")
+        statements = [
+            tir.BufferStore(a, 1, [k]),
+            tir.Bind(x, tir.BufferLoad(a, [k]) + 1),
+            tir.Bind(y, x + 1),
+            tir.Bind(z, x + 2),
+            tir.Bind(w, y + z),
+            tir.BufferStore(b, w, [k]),
+        ]
+        annotations = _annotations(latencies=[1] * 6, iis=[1] * 6, resource_flags=[0] * 6)
+        func = _make_statement_func(statements, [a, b], annotations, k)
+    
+        def solver_result(call):
+            starts = {
+                6: [1, 4, 8, 12, 16, 65],
+                7: [1, 4, 8, 12, 16, 65, 64],
+                8: [1, 4, 8, 12, 16, 66, 65, 64, 64],
+                9: [1, 4, 8, 12, 16, 67, 66, 65, 65],
+                10: [1, 4, 8, 12, 16, 67, 66, 65, 65, 64],
+            }
+            return starts[len(call["latencies"])], [], 64
+    
+        calls = _install_solver(solver_result)
+        planned = _run_z3(func)
+        loop = _find_loop(planned["main"])
+        assert len(calls) == 4
+        plan = _clone_plan(loop)
+        assert len(plan) == 4
+        by_definition = {int(entry["definition_task"]): entry for entry in plan}
+        assert set(by_definition) == {1, 2, 3, 4}
+        assert sum(int(entry["definition_task"]) == 1 for entry in plan) == 1
+        assert all(int(entry["consumer_task"]) == 5 for entry in plan)
+        assert set(_ints(by_definition[4]["scalar_inputs"])) == {7, 8}
+        assert _ints(by_definition[2]["scalar_inputs"]) == [9]
+        assert _ints(by_definition[3]["scalar_inputs"]) == [9]
+        assert int(by_definition[1]["schedule_position"]) < int(by_definition[2]["schedule_position"])
+        assert int(by_definition[1]["schedule_position"]) < int(by_definition[3]["schedule_position"])
+    
+        stock, injected = _project_and_inject(planned)
+        stock_loop = _find_loop(stock["main"])
+>       assert _ints(stock_loop.annotations["software_pipeline_order"]) == [0, 1, 2, 3, 4, 9]
+E       assert [3, 6, 7, 8, 9, 5] == [0, 1, 2, 3, 4, 9]
+E         
+E         At index 0 diff: 3 != 0
+E         
+E         Full diff:
+E           [
+E         -     0,
+E         -     1,
+E         -     2,
+E               3,
+E         -     4,
+E         ?     ^
+E         +     6,
+E         ?     ^
+E         +     7,
+E         +     8,
+E               9,
+E         +     5,
+E           ]
+
+testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py:792: AssertionError
+____ test_pipeline_planning_bind_replay_uses_buffer_storage_identity[True] _____
+
+alias_storage = True
+
+    @pytest.mark.parametrize("alias_storage", [True, False])
+    def test_pipeline_planning_bind_replay_uses_buffer_storage_identity(alias_storage):
+        """A write through one view must prevent replay through an aliased view."""
+        tir = tvm.tirx
+        written = tir.decl_buffer((4,), "float32", name="written_view", scope="shared")
+        if alias_storage:
+            read = tir.decl_buffer(
+                (4,), "float32", name="aliased_read_view", data=written.data, scope="shared"
+            )
+        else:
+            read = tir.decl_buffer((4,), "float32", name="disjoint_read_only")
+        out = tir.decl_buffer((4,), "float32", name="view_replay_out")
+        snapshot = tir.Var("view_snapshot", "float32")
+        k = tir.Var("k", "int32")
+        statements = [
+            tir.BufferStore(written, 1.0, [0]),
+            # With disjoint storage this definition is safe to inline at its stage-1
+            # consumer. With aliased storage that would observe a later write.
+            tir.Bind(snapshot, tir.BufferLoad(read, [0]) + 1.0),
+            tir.BufferStore(out, snapshot, [k]),
+        ]
+        stages = [0, 0, 1] if alias_storage else [0, 1]
+        orders = [0, 1, 2] if alias_storage else [0, 1]
+        loop = tir.For(
+            k,
+            0,
+            4,
+            tir.ForKind.SERIAL,
+            tir.SeqStmt(statements),
+            annotations={
+                "num_stages": tir.IntImm("int32", 2),
+                "software_pipeline_stage": stages,
+                "software_pipeline_order": orders,
+            },
+        )
+        params = [out.data]
+        buffer_map = {out.data: out}
+        if not alias_storage:
+            params.append(read.data)
+            buffer_map[read.data] = read
+        func = tir.PrimFunc(
+            params,
+            tir.SeqStmt([tir.AllocBuffer(written), loop]),
+            buffer_map=buffer_map,
+        ).with_attr("global_symbol", "main")
+    
+        mod = _run_pipeline_planning(func, sm80_target)
+        anno = _collect_pipeline_loop_annotations(mod["main"])[0]
+        expected_mask = [0, 0, 0] if alias_storage else [0, 1, 0]
+        assert [int(v) for v in anno["software_pipeline_replayable_scalar_binds"]] == expected_mask
+>       assert [int(v) for v in anno["software_pipeline_stage"]] == stages
+E       assert [2, 2, 2] == [0, 0, 1]
+E         
+E         At index 0 diff: 2 != 0
+E         
+E         Full diff:
+E           [
+E         -     0,
+E         ?     ^
+E         +     2,
+E         ?     ^
+E         -     0,
+E         ?     ^
+E         +     2,
+E         ?     ^
+E         -     1,
+E         ?     ^
+E         +     2,
+E         ?     ^
+E           ]
+
+testing/python/transform/test_tilelang_transform_pipeline_planning.py:868: AssertionError
+____ test_pipeline_planning_bind_replay_uses_buffer_storage_identity[False] ____
+
+alias_storage = False
+
+    @pytest.mark.parametrize("alias_storage", [True, False])
+    def test_pipeline_planning_bind_replay_uses_buffer_storage_identity(alias_storage):
+        """A write through one view must prevent replay through an aliased view."""
+        tir = tvm.tirx
+        written = tir.decl_buffer((4,), "float32", name="written_view", scope="shared")
+        if alias_storage:
+            read = tir.decl_buffer(
+                (4,), "float32", name="aliased_read_view", data=written.data, scope="shared"
+            )
+        else:
+            read = tir.decl_buffer((4,), "float32", name="disjoint_read_only")
+        out = tir.decl_buffer((4,), "float32", name="view_replay_out")
+        snapshot = tir.Var("view_snapshot", "float32")
+        k = tir.Var("k", "int32")
+        statements = [
+            tir.BufferStore(written, 1.0, [0]),
+            # With disjoint storage this definition is safe to inline at its stage-1
+            # consumer. With aliased storage that would observe a later write.
+            tir.Bind(snapshot, tir.BufferLoad(read, [0]) + 1.0),
+            tir.BufferStore(out, snapshot, [k]),
+        ]
+        stages = [0, 0, 1] if alias_storage else [0, 1]
+        orders = [0, 1, 2] if alias_storage else [0, 1]
+        loop = tir.For(
+            k,
+            0,
+            4,
+            tir.ForKind.SERIAL,
+            tir.SeqStmt(statements),
+            annotations={
+                "num_stages": tir.IntImm("int32", 2),
+                "software_pipeline_stage": stages,
+                "software_pipeline_order": orders,
+            },
+        )
+        params = [out.data]
+        buffer_map = {out.data: out}
+        if not alias_storage:
+            params.append(read.data)
+            buffer_map[read.data] = read
+        func = tir.PrimFunc(
+            params,
+            tir.SeqStmt([tir.AllocBuffer(written), loop]),
+            buffer_map=buffer_map,
+        ).with_attr("global_symbol", "main")
+    
+        mod = _run_pipeline_planning(func, sm80_target)
+        anno = _collect_pipeline_loop_annotations(mod["main"])[0]
+        expected_mask = [0, 0, 0] if alias_storage else [0, 1, 0]
+        assert [int(v) for v in anno["software_pipeline_replayable_scalar_binds"]] == expected_mask
+>       assert [int(v) for v in anno["software_pipeline_stage"]] == stages
+E       assert [2, 2] == [0, 1]
+E         
+E         At index 0 diff: 2 != 0
+E         
+E         Full diff:
+E           [
+E         -     0,
+E         ?     ^
+E         +     2,
+E         ?     ^
+E         -     1,
+E         ?     ^
+E         +     2,
+E         ?     ^
+E           ]
+
+testing/python/transform/test_tilelang_transform_pipeline_planning.py:868: AssertionError
+========================================================================================= fixture duration top ==========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.007972 grand total                                                                                                                                              338 0:00:00.000021 0:00:00.001116
+======================================================================================== test call duration top =========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:01.926339 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                    1 0:00:01.926339 0:00:01.926339
+0:00:01.200062 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers                        3 0:00:00.052135 0:00:01.097491
+0:00:00.607432 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization                          1 0:00:00.607432 0:00:00.607432
+0:00:00.285686 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                                  14 0:00:00.017075 0:00:00.065851
+0:00:00.125159 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                               10 0:00:00.012384 0:00:00.013982
+0:00:00.099931 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                              1 0:00:00.099931 0:00:00.099931
+0:00:00.091412 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                               2 0:00:00.045706 0:00:00.051587
+0:00:00.084682 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                           2 0:00:00.042341 0:00:00.044962
+0:00:00.047467 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering            12 0:00:00.003637 0:00:00.006318
+0:00:00.043306 testing/python/transform/test_tilelang_z3_task_analysis.py::test_aliased_views_keep_clone_raw_war_constraints_and_versions                                 2 0:00:00.021653 0:00:00.022847
+0:00:00.035046 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_full_commit_wait_placement                   2 0:00:00.017523 0:00:00.020298
+0:00:00.027523 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                              1 0:00:00.027523 0:00:00.027523
+0:00:00.024907 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                          2 0:00:00.012453 0:00:00.012941
+0:00:00.023420 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum               1 0:00:00.023420 0:00:00.023420
+0:00:00.023352 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_versions_reshape_and_view_aliases_by_storage                             1 0:00:00.023352 0:00:00.023352
+0:00:00.022775 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata   1 0:00:00.022775 0:00:00.022775
+0:00:00.022636 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_var_use_requires_defining_op_in_role                                     1 0:00:00.022636 0:00:00.022636
+0:00:00.021756 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_counter_phases                                               1 0:00:00.021756 0:00:00.021756
+0:00:00.021659 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer             1 0:00:00.021659 0:00:00.021659
+0:00:00.020892 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides              1 0:00:00.020892 0:00:00.020892
+0:00:00.019604 testing/python/transform/test_tilelang_z3_task_analysis.py::test_inferred_scalar_and_buffer_dependencies_support_clone_augmented_scheduling                1 0:00:00.019604 0:00:00.019604
+0:00:00.019128 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                          2 0:00:00.009564 0:00:00.009672
+0:00:00.018634 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_stage_offset_prologue_epilogue                               1 0:00:00.018634 0:00:00.018634
+0:00:00.018017 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                        3 0:00:00.006110 0:00:00.006614
+0:00:00.017817 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_conditional_async_producer           1 0:00:00.017817 0:00:00.017817
+0:00:00.017788 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters                                      1 0:00:00.017788 0:00:00.017788
+0:00:00.017586 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline          1 0:00:00.017586 0:00:00.017586
+0:00:00.017582 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_kernel_metadata_attrs_preserved                                          1 0:00:00.017582 0:00:00.017582
+0:00:00.017299 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_runtime_phase_counter_for_multi_cycle_body                               1 0:00:00.017299 0:00:00.017299
+0:00:00.015921 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_source_guard_follows_shifted_iteration                                   1 0:00:00.015921 0:00:00.015921
+0:00:06.064114 grand total                                                                                                                                              286 0:00:00.007686 0:00:01.926339
+======================================================================================== test setup duration top ========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.031270 grand total                                                                                                                                              286 0:00:00.000047 0:00:00.001311
+====================================================================================== test teardown duration top =======================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.016616 grand total                                                                                                                                              286 0:00:00.000049 0:00:00.000307
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_clone_order_survives_independent_post_consumer_overwrite
+FAILED testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_flat_declarations_are_mapped_before_clone_materialization
+FAILED testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_chained_lets_converge_to_a_consumer_site_clone_chain
+FAILED testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_diamond_lets_share_one_clone_per_consumer_chain
+FAILED testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_bind_replay_uses_buffer_storage_identity[True]
+FAILED testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_bind_replay_uses_buffer_storage_identity[False]
+6 failed, 280 passed, 3 deselected in 7.25s
