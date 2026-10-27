@@ -1,0 +1,12 @@
+Compiling configurations:   0%|          | 0/1 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/1 [00:00<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/1 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/1 [00:00<?, ?it/s][A                                                               
+                                                           [ACompiling configurations:   0%|          | 0/1 [00:01<?, ?it/s]
+Bench configurations:   0%|          | 0/1 [00:01<?, ?it/s][ACompiling configurations: 100%|██████████| 1/1 [00:01<00:00,  1.50s/it]
+Bench configurations: 100%|██████████| 1/1 [00:02<00:00,  2.43s/it][A
+Bench configurations: 100%|██████████| 1/1 [00:02<00:00,  2.43s/it, best_latency=1.69][A                                                                       
+                                                                                      [ACompiling configurations: 100%|██████████| 1/1 [00:02<00:00,  1.50s/it]
+Bench configurations: 100%|██████████| 1/1 [00:02<00:00,  2.43s/it, best_latency=1.69][A
+Bench configurations: 100%|██████████| 1/1 [00:02<00:00,  2.43s/it, best_latency=1.69][ACompiling configurations: 100%|██████████| 1/1 [00:02<00:00,  2.43s/it]
+Bench configurations: 100%|██████████| 1/1 [00:02<00:00,  2.43s/it, best_latency=1.69]
