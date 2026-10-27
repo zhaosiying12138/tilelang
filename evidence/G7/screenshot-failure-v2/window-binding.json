@@ -1,0 +1,163 @@
+{
+    "status":  "failed",
+    "window_title_token":  "FP4VLA-c797aaf18e474757b750b46541180849",
+    "before":  [
+                   {
+                       "hwnd":  133156,
+                       "pid":  28556,
+                       "thread":  28560,
+                       "owner":  "WindowsTerminal",
+                       "windowClass":  "CASCADIA_HOSTING_WINDOW_CLASS",
+                       "title":  "Ubuntu",
+                       "exists":  true,
+                       "visible":  true,
+                       "minimized":  true,
+                       "cloaked":  0,
+                       "left":  -32000,
+                       "top":  -32000,
+                       "right":  -31609,
+                       "bottom":  -31939
+                   }
+               ],
+    "polls":  [
+                  {
+                      "elapsed_ms":  80,
+                      "added":  [
+
+                                ],
+                      "matching":  [
+
+                                   ]
+                  },
+                  {
+                      "elapsed_ms":  330,
+                      "added":  [
+                                    {
+                                        "hwnd":  7278492,
+                                        "pid":  28556,
+                                        "thread":  28560,
+                                        "owner":  "WindowsTerminal",
+                                        "windowClass":  "CASCADIA_HOSTING_WINDOW_CLASS",
+                                        "title":  "FP4VLA-c797aaf18e474757b750b46541180849",
+                                        "exists":  true,
+                                        "visible":  true,
+                                        "minimized":  false,
+                                        "cloaked":  0,
+                                        "left":  533,
+                                        "top":  549,
+                                        "right":  3528,
+                                        "bottom":  2176
+                                    }
+                                ],
+                      "matching":  [
+                                       {
+                                           "hwnd":  7278492,
+                                           "pid":  28556,
+                                           "thread":  28560,
+                                           "owner":  "WindowsTerminal",
+                                           "windowClass":  "CASCADIA_HOSTING_WINDOW_CLASS",
+                                           "title":  "FP4VLA-c797aaf18e474757b750b46541180849",
+                                           "exists":  true,
+                                           "visible":  true,
+                                           "minimized":  false,
+                                           "cloaked":  0,
+                                           "left":  533,
+                                           "top":  549,
+                                           "right":  3528,
+                                           "bottom":  2176
+                                       }
+                                   ]
+                  },
+                  {
+                      "elapsed_ms":  561,
+                      "added":  [
+                                    {
+                                        "hwnd":  7278492,
+                                        "pid":  28556,
+                                        "thread":  28560,
+                                        "owner":  "WindowsTerminal",
+                                        "windowClass":  "CASCADIA_HOSTING_WINDOW_CLASS",
+                                        "title":  "FP4VLA-c797aaf18e474757b750b46541180849",
+                                        "exists":  true,
+                                        "visible":  true,
+                                        "minimized":  false,
+                                        "cloaked":  0,
+                                        "left":  533,
+                                        "top":  549,
+                                        "right":  3528,
+                                        "bottom":  2176
+                                    }
+                                ],
+                      "matching":  [
+                                       {
+                                           "hwnd":  7278492,
+                                           "pid":  28556,
+                                           "thread":  28560,
+                                           "owner":  "WindowsTerminal",
+                                           "windowClass":  "CASCADIA_HOSTING_WINDOW_CLASS",
+                                           "title":  "FP4VLA-c797aaf18e474757b750b46541180849",
+                                           "exists":  true,
+                                           "visible":  true,
+                                           "minimized":  false,
+                                           "cloaked":  0,
+                                           "left":  533,
+                                           "top":  549,
+                                           "right":  3528,
+                                           "bottom":  2176
+                                       }
+                                   ]
+                  }
+              ],
+    "selected":  {
+                     "hwnd":  7278492,
+                     "pid":  28556,
+                     "thread":  28560,
+                     "owner":  "WindowsTerminal",
+                     "windowClass":  "CASCADIA_HOSTING_WINDOW_CLASS",
+                     "title":  "FP4VLA-c797aaf18e474757b750b46541180849",
+                     "exists":  true,
+                     "visible":  true,
+                     "minimized":  false,
+                     "cloaked":  0,
+                     "left":  533,
+                     "top":  549,
+                     "right":  3528,
+                     "bottom":  2176
+                 },
+    "launcher_pid":  4816,
+    "foreground_at_launch_return":  false,
+    "foreground_before_capture_return":  false,
+    "capture_window":  {
+                           "hwnd":  7278492,
+                           "pid":  28556,
+                           "thread":  28560,
+                           "owner":  "WindowsTerminal",
+                           "windowClass":  "CASCADIA_HOSTING_WINDOW_CLASS",
+                           "title":  "FP4VLA-c797aaf18e474757b750b46541180849",
+                           "exists":  true,
+                           "visible":  true,
+                           "minimized":  false,
+                           "cloaked":  0,
+                           "left":  -16,
+                           "top":  -16,
+                           "right":  3856,
+                           "bottom":  2296
+                       },
+    "capture_foreground":  {
+                               "hwnd":  0,
+                               "pid":  0,
+                               "thread":  0,
+                               "owner":  "Idle",
+                               "windowClass":  "",
+                               "title":  "",
+                               "exists":  false,
+                               "visible":  false,
+                               "minimized":  false,
+                               "cloaked":  -1,
+                               "left":  0,
+                               "top":  0,
+                               "right":  0,
+                               "bottom":  0
+                           },
+    "error":  "The bound Terminal is not a usable foreground window; no screenshot accepted."
+}

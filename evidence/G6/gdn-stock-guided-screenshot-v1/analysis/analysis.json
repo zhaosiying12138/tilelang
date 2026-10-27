@@ -1,0 +1,180 @@
+{
+  "schema": "gdn-search-analysis/v1",
+  "cache_track": "cold",
+  "runs": [
+    {
+      "path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-stock-guided-screenshot-v1/guided/z3-cm-topk__rep-0000/summary.json",
+      "cache_track": "cold",
+      "direction": "fwd",
+      "repetition": 0,
+      "arm": "z3-cm-topk",
+      "R": 4,
+      "U": 3,
+      "selected": 2,
+      "compile_attempts": 2,
+      "compile_success": 2,
+      "compile_fail": 0,
+      "compile_wall_seconds": 16.38309960096376,
+      "profile_attempts": 2,
+      "profile_wall_seconds": 2.4795984349912032,
+      "validation_attempts": 2,
+      "validation_wall_seconds": 2.996870023023803,
+      "solver_checks": 1,
+      "solver_wall_seconds": 0.007344993005972356,
+      "model_attempts": 3,
+      "model_wall_seconds": 0.0010043670190498233,
+      "end_to_end_wall_seconds": 19.43495865201112,
+      "best_latency_ms": 0.302091509103775,
+      "best_config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "reference_latency_ms": 35.33616256713867,
+      "has_recorded_candidate_failures": false,
+      "status": "ok",
+      "search_speedup": 1.7574375139961267,
+      "compile_reduction": 0.5,
+      "profile_reduction": 0.33333333333333337,
+      "quality_ratio": 0.9976307459553005,
+      "oracle_best_config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      }
+    },
+    {
+      "path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-stock-guided-screenshot-v1/stock/stock-raw__rep-0000/summary.json",
+      "cache_track": "cold",
+      "direction": "fwd",
+      "repetition": 0,
+      "arm": "stock-raw",
+      "R": 4,
+      "U": null,
+      "selected": 4,
+      "compile_attempts": 4,
+      "compile_success": 3,
+      "compile_fail": 1,
+      "compile_wall_seconds": 30.88572766003199,
+      "profile_attempts": 3,
+      "profile_wall_seconds": 2.571956284053158,
+      "validation_attempts": 3,
+      "validation_wall_seconds": 3.2029934680322185,
+      "solver_checks": null,
+      "solver_wall_seconds": null,
+      "model_attempts": null,
+      "model_wall_seconds": null,
+      "end_to_end_wall_seconds": 34.15572541800793,
+      "best_latency_ms": 0.302808940410614,
+      "best_config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "reference_latency_ms": 35.300025939941406,
+      "has_recorded_candidate_failures": true,
+      "status": "ok",
+      "search_speedup": 1.0,
+      "compile_reduction": 0.0,
+      "profile_reduction": 0.0,
+      "quality_ratio": 1.0,
+      "oracle_best_config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      }
+    }
+  ],
+  "aggregates": [
+    {
+      "direction": "fwd",
+      "cache_track": "cold",
+      "arm": "stock-raw",
+      "repetitions": 1,
+      "R": 4,
+      "U": null,
+      "selected": 4,
+      "best_config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "best_latency_ms": 0.302808940410614,
+      "latency_range_ms": [
+        0.302808940410614,
+        0.302808940410614
+      ],
+      "search_speedup": 1.0,
+      "compile_reduction": 0.0,
+      "profile_reduction": 0.0,
+      "quality_ratio": 1.0,
+      "compile_attempts": 4,
+      "profile_attempts": 3,
+      "validation_attempts": 3,
+      "solver_checks": null,
+      "model_attempts": null,
+      "solver_wall_seconds": null,
+      "model_wall_seconds": null,
+      "compile_wall_seconds": 30.88572766003199,
+      "profile_wall_seconds": 2.571956284053158,
+      "validation_wall_seconds": 3.2029934680322185,
+      "end_to_end_wall_seconds": 34.15572541800793,
+      "reference_latency_ms": 35.300025939941406,
+      "has_recorded_candidate_failures": true,
+      "oracle_best_config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      }
+    },
+    {
+      "direction": "fwd",
+      "cache_track": "cold",
+      "arm": "z3-cm-topk",
+      "repetitions": 1,
+      "R": 4,
+      "U": 3,
+      "selected": 2,
+      "best_config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "best_latency_ms": 0.302091509103775,
+      "latency_range_ms": [
+        0.302091509103775,
+        0.302091509103775
+      ],
+      "search_speedup": 1.7574375139961267,
+      "compile_reduction": 0.5,
+      "profile_reduction": 0.33333333333333337,
+      "quality_ratio": 0.9976307459553005,
+      "compile_attempts": 2,
+      "profile_attempts": 2,
+      "validation_attempts": 2,
+      "solver_checks": 1,
+      "model_attempts": 3,
+      "solver_wall_seconds": 0.007344993005972356,
+      "model_wall_seconds": 0.0010043670190498233,
+      "compile_wall_seconds": 16.38309960096376,
+      "profile_wall_seconds": 2.4795984349912032,
+      "validation_wall_seconds": 2.996870023023803,
+      "end_to_end_wall_seconds": 19.43495865201112,
+      "reference_latency_ms": 35.33616256713867,
+      "has_recorded_candidate_failures": false,
+      "oracle_best_config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      }
+    }
+  ]
+}
