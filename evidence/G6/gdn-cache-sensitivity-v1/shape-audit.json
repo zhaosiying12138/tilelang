@@ -1,0 +1,78 @@
+{
+  "distinct_pids": 8,
+  "errors": [],
+  "expected_runs": 8,
+  "note": "The original protocol omitted num_tokens; this audit derives the historical shape from each run config without rewriting that protocol.",
+  "num_tokens": 4096,
+  "observed_runs": 8,
+  "passed": true,
+  "protocol_num_tokens": null,
+  "runs": [
+    {
+      "arm": "stock-raw",
+      "config": "evidence/G6/gdn-cache-sensitivity-v1/fwd/no-cache/stock-raw__rep-0000/config.json",
+      "direction": "fwd",
+      "num_tokens": 4096,
+      "pid": 2584506,
+      "track": "no-cache"
+    },
+    {
+      "arm": "z3-cm-topk",
+      "config": "evidence/G6/gdn-cache-sensitivity-v1/fwd/no-cache/z3-cm-topk__rep-0000/config.json",
+      "direction": "fwd",
+      "num_tokens": 4096,
+      "pid": 2584797,
+      "track": "no-cache"
+    },
+    {
+      "arm": "stock-raw",
+      "config": "evidence/G6/gdn-cache-sensitivity-v1/fwd/warm/stock-raw__rep-0000/config.json",
+      "direction": "fwd",
+      "num_tokens": 4096,
+      "pid": 2585011,
+      "track": "warm"
+    },
+    {
+      "arm": "z3-cm-topk",
+      "config": "evidence/G6/gdn-cache-sensitivity-v1/fwd/warm/z3-cm-topk__rep-0000/config.json",
+      "direction": "fwd",
+      "num_tokens": 4096,
+      "pid": 2585463,
+      "track": "warm"
+    },
+    {
+      "arm": "stock-raw",
+      "config": "evidence/G6/gdn-cache-sensitivity-v1/bwd/no-cache/stock-raw__rep-0000/config.json",
+      "direction": "bwd",
+      "num_tokens": 4096,
+      "pid": 2585784,
+      "track": "no-cache"
+    },
+    {
+      "arm": "z3-cm-topk",
+      "config": "evidence/G6/gdn-cache-sensitivity-v1/bwd/no-cache/z3-cm-topk__rep-0000/config.json",
+      "direction": "bwd",
+      "num_tokens": 4096,
+      "pid": 2586219,
+      "track": "no-cache"
+    },
+    {
+      "arm": "stock-raw",
+      "config": "evidence/G6/gdn-cache-sensitivity-v1/bwd/warm/stock-raw__rep-0000/config.json",
+      "direction": "bwd",
+      "num_tokens": 4096,
+      "pid": 2586602,
+      "track": "warm"
+    },
+    {
+      "arm": "z3-cm-topk",
+      "config": "evidence/G6/gdn-cache-sensitivity-v1/bwd/warm/z3-cm-topk__rep-0000/config.json",
+      "direction": "bwd",
+      "num_tokens": 4096,
+      "pid": 2587280,
+      "track": "warm"
+    }
+  ],
+  "schema": "tilelang.gdn.cache-shape-audit/v1",
+  "shape_source": "per-run config.json"
+}

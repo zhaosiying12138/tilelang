@@ -7,6 +7,11 @@ export TILELANG_REPO_ROOT="$REPO_ROOT"
 # shellcheck source=env.sh
 source "$REPO_ROOT/scripts/env.sh"
 OUTPUT_ROOT="${1:-$REPO_ROOT/evidence/G6/gdn-cache-sensitivity-v1}"
+export GDN_NUM_TOKENS="${GDN_NUM_TOKENS:-4096}"
+if [[ ! "$GDN_NUM_TOKENS" =~ ^[1-9][0-9]*$ ]]; then
+  printf 'GDN_NUM_TOKENS must be a positive integer: %s\n' "$GDN_NUM_TOKENS" >&2
+  exit 2
+fi
 
 if [[ -e "$OUTPUT_ROOT" ]]; then
   printf 'Refusing an existing cache-sensitivity output path: %s\n' "$OUTPUT_ROOT" >&2
@@ -17,6 +22,7 @@ mkdir -p "$OUTPUT_ROOT"
 "$TILELANG_PYTHON" - "$REPO_ROOT" "$OUTPUT_ROOT" <<'PY'
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -34,6 +40,7 @@ payload = {
     "arms": ["stock-raw", "z3-cm-topk"],
     "warmup": 10,
     "repeat": 50,
+    "num_tokens": int(os.environ["GDN_NUM_TOKENS"]),
     "fresh_process_per_run": True,
     "shared_cache_deletion": False,
 }
@@ -73,6 +80,7 @@ for direction in fwd bwd; do
         --direction "$direction" \
         --arm "$arm" \
         --cache-mode "$track" \
+        --num-tokens "$GDN_NUM_TOKENS" \
         --warmup 10 \
         --repeat 50 \
         --output-dir "$OUTPUT_ROOT/$direction/$track" \
