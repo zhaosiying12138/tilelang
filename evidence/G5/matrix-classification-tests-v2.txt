@@ -1,0 +1,19 @@
+.............                                                            [100%]
+=================================================================================== fixture duration top ====================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.001062 grand total                                                                                                                                    8 0:00:00.000028 0:00:00.000613
+================================================================================== test call duration top ===================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.033259 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_complete_sixty_run_root_passes                          1 0:00:00.033259 0:00:00.033259
+0:00:00.019074 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_sensitivity_summaries_are_ignored_and_counted           1 0:00:00.019074 0:00:00.019074
+0:00:00.018896 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_pid_reuse_fails_despite_complete_identities             1 0:00:00.018896 0:00:00.018896
+0:00:00.018665 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_pipeline_and_tilelang_cache_escapes_are_both_reported   1 0:00:00.018665 0:00:00.018665
+0:00:00.018455 benchmark/z3_cost_model/operators/tests/test_audit_cold.py::ClassicColdAuditTest::test_missing_run_writes_audit_and_returns_failure            1 0:00:00.018455 0:00:00.018455
+0:00:00.111020 grand total                                                                                                                                   13 0:00:00.000471 0:00:00.033259
+================================================================================== test setup duration top ==================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.006191 grand total                                                                                                                                   13 0:00:00.000093 0:00:00.004085
+================================================================================ test teardown duration top =================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.000508 grand total                                                                                                                                   13 0:00:00.000041 0:00:00.000096
+13 passed in 0.15s

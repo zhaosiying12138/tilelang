@@ -668,7 +668,8 @@ def classify_result(
             return FAIL_INFRA, f"pytest collection failed with infrastructure exit {exit_code}"
         return classify_failure(text, numeric_gate=False, default=FAIL_INFRA), "collection did not produce nodes"
     if exit_code in {2, 3, 4, 5}:
-        if exit_code == 5 and counts["skipped"]:
+        has_explicit_skip = bool(counts["skipped"]) or re.search(r"(?m)^SKIPPED(?:\s|\[)", text) is not None
+        if exit_code == 5 and has_explicit_skip:
             status, reason = classify_skip(text)
             if status in SKIP_STATUSES:
                 return status, reason + "; pytest exit 5 followed an all-skipped selection"

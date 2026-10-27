@@ -38,17 +38,27 @@ def test_opt_in_performance_skip_is_not_not_run_or_pass():
 
 
 def test_all_skipped_arch_exit_five_is_arch_skip_not_infra():
-    text = "SKIPPED [1] test_atom.py:322: Requires CUDA compute lt 11.0, but have 12.0"
-    status, reason = cm.classify_result(
-        _row(), action="run", exit_code=5, text=text, counts=_counts(skipped=1)
-    )
-    assert status == cm.SKIP_ARCH
-    assert "exit 5" in reason
+    for text in (
+        "SKIPPED [1] test_atom.py:322: Requires CUDA compute lt 11.0, but have 12.0",
+        "SKIPPED [1] test_nvrtc.py:406: Test requires Hopper GPU (compute capability 9.0)",
+    ):
+        status, reason = cm.classify_result(
+            _row(), action="run", exit_code=5, text=text, counts=_counts()
+        )
+        assert status == cm.SKIP_ARCH
+        assert "exit 5" in reason
 
 
 def test_unknown_all_skipped_exit_five_remains_infra():
     status, _ = cm.classify_result(
         _row(), action="run", exit_code=5, text="SKIPPED unsupported fixture", counts=_counts(skipped=1)
+    )
+    assert status == cm.FAIL_INFRA
+
+
+def test_import_failure_without_skip_line_is_not_relabelled_dependency_skip():
+    status, _ = cm.classify_result(
+        _row(), action="run", exit_code=5, text="ModuleNotFoundError: No module named 'fla'", counts=_counts()
     )
     assert status == cm.FAIL_INFRA
 

@@ -1,0 +1,70 @@
+[
+  {
+    "id": "testing/python/language/test_tilelang_language_atom_mma.py::test_tcgen05_atom_gemm",
+    "new_status": "SKIP_ARCH",
+    "old_status": "FAIL_INFRA",
+    "parsed_pytest": {
+      "collected": 0,
+      "deselected": 0,
+      "errors": 0,
+      "failed": 0,
+      "passed": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "xfailed": 0,
+      "xpassed": 0
+    },
+    "reason": "pytest reported an architecture/device skip; not counted as passed; pytest exit 5 followed an all-skipped selection"
+  },
+  {
+    "id": "testing/python/jit/test_tilelang_jit_gemm_cython.py::test_cython_kernel_do_bench",
+    "new_status": "SKIP_PERF",
+    "old_status": "NOT_RUN",
+    "parsed_pytest": {
+      "collected": 0,
+      "deselected": 0,
+      "errors": 0,
+      "failed": 0,
+      "passed": 0,
+      "skipped": 1,
+      "warnings": 0,
+      "xfailed": 0,
+      "xpassed": 0
+    },
+    "reason": "pytest reported an opt-in performance-test skip; not counted as passed; passed_cases=0, incomplete_cases=1"
+  },
+  {
+    "id": "testing/python/jit/test_tilelang_jit_nvrtc.py::test_nvrtc_im2col_tma_desc",
+    "new_status": "SKIP_ARCH",
+    "old_status": "FAIL_INFRA",
+    "parsed_pytest": {
+      "collected": 0,
+      "deselected": 0,
+      "errors": 0,
+      "failed": 0,
+      "passed": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "xfailed": 0,
+      "xpassed": 0
+    },
+    "reason": "pytest reported an architecture/device skip; not counted as passed; pytest exit 5 followed an all-skipped selection"
+  },
+  {
+    "id": "testing/python/jit/test_tilelang_jit_nvrtc.py::test_nvrtc_kernel_do_bench",
+    "new_status": "SKIP_PERF",
+    "old_status": "NOT_RUN",
+    "parsed_pytest": {
+      "collected": 0,
+      "deselected": 0,
+      "errors": 0,
+      "failed": 0,
+      "passed": 0,
+      "skipped": 1,
+      "warnings": 0,
+      "xfailed": 0,
+      "xpassed": 0
+    },
+    "reason": "pytest reported an opt-in performance-test skip; not counted as passed; passed_cases=0, incomplete_cases=1"
+  }
+]
