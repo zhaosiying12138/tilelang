@@ -1,0 +1,24 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+2026-10-27 11:27:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 11:27:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 11:27:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 11:27:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 11:27:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 11:27:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 11:27:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[-1]`
+2026-10-27 11:27:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+{
+  "status": "ok",
+  "suite": "gemm_short_k",
+  "acceptance": {
+    "correctness_passed": true,
+    "performance_report_only": true,
+    "passed": true,
+    "passed_scope": "execution_and_correctness_only",
+    "rule": "report-only: guided/legal and guided/budget ratios, paired differences and ranges; no GDN-specific performance gate is imposed",
+    "rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+    "legal_oracle_complete": true,
+    "stock_raw_semantics": "full raw-space winner/reference, never relabeled as the Z3 legal oracle"
+  },
+  "summary": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-confirmation-v1/gemm_short_k/summary.json"
+}

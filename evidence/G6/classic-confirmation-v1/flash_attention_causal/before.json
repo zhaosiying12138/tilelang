@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "path": "summary.json",
+      "sha256": "bd7d50c9cae67d197f67bcccb20c4b560ebf2083a370737eb1adf351c64c861b",
+      "size_bytes": 12250
+    }
+  ],
+  "gpu_telemetry": "2026/10/27 11:27:33.852, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 52.25, 53, 877, 14001, 0",
+  "pid": 2786509,
+  "source": {
+    "file_sha256": {
+      "benchmark/z3_cost_model/operators/_common.py": "3eb6c8837ed36cf1a93ae0f558db8eaae15621ea41469ffbcc140bbed023c470",
+      "benchmark/z3_cost_model/operators/analyze_confirmation.py": "d12a86a96fe0392f3ca2ad1efc5bb551cda95c303fc6eb9e1b0386d10feb8a2d",
+      "benchmark/z3_cost_model/operators/autotune.py": "fbafe4d6abd4af5618bba693129f33238f326f7839f839ed6422127a9a474663",
+      "benchmark/z3_cost_model/operators/confirm.py": "16216043e31e34ddd3b1e6fd624a3d6de9ff7bb3c905b8143bcb32ba5f4a4253",
+      "benchmark/z3_cost_model/operators/convolution.py": "472fcbbb2bcf9ed9e3f1d5daec7b005bf7989b84e69a802b7211c7dcb381cd50",
+      "benchmark/z3_cost_model/operators/flash_attention.py": "02d7ee7a346eb1489913e913e52e7a75ed9a8439fc34455e924f6f98fa6238a7",
+      "benchmark/z3_cost_model/operators/gemm.py": "c175f374f0c95dc1451ccacd94eb843f78a4066c08718f2d55c651fce6281a2a",
+      "manifest/experiment_plan.json": "d1a464b843a18c77a7ece22aea6a6c6eba4aa957de4b9ae748a207f119a2180d",
+      "manifest/gdn-selection-v2-plan.json": "bddb2c853c04969594939612a9026522fd23ef88857cccefb2c9a453dfb19b9a"
+    },
+    "git_commit": "676e7a906ea922fdbf970388a111600f13444d6c"
+  },
+  "utc": "2026-10-27T03:27:33.861114+00:00"
+}

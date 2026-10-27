@@ -1,0 +1,857 @@
+{
+  "acceptance": {
+    "correctness_passed": true,
+    "legal_oracle_complete": true,
+    "passed": true,
+    "passed_scope": "execution_and_correctness_only",
+    "performance_report_only": true,
+    "rule": "report-only: guided/legal and guided/budget ratios, paired differences and ranges; no GDN-specific performance gate is imposed",
+    "rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+    "stock_raw_semantics": "full raw-space winner/reference, never relabeled as the Z3 legal oracle"
+  },
+  "analysis_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/main-analysis/analysis.json",
+  "cache": {
+    "environment_keys": [
+      "TILELANG_CACHE_DIR",
+      "TILELANG_DISABLE_CACHE",
+      "TILELANG_AUTO_TUNING_DISABLE_CACHE",
+      "CUDA_CACHE_PATH",
+      "CUDA_CACHE_DISABLE",
+      "TORCH_EXTENSIONS_DIR",
+      "TRITON_CACHE_DIR",
+      "XDG_CACHE_HOME",
+      "TMPDIR"
+    ],
+    "root": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-confirmation-v1/conv2d_stride_tail/cache",
+    "run_owned": true
+  },
+  "comparisons": [
+    {
+      "acceptance_rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+      "alternative_arms": [
+        "stock-raw",
+        "z3-legal-exhaustive",
+        "budget-raw"
+      ],
+      "alternative_median_ms": 0.013088000006973743,
+      "alternative_round_statistics": {
+        "count": 7,
+        "max_ms": 0.013199999928474426,
+        "mean_ms": 0.013108571459140097,
+        "median_ms": 0.013088000006973743,
+        "min_ms": 0.013088000006973743,
+        "round_medians_ms": [
+          0.013199999928474426,
+          0.013088000006973743,
+          0.013088000006973743,
+          0.013088000006973743,
+          0.013088000006973743,
+          0.013088000006973743,
+          0.013120000250637531
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "config": {
+        "block_K": 32,
+        "block_M": 64,
+        "block_N": 64,
+        "num_stages": 0,
+        "threads": 256
+      },
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "guided_median_ms": 0.01696000061929226,
+      "guided_round_statistics": {
+        "count": 7,
+        "max_ms": 0.01711999997496605,
+        "mean_ms": 0.01650514280689614,
+        "median_ms": 0.01696000061929226,
+        "min_ms": 0.015200000256299973,
+        "round_medians_ms": [
+          0.01635199971497059,
+          0.01711999997496605,
+          0.01708799973130226,
+          0.015759999863803387,
+          0.015200000256299973,
+          0.017055999487638474,
+          0.01696000061929226
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "identical": false,
+      "identical_arms": [],
+      "legal_oracle_complete": true,
+      "measurement_evidence": "pair-local ABBA round medians",
+      "pair_index": 0,
+      "paired_difference_range_ms": [
+        0.002112000249326229,
+        0.004031999967992306
+      ],
+      "paired_difference_statistics": {
+        "count": 7,
+        "max_ms": 0.004031999967992306,
+        "mean_ms": 0.003396571347756045,
+        "median_ms": 0.003840000368654728,
+        "min_ms": 0.002112000249326229
+      },
+      "paired_round_differences_ms": [
+        0.0031519997864961624,
+        0.004031999967992306,
+        0.003999999724328518,
+        0.0026719998568296432,
+        0.002112000249326229,
+        0.00396799948066473,
+        0.003840000368654728
+      ],
+      "passed": false,
+      "quality_ratio_guided_over_alternative": 1.295843567409488,
+      "reference_semantics": {
+        "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+        "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+      },
+      "relations": [
+        "same_space_exhaustive",
+        "equal_budget_control",
+        "stock_informational"
+      ],
+      "requirements": {
+        "not_slower_than_equal_budget_control": false,
+        "within_2_percent_of_exhaustive": false
+      }
+    },
+    {
+      "acceptance_rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+      "alternative_arms": [],
+      "alternative_median_ms": 0.01696000061929226,
+      "alternative_round_statistics": {
+        "count": 7,
+        "max_ms": 0.01711999997496605,
+        "mean_ms": 0.01650514280689614,
+        "median_ms": 0.01696000061929226,
+        "min_ms": 0.015200000256299973,
+        "round_medians_ms": [
+          0.01635199971497059,
+          0.01711999997496605,
+          0.01708799973130226,
+          0.015759999863803387,
+          0.015200000256299973,
+          0.017055999487638474,
+          0.01696000061929226
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "config": {
+        "block_K": 64,
+        "block_M": 64,
+        "block_N": 64,
+        "num_stages": 1,
+        "threads": 256
+      },
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "guided_median_ms": 0.01696000061929226,
+      "guided_round_statistics": {
+        "count": 7,
+        "max_ms": 0.01711999997496605,
+        "mean_ms": 0.01650514280689614,
+        "median_ms": 0.01696000061929226,
+        "min_ms": 0.015200000256299973,
+        "round_medians_ms": [
+          0.01635199971497059,
+          0.01711999997496605,
+          0.01708799973130226,
+          0.015759999863803387,
+          0.015200000256299973,
+          0.017055999487638474,
+          0.01696000061929226
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "identical": true,
+      "identical_arms": [
+        "z3-cm-topk",
+        "budget-random"
+      ],
+      "legal_oracle_complete": true,
+      "measurement_evidence": "same canonical config; identity applied without a second sample set",
+      "pair_index": 1,
+      "paired_difference_range_ms": [
+        0.0,
+        0.0
+      ],
+      "paired_difference_statistics": {
+        "count": 7,
+        "max_ms": 0.0,
+        "mean_ms": 0.0,
+        "median_ms": 0.0,
+        "min_ms": 0.0
+      },
+      "paired_round_differences_ms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "passed": true,
+      "quality_ratio_guided_over_alternative": 1.0,
+      "reference_semantics": {
+        "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+        "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+      },
+      "relations": [
+        "equal_budget_control"
+      ],
+      "requirements": {
+        "not_slower_than_equal_budget_control": true
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "kernel_type": "tilelang.jit.kernel.JITKernel"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "kernel_type": "tilelang.jit.kernel.JITKernel"
+    }
+  ],
+  "device": "cuda",
+  "measurements": [
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.11203200370073318,
+      "mean_ms": 0.016767360093072056,
+      "median_ms": 0.01635199971497059,
+      "min_ms": 0.014911999925971031,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 0,
+      "role": "guided",
+      "round": 0,
+      "samples": "samples.jsonl#record_index=0",
+      "telemetry_after": "2026/10/27 11:27:31.343, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 29.76, 52, 1702, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:31.228, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 24.35, 52, 1702, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.01548799965530634,
+      "mean_ms": 0.014064320027828217,
+      "median_ms": 0.013199999928474426,
+      "min_ms": 0.012864000163972378,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 1,
+      "role": "alternative",
+      "round": 0,
+      "samples": "samples.jsonl#record_index=1",
+      "telemetry_after": "2026/10/27 11:27:31.491, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 41.78, 52, 2205, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:31.385, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 32.42, 52, 1702, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.015424000099301338,
+      "mean_ms": 0.013365599969401955,
+      "median_ms": 0.013088000006973743,
+      "min_ms": 0.012799999676644802,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 2,
+      "role": "alternative",
+      "round": 1,
+      "samples": "samples.jsonl#record_index=2",
+      "telemetry_after": "2026/10/27 11:27:31.646, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 44.35, 52, 2205, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:31.535, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 41.78, 52, 2205, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.018112000077962875,
+      "mean_ms": 0.01643039997201413,
+      "median_ms": 0.01711999997496605,
+      "min_ms": 0.014879999682307243,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 3,
+      "role": "guided",
+      "round": 1,
+      "samples": "samples.jsonl#record_index=3",
+      "telemetry_after": "2026/10/27 11:27:31.794, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 59.07, 55, 2205, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:31.690, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 50.40, 55, 2205, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.015263999812304974,
+      "mean_ms": 0.013204640015028418,
+      "median_ms": 0.013088000006973743,
+      "min_ms": 0.01283199992030859,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 4,
+      "role": "alternative",
+      "round": 2,
+      "samples": "samples.jsonl#record_index=4",
+      "telemetry_after": "2026/10/27 11:27:31.947, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 60.43, 55, 2205, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:31.839, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 59.07, 55, 2205, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.017503999173641205,
+      "mean_ms": 0.01640320001170039,
+      "median_ms": 0.01708799973130226,
+      "min_ms": 0.014879999682307243,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 5,
+      "role": "guided",
+      "round": 2,
+      "samples": "samples.jsonl#record_index=5",
+      "telemetry_after": "2026/10/27 11:27:32.101, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 75.73, 55, 2197, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:31.993, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 67.07, 55, 2197, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.018432000651955605,
+      "mean_ms": 0.016152480044402184,
+      "median_ms": 0.015759999863803387,
+      "min_ms": 0.014911999925971031,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 6,
+      "role": "guided",
+      "round": 3,
+      "samples": "samples.jsonl#record_index=6",
+      "telemetry_after": "2026/10/27 11:27:32.255, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 74.08, 54, 2197, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:32.148, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 75.73, 54, 2197, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.015263999812304974,
+      "mean_ms": 0.013330880017019809,
+      "median_ms": 0.013088000006973743,
+      "min_ms": 0.012768000364303589,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 7,
+      "role": "alternative",
+      "round": 3,
+      "samples": "samples.jsonl#record_index=7",
+      "telemetry_after": "2026/10/27 11:27:32.402, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 84.32, 54, 2197, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:32.299, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 78.48, 54, 2197, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.01744000054895878,
+      "mean_ms": 0.016062400080263616,
+      "median_ms": 0.015200000256299973,
+      "min_ms": 0.014944000169634819,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 8,
+      "role": "guided",
+      "round": 4,
+      "samples": "samples.jsonl#record_index=8",
+      "telemetry_after": "2026/10/27 11:27:32.554, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 81.91, 54, 2025, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:32.448, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 84.32, 54, 2197, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.015424000099301338,
+      "mean_ms": 0.013356000040657819,
+      "median_ms": 0.013088000006973743,
+      "min_ms": 0.012864000163972378,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 9,
+      "role": "alternative",
+      "round": 4,
+      "samples": "samples.jsonl#record_index=9",
+      "telemetry_after": "2026/10/27 11:27:32.702, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 84.34, 55, 2025, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:32.598, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 79.75, 55, 2025, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.015168000012636185,
+      "mean_ms": 0.013125119959004223,
+      "median_ms": 0.013088000006973743,
+      "min_ms": 0.012768000364303589,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 10,
+      "role": "alternative",
+      "round": 5,
+      "samples": "samples.jsonl#record_index=10",
+      "telemetry_after": "2026/10/27 11:27:32.855, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 81.75, 55, 2025, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:32.749, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 84.34, 55, 2025, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.018239999189972878,
+      "mean_ms": 0.016369600063189865,
+      "median_ms": 0.017055999487638474,
+      "min_ms": 0.014751999638974667,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 11,
+      "role": "guided",
+      "round": 5,
+      "samples": "samples.jsonl#record_index=11",
+      "telemetry_after": "2026/10/27 11:27:33.003, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 83.92, 55, 1515, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:32.897, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 79.00, 55, 2025, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.01539199985563755,
+      "mean_ms": 0.013755839979276062,
+      "median_ms": 0.013120000250637531,
+      "min_ms": 0.012896000407636166,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 12,
+      "role": "alternative",
+      "round": 6,
+      "samples": "samples.jsonl#record_index=12",
+      "telemetry_after": "2026/10/27 11:27:33.155, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 81.64, 56, 1515, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:33.049, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 83.92, 56, 1515, 14001, 626"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.017343999817967415,
+      "mean_ms": 0.016167200077325104,
+      "median_ms": 0.01696000061929226,
+      "min_ms": 0.014816000126302242,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 13,
+      "role": "guided",
+      "round": 6,
+      "samples": "samples.jsonl#record_index=13",
+      "telemetry_after": "2026/10/27 11:27:33.301, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 83.36, 56, 1515, 14001, 626",
+      "telemetry_before": "2026/10/27 11:27:33.199, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 80.07, 56, 1515, 14001, 626"
+    }
+  ],
+  "operator": "convolution_nhwc_implicit_gemm",
+  "pass_configs": null,
+  "pid": 2786343,
+  "plan": {
+    "candidates": [
+      {
+        "arms": [
+          "z3-cm-topk"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 1,
+          "threads": 256
+        }
+      },
+      {
+        "arms": [
+          "stock-raw",
+          "z3-legal-exhaustive",
+          "budget-raw"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 0,
+          "threads": 256
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "alternative_arms": [
+          "stock-raw",
+          "z3-legal-exhaustive",
+          "budget-raw"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 0,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+        "identical": false,
+        "identical_arms": [],
+        "reference_semantics": {
+          "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+          "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+        },
+        "relations": [
+          "same_space_exhaustive",
+          "equal_budget_control",
+          "stock_informational"
+        ]
+      },
+      {
+        "alternative_arms": [],
+        "config": {
+          "block_K": 64,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 1,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+        "identical": true,
+        "identical_arms": [
+          "z3-cm-topk",
+          "budget-random"
+        ],
+        "reference_semantics": {
+          "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+          "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+        },
+        "relations": [
+          "equal_budget_control"
+        ]
+      }
+    ],
+    "guided_arm": "z3-cm-topk",
+    "guided_top_k": 10,
+    "legal_oracle_complete": true,
+    "schema": "tilelang.classic-operators.confirmation-plan/v1",
+    "selection_rule": "candidate-median",
+    "selection_rule_detail": "lowest per-candidate median of valid successful trials across the three actual cold repetitions; canonical JSON tie-break; confirmation measurements are never selection inputs",
+    "stock_raw_is_legal_oracle": false,
+    "suite": "conv2d_stride_tail",
+    "winners": {
+      "budget-random": {
+        "candidate_count": 10,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-0-nonstock/conv2d_stride_tail/top-k-0010/budget-random__rep-0000/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-1-nonstock/conv2d_stride_tail/top-k-0010/budget-random__rep-0001/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-2-nonstock/conv2d_stride_tail/top-k-0010/budget-random__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 1,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.0162796787917614,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 0,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      },
+      "budget-raw": {
+        "candidate_count": 10,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-0-nonstock/conv2d_stride_tail/top-k-0010/budget-raw__rep-0000/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-1-nonstock/conv2d_stride_tail/top-k-0010/budget-raw__rep-0001/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-2-nonstock/conv2d_stride_tail/top-k-0010/budget-raw__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 0,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.013461759313941002,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 0,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      },
+      "stock-raw": {
+        "candidate_count": 120,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-0-stock/stock-raw__rep-0000/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-1-stock/stock-raw__rep-0001/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-2-stock/stock-raw__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 0,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.013454079627990723,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 0,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      },
+      "z3-cm-topk": {
+        "candidate_count": 10,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-0-nonstock/conv2d_stride_tail/top-k-0010/z3-cm-topk__rep-0000/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-1-nonstock/conv2d_stride_tail/top-k-0010/z3-cm-topk__rep-0001/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-2-nonstock/conv2d_stride_tail/top-k-0010/z3-cm-topk__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 1,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.016160639002919197,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 0,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      },
+      "z3-legal-exhaustive": {
+        "candidate_count": 120,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-0-nonstock/conv2d_stride_tail/top-k-0010/z3-legal-exhaustive__rep-0000/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-1-nonstock/conv2d_stride_tail/top-k-0010/z3-legal-exhaustive__rep-0001/summary.json",
+          "evidence/G6/classic-v2/conv2d_stride_tail-rep-2-nonstock/conv2d_stride_tail/top-k-0010/z3-legal-exhaustive__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 64,
+          "block_N": 64,
+          "num_stages": 0,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.013653762638568878,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 3,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      }
+    }
+  },
+  "reference_and_compilation_in_timed_region": false,
+  "reference_validation_in_timed_region": false,
+  "repeat": 200,
+  "rounds": 7,
+  "schema": "tilelang.classic-operators.confirmation/v1",
+  "seed": 20261026,
+  "shape": {
+    "C": 64,
+    "D": 1,
+    "F": 96,
+    "H": 33,
+    "K": 3,
+    "N": 4,
+    "OH": 17,
+    "OW": 17,
+    "P": 1,
+    "S": 2,
+    "W": 33,
+    "reduction": 576
+  },
+  "source": {
+    "file_sha256": {
+      "benchmark/z3_cost_model/operators/_common.py": "3eb6c8837ed36cf1a93ae0f558db8eaae15621ea41469ffbcc140bbed023c470",
+      "benchmark/z3_cost_model/operators/analyze_confirmation.py": "d12a86a96fe0392f3ca2ad1efc5bb551cda95c303fc6eb9e1b0386d10feb8a2d",
+      "benchmark/z3_cost_model/operators/autotune.py": "fbafe4d6abd4af5618bba693129f33238f326f7839f839ed6422127a9a474663",
+      "benchmark/z3_cost_model/operators/confirm.py": "16216043e31e34ddd3b1e6fd624a3d6de9ff7bb3c905b8143bcb32ba5f4a4253",
+      "benchmark/z3_cost_model/operators/convolution.py": "472fcbbb2bcf9ed9e3f1d5daec7b005bf7989b84e69a802b7211c7dcb381cd50",
+      "benchmark/z3_cost_model/operators/flash_attention.py": "02d7ee7a346eb1489913e913e52e7a75ed9a8439fc34455e924f6f98fa6238a7",
+      "benchmark/z3_cost_model/operators/gemm.py": "c175f374f0c95dc1451ccacd94eb843f78a4066c08718f2d55c651fce6281a2a",
+      "manifest/experiment_plan.json": "d1a464b843a18c77a7ece22aea6a6c6eba4aa957de4b9ae748a207f119a2180d",
+      "manifest/gdn-selection-v2-plan.json": "bddb2c853c04969594939612a9026522fd23ef88857cccefb2c9a453dfb19b9a"
+    },
+    "git_commit": "676e7a906ea922fdbf970388a111600f13444d6c"
+  },
+  "status": "ok",
+  "suite": "conv2d_stride_tail",
+  "target": "auto",
+  "telemetry": {
+    "after": "2026/10/27 11:27:33.355, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 83.36, 56, 1515, 14001, 626",
+    "before": "2026/10/27 11:27:25.340, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 68.51, 53, 772, 14001, 0",
+    "query": "timestamp,name,driver_version,power.draw,temperature.gpu,clocks.sm,clocks.mem,memory.used"
+  },
+  "timing": "median of pair-local per-round medians; each measurement has 200 L2-flushed CUDA-event samples after 50 warmups",
+  "validations": [
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "max_abs_error": 0.0004886388778686523,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 0.7333316802978516,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "convolution_nhwc_implicit_gemm",
+      "passed": true,
+      "phase": "before",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 110976,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "max_abs_error": 0.0004886388778686523,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 0.7333316802978516,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "convolution_nhwc_implicit_gemm",
+      "passed": true,
+      "phase": "before",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 110976,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":64,\"block_M\":64,\"block_N\":64,\"num_stages\":1,\"threads\":256}",
+      "max_abs_error": 0.0004886388778686523,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 0.7333316802978516,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "convolution_nhwc_implicit_gemm",
+      "passed": true,
+      "phase": "after",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 110976,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"num_stages\":0,\"threads\":256}",
+      "max_abs_error": 0.0004886388778686523,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 0.7333316802978516,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "convolution_nhwc_implicit_gemm",
+      "passed": true,
+      "phase": "after",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 110976,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    }
+  ],
+  "warmup": 50
+}

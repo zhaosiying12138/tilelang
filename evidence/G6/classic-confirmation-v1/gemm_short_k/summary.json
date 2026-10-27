@@ -1,0 +1,1719 @@
+{
+  "acceptance": {
+    "correctness_passed": true,
+    "legal_oracle_complete": true,
+    "passed": true,
+    "passed_scope": "execution_and_correctness_only",
+    "performance_report_only": true,
+    "rule": "report-only: guided/legal and guided/budget ratios, paired differences and ranges; no GDN-specific performance gate is imposed",
+    "rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+    "stock_raw_semantics": "full raw-space winner/reference, never relabeled as the Z3 legal oracle"
+  },
+  "analysis_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/main-analysis/analysis.json",
+  "cache": {
+    "environment_keys": [
+      "TILELANG_CACHE_DIR",
+      "TILELANG_DISABLE_CACHE",
+      "TILELANG_AUTO_TUNING_DISABLE_CACHE",
+      "CUDA_CACHE_PATH",
+      "CUDA_CACHE_DISABLE",
+      "TORCH_EXTENSIONS_DIR",
+      "TRITON_CACHE_DIR",
+      "XDG_CACHE_HOME",
+      "TMPDIR"
+    ],
+    "root": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-confirmation-v1/gemm_short_k/cache",
+    "run_owned": true
+  },
+  "comparisons": [
+    {
+      "acceptance_rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+      "alternative_arms": [
+        "stock-raw",
+        "z3-legal-exhaustive"
+      ],
+      "alternative_median_ms": 0.41043201088905334,
+      "alternative_round_statistics": {
+        "count": 7,
+        "max_ms": 0.4160799980163574,
+        "mean_ms": 0.41146514458315714,
+        "median_ms": 0.41043201088905334,
+        "min_ms": 0.4102399945259094,
+        "round_medians_ms": [
+          0.41043201088905334,
+          0.4102399945259094,
+          0.4103199988603592,
+          0.4103199988603592,
+          0.41044799983501434,
+          0.4160799980163574,
+          0.412416011095047
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "config": {
+        "block_K": 64,
+        "block_M": 128,
+        "block_N": 128,
+        "enable_rasterization": false,
+        "num_stages": 0,
+        "threads": 256
+      },
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "guided_median_ms": 0.42671999335289,
+      "guided_round_statistics": {
+        "count": 7,
+        "max_ms": 0.4288960099220276,
+        "mean_ms": 0.42723200150898527,
+        "median_ms": 0.42671999335289,
+        "min_ms": 0.42579199373722076,
+        "round_medians_ms": [
+          0.42579199373722076,
+          0.42671999335289,
+          0.42671999335289,
+          0.42665600776672363,
+          0.4288960099220276,
+          0.42873600125312805,
+          0.42710401117801666
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "identical": false,
+      "identical_arms": [],
+      "legal_oracle_complete": true,
+      "measurement_evidence": "pair-local ABBA round medians",
+      "pair_index": 0,
+      "paired_difference_range_ms": [
+        0.01265600323677063,
+        0.018448010087013245
+      ],
+      "paired_difference_statistics": {
+        "count": 7,
+        "max_ms": 0.018448010087013245,
+        "mean_ms": 0.015766856925828115,
+        "median_ms": 0.01633600890636444,
+        "min_ms": 0.01265600323677063
+      },
+      "paired_round_differences_ms": [
+        0.01535998284816742,
+        0.01647999882698059,
+        0.016399994492530823,
+        0.01633600890636444,
+        0.018448010087013245,
+        0.01265600323677063,
+        0.014688000082969666
+      ],
+      "passed": false,
+      "quality_ratio_guided_over_alternative": 1.0396849710346778,
+      "reference_semantics": {
+        "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+        "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+      },
+      "relations": [
+        "same_space_exhaustive",
+        "stock_informational"
+      ],
+      "requirements": {
+        "within_2_percent_of_exhaustive": false
+      }
+    },
+    {
+      "acceptance_rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+      "alternative_arms": [],
+      "alternative_median_ms": 0.4289279878139496,
+      "alternative_round_statistics": {
+        "count": 21,
+        "max_ms": 0.43484801054000854,
+        "mean_ms": 0.4291999992870149,
+        "median_ms": 0.4289279878139496,
+        "min_ms": 0.42579199373722076,
+        "round_medians_ms": [
+          0.42579199373722076,
+          0.42671999335289,
+          0.42671999335289,
+          0.42665600776672363,
+          0.4288960099220276,
+          0.42873600125312805,
+          0.42710401117801666,
+          0.42980800569057465,
+          0.4289279878139496,
+          0.4299199879169464,
+          0.43009600043296814,
+          0.4288800060749054,
+          0.43060798943042755,
+          0.42876800894737244,
+          0.42879998683929443,
+          0.4306719899177551,
+          0.43057599663734436,
+          0.42928001284599304,
+          0.43057599663734436,
+          0.43081599473953247,
+          0.43484801054000854
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "config": {
+        "block_K": 64,
+        "block_M": 128,
+        "block_N": 256,
+        "enable_rasterization": false,
+        "num_stages": 2,
+        "threads": 256
+      },
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "guided_median_ms": 0.4289279878139496,
+      "guided_round_statistics": {
+        "count": 21,
+        "max_ms": 0.43484801054000854,
+        "mean_ms": 0.4291999992870149,
+        "median_ms": 0.4289279878139496,
+        "min_ms": 0.42579199373722076,
+        "round_medians_ms": [
+          0.42579199373722076,
+          0.42671999335289,
+          0.42671999335289,
+          0.42665600776672363,
+          0.4288960099220276,
+          0.42873600125312805,
+          0.42710401117801666,
+          0.42980800569057465,
+          0.4289279878139496,
+          0.4299199879169464,
+          0.43009600043296814,
+          0.4288800060749054,
+          0.43060798943042755,
+          0.42876800894737244,
+          0.42879998683929443,
+          0.4306719899177551,
+          0.43057599663734436,
+          0.42928001284599304,
+          0.43057599663734436,
+          0.43081599473953247,
+          0.43484801054000854
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "identical": true,
+      "identical_arms": [
+        "z3-cm-topk"
+      ],
+      "legal_oracle_complete": true,
+      "measurement_evidence": "same canonical config; identity applied without a second sample set",
+      "pair_index": 1,
+      "paired_difference_range_ms": [
+        0.0,
+        0.0
+      ],
+      "paired_difference_statistics": {
+        "count": 21,
+        "max_ms": 0.0,
+        "mean_ms": 0.0,
+        "median_ms": 0.0,
+        "min_ms": 0.0
+      },
+      "paired_round_differences_ms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "passed": true,
+      "quality_ratio_guided_over_alternative": 1.0,
+      "reference_semantics": {
+        "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+        "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+      },
+      "relations": [],
+      "requirements": {}
+    },
+    {
+      "acceptance_rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+      "alternative_arms": [
+        "budget-raw"
+      ],
+      "alternative_median_ms": 0.48793599009513855,
+      "alternative_round_statistics": {
+        "count": 7,
+        "max_ms": 0.49031999707221985,
+        "mean_ms": 0.48755199781485964,
+        "median_ms": 0.48793599009513855,
+        "min_ms": 0.4841279983520508,
+        "round_medians_ms": [
+          0.4841279983520508,
+          0.48504000902175903,
+          0.49031999707221985,
+          0.4872000068426132,
+          0.48793599009513855,
+          0.49004799127578735,
+          0.48819199204444885
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "config": {
+        "block_K": 32,
+        "block_M": 64,
+        "block_N": 64,
+        "enable_rasterization": false,
+        "num_stages": 0,
+        "threads": 128
+      },
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "guided_median_ms": 0.42980800569057465,
+      "guided_round_statistics": {
+        "count": 7,
+        "max_ms": 0.43060798943042755,
+        "mean_ms": 0.42957256947244915,
+        "median_ms": 0.42980800569057465,
+        "min_ms": 0.42876800894737244,
+        "round_medians_ms": [
+          0.42980800569057465,
+          0.4289279878139496,
+          0.4299199879169464,
+          0.43009600043296814,
+          0.4288800060749054,
+          0.43060798943042755,
+          0.42876800894737244
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "identical": false,
+      "identical_arms": [],
+      "legal_oracle_complete": true,
+      "measurement_evidence": "pair-local ABBA round medians",
+      "pair_index": 2,
+      "paired_difference_range_ms": [
+        -0.06040000915527344,
+        -0.054319992661476135
+      ],
+      "paired_difference_statistics": {
+        "count": 7,
+        "max_ms": -0.054319992661476135,
+        "mean_ms": -0.057979428342410495,
+        "median_ms": -0.059055984020233154,
+        "min_ms": -0.06040000915527344
+      },
+      "paired_round_differences_ms": [
+        -0.054319992661476135,
+        -0.05611202120780945,
+        -0.06040000915527344,
+        -0.05710400640964508,
+        -0.059055984020233154,
+        -0.0594400018453598,
+        -0.059423983097076416
+      ],
+      "passed": true,
+      "quality_ratio_guided_over_alternative": 0.8808696517893053,
+      "reference_semantics": {
+        "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+        "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+      },
+      "relations": [
+        "equal_budget_control"
+      ],
+      "requirements": {
+        "not_slower_than_equal_budget_control": true
+      }
+    },
+    {
+      "acceptance_rule_source": "classic quality is descriptive; execution and correctness are separate from performance comparisons",
+      "alternative_arms": [
+        "budget-random"
+      ],
+      "alternative_median_ms": 0.43057599663734436,
+      "alternative_round_statistics": {
+        "count": 7,
+        "max_ms": 0.43297600746154785,
+        "mean_ms": 0.4294628586087908,
+        "median_ms": 0.43057599663734436,
+        "min_ms": 0.4246239960193634,
+        "round_medians_ms": [
+          0.4312160015106201,
+          0.4313279986381531,
+          0.42876800894737244,
+          0.43297600746154785,
+          0.4246239960193634,
+          0.4267520010471344,
+          0.43057599663734436
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "config": {
+        "block_K": 32,
+        "block_M": 128,
+        "block_N": 128,
+        "enable_rasterization": false,
+        "num_stages": 0,
+        "threads": 128
+      },
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "guided_median_ms": 0.43057599663734436,
+      "guided_round_statistics": {
+        "count": 7,
+        "max_ms": 0.43484801054000854,
+        "mean_ms": 0.4307954268796103,
+        "median_ms": 0.43057599663734436,
+        "min_ms": 0.42879998683929443,
+        "round_medians_ms": [
+          0.42879998683929443,
+          0.4306719899177551,
+          0.43057599663734436,
+          0.42928001284599304,
+          0.43057599663734436,
+          0.43081599473953247,
+          0.43484801054000854
+        ],
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "identical": false,
+      "identical_arms": [],
+      "legal_oracle_complete": true,
+      "measurement_evidence": "pair-local ABBA round medians",
+      "pair_index": 3,
+      "paired_difference_range_ms": [
+        -0.0036959946155548096,
+        0.005952000617980957
+      ],
+      "paired_difference_statistics": {
+        "count": 7,
+        "max_ms": 0.005952000617980957,
+        "mean_ms": 0.0013325682708195277,
+        "median_ms": 0.0018079876899719238,
+        "min_ms": -0.0036959946155548096
+      },
+      "paired_round_differences_ms": [
+        -0.0024160146713256836,
+        -0.0006560087203979492,
+        0.0018079876899719238,
+        -0.0036959946155548096,
+        0.005952000617980957,
+        0.004063993692398071,
+        0.004272013902664185
+      ],
+      "passed": true,
+      "quality_ratio_guided_over_alternative": 1.0,
+      "reference_semantics": {
+        "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+        "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+      },
+      "relations": [
+        "equal_budget_control"
+      ],
+      "requirements": {
+        "not_slower_than_equal_budget_control": true
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "kernel_type": "tilelang.jit.kernel.JITKernel"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "kernel_type": "tilelang.jit.kernel.JITKernel"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "kernel_type": "tilelang.jit.kernel.JITKernel"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "kernel_type": "tilelang.jit.kernel.JITKernel"
+    }
+  ],
+  "device": "cuda",
+  "measurements": [
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.5183359980583191,
+      "mean_ms": 0.42640223786234854,
+      "median_ms": 0.42579199373722076,
+      "min_ms": 0.4184960126876831,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 0,
+      "role": "guided",
+      "round": 0,
+      "samples": "samples.jsonl#record_index=0",
+      "telemetry_after": "2026/10/27 11:27:13.883, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 51.42, 48, 1815, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:13.670, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 33.40, 48, 1815, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4349440038204193,
+      "mean_ms": 0.4134718392789364,
+      "median_ms": 0.41043201088905334,
+      "min_ms": 0.389631986618042,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 1,
+      "role": "alternative",
+      "round": 0,
+      "samples": "samples.jsonl#record_index=1",
+      "telemetry_after": "2026/10/27 11:27:14.132, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 78.72, 54, 2242, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:13.933, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 63.81, 48, 1815, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4267840087413788,
+      "mean_ms": 0.4109292787313461,
+      "median_ms": 0.4102399945259094,
+      "min_ms": 0.4041920006275177,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 2,
+      "role": "alternative",
+      "round": 1,
+      "samples": "samples.jsonl#record_index=2",
+      "telemetry_after": "2026/10/27 11:27:14.384, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 94.11, 54, 2242, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:14.182, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 78.72, 54, 2242, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.43296000361442566,
+      "mean_ms": 0.42682223781943324,
+      "median_ms": 0.42671999335289,
+      "min_ms": 0.42022401094436646,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 3,
+      "role": "guided",
+      "round": 1,
+      "samples": "samples.jsonl#record_index=3",
+      "telemetry_after": "2026/10/27 11:27:14.626, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 120.82, 55, 2175, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:14.424, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 100.58, 54, 2242, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.42662400007247925,
+      "mean_ms": 0.4119487980008125,
+      "median_ms": 0.4103199988603592,
+      "min_ms": 0.3896639943122864,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 4,
+      "role": "alternative",
+      "round": 2,
+      "samples": "samples.jsonl#record_index=4",
+      "telemetry_after": "2026/10/27 11:27:14.878, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 133.12, 55, 2175, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:14.679, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 120.82, 55, 2175, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4410879909992218,
+      "mean_ms": 0.4275172783434391,
+      "median_ms": 0.42671999335289,
+      "min_ms": 0.4224959909915924,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 5,
+      "role": "guided",
+      "round": 2,
+      "samples": "samples.jsonl#record_index=5",
+      "telemetry_after": "2026/10/27 11:27:15.129, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 134.01, 55, 2160, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:14.924, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 127.80, 55, 2175, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4430080056190491,
+      "mean_ms": 0.4267500804364681,
+      "median_ms": 0.42665600776672363,
+      "min_ms": 0.41836801171302795,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 6,
+      "role": "guided",
+      "round": 3,
+      "samples": "samples.jsonl#record_index=6",
+      "telemetry_after": "2026/10/27 11:27:15.393, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 131.36, 55, 2160, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:15.185, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 122.29, 55, 2160, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.42873600125312805,
+      "mean_ms": 0.40963775783777234,
+      "median_ms": 0.4103199988603592,
+      "min_ms": 0.3917759954929352,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 7,
+      "role": "alternative",
+      "round": 3,
+      "samples": "samples.jsonl#record_index=7",
+      "telemetry_after": "2026/10/27 11:27:15.649, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 132.26, 55, 2257, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:15.448, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 131.36, 55, 2160, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4554559886455536,
+      "mean_ms": 0.43035231932997703,
+      "median_ms": 0.4288960099220276,
+      "min_ms": 0.4166080057621002,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 8,
+      "role": "guided",
+      "round": 4,
+      "samples": "samples.jsonl#record_index=8",
+      "telemetry_after": "2026/10/27 11:27:15.920, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 130.14, 55, 2257, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:15.705, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 121.92, 55, 2257, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.45974400639533997,
+      "mean_ms": 0.41746271938085555,
+      "median_ms": 0.41044799983501434,
+      "min_ms": 0.38784000277519226,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 9,
+      "role": "alternative",
+      "round": 4,
+      "samples": "samples.jsonl#record_index=9",
+      "telemetry_after": "2026/10/27 11:27:16.178, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 127.29, 50, 1860, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:15.974, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 130.14, 55, 2257, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.45151999592781067,
+      "mean_ms": 0.42090015947818754,
+      "median_ms": 0.4160799980163574,
+      "min_ms": 0.3877120018005371,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 10,
+      "role": "alternative",
+      "round": 5,
+      "samples": "samples.jsonl#record_index=10",
+      "telemetry_after": "2026/10/27 11:27:16.423, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.97, 50, 1860, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:16.220, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 128.63, 50, 1860, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4440000057220459,
+      "mean_ms": 0.4299340796470642,
+      "median_ms": 0.42873600125312805,
+      "min_ms": 0.41814398765563965,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 11,
+      "role": "guided",
+      "round": 5,
+      "samples": "samples.jsonl#record_index=11",
+      "telemetry_after": "2026/10/27 11:27:16.681, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 121.50, 50, 1725, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:16.476, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.97, 50, 1860, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4431999921798706,
+      "mean_ms": 0.41700591951608657,
+      "median_ms": 0.412416011095047,
+      "min_ms": 0.38979199528694153,
+      "pair_index": 0,
+      "position": 0,
+      "record_index": 12,
+      "role": "alternative",
+      "round": 6,
+      "samples": "samples.jsonl#record_index=12",
+      "telemetry_after": "2026/10/27 11:27:16.938, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 127.71, 50, 1725, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:16.734, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.80, 50, 1725, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4397760033607483,
+      "mean_ms": 0.4289831990003586,
+      "median_ms": 0.42710401117801666,
+      "min_ms": 0.41836801171302795,
+      "pair_index": 0,
+      "position": 1,
+      "record_index": 13,
+      "role": "guided",
+      "round": 6,
+      "samples": "samples.jsonl#record_index=13",
+      "telemetry_after": "2026/10/27 11:27:17.201, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.20, 51, 1635, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:16.994, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 124.73, 50, 1635, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4573119878768921,
+      "mean_ms": 0.4350105592608452,
+      "median_ms": 0.42980800569057465,
+      "min_ms": 0.4185279905796051,
+      "pair_index": 2,
+      "position": 0,
+      "record_index": 14,
+      "role": "guided",
+      "round": 0,
+      "samples": "samples.jsonl#record_index=14",
+      "telemetry_after": "2026/10/27 11:27:17.469, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 121.11, 51, 1635, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:17.258, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.20, 51, 1635, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.4944320023059845,
+      "mean_ms": 0.48190384030342104,
+      "median_ms": 0.4841279983520508,
+      "min_ms": 0.4134719967842102,
+      "pair_index": 2,
+      "position": 1,
+      "record_index": 15,
+      "role": "alternative",
+      "round": 0,
+      "samples": "samples.jsonl#record_index=15",
+      "telemetry_after": "2026/10/27 11:27:17.734, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.54, 52, 1927, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:17.515, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 128.02, 51, 1927, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.5168960094451904,
+      "mean_ms": 0.480768000036478,
+      "median_ms": 0.48504000902175903,
+      "min_ms": 0.412416011095047,
+      "pair_index": 2,
+      "position": 0,
+      "record_index": 16,
+      "role": "alternative",
+      "round": 1,
+      "samples": "samples.jsonl#record_index=16",
+      "telemetry_after": "2026/10/27 11:27:18.006, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 128.87, 52, 1365, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:17.787, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 120.33, 52, 1927, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.45715200901031494,
+      "mean_ms": 0.4340103989839554,
+      "median_ms": 0.4289279878139496,
+      "min_ms": 0.41868799924850464,
+      "pair_index": 2,
+      "position": 1,
+      "record_index": 17,
+      "role": "guided",
+      "round": 1,
+      "samples": "samples.jsonl#record_index=17",
+      "telemetry_after": "2026/10/27 11:27:18.269, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 123.35, 55, 1365, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:18.062, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 128.87, 52, 1365, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.5537279844284058,
+      "mean_ms": 0.49793696016073224,
+      "median_ms": 0.49031999707221985,
+      "min_ms": 0.47999998927116394,
+      "pair_index": 2,
+      "position": 0,
+      "record_index": 18,
+      "role": "alternative",
+      "round": 2,
+      "samples": "samples.jsonl#record_index=18",
+      "telemetry_after": "2026/10/27 11:27:18.557, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 120.87, 55, 1372, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:18.326, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.04, 55, 1365, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.46566399931907654,
+      "mean_ms": 0.43444047912955286,
+      "median_ms": 0.4299199879169464,
+      "min_ms": 0.42473599314689636,
+      "pair_index": 2,
+      "position": 1,
+      "record_index": 19,
+      "role": "guided",
+      "round": 2,
+      "samples": "samples.jsonl#record_index=19",
+      "telemetry_after": "2026/10/27 11:27:18.821, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 119.31, 56, 1372, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:18.611, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 116.66, 55, 1372, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.47180798649787903,
+      "mean_ms": 0.43711903885006903,
+      "median_ms": 0.43009600043296814,
+      "min_ms": 0.4246079921722412,
+      "pair_index": 2,
+      "position": 0,
+      "record_index": 20,
+      "role": "guided",
+      "round": 3,
+      "samples": "samples.jsonl#record_index=20",
+      "telemetry_after": "2026/10/27 11:27:19.078, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 119.54, 56, 1717, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:18.870, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 119.31, 56, 1372, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.5151039958000183,
+      "mean_ms": 0.487916159927845,
+      "median_ms": 0.4872000068426132,
+      "min_ms": 0.4143039882183075,
+      "pair_index": 2,
+      "position": 1,
+      "record_index": 21,
+      "role": "alternative",
+      "round": 3,
+      "samples": "samples.jsonl#record_index=21",
+      "telemetry_after": "2026/10/27 11:27:19.355, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 119.65, 58, 1717, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:19.133, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 123.74, 56, 1717, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.46377599239349365,
+      "mean_ms": 0.43415631920099257,
+      "median_ms": 0.4288800060749054,
+      "min_ms": 0.42473599314689636,
+      "pair_index": 2,
+      "position": 0,
+      "record_index": 22,
+      "role": "guided",
+      "round": 4,
+      "samples": "samples.jsonl#record_index=22",
+      "telemetry_after": "2026/10/27 11:27:19.619, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 121.76, 58, 1365, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:19.411, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 118.27, 58, 1717, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.4994879961013794,
+      "mean_ms": 0.4829446405172348,
+      "median_ms": 0.48793599009513855,
+      "min_ms": 0.412416011095047,
+      "pair_index": 2,
+      "position": 1,
+      "record_index": 23,
+      "role": "alternative",
+      "round": 4,
+      "samples": "samples.jsonl#record_index=23",
+      "telemetry_after": "2026/10/27 11:27:19.892, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.81, 57, 1365, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:19.673, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 121.76, 58, 1365, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.5600320100784302,
+      "mean_ms": 0.49006608068943025,
+      "median_ms": 0.49004799127578735,
+      "min_ms": 0.48105600476264954,
+      "pair_index": 2,
+      "position": 0,
+      "record_index": 24,
+      "role": "alternative",
+      "round": 5,
+      "samples": "samples.jsonl#record_index=24",
+      "telemetry_after": "2026/10/27 11:27:20.166, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 119.74, 57, 1395, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:19.947, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.81, 57, 1365, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4727039933204651,
+      "mean_ms": 0.4369075199961662,
+      "median_ms": 0.43060798943042755,
+      "min_ms": 0.4184960126876831,
+      "pair_index": 2,
+      "position": 1,
+      "record_index": 25,
+      "role": "guided",
+      "round": 5,
+      "samples": "samples.jsonl#record_index=25",
+      "telemetry_after": "2026/10/27 11:27:20.429, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 120.80, 57, 1395, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:20.221, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 119.10, 57, 1395, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.7389439940452576,
+      "mean_ms": 0.49251216039061546,
+      "median_ms": 0.48819199204444885,
+      "min_ms": 0.4712960124015808,
+      "pair_index": 2,
+      "position": 0,
+      "record_index": 26,
+      "role": "alternative",
+      "round": 6,
+      "samples": "samples.jsonl#record_index=26",
+      "telemetry_after": "2026/10/27 11:27:20.714, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.55, 57, 1927, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:20.484, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 117.11, 57, 1927, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.9060159921646118,
+      "mean_ms": 0.43367839843034744,
+      "median_ms": 0.42876800894737244,
+      "min_ms": 0.41839998960494995,
+      "pair_index": 2,
+      "position": 1,
+      "record_index": 27,
+      "role": "guided",
+      "round": 6,
+      "samples": "samples.jsonl#record_index=27",
+      "telemetry_after": "2026/10/27 11:27:20.973, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 118.34, 53, 1927, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:20.766, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.55, 57, 1927, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4493120014667511,
+      "mean_ms": 0.43227967903018,
+      "median_ms": 0.42879998683929443,
+      "min_ms": 0.424703985452652,
+      "pair_index": 3,
+      "position": 0,
+      "record_index": 28,
+      "role": "guided",
+      "round": 0,
+      "samples": "samples.jsonl#record_index=28",
+      "telemetry_after": "2026/10/27 11:27:21.236, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 122.24, 53, 1837, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:21.020, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 121.47, 53, 1837, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.46534401178359985,
+      "mean_ms": 0.4340894410014153,
+      "median_ms": 0.4312160015106201,
+      "min_ms": 0.40191999077796936,
+      "pair_index": 3,
+      "position": 1,
+      "record_index": 29,
+      "role": "alternative",
+      "round": 0,
+      "samples": "samples.jsonl#record_index=29",
+      "telemetry_after": "2026/10/27 11:27:21.485, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 118.10, 55, 1650, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:21.279, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 122.24, 53, 1837, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.4841279983520508,
+      "mean_ms": 0.4363230386376381,
+      "median_ms": 0.4313279986381531,
+      "min_ms": 0.4042240083217621,
+      "pair_index": 3,
+      "position": 0,
+      "record_index": 30,
+      "role": "alternative",
+      "round": 1,
+      "samples": "samples.jsonl#record_index=30",
+      "telemetry_after": "2026/10/27 11:27:21.756, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 121.23, 55, 1650, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:21.543, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.62, 55, 1650, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4715839922428131,
+      "mean_ms": 0.43811087891459466,
+      "median_ms": 0.4306719899177551,
+      "min_ms": 0.42659199237823486,
+      "pair_index": 3,
+      "position": 1,
+      "record_index": 31,
+      "role": "guided",
+      "round": 1,
+      "samples": "samples.jsonl#record_index=31",
+      "telemetry_after": "2026/10/27 11:27:22.018, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.26, 60, 1657, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:21.806, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 124.43, 55, 1650, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.49001601338386536,
+      "mean_ms": 0.43532847926020624,
+      "median_ms": 0.42876800894737244,
+      "min_ms": 0.40217599272727966,
+      "pair_index": 3,
+      "position": 0,
+      "record_index": 32,
+      "role": "alternative",
+      "round": 2,
+      "samples": "samples.jsonl#record_index=32",
+      "telemetry_after": "2026/10/27 11:27:22.282, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 123.76, 60, 1657, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:22.075, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.26, 60, 1657, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4493120014667511,
+      "mean_ms": 0.4329718397557735,
+      "median_ms": 0.43057599663734436,
+      "min_ms": 0.41843199729919434,
+      "pair_index": 3,
+      "position": 1,
+      "record_index": 33,
+      "role": "guided",
+      "round": 2,
+      "samples": "samples.jsonl#record_index=33",
+      "telemetry_after": "2026/10/27 11:27:22.545, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 122.39, 60, 1650, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:22.339, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.00, 60, 1657, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4574719965457916,
+      "mean_ms": 0.4346889589726925,
+      "median_ms": 0.42928001284599304,
+      "min_ms": 0.41839998960494995,
+      "pair_index": 3,
+      "position": 0,
+      "record_index": 34,
+      "role": "guided",
+      "round": 3,
+      "samples": "samples.jsonl#record_index=34",
+      "telemetry_after": "2026/10/27 11:27:22.809, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 123.23, 60, 1650, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:22.599, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 120.77, 60, 1650, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.492031991481781,
+      "mean_ms": 0.4394435201585293,
+      "median_ms": 0.43297600746154785,
+      "min_ms": 0.4203200042247772,
+      "pair_index": 3,
+      "position": 1,
+      "record_index": 35,
+      "role": "alternative",
+      "round": 3,
+      "samples": "samples.jsonl#record_index=35",
+      "telemetry_after": "2026/10/27 11:27:23.080, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 116.77, 59, 1537, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:22.867, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 123.23, 60, 1650, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.46377599239349365,
+      "mean_ms": 0.43566207885742186,
+      "median_ms": 0.43057599663734436,
+      "min_ms": 0.4264320135116577,
+      "pair_index": 3,
+      "position": 0,
+      "record_index": 36,
+      "role": "guided",
+      "round": 4,
+      "samples": "samples.jsonl#record_index=36",
+      "telemetry_after": "2026/10/27 11:27:23.331, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.00, 59, 1537, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:23.124, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.96, 59, 1537, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.4431680142879486,
+      "mean_ms": 0.42552592143416407,
+      "median_ms": 0.4246239960193634,
+      "min_ms": 0.40220800042152405,
+      "pair_index": 3,
+      "position": 1,
+      "record_index": 37,
+      "role": "alternative",
+      "round": 4,
+      "samples": "samples.jsonl#record_index=37",
+      "telemetry_after": "2026/10/27 11:27:23.578, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 127.29, 60, 1800, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:23.373, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.00, 59, 1537, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.4636479914188385,
+      "mean_ms": 0.4318472000956535,
+      "median_ms": 0.4267520010471344,
+      "min_ms": 0.40188801288604736,
+      "pair_index": 3,
+      "position": 0,
+      "record_index": 38,
+      "role": "alternative",
+      "round": 5,
+      "samples": "samples.jsonl#record_index=38",
+      "telemetry_after": "2026/10/27 11:27:23.844, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.25, 60, 1800, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:23.636, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.93, 60, 1800, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.4572800099849701,
+      "mean_ms": 0.43603103861212733,
+      "median_ms": 0.43081599473953247,
+      "min_ms": 0.42451199889183044,
+      "pair_index": 3,
+      "position": 1,
+      "record_index": 39,
+      "role": "guided",
+      "round": 5,
+      "samples": "samples.jsonl#record_index=39",
+      "telemetry_after": "2026/10/27 11:27:24.109, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 127.75, 59, 1567, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:23.901, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 124.56, 60, 1800, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "count": 200,
+      "max_ms": 0.4882560074329376,
+      "mean_ms": 0.4364048001170158,
+      "median_ms": 0.43057599663734436,
+      "min_ms": 0.4039680063724518,
+      "pair_index": 3,
+      "position": 0,
+      "record_index": 40,
+      "role": "alternative",
+      "round": 6,
+      "samples": "samples.jsonl#record_index=40",
+      "telemetry_after": "2026/10/27 11:27:24.379, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 119.72, 59, 1567, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:24.168, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 127.75, 59, 1567, 14001, 3144"
+    },
+    {
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "count": 200,
+      "max_ms": 0.5373759865760803,
+      "mean_ms": 0.44851104184985163,
+      "median_ms": 0.43484801054000854,
+      "min_ms": 0.4264320135116577,
+      "pair_index": 3,
+      "position": 1,
+      "record_index": 41,
+      "role": "guided",
+      "round": 6,
+      "samples": "samples.jsonl#record_index=41",
+      "telemetry_after": "2026/10/27 11:27:24.635, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 122.87, 58, 1627, 14001, 3144",
+      "telemetry_before": "2026/10/27 11:27:24.424, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 125.45, 59, 1567, 14001, 3144"
+    }
+  ],
+  "operator": "gemm",
+  "pass_configs": null,
+  "pid": 2786013,
+  "plan": {
+    "candidates": [
+      {
+        "arms": [
+          "z3-cm-topk"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 128,
+          "block_N": 256,
+          "enable_rasterization": false,
+          "num_stages": 2,
+          "threads": 256
+        }
+      },
+      {
+        "arms": [
+          "stock-raw",
+          "z3-legal-exhaustive"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 128,
+          "block_N": 128,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 256
+        }
+      },
+      {
+        "arms": [
+          "budget-raw"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 64,
+          "block_N": 64,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 128
+        }
+      },
+      {
+        "arms": [
+          "budget-random"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 128,
+          "block_N": 128,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 128
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "alternative_arms": [
+          "stock-raw",
+          "z3-legal-exhaustive"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 128,
+          "block_N": 128,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+        "identical": false,
+        "identical_arms": [],
+        "reference_semantics": {
+          "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+          "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+        },
+        "relations": [
+          "same_space_exhaustive",
+          "stock_informational"
+        ]
+      },
+      {
+        "alternative_arms": [],
+        "config": {
+          "block_K": 64,
+          "block_M": 128,
+          "block_N": 256,
+          "enable_rasterization": false,
+          "num_stages": 2,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+        "identical": true,
+        "identical_arms": [
+          "z3-cm-topk"
+        ],
+        "reference_semantics": {
+          "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+          "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+        },
+        "relations": []
+      },
+      {
+        "alternative_arms": [
+          "budget-raw"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 64,
+          "block_N": 64,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 128
+        },
+        "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+        "identical": false,
+        "identical_arms": [],
+        "reference_semantics": {
+          "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+          "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+        },
+        "relations": [
+          "equal_budget_control"
+        ]
+      },
+      {
+        "alternative_arms": [
+          "budget-random"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 128,
+          "block_N": 128,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 128
+        },
+        "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+        "identical": false,
+        "identical_arms": [],
+        "reference_semantics": {
+          "stock-raw": "full raw-space arm winner; not a Z3 legal oracle",
+          "z3-legal-exhaustive": "exhaustive Z3 legal-space arm; legal oracle only when cold oracle evidence is complete"
+        },
+        "relations": [
+          "equal_budget_control"
+        ]
+      }
+    ],
+    "guided_arm": "z3-cm-topk",
+    "guided_top_k": 10,
+    "legal_oracle_complete": true,
+    "schema": "tilelang.classic-operators.confirmation-plan/v1",
+    "selection_rule": "candidate-median",
+    "selection_rule_detail": "lowest per-candidate median of valid successful trials across the three actual cold repetitions; canonical JSON tie-break; confirmation measurements are never selection inputs",
+    "stock_raw_is_legal_oracle": false,
+    "suite": "gemm_short_k",
+    "winners": {
+      "budget-random": {
+        "candidate_count": 10,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/gemm_short_k-rep-0-nonstock/gemm_short_k/top-k-0010/budget-random__rep-0000/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-1-nonstock/gemm_short_k/top-k-0010/budget-random__rep-0001/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-2-nonstock/gemm_short_k/top-k-0010/budget-random__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 128,
+          "block_N": 128,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 128
+        },
+        "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.4155852794647217,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 0,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      },
+      "budget-raw": {
+        "candidate_count": 10,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/gemm_short_k-rep-0-nonstock/gemm_short_k/top-k-0010/budget-raw__rep-0000/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-1-nonstock/gemm_short_k/top-k-0010/budget-raw__rep-0001/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-2-nonstock/gemm_short_k/top-k-0010/budget-raw__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 32,
+          "block_M": 64,
+          "block_N": 64,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 128
+        },
+        "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.44090816378593445,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 0,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      },
+      "stock-raw": {
+        "candidate_count": 240,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/gemm_short_k-rep-0-stock/stock-raw__rep-0000/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-1-stock/stock-raw__rep-0001/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-2-stock/stock-raw__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 128,
+          "block_N": 128,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.3973945677280426,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 0,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      },
+      "z3-cm-topk": {
+        "candidate_count": 10,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/gemm_short_k-rep-0-nonstock/gemm_short_k/top-k-0010/z3-cm-topk__rep-0000/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-1-nonstock/gemm_short_k/top-k-0010/z3-cm-topk__rep-0001/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-2-nonstock/gemm_short_k/top-k-0010/z3-cm-topk__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 128,
+          "block_N": 256,
+          "enable_rasterization": false,
+          "num_stages": 2,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.42507389187812805,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 0,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      },
+      "z3-legal-exhaustive": {
+        "candidate_count": 240,
+        "cold_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "cold_summary_paths": [
+          "evidence/G6/classic-v2/gemm_short_k-rep-0-nonstock/gemm_short_k/top-k-0010/z3-legal-exhaustive__rep-0000/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-1-nonstock/gemm_short_k/top-k-0010/z3-legal-exhaustive__rep-0001/summary.json",
+          "evidence/G6/classic-v2/gemm_short_k-rep-2-nonstock/gemm_short_k/top-k-0010/z3-legal-exhaustive__rep-0002/summary.json"
+        ],
+        "config": {
+          "block_K": 64,
+          "block_M": 128,
+          "block_N": 128,
+          "enable_rasterization": false,
+          "num_stages": 0,
+          "threads": 256
+        },
+        "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+        "latency_scope": "search_observed",
+        "measurement_repetitions": 3,
+        "median_latency_ms": 0.3968217372894287,
+        "observed_repetitions": [
+          0,
+          1,
+          2
+        ],
+        "oracle_complete_repetitions": 3,
+        "performance_evidence_repetitions": 3,
+        "selection_rule": "candidate-median",
+        "tie_break": "lowest candidate median, then canonical JSON",
+        "trial_count": 3
+      }
+    }
+  },
+  "reference_and_compilation_in_timed_region": false,
+  "reference_validation_in_timed_region": false,
+  "repeat": 200,
+  "rounds": 7,
+  "schema": "tilelang.classic-operators.confirmation/v1",
+  "seed": 20261026,
+  "shape": {
+    "K": 256,
+    "M": 8192,
+    "N": 8192
+  },
+  "source": {
+    "file_sha256": {
+      "benchmark/z3_cost_model/operators/_common.py": "3eb6c8837ed36cf1a93ae0f558db8eaae15621ea41469ffbcc140bbed023c470",
+      "benchmark/z3_cost_model/operators/analyze_confirmation.py": "d12a86a96fe0392f3ca2ad1efc5bb551cda95c303fc6eb9e1b0386d10feb8a2d",
+      "benchmark/z3_cost_model/operators/autotune.py": "fbafe4d6abd4af5618bba693129f33238f326f7839f839ed6422127a9a474663",
+      "benchmark/z3_cost_model/operators/confirm.py": "16216043e31e34ddd3b1e6fd624a3d6de9ff7bb3c905b8143bcb32ba5f4a4253",
+      "benchmark/z3_cost_model/operators/convolution.py": "472fcbbb2bcf9ed9e3f1d5daec7b005bf7989b84e69a802b7211c7dcb381cd50",
+      "benchmark/z3_cost_model/operators/flash_attention.py": "02d7ee7a346eb1489913e913e52e7a75ed9a8439fc34455e924f6f98fa6238a7",
+      "benchmark/z3_cost_model/operators/gemm.py": "c175f374f0c95dc1451ccacd94eb843f78a4066c08718f2d55c651fce6281a2a",
+      "manifest/experiment_plan.json": "d1a464b843a18c77a7ece22aea6a6c6eba4aa957de4b9ae748a207f119a2180d",
+      "manifest/gdn-selection-v2-plan.json": "bddb2c853c04969594939612a9026522fd23ef88857cccefb2c9a453dfb19b9a"
+    },
+    "git_commit": "676e7a906ea922fdbf970388a111600f13444d6c"
+  },
+  "status": "ok",
+  "suite": "gemm_short_k",
+  "target": "auto",
+  "telemetry": {
+    "after": "2026/10/27 11:27:24.805, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 116.88, 58, 1627, 14001, 3144",
+    "before": "2026/10/27 11:27:05.382, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 23.36, 46, 682, 14001, 0",
+    "query": "timestamp,name,driver_version,power.draw,temperature.gpu,clocks.sm,clocks.mem,memory.used"
+  },
+  "timing": "median of pair-local per-round medians; each measurement has 200 L2-flushed CUDA-event samples after 50 warmups",
+  "validations": [
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "max_abs_error": 0.0004887580871582031,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 4.1199116706848145,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "gemm",
+      "passed": true,
+      "phase": "before",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 67108864,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "max_abs_error": 0.0004887580871582031,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 4.1199116706848145,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "gemm",
+      "passed": true,
+      "phase": "before",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 67108864,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "max_abs_error": 0.0004887580871582031,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 4.1199116706848145,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "gemm",
+      "passed": true,
+      "phase": "before",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 67108864,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "max_abs_error": 0.0004887580871582031,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 4.1199116706848145,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "gemm",
+      "passed": true,
+      "phase": "before",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 67108864,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":256,\"enable_rasterization\":false,\"num_stages\":2,\"threads\":256}",
+      "max_abs_error": 0.0004887580871582031,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 4.1199116706848145,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "gemm",
+      "passed": true,
+      "phase": "after",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 67108864,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":64,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":256}",
+      "max_abs_error": 0.0004887580871582031,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 4.1199116706848145,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "gemm",
+      "passed": true,
+      "phase": "after",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 67108864,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":32,\"block_M\":64,\"block_N\":64,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "max_abs_error": 0.0004887580871582031,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 4.1199116706848145,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "gemm",
+      "passed": true,
+      "phase": "after",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 67108864,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    },
+    {
+      "atol": 0.02,
+      "config_id": "{\"block_K\":32,\"block_M\":128,\"block_N\":128,\"enable_rasterization\":false,\"num_stages\":0,\"threads\":128}",
+      "max_abs_error": 0.0004887580871582031,
+      "max_mismatched_ratio": 0,
+      "max_rel_error": 4.1199116706848145,
+      "mismatched_elements": 0,
+      "mismatched_ratio": 0.0,
+      "operator": "gemm",
+      "passed": true,
+      "phase": "after",
+      "reference": "frozen operator module independent FP32 reference",
+      "rtol": 0.02,
+      "status": "ok",
+      "total_elements": 67108864,
+      "validation": "frozen module.validate; max_mismatched_ratio=0"
+    }
+  ],
+  "warmup": 50
+}
