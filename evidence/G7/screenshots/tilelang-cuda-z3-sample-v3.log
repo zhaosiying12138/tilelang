@@ -1,0 +1,65 @@
++ set -e
++ set -x
++ cd /home/zhaosiying/codebase/tilelang-cuda-z3
++ source scripts/env.sh
+++++ dirname -- scripts/env.sh
++++ cd -- scripts/..
++++ pwd
+++ TILELANG_REPO_ROOT=/home/zhaosiying/codebase/tilelang-cuda-z3
+++ TILELANG_CONDA_PREFIX=/home/zhaosiying/miniforge3/envs/tilelang-cu133
+++ TILELANG_PYTHON=/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python
+++ [[ ! -x /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python ]]
+++ [[ -z '' ]]
+++ for candidate in /usr/local/cuda-13.3 /usr/local/cuda
+++ [[ -x /usr/local/cuda-13.3/bin/nvcc ]]
+++ CUDA_HOME=/usr/local/cuda-13.3
+++ break
+++ [[ -z /usr/local/cuda-13.3 ]]
+++ [[ ! -x /usr/local/cuda-13.3/bin/nvcc ]]
+++ export TILELANG_REPO_ROOT TILELANG_CONDA_PREFIX TILELANG_PYTHON CUDA_HOME
+++ export PYTHONPATH=/home/zhaosiying/codebase/tilelang-cuda-z3:/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python:
+++ PYTHONPATH=/home/zhaosiying/codebase/tilelang-cuda-z3:/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python:
+++ export CUDAToolkit_ROOT=/usr/local/cuda-13.3
+++ CUDAToolkit_ROOT=/usr/local/cuda-13.3
+++ export 'PATH=/usr/lib/wsl/lib:/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin:/usr/local/cuda-13.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/Microsoft.WindowsTerminal_1.24.12741.0_x64__8wekyb3d8bbwe:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/local/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin/x64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2026.2.1:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Users/Admin1/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin1/AppData/Roaming/npm:/mnt/c/Users/Admin1/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ripgrep:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ugrep:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/usr/bin/vendor_perl:/mnt/c/Program Files/Git/usr/bin/core_perl'
+++ PATH='/usr/lib/wsl/lib:/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin:/usr/local/cuda-13.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/Microsoft.WindowsTerminal_1.24.12741.0_x64__8wekyb3d8bbwe:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/local/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin/x64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2026.2.1:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Users/Admin1/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin1/AppData/Roaming/npm:/mnt/c/Users/Admin1/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ripgrep:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ugrep:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/usr/bin/vendor_perl:/mnt/c/Program Files/Git/usr/bin/core_perl'
+++ export LD_LIBRARY_PATH=/home/zhaosiying/codebase/tilelang-cuda-z3/build/lib:/usr/local/cuda-13.3/lib64:
+++ LD_LIBRARY_PATH=/home/zhaosiying/codebase/tilelang-cuda-z3/build/lib:/usr/local/cuda-13.3/lib64:
+++ export CMAKE_GENERATOR=Ninja
+++ CMAKE_GENERATOR=Ninja
+++ export CMAKE_BUILD_PARALLEL_LEVEL=2
+++ CMAKE_BUILD_PARALLEL_LEVEL=2
+++ export MAX_JOBS=2
+++ MAX_JOBS=2
++ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              47           9          34           7          11          38
+Swap:             12           8           3
++ nvidia-smi --query-gpu=name,driver_version,memory.total,memory.used,power.draw,temperature.gpu,clocks.sm,clocks.mem --format=csv,noheader,nounits
+NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 24463, 0, 8.92, 49, 180, 405
++ /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python -m pytest testing/python/cuda/test_result_visualization.py -q
+...............                                                          [100%]
+======================================================================== fixture duration top =========================================================================
+total          name                                                                                                                   num med            max           
+0:00:00.002572 grand total                                                                                                             15 0:00:00.000137 0:00:00.000767
+======================================================================= test call duration top ========================================================================
+total          name                                                                                                                   num med            max           
+0:00:00.351147 testing/python/cuda/test_result_visualization.py::test_gdn_acceptance_has_two_panels_and_exact_input_values              1 0:00:00.351147 0:00:00.351147
+0:00:00.341051 testing/python/cuda/test_result_visualization.py::test_gdn_search_observed_scope_is_explicit                             1 0:00:00.341051 0:00:00.341051
+0:00:00.297245 testing/python/cuda/test_result_visualization.py::test_prediction_rank_displays_suite_metrics_and_joins_candidate_keys   1 0:00:00.297245 0:00:00.297245
+0:00:00.268609 testing/python/cuda/test_result_visualization.py::test_native_loop_schedule_json_generates_all_artifacts                 1 0:00:00.268609 0:00:00.268609
+0:00:00.243405 testing/python/cuda/test_result_visualization.py::test_parallel_cumulative_time_uses_independent_bars_and_warns          1 0:00:00.243405 0:00:00.243405
+0:00:00.241321 testing/python/cuda/test_result_visualization.py::test_pruning_funnel_preserves_unknown_and_dedup_accounting             1 0:00:00.241321 0:00:00.241321
+0:00:00.187522 testing/python/cuda/test_result_visualization.py::test_quality_search_pareto_marks_frontier_and_same_space_oracle        1 0:00:00.187522 0:00:00.187522
+0:00:00.156056 testing/python/cuda/test_result_visualization.py::test_additive_time_breakdown_derives_only_residual_other               1 0:00:00.156056 0:00:00.156056
+0:00:00.114140 testing/python/cuda/test_result_visualization.py::test_native_straight_schedule_does_not_invent_minimum_ii_or_stage      1 0:00:00.114140 0:00:00.114140
+0:00:02.201696 grand total                                                                                                             15 0:00:00.156056 0:00:00.351147
+======================================================================= test setup duration top =======================================================================
+total          name                                                                                                                   num med            max           
+0:00:00.004571 grand total                                                                                                             15 0:00:00.000285 0:00:00.000968
+===================================================================== test teardown duration top ======================================================================
+total          name                                                                                                                   num med            max           
+0:00:00.000868 grand total                                                                                                             15 0:00:00.000065 0:00:00.000082
+15 passed in 2.33s
++ git rev-parse HEAD
+14361aacddb05d56b85ed1fcfbd0641231288fb2
