@@ -1,0 +1,14 @@
+...                                                                      [100%]
+============================= fixture duration top =============================
+total          name        num med            max           
+0:00:00.000754 grand total   7 0:00:00.000027 0:00:00.000536
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.001685 grand total   3 0:00:00.000458 0:00:00.000946
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.001114 grand total   3 0:00:00.000216 0:00:00.000718
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000131 grand total   3 0:00:00.000041 0:00:00.000057
+3 passed in 0.02s
