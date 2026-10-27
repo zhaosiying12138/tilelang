@@ -26,6 +26,7 @@
 
 #include "common/storage_size.h"
 #include "cuda/op/builtin.h"
+#include "cuda/transform/z3_lifetime_analysis.h"
 #include "runtime/thread_storage_scope.h"
 #include "tir/transforms/ir_utils.h"
 #include <tvm/tirx/function.h>
@@ -1619,6 +1620,87 @@ Stmt MergeSharedMemoryAllocations(Stmt stmt, bool merge_static_smem,
   return stmt;
 }
 
+namespace {
+
+// Final-projection adapter for Slice G/I. The legacy rewriter above remains
+// unchanged: recursive-Z3 callers supply their post-layout provenance and exact
+// arena plan explicitly instead of making the legacy liveness packer guess it.
+Any Z3PhysicalRequired(const Map<String, Any> &map, const char *key) {
+  auto found = map.find(key);
+  ICHECK(found != map.end()) << "Missing CUDA Z3 physical-plan field '" << key << "'";
+  return (*found).second;
+}
+
+template <typename T>
+T Z3PhysicalGet(const Map<String, Any> &map, const char *key) {
+  return Z3PhysicalRequired(map, key).cast<T>();
+}
+
+template <typename T>
+T Z3PhysicalGetOr(const Map<String, Any> &map, const char *key, T fallback) {
+  auto found = map.find(key);
+  if (found == map.end()) return fallback;
+  if (auto value = (*found).second.try_cast<T>()) return *value;
+  return fallback;
+}
+
+void ValidateZ3PhysicalAllocationContractsFFI(
+    const Array<Any> &expected_spec,
+    const cuda::z3::BufferAliasMap &positive_alias_proof,
+    const Map<String, Any> &actual_spec, const Target &target) {
+  std::vector<cuda::z3::PhysicalAllocationExpectation> expected;
+  for (const Any &item : expected_spec) {
+    auto spec = item.cast<Map<String, Any>>();
+    cuda::z3::PhysicalAllocationExpectation expectation;
+    expectation.storage = Z3PhysicalGet<Var>(spec, "storage");
+    expectation.versions = Z3PhysicalGet<int64_t>(spec, "versions");
+    expectation.unversioned_bytes =
+        Z3PhysicalGet<int64_t>(spec, "unversioned_bytes");
+    expectation.allocation_id = Z3PhysicalGet<int64_t>(spec, "allocation_id");
+    expected.push_back(std::move(expectation));
+  }
+
+  cuda::z3::SharedMemoryArenaPlan actual;
+  actual.arena_bytes = Z3PhysicalGet<PrimExpr>(actual_spec, "arena_bytes");
+  for (const Any &item :
+       Z3PhysicalGet<Array<Any>>(actual_spec, "allocations")) {
+    auto spec = item.cast<Map<String, Any>>();
+    cuda::z3::PhysicalAllocationRecord record;
+    record.allocation_id = Z3PhysicalGet<int64_t>(spec, "allocation_id");
+    record.storage = Z3PhysicalGet<Var>(spec, "storage");
+    std::string kind =
+        Z3PhysicalGetOr<String>(spec, "kind", String("selected"));
+    if (kind == "selected") {
+      record.kind = cuda::z3::PhysicalAllocationKind::kSelected;
+    } else if (kind == "fixed") {
+      record.kind = cuda::z3::PhysicalAllocationKind::kFixed;
+    } else if (kind == "barrier") {
+      record.kind = cuda::z3::PhysicalAllocationKind::kBarrier;
+    } else {
+      LOG(FATAL) << "Unknown CUDA Z3 physical allocation kind " << kind;
+    }
+    for (const Any &extent :
+         Z3PhysicalGetOr<Array<Any>>(spec, "leading_version_extents", {})) {
+      record.leading_version_extents.push_back(extent.cast<int64_t>());
+    }
+    record.byte_offset = Z3PhysicalGet<PrimExpr>(spec, "byte_offset");
+    record.byte_size = Z3PhysicalGet<PrimExpr>(spec, "byte_size");
+    record.required_alignment =
+        Z3PhysicalGetOr<int64_t>(spec, "required_alignment", 1);
+    if (spec.count("alias_contracts")) {
+      auto contracts = Z3PhysicalGet<Map<Integer, String>>(spec, "alias_contracts");
+      for (const auto &[other_id, token] : contracts) {
+        record.alias_contracts.emplace(other_id->value, token);
+      }
+    }
+    actual.allocations.push_back(std::move(record));
+  }
+  cuda::z3::ValidatePhysicalAllocationContracts(expected, positive_alias_proof,
+                                                actual, target);
+}
+
+} // namespace
+
 using namespace tirx::transform;
 
 namespace transform {
@@ -1661,6 +1743,8 @@ TVM_FFI_STATIC_INIT_BLOCK() {
   namespace refl = reflection;
   refl::GlobalDef().def("tl.transform.MergeSharedMemoryAllocations",
                         MergeSharedMemoryAllocations);
+  refl::GlobalDef().def("tl.transform.ValidateZ3PhysicalAllocationContracts",
+                        ValidateZ3PhysicalAllocationContractsFFI);
 }
 
 } // namespace transform
