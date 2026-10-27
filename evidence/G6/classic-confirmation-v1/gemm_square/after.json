@@ -1,0 +1,207 @@
+{
+  "entries": [
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/1782fce8d8f93aa3a94cded15c6e7d14dfa620f4a4c0cbbcb3113cd747280ae6/kernel.cubin",
+      "sha256": "fc2fdc32690376379d813ca80fe80654ea688256c9015c230dac3b8678c78d51",
+      "size_bytes": 216104
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/1782fce8d8f93aa3a94cded15c6e7d14dfa620f4a4c0cbbcb3113cd747280ae6/metadata.json",
+      "sha256": "a09613752ce287af3abd88f377769b72ad728ff175394e909beabf0154cbe7fa",
+      "size_bytes": 146
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/3170ed7404e4af13a38634a040991cc1d27ef77868589d42a0564daf1bb44ba1/kernel.cubin",
+      "sha256": "cebf4b510dba1388748c20fc2cc7436c5cd4f8e009087dfbae0af14be962b039",
+      "size_bytes": 87896
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/3170ed7404e4af13a38634a040991cc1d27ef77868589d42a0564daf1bb44ba1/metadata.json",
+      "sha256": "87f37c45e572c270d2b09cc99cc3d80759ab7996c1a4795964ab71336eb7669d",
+      "size_bytes": 145
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/518d043d22f1443c37b7327b047a6007c75b56768a505213e8e59fbe28faa06c/kernel.cubin",
+      "sha256": "a12a137633e5cf38443b4af6c2c82f58ecdebb0d799a6d4d68e03bac5163fa39",
+      "size_bytes": 100184
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/518d043d22f1443c37b7327b047a6007c75b56768a505213e8e59fbe28faa06c/metadata.json",
+      "sha256": "7c2318b983f97e53cb215abc145a070dd4adc5abea17d3fab47d82c9710a67be",
+      "size_bytes": 146
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/793c36933ce6a8ae0a47da061d05cd6c8740b7942b7513979196b158a3c33e1d/kernel.cubin",
+      "sha256": "66624c2ed134cd49fd329e8db87428d7be2bb7f1f6aa5deb70acec9ec6e64f92",
+      "size_bytes": 249776
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/793c36933ce6a8ae0a47da061d05cd6c8740b7942b7513979196b158a3c33e1d/metadata.json",
+      "sha256": "0f270f5d44fa23063e1cb35e88544a072b9976b38ebb6247d64f33b1f13b7e3a",
+      "size_bytes": 146
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/7ceedf2d5be0d65bbd79500d655702879f9a638aa74e0a46bee93b2460563bc4/kernel.cubin",
+      "sha256": "848a73e3c3ba0b01b18a2f5461eb7bd21954f49fc67dd6638983cb965995a2d1",
+      "size_bytes": 49488
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/cuda-binaries/7ceedf2d5be0d65bbd79500d655702879f9a638aa74e0a46bee93b2460563bc4/metadata.json",
+      "sha256": "92d9f3f3809cd5871cb0e6bbc748733d8ee5f5b40ac006211bd9c817dc4bb932",
+      "size_bytes": 145
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/1e22dd829d388c8451db70750932c8705b8077fa2862505c2af5ec6740fe6791/device_kernel.cu",
+      "sha256": "338d1da4cc3ef542aa58543ea443dd413fa1eecb39ec937e0cee8a0f7ff0295e",
+      "size_bytes": 5888
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/1e22dd829d388c8451db70750932c8705b8077fa2862505c2af5ec6740fe6791/executable.so",
+      "sha256": "12275dfa7484ed54e1e1d62a8d5f5d7b575b19f1fd4b14a0ba89ab93bc0436de",
+      "size_bytes": 114424
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/1e22dd829d388c8451db70750932c8705b8077fa2862505c2af5ec6740fe6791/host_kernel.cu",
+      "sha256": "fed573fc9dd4525886088b39710d7fd8f645396d737375cfefad5db009d43431",
+      "size_bytes": 33186
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/1e22dd829d388c8451db70750932c8705b8077fa2862505c2af5ec6740fe6791/manifest.json",
+      "sha256": "cc746655e8a28d0eb2f416c0fd0c576f132d0e827c814ee29daba15180ba893c",
+      "size_bytes": 572
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/1e22dd829d388c8451db70750932c8705b8077fa2862505c2af5ec6740fe6791/params.json",
+      "sha256": "8c71bc2f27c9cd3652e6688690ccb756263459e47e1cd08c7f7ef9285cbbb6e7",
+      "size_bytes": 1001
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/642e572a1babf1ac8f873f771b2b23d364d880f7a828da234c9259e140199ad9/device_kernel.cu",
+      "sha256": "3f1938d0514ff58f1e804f0a7f820149a57b30906d5269c2e0cbcdbe20965c29",
+      "size_bytes": 5960
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/642e572a1babf1ac8f873f771b2b23d364d880f7a828da234c9259e140199ad9/executable.so",
+      "sha256": "2b0ddb317f06725b408369893358233608867109a9f4788de9d6efcfd354db4d",
+      "size_bytes": 241400
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/642e572a1babf1ac8f873f771b2b23d364d880f7a828da234c9259e140199ad9/host_kernel.cu",
+      "sha256": "c64dfa799df1cb0f7d53e114c7fdf2dcf8eb59ef5e2df99cf683e236660c6e51",
+      "size_bytes": 33186
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/642e572a1babf1ac8f873f771b2b23d364d880f7a828da234c9259e140199ad9/manifest.json",
+      "sha256": "6c2e4bbc009e484e75ce04b5202abee7aa9c3adbcb3d73f667dccc0f2b542732",
+      "size_bytes": 572
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/642e572a1babf1ac8f873f771b2b23d364d880f7a828da234c9259e140199ad9/params.json",
+      "sha256": "8c71bc2f27c9cd3652e6688690ccb756263459e47e1cd08c7f7ef9285cbbb6e7",
+      "size_bytes": 1001
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9841b73cf24e66ae377226d9ced6a7c05f4c3cbbfdcf63b7292d5ff599c49a8a/device_kernel.cu",
+      "sha256": "c814076ab00327d65eee8ee079237820d4455600eb0b7905b06243eb7caabfd4",
+      "size_bytes": 5884
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9841b73cf24e66ae377226d9ced6a7c05f4c3cbbfdcf63b7292d5ff599c49a8a/executable.so",
+      "sha256": "6558798bd9008dd95f2cc776cb6093276365b4796ef9813fe1b6d3270224efa3",
+      "size_bytes": 126712
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9841b73cf24e66ae377226d9ced6a7c05f4c3cbbfdcf63b7292d5ff599c49a8a/host_kernel.cu",
+      "sha256": "d611bcbf1bb38663518a1d74391f010831bbebd8b4acaa8612261dc3342fdebb",
+      "size_bytes": 33186
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9841b73cf24e66ae377226d9ced6a7c05f4c3cbbfdcf63b7292d5ff599c49a8a/manifest.json",
+      "sha256": "8236d82d111fc944ebbdb92cda19fa6d0973233857cf08e7b934d8ab154f34dd",
+      "size_bytes": 572
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9841b73cf24e66ae377226d9ced6a7c05f4c3cbbfdcf63b7292d5ff599c49a8a/params.json",
+      "sha256": "8c71bc2f27c9cd3652e6688690ccb756263459e47e1cd08c7f7ef9285cbbb6e7",
+      "size_bytes": 1001
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9e99fc0d272cab3e655ad7640c98bf49bc42ddabdb0c1f14a49c790eba04cf19/device_kernel.cu",
+      "sha256": "0b1515611ccca7947165f92457a338189cb79e32f806fc1d9ad88d63f66d8aeb",
+      "size_bytes": 5902
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9e99fc0d272cab3e655ad7640c98bf49bc42ddabdb0c1f14a49c790eba04cf19/executable.so",
+      "sha256": "bed7579b75c5463bd89d7b14ff04f46a30529b7733603220d55f1f0d740ec3b9",
+      "size_bytes": 274168
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9e99fc0d272cab3e655ad7640c98bf49bc42ddabdb0c1f14a49c790eba04cf19/host_kernel.cu",
+      "sha256": "ab5e2b2805f7618173af396818bdb88d871da0374e2b9fe73041589c07e64ff3",
+      "size_bytes": 33186
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9e99fc0d272cab3e655ad7640c98bf49bc42ddabdb0c1f14a49c790eba04cf19/manifest.json",
+      "sha256": "55744cf9998730c3c324f6abeb49c34898e5070ad2f8fe29a2e3419b9942d0ab",
+      "size_bytes": 572
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/9e99fc0d272cab3e655ad7640c98bf49bc42ddabdb0c1f14a49c790eba04cf19/params.json",
+      "sha256": "8c71bc2f27c9cd3652e6688690ccb756263459e47e1cd08c7f7ef9285cbbb6e7",
+      "size_bytes": 1001
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/dde25ba9dac63968e6499b12c92404363818b77e01fb3c71a05e2dd554db28bc/device_kernel.cu",
+      "sha256": "fee4a4d25eb7549f136c1b861322502896086aa33de9ab5c257ad43eb42a2e42",
+      "size_bytes": 5309
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/dde25ba9dac63968e6499b12c92404363818b77e01fb3c71a05e2dd554db28bc/executable.so",
+      "sha256": "4efe798a12c17548252b61a946e76ed372218d2728f51d8d0cebf4cd1f66a962",
+      "size_bytes": 69368
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/dde25ba9dac63968e6499b12c92404363818b77e01fb3c71a05e2dd554db28bc/host_kernel.cu",
+      "sha256": "1d146c075b24e533e3be02aeebfe0c60d3ba3cef42cd8540d5f1b1a7059f334e",
+      "size_bytes": 25996
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/dde25ba9dac63968e6499b12c92404363818b77e01fb3c71a05e2dd554db28bc/manifest.json",
+      "sha256": "96733e76c1e53649510747db17b5d8c7a48c4080afb90f39979f3c7564ee8242",
+      "size_bytes": 571
+    },
+    {
+      "path": "cache/tilelang/0.1.15_cuda_git5a1b07e4/linux-x86_64/kernels/dde25ba9dac63968e6499b12c92404363818b77e01fb3c71a05e2dd554db28bc/params.json",
+      "sha256": "8c71bc2f27c9cd3652e6688690ccb756263459e47e1cd08c7f7ef9285cbbb6e7",
+      "size_bytes": 1001
+    },
+    {
+      "path": "samples.jsonl",
+      "sha256": "ee6da7bf31d126267a26d333846fddb2e3a7e217087ea2e87bd5c82e9fe5b85f",
+      "size_bytes": 242518
+    },
+    {
+      "path": "summary.json",
+      "sha256": "f130852dc49892523e51f693dcfb7f970d69b14a1b0367e2d9f9e5b31445cd65",
+      "size_bytes": 81021
+    }
+  ],
+  "gpu_telemetry": "2026/10/27 09:15:28.447, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 126.91, 72, 1507, 14001, 1360",
+  "pid": 2705512,
+  "source": {
+    "file_sha256": {
+      "benchmark/z3_cost_model/operators/_common.py": "3eb6c8837ed36cf1a93ae0f558db8eaae15621ea41469ffbcc140bbed023c470",
+      "benchmark/z3_cost_model/operators/analyze_confirmation.py": "d12a86a96fe0392f3ca2ad1efc5bb551cda95c303fc6eb9e1b0386d10feb8a2d",
+      "benchmark/z3_cost_model/operators/autotune.py": "fbafe4d6abd4af5618bba693129f33238f326f7839f839ed6422127a9a474663",
+      "benchmark/z3_cost_model/operators/confirm.py": "16216043e31e34ddd3b1e6fd624a3d6de9ff7bb3c905b8143bcb32ba5f4a4253",
+      "benchmark/z3_cost_model/operators/convolution.py": "472fcbbb2bcf9ed9e3f1d5daec7b005bf7989b84e69a802b7211c7dcb381cd50",
+      "benchmark/z3_cost_model/operators/flash_attention.py": "02d7ee7a346eb1489913e913e52e7a75ed9a8439fc34455e924f6f98fa6238a7",
+      "benchmark/z3_cost_model/operators/gemm.py": "c175f374f0c95dc1451ccacd94eb843f78a4066c08718f2d55c651fce6281a2a",
+      "manifest/experiment_plan.json": "d1a464b843a18c77a7ece22aea6a6c6eba4aa957de4b9ae748a207f119a2180d",
+      "manifest/gdn-selection-v2-plan.json": "bddb2c853c04969594939612a9026522fd23ef88857cccefb2c9a453dfb19b9a"
+    },
+    "git_commit": "5a1b07e4256dd254e873762c29724e6ab8630bb7"
+  },
+  "status": "ok",
+  "utc": "2026-10-27T01:15:28.464202+00:00"
+}
