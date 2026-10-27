@@ -1,0 +1,48 @@
++ set -euo pipefail
++ set -x
++ cd /home/zhaosiying/codebase/tilelang-cuda-z3
++ source scripts/env.sh
+++++ dirname -- scripts/env.sh
++++ cd -- scripts/..
++++ pwd
+++ TILELANG_REPO_ROOT=/home/zhaosiying/codebase/tilelang-cuda-z3
+++ TILELANG_CONDA_PREFIX=/home/zhaosiying/miniforge3/envs/tilelang-cu133
+++ TILELANG_PYTHON=/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python
+++ [[ ! -x /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python ]]
+++ [[ -z '' ]]
+++ for candidate in /usr/local/cuda-13.3 /usr/local/cuda
+++ [[ -x /usr/local/cuda-13.3/bin/nvcc ]]
+++ CUDA_HOME=/usr/local/cuda-13.3
+++ break
+++ [[ -z /usr/local/cuda-13.3 ]]
+++ [[ ! -x /usr/local/cuda-13.3/bin/nvcc ]]
+++ export TILELANG_REPO_ROOT TILELANG_CONDA_PREFIX TILELANG_PYTHON CUDA_HOME
+++ export PYTHONPATH=/home/zhaosiying/codebase/tilelang-cuda-z3:/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python:
+++ PYTHONPATH=/home/zhaosiying/codebase/tilelang-cuda-z3:/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python:
+++ export CUDAToolkit_ROOT=/usr/local/cuda-13.3
+++ CUDAToolkit_ROOT=/usr/local/cuda-13.3
+++ export 'PATH=/usr/lib/wsl/lib:/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin:/usr/local/cuda-13.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/Microsoft.WindowsTerminal_1.24.12741.0_x64__8wekyb3d8bbwe:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/local/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin/x64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2026.2.1:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Users/Admin1/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin1/AppData/Roaming/npm:/mnt/c/Users/Admin1/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ripgrep:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ugrep:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/usr/bin/vendor_perl:/mnt/c/Program Files/Git/usr/bin/core_perl'
+++ PATH='/usr/lib/wsl/lib:/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin:/usr/local/cuda-13.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/Microsoft.WindowsTerminal_1.24.12741.0_x64__8wekyb3d8bbwe:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/local/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin/x64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2026.2.1:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Users/Admin1/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin1/AppData/Roaming/npm:/mnt/c/Users/Admin1/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ripgrep:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ugrep:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/usr/bin/vendor_perl:/mnt/c/Program Files/Git/usr/bin/core_perl'
+++ export LD_LIBRARY_PATH=/home/zhaosiying/codebase/tilelang-cuda-z3/build/lib:/usr/local/cuda-13.3/lib64:
+++ LD_LIBRARY_PATH=/home/zhaosiying/codebase/tilelang-cuda-z3/build/lib:/usr/local/cuda-13.3/lib64:
+++ export CMAKE_GENERATOR=Ninja
+++ CMAKE_GENERATOR=Ninja
+++ export CMAKE_BUILD_PARALLEL_LEVEL=2
+++ CMAKE_BUILD_PARALLEL_LEVEL=2
+++ export MAX_JOBS=2
+++ MAX_JOBS=2
++ OUT=/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G7/screenshots/gdn-confirmation-analysis-v1
++ test '!' -e /home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G7/screenshots/gdn-confirmation-analysis-v1
++ python benchmark/z3_cost_model/gdn/analyze_confirmation.py --cold-analysis evidence/G6/gdn-heldout-t8192-v1/analysis/analysis.json --confirmation-root evidence/G6/gdn-heldout-t8192-confirmation-v1 --output /home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G7/screenshots/gdn-confirmation-analysis-v1
+{
+  "rows": 10,
+  "acceptance_passed": true
+}
++ cat /home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G7/screenshots/gdn-confirmation-analysis-v1/confirmation-comparisons.csv
+direction,alternative_arms,identical_arms,identical,config,guided_median_ms,alternative_median_ms,quality_ratio_guided_over_alternative,paired_round_differences_ms,requirements,passed
+fwd,[],"['stock-raw', 'z3-legal-exhaustive', 'z3-cm-topk', 'budget-raw', 'budget-random']",True,"{'block_DV': 16, 'direction': 'fwd', 'group_reduce_block_size': 16, 'prepare_h_num_stages': 2}",0.3089919984340668,0.3089919984340668,1.0,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]","{'not_slower_than_equal_budget_control': True, 'within_2_percent_of_exhaustive': True}",True
+bwd,[],"['stock-raw', 'z3-legal-exhaustive', 'z3-cm-topk']",True,"{'block_DV': 128, 'direction': 'bwd', 'group_reduce_block_size': 8, 'prepare_h_num_stages': 2}",4.230791926383972,4.230791926383972,1.0,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",{'within_2_percent_of_exhaustive': True},True
+bwd,['budget-raw'],[],False,"{'block_DV': 128, 'direction': 'bwd', 'group_reduce_block_size': 8, 'prepare_h_num_stages': 1}",4.215856075286865,4.379024028778076,0.9627387398610048,"[-0.16585588455200195, -0.16160011291503906, -0.16412806510925293, -0.16054415702819824, -0.1603999137878418, -0.1597118377685547, -0.16120004653930664]",{'not_slower_than_equal_budget_control': True},True
+bwd,['budget-random'],[],False,"{'block_DV': 128, 'direction': 'bwd', 'group_reduce_block_size': 32, 'prepare_h_num_stages': 2}",4.2323198318481445,4.233903884887695,0.9996258646670736,"[-0.002512216567993164, -0.0011522769927978516, -0.001935720443725586, -0.0039997100830078125, -0.0019359588623046875, 0.0015518665313720703, -0.003328084945678711]",{'not_slower_than_equal_budget_control': True},True
++ git rev-parse HEAD
+bb50d8654a3cf65a1caffec57618d9c92b688b6a

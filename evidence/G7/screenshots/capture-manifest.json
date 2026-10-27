@@ -23,5 +23,44 @@
     "review_basis": "actual PNG inspection, raw-log comparison, window binding and SHA256/crop metadata"
   },
   "focus_recovery": "An ordinary Shift key input restored Windows foreground permission; no lock or power policy was changed.",
-  "usage": "This approved sample covers subsequent captures with the same display, theme and managed capture_session.ps1 method. Each later image still requires individual content and log review."
+  "usage": "This approved sample covers subsequent captures with the same display, theme and managed capture_session.ps1 method. Each later image still requires individual content and log review.",
+  "accepted_captures": [
+    {
+      "name": "stock-guided-analysis-v3",
+      "script": "tilelang-cuda-z3-stock-guided-v3.sh",
+      "analysis_output": "stock-guided-analysis-v3",
+      "original_fullscreen": "tilelang-cuda-z3-stock-guided-v3-original.png",
+      "cropped_image": "tilelang-cuda-z3-stock-guided-v3.png",
+      "raw_log": "tilelang-cuda-z3-stock-guided-v3.log",
+      "capture_metadata": "tilelang-cuda-z3-stock-guided-v3.json",
+      "window_binding": "tilelang-cuda-z3-stock-guided-v3.png.window-binding.json",
+      "crop_metadata": "tilelang-cuda-z3-stock-guided-v3.crop.json",
+      "source_dimensions": [3840, 2400],
+      "cropped_dimensions": [3840, 2280],
+      "source_sha256_before_crop": "9c1b91a8fd3ec4d82f481133c9586eea252b2cc34e91bb80b00eed1b46349553",
+      "cropped_sha256": "fed7279b7aaf1d0ac8af8258a74e61b878dc196925d0036cea8c73c5c21d86b7",
+      "review_status": "passed",
+      "review": "Real set-x analysis-only execution; stock-raw and z3-cm-topk CSV rows and git HEAD match the raw log. Purple Ubuntu terminal, visible foreground-bound WindowsTerminal, no traceback or popup contamination.",
+      "gpu_search_rerun_for_capture": false
+    },
+    {
+      "name": "gdn-confirmation-analysis-v1",
+      "script": "tilelang-cuda-z3-gdn-confirmation-v1.sh",
+      "analysis_output": "gdn-confirmation-analysis-v1",
+      "original_fullscreen": "tilelang-cuda-z3-gdn-confirmation-v1-original.png",
+      "cropped_image": "tilelang-cuda-z3-gdn-confirmation-v1.png",
+      "raw_log": "tilelang-cuda-z3-gdn-confirmation-v1.log",
+      "capture_metadata": "tilelang-cuda-z3-gdn-confirmation-v1.json",
+      "window_binding": "tilelang-cuda-z3-gdn-confirmation-v1.png.window-binding.json",
+      "crop_metadata": "tilelang-cuda-z3-gdn-confirmation-v1.crop.json",
+      "source_dimensions": [3840, 2400],
+      "cropped_dimensions": [3840, 2280],
+      "source_sha256_before_crop": "0caa43df332a2d063e14446bb67811882827138f12d18a0a8b899515f4c33105",
+      "cropped_sha256": "10bd8e9a052efef6bdf8f29dd9d817702b23c4a37714f52b6daf12e0286fb5ac",
+      "review_status": "passed",
+      "review": "Real set-x analysis-only execution; rows=10 and acceptance_passed=true, identical fwd/bwd configuration rows, budget-raw and budget-random comparisons, and git HEAD match the raw CSV/log. Purple Ubuntu terminal, visible foreground-bound WindowsTerminal, no traceback or popup contamination.",
+      "gpu_confirmation_rerun_for_capture": false
+    }
+  ],
+  "acceptance_record": "capture-acceptance-v1.json"
 }

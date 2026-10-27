@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "plot": "gdn_acceptance",
+  "latency_unit": "ms",
+  "latency_scope": "confirmed",
+  "rows": [
+    {
+      "panel": "GDN fwd T=8192",
+      "direction": "fwd",
+      "suite": "GDN fwd T=8192",
+      "method": "stock-raw",
+      "best_latency": 0.3089919984340668,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 4,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN fwd T=8192",
+      "direction": "fwd",
+      "suite": "GDN fwd T=8192",
+      "method": "z3-legal-exhaustive",
+      "best_latency": 0.3089919984340668,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN fwd T=8192",
+      "direction": "fwd",
+      "suite": "GDN fwd T=8192",
+      "method": "z3-cm-topk",
+      "best_latency": 0.3089919984340668,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN fwd T=8192",
+      "direction": "fwd",
+      "suite": "GDN fwd T=8192",
+      "method": "budget-raw",
+      "best_latency": 0.3089919984340668,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN fwd T=8192",
+      "direction": "fwd",
+      "suite": "GDN fwd T=8192",
+      "method": "budget-random",
+      "best_latency": 0.3089919984340668,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 2,
+      "profile_count": 2
+    },
+    {
+      "panel": "GDN bwd T=8192",
+      "direction": "bwd",
+      "suite": "GDN bwd T=8192",
+      "method": "stock-raw",
+      "best_latency": 4.230791926383972,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 9,
+      "profile_count": 6
+    },
+    {
+      "panel": "GDN bwd T=8192",
+      "direction": "bwd",
+      "suite": "GDN bwd T=8192",
+      "method": "z3-legal-exhaustive",
+      "best_latency": 4.230791926383972,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 6,
+      "profile_count": 6
+    },
+    {
+      "panel": "GDN bwd T=8192",
+      "direction": "bwd",
+      "suite": "GDN bwd T=8192",
+      "method": "z3-cm-topk",
+      "best_latency": 4.230791926383972,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN bwd T=8192",
+      "direction": "bwd",
+      "suite": "GDN bwd T=8192",
+      "method": "budget-raw",
+      "best_latency": 4.379024028778076,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 3,
+      "profile_count": 3
+    },
+    {
+      "panel": "GDN bwd T=8192",
+      "direction": "bwd",
+      "suite": "GDN bwd T=8192",
+      "method": "budget-random",
+      "best_latency": 4.233903884887695,
+      "latency_unit": "ms",
+      "latency_scope": "confirmed",
+      "compile_count": 3,
+      "profile_count": 3
+    }
+  ]
+}

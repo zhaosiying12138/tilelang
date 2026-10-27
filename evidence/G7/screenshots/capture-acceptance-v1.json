@@ -1,0 +1,36 @@
+{
+  "schema": "tilelang.capture-acceptance/v1",
+  "captured_on_normal_unlocked_desktop": true,
+  "desktop_observation": "Computer-use state enumeration succeeded with an ordinary active WindowsTerminal application; no LockApp, LogonUI, or CredentialUIBroker flow was used. Managed capture then verified the exact foreground WindowsTerminal HWND before both grabs.",
+  "capture_method": "capture_session.ps1 with the previously approved 4K full-screen purple Ubuntu profile; originals preserved before taskbar-only cropping",
+  "automatic_and_manual_checks": [
+    "Both commands exited zero and emitted unfiltered set-x raw logs.",
+    "Both original PNGs are 3840x2400 and both cropped PNGs are 3840x2280.",
+    "Original SHA256 equals capture-metadata sha256_before_taskbar_crop and crop-metadata source_sha256.",
+    "Cropped SHA256 equals crop-metadata output_sha256.",
+    "Window binding records foreground_at_launch_return=true and foreground_before_capture_return=true.",
+    "The capture_window and capture_foreground HWND/owner match WindowsTerminal for each image.",
+    "Actual image inspection found purple Ubuntu content, visible commands and results, and no traceback or popup contamination.",
+    "Visible CSV values and git HEAD were cross-checked against each raw log."
+  ],
+  "captures": {
+    "tilelang-cuda-z3-stock-guided-v3": {
+      "review_status": "passed",
+      "analysis_only": true,
+      "analysis_directory": "stock-guided-analysis-v3",
+      "source_sha256": "9c1b91a8fd3ec4d82f481133c9586eea252b2cc34e91bb80b00eed1b46349553",
+      "cropped_sha256": "fed7279b7aaf1d0ac8af8258a74e61b878dc196925d0036cea8c73c5c21d86b7",
+      "content": "stock-raw and z3-cm-topk rows, selected/profile counts, 1.7574375139961267 search speedup, and HEAD bb50d8654a3cf65a1caffec57618d9c92b688b6a"
+    },
+    "tilelang-cuda-z3-gdn-confirmation-v1": {
+      "review_status": "passed",
+      "analysis_only": true,
+      "analysis_directory": "gdn-confirmation-analysis-v1",
+      "source_sha256": "0caa43df332a2d063e14446bb67811882827138f12d18a0a8b899515f4c33105",
+      "cropped_sha256": "10bd8e9a052efef6bdf8f29dd9d817702b23c4a37714f52b6daf12e0286fb5ac",
+      "content": "rows=10, acceptance_passed=true, fwd/bwd identical configurations, budget-raw ratio 0.9627387398610048, budget-random ratio 0.9996258646670736, and HEAD bb50d8654a3cf65a1caffec57618d9c92b688b6a"
+    }
+  },
+  "gpu_work_rerun_for_images": false,
+  "historical_failures_preserved": true
+}

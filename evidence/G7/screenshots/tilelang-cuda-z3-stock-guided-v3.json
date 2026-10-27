@@ -1,0 +1,24 @@
+{
+    "capture_status":  "accepted_not_black",
+    "captured_at":  "2026-10-27T11:46:04.2717653Z",
+    "script":  "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.sh",
+    "image":  "C:\\Users\\Admin1\\shot\\tilelang-cuda-z3-stock-guided-v3.png",
+    "raw_log":  "C:\\Users\\Admin1\\shot\\tilelang-cuda-z3-stock-guided-v3.log",
+    "exit_status":  0,
+    "image_quality":  {
+                          "validator":  "near_black_grid_v1",
+                          "width":  3840,
+                          "height":  2400,
+                          "sample_stride":  11,
+                          "sampled_pixels":  76650,
+                          "near_black_rgb_max":  12,
+                          "rejection_fraction_threshold":  0.98,
+                          "near_black_fraction":  0.00032615786040443573,
+                          "mean_luminance":  43.084396631397283,
+                          "maximum_luminance":  254.99999999999997,
+                          "accepted_not_black":  true,
+                          "limitation":  "Pixel visibility gate only; human review must check terminal content, theme, popups and command identity."
+                      },
+    "sha256_before_taskbar_crop":  "9c1b91a8fd3ec4d82f481133c9586eea252b2cc34e91bb80b00eed1b46349553",
+    "review_required":  "Inspect real terminal content, theme, popups and command identity before publication."
+}
