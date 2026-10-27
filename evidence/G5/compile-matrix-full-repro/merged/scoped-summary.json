@@ -1,0 +1,170 @@
+{
+  "complete": true,
+  "cpu_only": {
+    "attempted": 99,
+    "compile_only_passed": 99,
+    "denominator": 99,
+    "failed": 0,
+    "g_smoke_not_numeric": 0,
+    "numeric_gate": {
+      "not_satisfied": 0,
+      "passed": 0,
+      "selected_eligible": 0
+    },
+    "numeric_passed": 0,
+    "passed": 99,
+    "selected": 99,
+    "selected_not_run": 0,
+    "skipped_not_passed": 0,
+    "status_counts": {
+      "COLLECTED": 0,
+      "FAIL_DEVICE_COMPILE": 0,
+      "FAIL_ENV": 0,
+      "FAIL_INFRA": 0,
+      "FAIL_LAUNCH": 0,
+      "FAIL_LOWER": 0,
+      "FAIL_NUMERIC": 0,
+      "G_SMOKE": 0,
+      "NOT_RUN": 0,
+      "PASS_COMPILE_ONLY": 99,
+      "PASS_NUMERIC": 0,
+      "SKIP_ARCH": 0,
+      "SKIP_DEP": 0,
+      "SKIP_PERF": 0
+    }
+  },
+  "device": {
+    "attempted": 599,
+    "compile_only_passed": 240,
+    "denominator": 629,
+    "failed": 28,
+    "g_smoke_not_numeric": 7,
+    "numeric_gate": {
+      "not_satisfied": 74,
+      "passed": 272,
+      "selected_eligible": 346
+    },
+    "numeric_passed": 272,
+    "passed": 512,
+    "selected": 629,
+    "selected_not_run": 0,
+    "skipped_not_passed": 82,
+    "status_counts": {
+      "COLLECTED": 0,
+      "FAIL_DEVICE_COMPILE": 6,
+      "FAIL_ENV": 2,
+      "FAIL_INFRA": 0,
+      "FAIL_LAUNCH": 3,
+      "FAIL_LOWER": 17,
+      "FAIL_NUMERIC": 0,
+      "G_SMOKE": 7,
+      "NOT_RUN": 0,
+      "PASS_COMPILE_ONLY": 240,
+      "PASS_NUMERIC": 272,
+      "SKIP_ARCH": 74,
+      "SKIP_DEP": 5,
+      "SKIP_PERF": 3
+    }
+  },
+  "full": {
+    "attempted": 698,
+    "compile_only_passed": 339,
+    "denominator": 729,
+    "failed": 28,
+    "g_smoke_not_numeric": 7,
+    "numeric_gate": {
+      "not_satisfied": 74,
+      "passed": 272,
+      "selected_eligible": 346
+    },
+    "numeric_passed": 272,
+    "passed": 611,
+    "selected": 728,
+    "selected_not_run": 0,
+    "skipped_not_passed": 82,
+    "status_counts": {
+      "COLLECTED": 0,
+      "FAIL_DEVICE_COMPILE": 6,
+      "FAIL_ENV": 2,
+      "FAIL_INFRA": 0,
+      "FAIL_LAUNCH": 3,
+      "FAIL_LOWER": 17,
+      "FAIL_NUMERIC": 0,
+      "G_SMOKE": 7,
+      "NOT_RUN": 1,
+      "PASS_COMPILE_ONLY": 339,
+      "PASS_NUMERIC": 272,
+      "SKIP_ARCH": 74,
+      "SKIP_DEP": 5,
+      "SKIP_PERF": 3
+    }
+  },
+  "host_tier": {
+    "attempted": 77,
+    "compile_only_passed": 77,
+    "denominator": 77,
+    "failed": 0,
+    "g_smoke_not_numeric": 0,
+    "numeric_gate": {
+      "not_satisfied": 0,
+      "passed": 0,
+      "selected_eligible": 0
+    },
+    "numeric_passed": 0,
+    "passed": 77,
+    "selected": 77,
+    "selected_not_run": 0,
+    "skipped_not_passed": 0,
+    "status_counts": {
+      "COLLECTED": 0,
+      "FAIL_DEVICE_COMPILE": 0,
+      "FAIL_ENV": 0,
+      "FAIL_INFRA": 0,
+      "FAIL_LAUNCH": 0,
+      "FAIL_LOWER": 0,
+      "FAIL_NUMERIC": 0,
+      "G_SMOKE": 0,
+      "NOT_RUN": 0,
+      "PASS_COMPILE_ONLY": 77,
+      "PASS_NUMERIC": 0,
+      "SKIP_ARCH": 0,
+      "SKIP_DEP": 0,
+      "SKIP_PERF": 0
+    }
+  },
+  "schema": "tilelang.cuda.compile-matrix-scoped-summary/v1",
+  "scope_note": "full=device+CPU-only; host tier and the dedicated opt-in fixture are separate and are not added to the 729-row denominator. G_SMOKE is not numeric pass.",
+  "z3_opt_in": {
+    "attempted": 1,
+    "compile_only_passed": 1,
+    "denominator": 1,
+    "failed": 0,
+    "g_smoke_not_numeric": 0,
+    "numeric_gate": {
+      "not_satisfied": 0,
+      "passed": 0,
+      "selected_eligible": 0
+    },
+    "numeric_passed": 0,
+    "passed": 1,
+    "selected": 1,
+    "selected_not_run": 0,
+    "skipped_not_passed": 0,
+    "status_counts": {
+      "COLLECTED": 0,
+      "FAIL_DEVICE_COMPILE": 0,
+      "FAIL_ENV": 0,
+      "FAIL_INFRA": 0,
+      "FAIL_LAUNCH": 0,
+      "FAIL_LOWER": 0,
+      "FAIL_NUMERIC": 0,
+      "G_SMOKE": 0,
+      "NOT_RUN": 0,
+      "PASS_COMPILE_ONLY": 1,
+      "PASS_NUMERIC": 0,
+      "SKIP_ARCH": 0,
+      "SKIP_DEP": 0,
+      "SKIP_PERF": 0
+    }
+  }
+}
