@@ -330,6 +330,8 @@ def _run_from_summary(path: Path):
         "accounting_issues": issues,
         "has_recorded_candidate_failures": bool(summary.get("has_recorded_candidate_failures")),
         "_predictions": predictions,
+        "_raw_ids": raw_ids,
+        "_legal_ids": legal_ids,
         "_trials": [
             {
                 "config_id": _config_id(event),
@@ -372,8 +374,13 @@ def _baseline_key(run):
 def _same_space(run, baseline):
     if run["R"] != baseline["R"]:
         return False
-    baseline_legal = baseline["R"] if baseline["arm"] == "stock-raw" else baseline["U"]
-    return run["arm"] == "stock-raw" or run["U"] == baseline_legal
+    run_raw = set(run.get("_raw_ids", []))
+    baseline_raw = set(baseline.get("_raw_ids", []))
+    if run_raw != baseline_raw:
+        return False
+    if baseline["arm"] == "stock-raw":
+        return set(run.get("_legal_ids", [])).issubset(baseline_raw)
+    return set(run.get("_legal_ids", [])) == set(baseline.get("_legal_ids", []))
 
 
 def _baseline(run, index):

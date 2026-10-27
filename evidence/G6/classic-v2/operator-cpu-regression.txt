@@ -1,0 +1,31 @@
+...............................................................          [100%]
+=========================================================================== fixture duration top ===========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.006036 grand total                                                                                                                  72 0:00:00.000087 0:00:00.002453
+========================================================================== test call duration top ==========================================================================
+total          name                                                                                                                        num med            max           
+0:00:02.430750 benchmark/z3_cost_model/operators/tests/test_confirm.py::test_write_analysis_emits_json_csv_and_usable_plots                  1 0:00:02.430750 0:00:02.430750
+0:00:00.644484 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_constraints_do_not_prune_raw_or_obvious_tail_configs          3 0:00:00.217701 0:00:00.220537
+0:00:00.501288 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_gemm_fixed_seed_and_independent_fp32_reference                1 0:00:00.501288 0:00:00.501288
+0:00:00.335522 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_real_sm120_models_and_constraints_cover_every_frozen_suite     1 0:00:00.335522 0:00:00.335522
+0:00:00.114419 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_prim_func_factories_construct_on_cpu_without_compilation      1 0:00:00.114419 0:00:00.114419
+0:00:00.042704 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_exact_necessary_shared_memory_lower_bound                     3 0:00:00.014653 0:00:00.015084
+0:00:00.026133 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_five_arms_budgets_real_driver_wiring_and_run_evidence          1 0:00:00.026133 0:00:00.026133
+0:00:00.025075 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_flash_attention_fp32_reference_and_strict_lower_triangle      1 0:00:00.025075 0:00:00.025075
+0:00:00.022077 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_raw_counts_exact_domains_and_unique_ids                       1 0:00:00.022077 0:00:00.022077
+0:00:00.022038 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_non_warp_thread_count_is_provably_unsat                       3 0:00:00.007268 0:00:00.007720
+0:00:00.020040 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_target_specific_atom_constraints_are_not_guessed_for_auto     1 0:00:00.020040 0:00:00.020040
+0:00:00.019720 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_cache_modes_are_run_owned_and_warm_uses_fresh_tuners           1 0:00:00.019720 0:00:00.019720
+0:00:00.013908 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_no_global_tail_divisibility_or_stage_le_trip_heuristic        1 0:00:00.013908 0:00:00.013908
+0:00:00.008018 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_convolution_nhwc_fp32_reference_with_padding_and_stride       1 0:00:00.008018 0:00:00.008018
+0:00:00.007487 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_nonempty_run_conflict_and_failures_are_preserved               1 0:00:00.007487 0:00:00.007487
+0:00:00.007148 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_solver_unknown_is_retained_not_relabelled_unsat               1 0:00:00.007148 0:00:00.007148
+0:00:00.005655 benchmark/z3_cost_model/operators/tests/test_confirm.py::test_complete_mock_confirmation_preserves_samples_reports_and_abba   1 0:00:00.005655 0:00:00.005655
+0:00:04.295485 grand total                                                                                                                  63 0:00:00.002189 0:00:02.430750
+========================================================================= test setup duration top ==========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.016164 grand total                                                                                                                  63 0:00:00.000146 0:00:00.004345
+======================================================================== test teardown duration top ========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.003203 grand total                                                                                                                  63 0:00:00.000044 0:00:00.000211
+63 passed in 6.58s
