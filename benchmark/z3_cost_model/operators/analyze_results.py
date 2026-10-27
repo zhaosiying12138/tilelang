@@ -19,6 +19,7 @@ import statistics
 
 if __package__:
     from .autotune import ARMS, DEFAULT_TOP_K, SUITE_NAMES, _strict_json, _write_json
+    from .. import visualization as viz
 else:
     import sys
 
@@ -26,6 +27,7 @@ else:
     if str(_REPOSITORY_ROOT) not in sys.path:
         sys.path.insert(0, str(_REPOSITORY_ROOT))
     from benchmark.z3_cost_model.operators.autotune import ARMS, DEFAULT_TOP_K, SUITE_NAMES, _strict_json, _write_json
+    from benchmark.z3_cost_model import visualization as viz
 
 
 _TERMINAL_TRIALS = {"ok", "compile_error", "benchmark_error", "timeout"}
@@ -332,6 +334,7 @@ def _run_from_summary(path: Path):
         "_predictions": predictions,
         "_raw_ids": raw_ids,
         "_legal_ids": legal_ids,
+        "_selected_ids": selected_ids,
         "_trials": [
             {
                 "config_id": _config_id(event),
@@ -553,6 +556,7 @@ def build_correlations(runs):
             reference, oracle_shared = _baseline(run, stock)
             oracle_kind = "stock-raw-successful-trials"
             legal_oracle_complete = False
+        recall_ks = sorted({1, 2, 3, int(run["top_k"])})
         record = {
             "suite": run["suite"],
             "arm": run["arm"],
@@ -576,6 +580,17 @@ def build_correlations(runs):
             ),
             "pearson": None,
             "spearman": None,
+            "kendall_tau_b": None,
+            "top_k_recall": {str(k): None for k in recall_ks},
+            "recall_definition": (
+                "overlap of the lowest-k finite predictions and lowest-k successful measurements in the paired set; "
+                "prediction pairs are sorted by score/config_id; null when k exceeds the paired denominator"
+            ),
+            "oracle_best_config_id": None,
+            "oracle_best_predicted_rank": None,
+            "oracle_best_in_topk": None,
+            "oracle_best_measured_latency_ms": None,
+            "predicted_rank_definition": "one-based rank among all finite legal predictions, with canonical config_id tie-break",
             "path": run["path"],
             "oracle_path": reference["path"] if reference is not None else None,
             "oracle_top_k": reference["top_k"] if reference is not None else None,
@@ -596,16 +611,24 @@ def build_correlations(runs):
             if trial["status"] == "ok" and _finite(trial["latency_ms"]) and trial["config_id"] is not None:
                 measured[trial["config_id"]] = float(trial["latency_ms"])
         record["oracle_measured_configs"] = len(measured)
-        pairs = []
-        finite_predictions = 0
+        oracle_best_id = min(measured, key=lambda config_id: (measured[config_id], config_id)) if measured else None
+        if oracle_best_id is not None:
+            record["oracle_best_config_id"] = oracle_best_id
+            record["oracle_best_measured_latency_ms"] = measured[oracle_best_id]
+            record["oracle_best_in_topk"] = oracle_best_id in set(run.get("_selected_ids", []))
+
+        finite = []
         for prediction in run["_predictions"]:
-            if prediction["unknown"] or not _finite(prediction["score"]):
+            if prediction["unknown"] or not _finite(prediction["score"]) or prediction["config_id"] is None:
                 continue
-            finite_predictions += 1
-            config_id = prediction["config_id"]
-            if config_id in measured:
-                pairs.append((float(prediction["score"]), measured[config_id]))
-        record["finite_prediction_records"] = finite_predictions
+            finite.append((prediction["config_id"], float(prediction["score"])))
+        finite.sort(key=lambda item: (item[1], item[0]))
+        record["finite_prediction_records"] = len(finite)
+        predicted_ranks = {config_id: rank for rank, (config_id, _) in enumerate(finite, start=1)}
+        if oracle_best_id is not None:
+            record["oracle_best_predicted_rank"] = predicted_ranks.get(oracle_best_id)
+
+        pairs = [(score, measured[config_id]) for config_id, score in finite if config_id in measured]
         record["paired_configs"] = len(pairs)
         record["denominator"] = len(pairs)
         if len(pairs) < 2:
@@ -616,7 +639,11 @@ def build_correlations(runs):
         ys = [pair[1] for pair in pairs]
         record["pearson"] = _pearson(xs, ys)
         record["spearman"] = _pearson(_ranks(xs), _ranks(ys))
-        if record["pearson"] is None or record["spearman"] is None:
+        record["kendall_tau_b"] = viz.kendall_tau_b(xs, ys)
+        for k in recall_ks:
+            if k <= len(pairs):
+                record["top_k_recall"][str(k)] = viz.top_k_recall(xs, ys, k)
+        if record["pearson"] is None or record["spearman"] is None or record["kendall_tau_b"] is None:
             record["status"] = "undefined"
             record["reason"] = "a correlation is undefined for constant predictions or measurements"
         else:

@@ -751,6 +751,11 @@ def test_analysis_recomputes_comparisons_and_paired_correlation_denominator(tmp_
     assert correlation["oracle_measured_configs"] == 4
     assert correlation["paired_configs"] == correlation["denominator"] == 3
     assert correlation["pearson"] is not None and correlation["spearman"] is not None
+    assert correlation["kendall_tau_b"] == pytest.approx(1 / 3)
+    assert correlation["top_k_recall"] == {"1": 0.0, "2": 1.0, "3": 1.0}
+    assert correlation["oracle_best_measured_latency_ms"] == 1.0
+    assert correlation["oracle_best_predicted_rank"] == 2
+    assert correlation["oracle_best_in_topk"] is False
     for name in ("analysis.json", "runs.csv", "summary.csv", "correlations.csv"):
         assert (tmp_path / "analysis" / name).is_file()
     aggregate_rows = {row["arm"]: row for row in payload["aggregates"]}
@@ -767,6 +772,11 @@ def test_correlation_refuses_incomplete_oracle(tmp_path):
     assert correlation["status"] == "unavailable"
     assert correlation["denominator"] == 0
     assert correlation["pearson"] is None and correlation["spearman"] is None
+    assert correlation["kendall_tau_b"] is None
+    assert set(correlation["top_k_recall"]) == {"1", "2", "3"}
+    assert all(value is None for value in correlation["top_k_recall"].values())
+    assert correlation["oracle_best_predicted_rank"] is None
+    assert correlation["oracle_best_in_topk"] is None
     assert "complete measured oracle" in correlation["reason"]
 
 

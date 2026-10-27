@@ -1,0 +1,37 @@
+........................................................................ [ 92%]
+......                                                                   [100%]
+=========================================================================== fixture duration top ===========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.006685 grand total                                                                                                                  86 0:00:00.000095 0:00:00.000926
+========================================================================== test call duration top ==========================================================================
+total          name                                                                                                                        num med            max           
+0:00:02.202141 benchmark/z3_cost_model/operators/tests/test_confirm.py::test_write_analysis_emits_json_csv_and_usable_plots                  1 0:00:02.202141 0:00:02.202141
+0:00:00.551710 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_constraints_do_not_prune_raw_or_obvious_tail_configs          3 0:00:00.183551 0:00:00.190433
+0:00:00.357274 testing/python/cuda/test_result_visualization.py::test_gdn_search_observed_scope_is_explicit                                  1 0:00:00.357274 0:00:00.357274
+0:00:00.356573 testing/python/cuda/test_result_visualization.py::test_gdn_acceptance_has_two_panels_and_exact_input_values                   1 0:00:00.356573 0:00:00.356573
+0:00:00.317275 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_real_sm120_models_and_constraints_cover_every_frozen_suite     1 0:00:00.317275 0:00:00.317275
+0:00:00.311442 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_gemm_fixed_seed_and_independent_fp32_reference                1 0:00:00.311442 0:00:00.311442
+0:00:00.309022 testing/python/cuda/test_result_visualization.py::test_prediction_rank_displays_suite_metrics_and_joins_candidate_keys        1 0:00:00.309022 0:00:00.309022
+0:00:00.241293 testing/python/cuda/test_result_visualization.py::test_pruning_funnel_preserves_unknown_and_dedup_accounting                  1 0:00:00.241293 0:00:00.241293
+0:00:00.187701 testing/python/cuda/test_result_visualization.py::test_quality_search_pareto_marks_frontier_and_same_space_oracle             1 0:00:00.187701 0:00:00.187701
+0:00:00.166872 testing/python/cuda/test_result_visualization.py::test_parallel_cumulative_time_uses_independent_bars_and_warns               1 0:00:00.166872 0:00:00.166872
+0:00:00.153113 testing/python/cuda/test_result_visualization.py::test_additive_time_breakdown_derives_only_residual_other                    1 0:00:00.153113 0:00:00.153113
+0:00:00.144363 testing/python/cuda/test_result_visualization.py::test_native_loop_schedule_json_generates_all_artifacts                      1 0:00:00.144363 0:00:00.144363
+0:00:00.111784 testing/python/cuda/test_result_visualization.py::test_native_straight_schedule_does_not_invent_minimum_ii_or_stage           1 0:00:00.111784 0:00:00.111784
+0:00:00.107187 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_prim_func_factories_construct_on_cpu_without_compilation      1 0:00:00.107187 0:00:00.107187
+0:00:00.028220 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_five_arms_budgets_real_driver_wiring_and_run_evidence          1 0:00:00.028220 0:00:00.028220
+0:00:00.022738 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_raw_counts_exact_domains_and_unique_ids                       1 0:00:00.022738 0:00:00.022738
+0:00:00.018197 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_cache_modes_are_run_owned_and_warm_uses_fresh_tuners           1 0:00:00.018197 0:00:00.018197
+0:00:00.016265 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_flash_attention_fp32_reference_and_strict_lower_triangle      1 0:00:00.016265 0:00:00.016265
+0:00:00.013097 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_convolution_nhwc_fp32_reference_with_padding_and_stride       1 0:00:00.013097 0:00:00.013097
+0:00:00.007789 benchmark/z3_cost_model/operators/tests/test_autotune.py::test_nonempty_run_conflict_and_failures_are_preserved               1 0:00:00.007789 0:00:00.007789
+0:00:00.007453 benchmark/z3_cost_model/operators/tests/test_cpu_suite.py::test_exact_necessary_shared_memory_lower_bound                     3 0:00:00.002272 0:00:00.003111
+0:00:00.005556 benchmark/z3_cost_model/operators/tests/test_confirm.py::test_complete_mock_confirmation_preserves_samples_reports_and_abba   1 0:00:00.005556 0:00:00.005556
+0:00:05.698469 grand total                                                                                                                  78 0:00:00.002086 0:00:02.202141
+========================================================================= test setup duration top ==========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.017948 grand total                                                                                                                  78 0:00:00.000196 0:00:00.003890
+======================================================================== test teardown duration top ========================================================================
+total          name                                                                                                                        num med            max           
+0:00:00.004005 grand total                                                                                                                  78 0:00:00.000046 0:00:00.000124
+78 passed in 9.65s
