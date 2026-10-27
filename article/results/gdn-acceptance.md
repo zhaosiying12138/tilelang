@@ -11,7 +11,7 @@ bwd guided 对等预算随机对照的比值为 **0.999626**，差距极小。�
 
 ## 2. 正式 cold 搜索数据
 
-下表均为三次 fresh-process cold run 的中位数。`search best` 是搜索过程中观察到的最小值，`confirmed` 来自后续独立测量；两者不混用。compile/profile 是候选构造与实际 profile 次数，raw 路径的失败候选仍计入尝试。
+下表的搜索 wall 是三次各自 `end_to_end_wall_seconds` 的中位数。设第 $i$ 次 stock 与某策略的墙钟为 $T_{stock,i}$ 和 $T_{arm,i}$，表中“相对 stock”是三次 $S_i=T_{stock,i}/T_{arm,i}$ 的中位数。两种中位数分别计算，不能将展示的两个中位数直接相除。文中的 wall-time 节省为 $1-1/S$；因此它与同一列 speedup 一致，而与 wall 中位数之比可能不同。`search best` 是搜索过程中观察到的最小值，`confirmed` 来自后续独立测量；两者不混用。compile/profile 是候选构造与实际 profile 次数，raw 路径的失败候选仍计入尝试。
 
 ### 2.1 Forward
 
@@ -35,7 +35,7 @@ fwd 的 raw 空间中 `block_DV=128` 因动态 shared memory 超限失败；Z3 �
 | budget-raw | 3 / 3 | 49.813 | 1.253× | 4.377096 | 4.379024 |
 | budget-random | 3 / 3 | 55.322 | 1.139× | 4.218302 | 4.233904 |
 
-bwd guided 的 compile/profile 次数分别减少 **66.7% / 50.0%**。等预算原始顺序选择 `stage=1, group=8`，其搜索内 best 比 guided 差约 3.8%，说明只减少候选数量并不能保证配置质量。随机顺序在该形状上选择了 `stage=2, group=32`，最终与 guided 的差距很小。
+bwd guided 的 compile/profile 次数分别减少 **66.7% / 50.0%**。等预算原始顺序选择 `stage=1, group=8`，其搜索内 best 比 guided 差约 3.7%，说明只减少候选数量并不能保证配置质量。随机顺序在该形状上选择了 `stage=2, group=32`，最终与 guided 的差距很小。
 
 搜索分项均计入 end-to-end。guided 的 solver/model 墙钟中位数在 fwd 为 0.00785/0.00089 s，在 bwd 为 0.00830/0.00195 s。阶段计时存在并行累计，不能把 compile、validation、profile 简单相加为总墙钟；正文只使用独立记录的 end-to-end 和各自分项。
 
@@ -45,7 +45,7 @@ bwd guided 的 compile/profile 次数分别减少 **66.7% / 50.0%**。等预算�
 
 ## 3. 预测排序能否保留好候选
 
-fwd 三个合法配置的 Spearman 与 Kendall 都为 1.0。bwd 六个合法配置的 Spearman 为 **0.794461**，Kendall tau-b 为 **0.644503**；top-1/top-2/top-3 recall 分别为 **1.0 / 0.5 / 1.0**。因此，top-2 不足以覆盖本次 bwd oracle 最优，预注册的 top-3 保留了它。正文不使用早期形状上更好的排名数字替代本次结果。
+fwd 三个合法配置的 Spearman 与 Kendall 都为 1.0。bwd 六个合法配置的 Spearman 为 **0.794461**，Kendall tau-b 为 **0.644503**；top-1/top-2/top-3 recall 分别为 **1.0 / 0.5 / 1.0**。top-1 已保留实测最优；top-2 只覆盖前两名之一，漏掉实测第二，预注册的 top-3 则同时保留前两名。不能把 top-2 recall=0.5 写成漏掉最优。
 
 ![预测名次与完整 oracle 实测名次](../../evidence/G6/gdn-heldout-t8192-v1/analysis/prediction-rank.png)
 
