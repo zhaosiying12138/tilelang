@@ -1,0 +1,5 @@
+usage: build_html.py [-h] --config CONFIG [--output OUTPUT]
+                     [--zhihu-output ZHIHU_OUTPUT] [--formula-log FORMULA_LOG]
+                     [--manifest-output MANIFEST_OUTPUT] [--zip ZIP_OUTPUT]
+                     [--check-only]
+build_html.py: error: the following arguments are required: --config

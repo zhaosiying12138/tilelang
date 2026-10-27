@@ -50,6 +50,8 @@ else:
 SCHEMA_VERSION = 1
 ATTACHMENT_SUFFIXES = {".csv", ".json", ".jsonl", ".log", ".txt", ".tsv"}
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".bmp", ".ico", ".avif"}
+DECLARED_ATTACHMENT_SUFFIXES = ATTACHMENT_SUFFIXES | IMAGE_SUFFIXES
+PACKAGE_REFERENCE_PREFIX = "PACKAGE:"
 TEMPLATE_DIR = Path(__file__).resolve().parent / "templates"
 DEPENDENCY_HELP = (
     "缺少纯 Python 构建依赖。请在隔离环境安装（不要改全局环境）：\n"
@@ -324,13 +326,22 @@ class ResourceCollector:
             return f"manifest/{source.relative_to(manifest).as_posix()}"
         raise BuildError(f"资源不在允许的目录中：{source}")
 
+    def find(self, raw_path: str, base_dir: Path) -> Resource | None:
+        """Find a declared resource without adding strictness to ordinary links."""
+
+        try:
+            source = self._resolve(raw_path, base_dir, "附件")
+        except BuildError:
+            return None
+        return self._by_source.get(source)
+
     def add(self, raw_path: str, base_dir: Path, kind: str, name: str | None = None) -> Resource:
         if kind not in {"image", "attachment"}:
             raise ValueError(f"Unknown resource kind: {kind}")
         source = self._resolve(raw_path, base_dir, "图片" if kind == "image" else "附件")
         suffix = source.suffix.lower()
-        if kind == "attachment" and suffix not in ATTACHMENT_SUFFIXES:
-            allowed = "、".join(sorted(ATTACHMENT_SUFFIXES))
+        if kind == "attachment" and suffix not in DECLARED_ATTACHMENT_SUFFIXES:
+            allowed = "、".join(sorted(DECLARED_ATTACHMENT_SUFFIXES))
             raise BuildError(f"不支持的附件类型 {suffix or '(无扩展名)'}：{source}；仅支持 {allowed}")
         if kind == "image" and suffix not in IMAGE_SUFFIXES:
             allowed = "、".join(sorted(IMAGE_SUFFIXES))
@@ -716,6 +727,19 @@ def _make_markdown_parser() -> Any:
     return md
 
 
+def _process_package_references(
+    chapter: Chapter,
+    collector: ResourceCollector,
+    references: dict[str, Any],
+) -> None:
+    """Collect non-rendered ``[package:name]: path`` attachment declarations."""
+
+    for label, reference in references.items():
+        if not label.upper().startswith(PACKAGE_REFERENCE_PREFIX):
+            continue
+        collector.add(reference["href"], chapter.path.parent, "attachment")
+
+
 def _process_image(token: Token, chapter: Chapter, collector: ResourceCollector) -> None:
     source = token.attrGet("src") or ""
     if source.startswith("data:"):
@@ -739,6 +763,12 @@ def _process_link(token: Token, chapter: Chapter, collector: ResourceCollector) 
     if suffix in ATTACHMENT_SUFFIXES:
         resource = collector.add(href, chapter.path.parent, "attachment")
         token.attrSet("href", resource.archive_path)
+    elif suffix in IMAGE_SUFFIXES:
+        # Ordinary PNG/JPEG links stay ordinary links unless a package reference
+        # (or displayed image) has explicitly declared the same source.
+        resource = collector.find(href, chapter.path.parent)
+        if resource is not None:
+            token.attrSet("href", resource.archive_path)
 
 
 def _process_chapter_tokens(
@@ -1227,10 +1257,12 @@ def build_article(config_path: str | os.PathLike[str]) -> BuildResult:
             raise BuildError(f"章节 id 重复：{chapter_id}")
         chapter_ids.add(chapter_id)
         chapter = Chapter(path=path, chapter_id=chapter_id, tokens=[])
+        parse_env: dict[str, Any] = {}
         try:
-            chapter.tokens = md.parse(text)
+            chapter.tokens = md.parse(text, parse_env)
         except BuildError as exc:
             raise BuildError(f"解析章节失败 {path}：{exc}") from exc
+        _process_package_references(chapter, collector, parse_env.get("references", {}))
         source_documents.append(
             {
                 "path": _relative_label(path, config.repo_root),

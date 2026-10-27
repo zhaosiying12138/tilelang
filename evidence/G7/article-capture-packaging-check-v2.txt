@@ -1,0 +1,1 @@
+检查通过：18 个章节，15 张图片，89 个附件，60 个公式；KaTeX：/home/zhaosiying/.vscode-server/bin/4fe60c8b1cdac1c4c174f2fb180d0d758272d713/node_modules/katex/dist；未写入文件。

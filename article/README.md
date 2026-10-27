@@ -5,7 +5,7 @@
 1. **单文件中文 HTML**：目录、标题锚点、代码高亮、表格、KaTeX 公式、base64 本地图片、内嵌 CSS/JavaScript/KaTeX 字体；运行时不依赖 CDN 或网络。
 2. **知乎 Markdown**：仅使用“一、”和“1.”两种标题形式；表格内不保留 LaTeX；公式自动转成可读文本。
 3. **公式转换记录 JSON**：逐条保留原始 TeX、转换文本、章节、行号、公式类型及是否位于表格中。
-4. **SHA256 manifest 与 ZIP**：收集文章图片及 CSV/JSON/log 等证据附件，同时打包 HTML、知乎 Markdown 和公式记录。
+4. **SHA256 manifest 与 ZIP**：收集文章图片及 CSV/JSON/log 等证据附件，同时打包 HTML、知乎 Markdown 和公式记录；也可用非显示声明把全屏原图等 PNG 作为附件收入 ZIP，而不把原图重复 base64 嵌入 HTML。
 
 本工具只转换已有内容，**不会生成、补齐或修改性能数字**。原始 Markdown、机制文档和 evidence 不会被改写。正文配置由 `article/index.json` 驱动；下面的配置仅是 schema 示例。
 
@@ -57,7 +57,7 @@ python3 -m venv /tmp/article-build-venv
 | `description` | 否 | HTML 摘要和正文顶部说明。 |
 | `toc_depth` | 否 | 目录收录的标题深度，1–6，默认 3。 |
 | `chapters` | 是 | 非空有序数组；字符串是路径，object 可含 `path` 和 `id`。 |
-| `attachments` | 否 | 额外附件数组；字符串是路径，object 可含 `path` 和 `name`。 |
+| `attachments` | 否 | 额外附件数组；字符串是路径，object 可含 `path` 和 `name`。除文本证据外，也可显式加入不嵌入 HTML 的图片附件。 |
 | `katex` | 含公式时建议配置 | 路径字符串，或只含 `directory` 的 object；省略时自动发现本机资源。 |
 
 - 章节路径相对于 `article/index.json`，必须留在 `article` 内，并按数组顺序拼接。
@@ -73,10 +73,25 @@ python3 -m venv /tmp/article-build-venv
 - 以 `evidence/...` 或 `article/...` 开头的资源路径相对于仓库根目录。
 - `../evidence/...` 这类从 `article` 出发的相对路径也可使用。
 - Markdown 中链接的本地 `.csv`、`.json`、`.jsonl`、`.log`、`.txt`、`.tsv` 会自动作为附件收集；配置 `attachments` 可加入正文未直接链接的文件。
-- 支持 PNG、JPEG、GIF、SVG、WebP、BMP、ICO、AVIF 图片。HTML 使用 base64 data URI；知乎 Markdown 使用 ZIP 内相对路径。
+- 支持 PNG、JPEG、GIF、SVG、WebP、BMP、ICO、AVIF 图片。正文中的 Markdown 图片使用 base64 data URI 嵌入 HTML；知乎 Markdown 使用 ZIP 内相对路径。
+- 普通的 PNG/JPEG 等**文字链接**不会仅凭链接就自动收集为附件，也不会把目标图片嵌入 HTML。需要随 ZIP 交付全屏原图时，必须使用下面的 `package:` 声明或配置 `attachments`。
 - 远程图片会报错，因为远程图片不符合单文件离线目标。普通 HTTP/HTTPS 文字链接可保留。
 
-**任何章节、已声明附件、被引用图片、自动收集附件或模板缺失都会终止构建。** 所有输入先在内存中验证和渲染，不会因缺文件而生成占位内容或留下正常外观的半成品。
+### 非显示附件声明（包括全屏原图）
+
+章节可使用 CommonMark 链接引用定义声明一个不显示的附件资源，标签以 `package:` 开头：
+
+```markdown
+[全屏原图][package:stock-original]
+
+[package:stock-original]: ../../evidence/G7/screenshots/stock-original.png
+```
+
+引用定义本身不会出现在 HTML 或知乎正文中。上例会显示“全屏原图”链接，并把目标 PNG 作为 `kind=attachment` 收进 ZIP 和 manifest，链接改为 ZIP 内路径；PNG 字节**不会**重复 base64 嵌入 HTML。若不需要可见链接，只保留 `[package:...]: path` 定义也会收集附件。裁图仍可用普通 `![裁图](...)` 显示并嵌入，原图则通过该声明随包交付。
+
+`package:` 声明支持上述文本附件及图片格式，路径规则、缺失文件检查和远程路径限制与其他资源一致。配置 `attachments` 是等效的全局声明方式；不要仅写一个普通 `.png` 文字链接就声称原图已经入包。
+
+**任何章节、已声明附件、`package:` 资源、被引用图片、自动收集附件或模板缺失都会终止构建。** 所有输入先在内存中验证和渲染，不会因缺文件而生成占位内容或留下正常外观的半成品。
 
 ## 3. KaTeX 资源
 
@@ -151,7 +166,7 @@ attachments/...            # 使用 attachments[].name 的附件
 manifest.json
 ```
 
-知乎 Markdown 中的图片和附件链接对应上述 ZIP 路径，因此发布准备时应保留整个 ZIP 的目录结构，而不是只复制 `.md` 文件。
+知乎 Markdown 中的图片和附件链接对应上述 ZIP 路径，因此发布准备时应保留整个 ZIP 的目录结构，而不是只复制 `.md` 文件。`package:` 声明的原图等图片附件仍使用其默认 `evidence/...` 或 `assets/...` 路径；它们是 ZIP 附件，不是单文件 HTML 中的内嵌图片。
 
 `manifest.json` 包含：
 
@@ -182,6 +197,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover -s article/tests -v
 - HTML 目录/锚点/表格/代码高亮/公式/base64 图片；
 - 知乎两级标题、表内公式降级、数字保留和公式记录；
 - `article/assets` 与 evidence 图片、显式及自动附件；
+- 非显示 `package:` 原图声明、可见链接改写、原图不嵌入 HTML、普通 PNG 链接不隐式收集，以及缺失声明文件报错；
 - manifest 逐项 SHA256 和 ZIP 内容；
 - 完整 CLI、`--check-only` 零写入；
 - 缺章节、缺图片、缺附件、缺 KaTeX、缺字体和远程图片错误。

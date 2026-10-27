@@ -228,6 +228,57 @@ $$
         chapter_entry = next(item for item in manifest["source_documents"] if item["role"] == "chapter")
         self.assertEqual(chapter_entry["sha256"], hashlib.sha256(chapter.read_bytes()).hexdigest())
 
+    def test_package_reference_collects_original_png_without_embedding_it(self) -> None:
+        self.write_chapter(
+            """# 截图证据包
+
+![裁图](../evidence/G1/cropped.png)
+
+[全屏原图][package:original]；[未声明 PNG 链接](../evidence/G1/unlisted.png)。
+
+[package:original]: ../evidence/G1/original.png
+"""
+        )
+        cropped_bytes = PNG_BYTES + b"cropped"
+        original_bytes = PNG_BYTES + b"original"
+        (self.evidence / "cropped.png").write_bytes(cropped_bytes)
+        (self.evidence / "original.png").write_bytes(original_bytes)
+        (self.evidence / "unlisted.png").write_bytes(PNG_BYTES + b"unlisted")
+        self.write_config()
+
+        result = builder.build_article(self.config_path)
+        resources = {resource.archive_path: resource for resource in result.resources}
+
+        self.assertEqual(set(resources), {"evidence/G1/cropped.png", "evidence/G1/original.png"})
+        self.assertEqual(resources["evidence/G1/cropped.png"].kind, "image")
+        self.assertEqual(resources["evidence/G1/original.png"].kind, "attachment")
+        self.assertIn(resources["evidence/G1/cropped.png"].data_uri, result.html)
+        self.assertNotIn(resources["evidence/G1/original.png"].data_uri, result.html)
+        self.assertIn('<a href="evidence/G1/original.png">全屏原图</a>', result.html)
+        self.assertIn('href="../evidence/G1/unlisted.png"', result.html)
+        self.assertNotIn("package:original", result.html)
+        self.assertIn("](evidence/G1/original.png)", result.zhihu)
+        self.assertIn("](../evidence/G1/unlisted.png)", result.zhihu)
+        self.assertNotIn("package:original", result.zhihu)
+
+        manifest_bytes = builder.create_manifest(result, {})
+        manifest = json.loads(manifest_bytes)
+        original_entry = next(
+            entry for entry in manifest["files"] if entry["archive_path"] == "evidence/G1/original.png"
+        )
+        self.assertEqual(original_entry["kind"], "attachment")
+        archive_bytes = builder.create_zip(result, {}, manifest_bytes)
+        with zipfile.ZipFile(io.BytesIO(archive_bytes)) as archive:
+            self.assertEqual(archive.read("evidence/G1/cropped.png"), cropped_bytes)
+            self.assertEqual(archive.read("evidence/G1/original.png"), original_bytes)
+            self.assertNotIn("evidence/G1/unlisted.png", archive.namelist())
+
+    def test_missing_package_reference_image_is_an_error(self) -> None:
+        self.write_chapter("# 缺原图\n\n[package:original]: ../evidence/G1/missing.png\n")
+        self.write_config()
+        with self.assertRaisesRegex(builder.BuildError, "附件源文件不存在"):
+            builder.build_article(self.config_path)
+
     def test_check_only_cli_writes_nothing_and_missing_chapter_fails(self) -> None:
         self.write_chapter("# 预检\n\n$x$\n")
         self.write_config()
