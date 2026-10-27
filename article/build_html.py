@@ -518,6 +518,10 @@ _TEX_COMMANDS = {
     "vee": " ∨ ",
     "forall": "∀",
     "exists": "∃",
+    "lceil": "⌈",
+    "rceil": "⌉",
+    "lfloor": "⌊",
+    "rfloor": "⌋",
     "min": "min",
     "max": "max",
     "argmin": "arg min",
@@ -559,6 +563,50 @@ _TEX_COMMANDS = {
 }
 
 
+def _braced_argument(text: str, start: int) -> tuple[str, int] | None:
+    if start >= len(text) or text[start] != "{":
+        return None
+    depth = 0
+    index = start
+    while index < len(text):
+        char = text[index]
+        if char == "\\":
+            index += 2
+            continue
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start + 1:index], index + 1
+        index += 1
+    return None
+
+
+def _replace_balanced_command(text: str, pattern: str, arity: int, replacement) -> str:
+    command = re.compile(pattern)
+    position = 0
+    while True:
+        match = command.search(text, position)
+        if match is None:
+            return text
+        cursor = match.end()
+        arguments = []
+        for _ in range(arity):
+            cursor += len(re.match(r"\s*", text[cursor:]).group(0))
+            parsed = _braced_argument(text, cursor)
+            if parsed is None:
+                break
+            argument, cursor = parsed
+            arguments.append(argument)
+        if len(arguments) != arity:
+            position = match.end()
+            continue
+        rendered = replacement(*arguments)
+        text = text[:match.start()] + rendered + text[cursor:]
+        position = match.start()
+
+
 def tex_to_readable(source: str) -> str:
     """Convert TeX to readable text without changing numeric literals.
 
@@ -568,14 +616,15 @@ def tex_to_readable(source: str) -> str:
 
     text = source.strip()
     text = text.replace("\r\n", "\n").replace("\r", "\n")
-    text = re.sub(r"\\(?:d|t)?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}", r"((\1)/(\2))", text)
-    text = re.sub(r"\\sqrt\s*\{([^{}]*)\}", r"sqrt(\1)", text)
+    text = _replace_balanced_command(text, r"\\(?:d|t)?frac\b", 2, lambda numerator, denominator: f"(({numerator})/({denominator}))")
+    text = _replace_balanced_command(text, r"\\sqrt\b", 1, lambda argument: f"sqrt({argument})")
     for command in ("text", "textrm", "textit", "textbf", "mathrm", "mathit", "mathbf", "mathsf", "mathtt", "operatorname", "boldsymbol", "bm"):
         text = re.sub(rf"\\{command}\s*\{{([^{{}}]*)\}}", r"\1", text)
     text = re.sub(r"\\begin\s*\{([^{}]*)\}", r"[\1] ", text)
     text = re.sub(r"\\end\s*\{[^{}]*\}", "", text)
     text = text.replace("\\\\", " ; ")
     text = re.sub(r"\\(?:quad|qquad|,|;|:|!)", " ", text)
+    text = re.sub(r"\\[ \t\n]", " ", text)
     text = re.sub(r"\\(?:left|right|displaystyle|limits|nolimits)\b", "", text)
     text = re.sub(r"\\([A-Za-z]+)", lambda match: _TEX_COMMANDS.get(match.group(1), match.group(1)), text)
     replacements = {

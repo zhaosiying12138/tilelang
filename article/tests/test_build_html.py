@@ -87,6 +87,17 @@ class SyntheticArticleTests(unittest.TestCase):
         self.config_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
         return self.config_path
 
+    def test_tex_fallback_handles_nested_groups_ceils_and_control_spaces(self) -> None:
+        cases = {
+            r"\min\ makespan": "min makespan",
+            r"\lceil \frac{ops}{throughput_{dtype}} \rceil": "⌈ ((ops)/(throughput_dtype)) ⌉",
+            r"\frac{a}{\frac{b}{c_{idx}}}": "((a)/(((b)/(c_idx))))",
+            r"\sqrt{\frac{a}{b_{idx}}}": "sqrt(((a)/(b_idx)))",
+        }
+        for source, expected in cases.items():
+            with self.subTest(source=source):
+                self.assertEqual(builder.tex_to_readable(source), expected)
+
     def test_manifest_directory_is_allowed_evidence_root(self) -> None:
         self.write_chapter("[硬件清单](../manifest/hardware.json)")
         manifest = self.root / "manifest"

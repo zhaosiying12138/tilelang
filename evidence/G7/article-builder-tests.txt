@@ -1,14 +1,41 @@
-test_check_only_cli_writes_nothing_and_missing_chapter_fails (test_build_html.SyntheticArticleTests.test_check_only_cli_writes_nothing_and_missing_chapter_fails) ... ok
-test_full_cli_writes_html_zhihu_formula_log_manifest_and_zip (test_build_html.SyntheticArticleTests.test_full_cli_writes_html_zhihu_formula_log_manifest_and_zip) ... ok
-test_html_zhihu_math_images_manifest_and_zip (test_build_html.SyntheticArticleTests.test_html_zhihu_math_images_manifest_and_zip) ... ok
-test_manifest_directory_is_allowed_evidence_root (test_build_html.SyntheticArticleTests.test_manifest_directory_is_allowed_evidence_root) ... ok
-test_missing_declared_attachment_is_an_error (test_build_html.SyntheticArticleTests.test_missing_declared_attachment_is_an_error) ... ok
-test_missing_image_is_an_error (test_build_html.SyntheticArticleTests.test_missing_image_is_an_error) ... ok
-test_missing_katex_distribution_is_an_error (test_build_html.SyntheticArticleTests.test_missing_katex_distribution_is_an_error) ... ok
-test_missing_katex_font_is_an_error (test_build_html.SyntheticArticleTests.test_missing_katex_font_is_an_error) ... ok
-test_remote_image_is_rejected_for_self_contained_html (test_build_html.SyntheticArticleTests.test_remote_image_is_rejected_for_self_contained_html) ... ok
+..........                                                           [100%]
+=================================== FAILURES ===================================
+_ SyntheticArticleTests.test_tex_fallback_handles_nested_groups_ceils_and_control_spaces (source='\\frac{a}{\\frac{b}{c_{idx}}}') _
 
-----------------------------------------------------------------------
-Ran 9 tests in 0.207s
+self = <test_build_html.SyntheticArticleTests testMethod=test_tex_fallback_handles_nested_groups_ceils_and_control_spaces>
 
-OK
+    def test_tex_fallback_handles_nested_groups_ceils_and_control_spaces(self) -> None:
+        cases = {
+            r"\min\ makespan": "min makespan",
+            r"\lceil \frac{ops}{throughput_{dtype}} \rceil": "⌈ ((ops)/(throughput_dtype)) ⌉",
+            r"\frac{a}{\frac{b}{c_{idx}}}": "((a)/((b)/(c_idx)))",
+            r"\sqrt{\frac{a}{b_{idx}}}": "sqrt(((a)/(b_idx)))",
+        }
+        for source, expected in cases.items():
+            with self.subTest(source=source):
+>               self.assertEqual(builder.tex_to_readable(source), expected)
+E               AssertionError: '((a)/(((b)/(c_idx))))' != '((a)/((b)/(c_idx)))'
+E               - ((a)/(((b)/(c_idx))))
+E               ?      -              -
+E               + ((a)/((b)/(c_idx)))
+
+article/tests/test_build_html.py:99: AssertionError
+========================================================================== fixture duration top ==========================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.000038 grand total                                                                                                                 1 0:00:00.000038 0:00:00.000038
+========================================================================= test call duration top =========================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.122822 article/tests/test_build_html.py::SyntheticArticleTests::test_check_only_cli_writes_nothing_and_missing_chapter_fails       1 0:00:00.122822 0:00:00.122822
+0:00:00.064133 article/tests/test_build_html.py::SyntheticArticleTests::test_full_cli_writes_html_zhihu_formula_log_manifest_and_zip       1 0:00:00.064133 0:00:00.064133
+0:00:00.016955 article/tests/test_build_html.py::SyntheticArticleTests::test_html_zhihu_math_images_manifest_and_zip                       1 0:00:00.016955 0:00:00.016955
+0:00:00.009534 article/tests/test_build_html.py::SyntheticArticleTests::test_tex_fallback_handles_nested_groups_ceils_and_control_spaces   1 0:00:00.009534 0:00:00.009534
+0:00:00.217969 grand total                                                                                                                10 0:00:00.000985 0:00:00.122822
+======================================================================== test setup duration top =========================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.000906 grand total                                                                                                                10 0:00:00.000059 0:00:00.000266
+======================================================================= test teardown duration top =======================================================================
+total          name                                                                                                                      num med            max           
+0:00:00.000325 grand total                                                                                                                10 0:00:00.000028 0:00:00.000055
+=========================== short test summary info ============================
+SUBFAILED(source='\\frac{a}{\\frac{b}{c_{idx}}}') article/tests/test_build_html.py::SyntheticArticleTests::test_tex_fallback_handles_nested_groups_ceils_and_control_spaces
+1 failed, 10 passed, 3 subtests passed in 0.27s
