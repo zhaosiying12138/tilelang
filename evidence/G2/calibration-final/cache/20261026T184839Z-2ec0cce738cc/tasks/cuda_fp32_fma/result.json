@@ -1,0 +1,311 @@
+{
+  "accum_dtype": "float32",
+  "compile": {
+    "execution_backend": "tvm_ffi",
+    "source_bytes": 1563,
+    "source_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/cuda_fp32_fma/artifacts/cuda_fp32_fma.cuda",
+    "source_sha256": "01367db0abeb2193a07fc4413d35a7a063c75236227c37901c6bc8bd561dfd1c",
+    "status": "compiled",
+    "target": "{\"kind\":\"cuda\",\"tag\":\"\",\"keys\":[\"cuda\",\"gpu\"],\"host\":{\"kind\":\"c\",\"tag\":\"\",\"keys\":[\"cpu\"]},\"max_num_threads\":1024,\"thread_warp_size\":32,\"arch\":\"sm_120a\"}"
+  },
+  "config": {
+    "accum_dtype": "float32",
+    "allow_tf32": false,
+    "artifact_dir": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/cuda_fp32_fma/artifacts",
+    "blocks": 328,
+    "blocks_per_sm": 4,
+    "description": "Four independent scalar FP32 T.fma chains per thread; two FLOPs per FMA and no TensorCore path.",
+    "dtype": "float32",
+    "dtype_bytes": 4,
+    "estimated_device_memory_bytes": 8060928,
+    "family": "cuda_core",
+    "fixed_blocks": 0,
+    "flush_l2": false,
+    "formula": "flops = blocks * threads * inner_iterations * unroll * 2",
+    "inner_iterations": 8192,
+    "instruction_artifact_kind": "sass",
+    "l2_bytes": 67108864,
+    "name": "cuda_fp32_fma",
+    "shape": [
+      4
+    ],
+    "sm_count": 82,
+    "storage_dtype": null,
+    "threads": 256,
+    "unroll": 4
+  },
+  "correctness": {
+    "check": "Every FP32 FMA chain exactly equals the independent dyadic elementwise reference",
+    "checked_before_timing": true,
+    "elements": 335872,
+    "max_abs_error": 0.0,
+    "passed": true,
+    "rechecked_after_timing": true
+  },
+  "dtype": "float32",
+  "environment": {
+    "cache": {
+      "CUDA_CACHE_PATH": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/cuda_fp32_fma/nvidia",
+      "TILELANG_CACHE_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/cuda_fp32_fma/tilelang",
+      "TMPDIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/cuda_fp32_fma/tmp",
+      "TORCH_EXTENSIONS_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/cuda_fp32_fma/torch-extensions"
+    },
+    "device": {
+      "arch": "sm_120",
+      "compute_capability": [
+        12,
+        0
+      ],
+      "l2_bytes": 67108864,
+      "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "physical_device": 0,
+      "sm_count": 82,
+      "total_memory_bytes": 25650855936,
+      "visible_device": 0
+    },
+    "finished_at_utc": "2026-10-26T18:49:16.423222Z",
+    "nvidia_smi_after": {
+      "clock_mhz": 1657,
+      "compute_processes": [
+        {
+          "pid": "2197186",
+          "process_name": "[Not Found]",
+          "used_memory": "[N/A]"
+        }
+      ],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 23.44,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "1657",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "330",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "23.44",
+        "power.limit": "[N/A]",
+        "pstate": "P0",
+        "temperature.gpu": "51",
+        "utilization.gpu": "2"
+      },
+      "temperature_c": 51,
+      "timestamp_utc": "2026-10-26T18:49:16.500020Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 1657,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 330,
+        "name": null,
+        "power.draw": 23.44,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 51,
+        "utilization.gpu": 2
+      }
+    },
+    "nvidia_smi_before": {
+      "clock_mhz": 180,
+      "compute_processes": [],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 15.49,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "180",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "0",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "15.49",
+        "power.limit": "[N/A]",
+        "pstate": "P5",
+        "temperature.gpu": "50",
+        "utilization.gpu": "0"
+      },
+      "temperature_c": 50,
+      "timestamp_utc": "2026-10-26T18:49:14.120795Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 180,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 0,
+        "name": null,
+        "power.draw": 15.49,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 50,
+        "utilization.gpu": 0
+      }
+    },
+    "pid": 2197186,
+    "platform": "Linux-6.18.40.1-aenv-ublk-6.18.40.1-x86_64-with-glibc2.43",
+    "python": "3.12.16 (main, Oct 26 2026, 11:37:43) [GCC 15.3.0]",
+    "started_at_utc": "2026-10-26T18:49:14.237162Z",
+    "versions": {
+      "cuda_runtime": "13.0",
+      "nvidia_driver": "610.74",
+      "tilelang": "0.1.15+cuda.gitcb2dd536",
+      "torch": "2.14.1+cu130"
+    }
+  },
+  "implementation": {
+    "counting": "2 FLOPs per scalar FMA; four independent chains per thread; no TensorCore work; periodic input adds and loop overhead are timed but not counted as FMA FLOPs",
+    "lowering": "Explicit scalar T.fma chains on CUDA cores; compiled audit forbids mma.sync/WGMMA/TCGEN05/HMMA as applicable",
+    "reference": "exact independent closed-form elementwise sum for (A+(iteration%8)/32)*B; no torch.matmul, loop reuse, or TensorCore"
+  },
+  "instruction_audit": {
+    "artifact_bytes": 59589,
+    "artifact_kind": "sass",
+    "artifact_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/cuda_fp32_fma/artifacts/cuda_fp32_fma.sass",
+    "artifact_sha256": "8400f6289c37e959c17e7123f39da0347b420fc31570bf285fbe779a07e0ee8a",
+    "benchmark": "cuda_fp32_fma",
+    "evidence_scope": "compiled instruction artifact, not a TileLang function-name/source-marker assertion",
+    "export_method": "export_sass",
+    "forbidden_matches": [],
+    "match_counts": {
+      "\\bFFMA(?:\\.[A-Z0-9_]+)?\\b": 256
+    },
+    "matched_required": [
+      [
+        {
+          "count": 256,
+          "minimum": 1,
+          "pattern": "\\bFFMA(?:\\.[A-Z0-9_]+)?\\b",
+          "scalar_equivalent": 256
+        }
+      ]
+    ],
+    "missing_required": [],
+    "passed": true,
+    "scalar_equivalent_counts": {
+      "\\bFFMA(?:\\.[A-Z0-9_]+)?\\b": 256
+    }
+  },
+  "iqr_ms": 0.010079994797706604,
+  "max_ms": 0.2152000069618225,
+  "median_ms": 0.1594879999756813,
+  "min_ms": 0.15056000649929047,
+  "name": "cuda_fp32_fma",
+  "overhead": {
+    "correction_applied": true,
+    "empty_launch_median_ms": 0.007344000041484833,
+    "event_median_ms": 0.0025919999461621046,
+    "net_median_ms": 0.15214399993419647,
+    "rate_time_ms": 0.15214399993419647
+  },
+  "provenance": {
+    "fit_from_formal_candidates": false,
+    "independent_measurement": true,
+    "measurement": "dedicated_microbenchmark",
+    "ratio_derived": false,
+    "timing": "torch.cuda.Event"
+  },
+  "q1_ms": 0.153912004083395,
+  "q3_ms": 0.1639919988811016,
+  "rates": {
+    "cuda_fp32_fma_flops_per_second": {
+      "basis": "raw median minus independently measured empty-launch median",
+      "source": "cuda_fp32_fma",
+      "time_ms": 0.15214399993419647,
+      "unit": "FLOP/second",
+      "value": 36169200562493.83,
+      "work": 5502926848
+    }
+  },
+  "raw_samples_ms": [
+    0.20559999346733093,
+    0.174112007021904,
+    0.15600000321865082,
+    0.15587200224399567,
+    0.1528320014476776,
+    0.1531199961900711,
+    0.1520639955997467,
+    0.15654399991035461,
+    0.1745920032262802,
+    0.15219199657440186,
+    0.1518400013446808,
+    0.15484799444675446,
+    0.15503999590873718,
+    0.15081599354743958,
+    0.15353600680828094,
+    0.15360000729560852,
+    0.15056000649929047,
+    0.15094399452209473,
+    0.15174399316310883,
+    0.1509760022163391,
+    0.15190400183200836,
+    0.21142399311065674,
+    0.17123199999332428,
+    0.1656319946050644,
+    0.16252799332141876,
+    0.16415999829769135,
+    0.16223999857902527,
+    0.16678400337696075,
+    0.16073599457740784,
+    0.160288006067276,
+    0.15887999534606934,
+    0.15862399339675903,
+    0.15881599485874176,
+    0.16067199409008026,
+    0.18857599794864655,
+    0.16467200219631195,
+    0.1597760021686554,
+    0.15919999778270721,
+    0.1610880047082901,
+    0.15836800634860992,
+    0.16220800578594208,
+    0.16131199896335602,
+    0.15804800391197205,
+    0.1590079963207245,
+    0.16092799603939056,
+    0.15987199544906616,
+    0.2152000069618225,
+    0.1642560064792633,
+    0.1934400051832199,
+    0.1634880006313324
+  ],
+  "repeat": 50,
+  "sample_count": 50,
+  "shape": [
+    4
+  ],
+  "status": "complete",
+  "uncorrected_rates": {
+    "cuda_fp32_fma_flops_per_second": {
+      "basis": "raw event median including launch",
+      "source": "cuda_fp32_fma",
+      "time_ms": 0.1594879999756813,
+      "unit": "FLOP/second",
+      "value": 34503704660156.785,
+      "work": 5502926848
+    }
+  },
+  "units": {
+    "bytes": "byte",
+    "operation": "fused_multiply_add",
+    "rate": "FLOP/second",
+    "raw_samples": "millisecond",
+    "shape": "element",
+    "time": "millisecond",
+    "work": "floating_point_operation"
+  },
+  "warmup": 10,
+  "work": {
+    "bytes": 4030464,
+    "flops": 5502926848,
+    "formula": "flops = blocks * threads * inner_iterations * unroll * 2",
+    "launches": 1,
+    "operations": 2751463424
+  }
+}

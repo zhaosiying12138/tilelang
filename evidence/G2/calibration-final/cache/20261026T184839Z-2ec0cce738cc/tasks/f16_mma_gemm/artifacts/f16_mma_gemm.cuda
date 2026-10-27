@@ -1,0 +1,62 @@
+#if defined(_MSC_VER) && !defined(__clang__) && _MSC_VER < 1940
+#define _tl_orig_alignas alignas
+#define alignas(N) _tl_orig_alignas((N) <= 64 ? (N) : 64)
+#include <cuda.h>
+#undef alignas
+#define alignas _tl_orig_alignas
+#endif
+#include <tl_templates/cuda/instruction/mma.h>
+#include <tl_templates/cuda/reduce.h>
+#include <tl_templates/cuda/scan.h>
+#include <tl_templates/cuda/ldsm.h>
+#include <tl_templates/cuda/threadblock_swizzle.h>
+#include <tl_templates/cuda/debug.h>
+#ifdef ENABLE_BF16
+#include <tl_templates/cuda/cuda_bf16_fallbacks.cuh>
+#endif
+
+extern "C" __global__ void kernel_kernel(const half_t* __restrict__ A, const half_t* __restrict__ B, float* __restrict__ Out);
+extern "C" __global__ void __launch_bounds__(128, 1) kernel_kernel(const half_t* __restrict__ A, const half_t* __restrict__ B, float* __restrict__ Out) {
+  extern __shared__ __align__(1024) uchar buf_dyn_shmem[];
+  void* a_shared = ((void*)((char*)buf_dyn_shmem + 0));
+  void* b_shared = ((void*)((char*)buf_dyn_shmem + 9216));
+  float accumulator[60];
+  #pragma unroll
+  for (int i = 0; i < 9; ++i) {
+    *(uint2*)(((half_t*)a_shared) + (((((((i * 32) + (((int)threadIdx.x) >> 2)) % 3) * 1536) + ((((i * 32) + (((int)threadIdx.x) >> 2)) / 3) * 16)) + (((((((i * 8) + (((int)threadIdx.x) >> 4)) % 6) / 3) + ((((int)threadIdx.x) & 3) >> 1)) & 1) * 8)) + ((((int)threadIdx.x) & 1) * 4))) = *(uint2*)(A + ((i * 512) + (((int)threadIdx.x) * 4)));
+  }
+  #pragma unroll
+  for (int i_1 = 0; i_1 < 15; ++i_1) {
+    *(uint1*)(((half_t*)b_shared) + (((((((i_1 * 16) + (((int)threadIdx.x) >> 3)) % 5) * 768) + ((((i_1 * 16) + (((int)threadIdx.x) >> 3)) / 5) * 16)) + (((((((i_1 * 4) + (((int)threadIdx.x) >> 5)) % 10) / 5) + ((((int)threadIdx.x) & 7) >> 2)) & 1) * 8)) + ((((int)threadIdx.x) & 3) * 2))) = *(uint1*)(B + ((i_1 * 256) + (((int)threadIdx.x) * 2)));
+  }
+  #pragma unroll
+  for (int i_2 = 0; i_2 < 15; ++i_2) {
+    float broadcast_var = 0x0p+0f/*0.000000e+00*/;
+    *(float4*)(accumulator + (i_2 * 4)) = make_float4(broadcast_var, broadcast_var, broadcast_var, broadcast_var);
+  }
+  __syncthreads();
+  for (int __1 = 0; __1 < 256; ++__1) {
+    half_t A_local[24];
+    half_t B_local[20];
+    for (int ki = 0; ki < 3; ++ki) {
+      #pragma unroll
+      for (int i_3 = 0; i_3 < 3; ++i_3) {
+        tl::ptx_ldmatrix_x4((&(((half_t*)a_shared)[(((((ki * 1536) + (((((int)threadIdx.x) & 63) >> 5) * 768)) + (i_3 * 256)) + ((((int)threadIdx.x) & 15) * 16)) + (((((((int)threadIdx.x) & 31) >> 4) + ((((int)threadIdx.x) & 7) >> 2)) & 1) * 8))])), (&(A_local[(i_3 * 8)])));
+      }
+      #pragma unroll
+      for (int i_4 = 0; i_4 < 5; ++i_4) {
+        tl::ptx_ldmatrix_x2_trans((&(((half_t*)b_shared)[((((((((((((int)threadIdx.x) >> 6) * 5) + ((((int)threadIdx.x) & 31) >> 4)) + i_4) % 10) >> 1) * 768) + ((((ki * 2) + ((((((((int)threadIdx.x) & 15) * 80) + ((((int)threadIdx.x) >> 6) * 40)) + (((((int)threadIdx.x) & 31) >> 4) * 8)) + (i_4 * 8)) / 640)) % 6) * 128)) + ((((((((((int)threadIdx.x) >> 6) * 40) + (((((int)threadIdx.x) & 31) >> 4) * 8)) + (i_4 * 8)) / 80) + (((int)threadIdx.x) & 15)) & 7) * 16)) + ((((((((((((int)threadIdx.x) & 15) * 80) + ((((int)threadIdx.x) >> 6) * 40)) + (((((int)threadIdx.x) & 31) >> 4) * 8)) + (i_4 * 8)) % 640) / 320) + (((((((int)threadIdx.x) >> 6) * 5) + ((((int)threadIdx.x) & 31) >> 4)) + i_4) & 1)) & 1) * 8))])), (&(B_local[(i_4 * 4)])));
+      }
+      for (int i_5 = 0; i_5 < 3; ++i_5) {
+        for (int j = 0; j < 5; ++j) {
+          tl::mma_sync<tl::DataType::kFloat16, tl::DataType::kFloat16, tl::DataType::kFloat32, 16, 8, 16, false, true>(reinterpret_cast<float*>(accumulator + ((i_5 * 20) + (j * 4))), reinterpret_cast<const unsigned*>(A_local + (i_5 * 8)), reinterpret_cast<const unsigned*>(B_local + (j * 4)));
+        }
+      }
+    }
+  }
+  #pragma unroll
+  for (int i_6 = 0; i_6 < 30; ++i_6) {
+    *(float2*)(Out + ((((((((((int)blockIdx.x) * 7680) + (((((int)threadIdx.x) & 63) >> 5) * 3840)) + ((i_6 / 10) * 1280)) + ((i_6 & 1) * 640)) + (((((int)threadIdx.x) & 31) >> 2) * 80)) + ((((int)threadIdx.x) >> 6) * 40)) + (((i_6 % 10) >> 1) * 8)) + ((((int)threadIdx.x) & 3) * 2))) = *(float2*)(accumulator + (i_6 * 2));
+  }
+}
+

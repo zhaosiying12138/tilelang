@@ -1,0 +1,4 @@
+dram_copy: failed
+l2_resident_copy: failed
+f16_mma_gemm: complete
+Wrote partial calibration to /home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-retry-smoke/result.json; missing=['dram_copy', 'l2_resident_copy', 'shared_read', 'shared_write', 'bf16_mma_gemm', 'tf32_mma_gemm', 'cuda_fp32_fma', 'sfu_exp2', 'barrier', 'empty_launch']

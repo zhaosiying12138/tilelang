@@ -1,0 +1,270 @@
+{
+  "accum_dtype": null,
+  "compile": {
+    "execution_backend": "tvm_ffi",
+    "status": "compiled",
+    "target": "cuda"
+  },
+  "config": {
+    "accum_dtype": null,
+    "allow_tf32": false,
+    "blocks": 328,
+    "blocks_per_sm": 4,
+    "description": "Repeated 32-bit shared loads after an untimed-input shared initialization.",
+    "dtype": "float32",
+    "dtype_bytes": 4,
+    "estimated_device_memory_bytes": 704512,
+    "family": "shared",
+    "fixed_blocks": 0,
+    "flush_l2": false,
+    "formula": "bytes = blocks * threads * inner_iterations * unroll * sizeof(dtype)",
+    "inner_iterations": 1024,
+    "l2_bytes": 67108864,
+    "name": "shared_read",
+    "shape": [
+      8192
+    ],
+    "sm_count": 82,
+    "storage_dtype": null,
+    "threads": 256,
+    "unroll": 16
+  },
+  "correctness": {
+    "check": "Every shared-read reduction equals iterations*unroll",
+    "checked_before_timing": true,
+    "elements": 83968,
+    "max_abs_error": 0.0,
+    "passed": true,
+    "rechecked_after_timing": true
+  },
+  "dtype": "float32",
+  "environment": {
+    "cache": {
+      "CUDA_CACHE_PATH": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/shared_read/nvidia",
+      "TILELANG_CACHE_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/shared_read/tilelang",
+      "TMPDIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/shared_read/tmp",
+      "TORCH_EXTENSIONS_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/shared_read/torch-extensions"
+    },
+    "device": {
+      "arch": "sm_120",
+      "compute_capability": [
+        12,
+        0
+      ],
+      "l2_bytes": 67108864,
+      "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "physical_device": 0,
+      "sm_count": 82,
+      "total_memory_bytes": 25650855936,
+      "visible_device": 0
+    },
+    "finished_at_utc": "2026-10-26T18:48:52.566329Z",
+    "nvidia_smi_after": {
+      "clock_mhz": 1590,
+      "compute_processes": [],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 71.02,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "1590",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "310",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "71.02",
+        "power.limit": "[N/A]",
+        "pstate": "P0",
+        "temperature.gpu": "50",
+        "utilization.gpu": "2"
+      },
+      "temperature_c": 50,
+      "timestamp_utc": "2026-10-26T18:48:52.647319Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 1590,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 310,
+        "name": null,
+        "power.draw": 71.02,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 50,
+        "utilization.gpu": 2
+      }
+    },
+    "nvidia_smi_before": {
+      "clock_mhz": 180,
+      "compute_processes": [],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 16.51,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "180",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "0",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "16.51",
+        "power.limit": "[N/A]",
+        "pstate": "P4",
+        "temperature.gpu": "50",
+        "utilization.gpu": "0"
+      },
+      "temperature_c": 50,
+      "timestamp_utc": "2026-10-26T18:48:51.222479Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 180,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 0,
+        "name": null,
+        "power.draw": 16.51,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 50,
+        "utilization.gpu": 0
+      }
+    },
+    "pid": 2196312,
+    "platform": "Linux-6.18.40.1-aenv-ublk-6.18.40.1-x86_64-with-glibc2.43",
+    "python": "3.12.16 (main, Oct 26 2026, 11:37:43) [GCC 15.3.0]",
+    "started_at_utc": "2026-10-26T18:48:51.319584Z",
+    "versions": {
+      "cuda_runtime": "13.0",
+      "nvidia_driver": "610.74",
+      "tilelang": "0.1.15+cuda.git6c5dbc5a",
+      "torch": "2.14.1+cu130"
+    }
+  },
+  "implementation": {
+    "initialization": "shared copy and final global store are included in launch time but not shared-read bytes"
+  },
+  "instruction_audit": null,
+  "iqr_ms": 0.0055119916796684265,
+  "max_ms": 0.45161598920822144,
+  "median_ms": 0.3835360109806061,
+  "min_ms": 0.37971198558807373,
+  "name": "shared_read",
+  "overhead": {
+    "correction_applied": true,
+    "empty_launch_median_ms": 0.007344000041484833,
+    "event_median_ms": 0.0025919999461621046,
+    "net_median_ms": 0.37619201093912125,
+    "rate_time_ms": 0.37619201093912125
+  },
+  "provenance": {
+    "fit_from_formal_candidates": false,
+    "independent_measurement": true,
+    "measurement": "dedicated_microbenchmark",
+    "ratio_derived": false,
+    "timing": "torch.cuda.Event"
+  },
+  "q1_ms": 0.38201600313186646,
+  "q3_ms": 0.3875279948115349,
+  "rates": {
+    "shared_read_bytes_per_second": {
+      "basis": "raw median minus independently measured empty-launch median",
+      "source": "shared_read",
+      "time_ms": 0.37619201093912125,
+      "unit": "byte/second",
+      "value": 14627973715503.844,
+      "work": 5502926848
+    }
+  },
+  "raw_samples_ms": [
+    0.403903990983963,
+    0.3889920115470886,
+    0.4176639914512634,
+    0.3877120018005371,
+    0.3861440122127533,
+    0.39500799775123596,
+    0.3845759928226471,
+    0.38201600313186646,
+    0.42790400981903076,
+    0.38339200615882874,
+    0.38464000821113586,
+    0.38041600584983826,
+    0.381632000207901,
+    0.38358399271965027,
+    0.38355201482772827,
+    0.38259199261665344,
+    0.3818880021572113,
+    0.3862079977989197,
+    0.38304001092910767,
+    0.38227200508117676,
+    0.3826560080051422,
+    0.38332799077033997,
+    0.38252800703048706,
+    0.3822399973869324,
+    0.38201600313186646,
+    0.3824639916419983,
+    0.3808960020542145,
+    0.38179200887680054,
+    0.38121598958969116,
+    0.3819519877433777,
+    0.38150399923324585,
+    0.45161598920822144,
+    0.42822399735450745,
+    0.42979198694229126,
+    0.38393598794937134,
+    0.3840639889240265,
+    0.3874559998512268,
+    0.390175998210907,
+    0.3845120072364807,
+    0.3864000141620636,
+    0.38201600313186646,
+    0.38646399974823,
+    0.3875519931316376,
+    0.3835200071334839,
+    0.38995200395584106,
+    0.38128000497817993,
+    0.4044159948825836,
+    0.37971198558807373,
+    0.3819519877433777,
+    0.3816640079021454
+  ],
+  "repeat": 50,
+  "sample_count": 50,
+  "shape": [
+    8192
+  ],
+  "status": "complete",
+  "uncorrected_rates": {
+    "shared_read_bytes_per_second": {
+      "basis": "raw event median including launch",
+      "source": "shared_read",
+      "time_ms": 0.3835360109806061,
+      "unit": "byte/second",
+      "value": 14347875272338.537,
+      "work": 5502926848
+    }
+  },
+  "units": {
+    "bytes": "byte",
+    "rate": "byte/second",
+    "raw_samples": "millisecond",
+    "shape": "element",
+    "time": "millisecond",
+    "work": "shared_load"
+  },
+  "warmup": 10,
+  "work": {
+    "bytes": 5502926848,
+    "flops": 0,
+    "formula": "bytes = blocks * threads * inner_iterations * unroll * sizeof(dtype)",
+    "launches": 1,
+    "operations": 1375731712
+  }
+}

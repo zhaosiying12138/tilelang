@@ -1,0 +1,11 @@
+[0/2] Re-checking globbed directories...
+[1/11] Linking CXX shared library lib/libtvm_runtime.so
+[2/11] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/layout_inference/layout_inference.cc.o
+[3/11] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o
+[4/11] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/lower_tile_op.cc.o
+[5/11] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/pipeline_planning.cc.o
+[6/11] Building CXX object CMakeFiles/tilelang_objs.dir/src/cuda/transform/multi_version_buffer_rewriter.cc.o
+[7/11] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/layout_inference.cc.o
+[8/11] Linking CXX shared library lib/libtvm_compiler.so
+[9/11] Building CXX object CMakeFiles/tilelang_objs.dir/src/ascend/transform/lower_tile_op.cc.o
+[10/11] Linking CXX shared library lib/libtilelang.so

@@ -1,0 +1,314 @@
+{
+  "accum_dtype": "float32",
+  "compile": {
+    "execution_backend": "tvm_ffi",
+    "source_bytes": 4129,
+    "source_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/tf32_mma_gemm/artifacts/tf32_mma_gemm.cuda",
+    "source_sha256": "2d0704c10793342a059ee01c0a68562fa9243de72de0b4a887d0547efc656b97",
+    "status": "compiled",
+    "target": "{\"kind\":\"cuda\",\"tag\":\"\",\"keys\":[\"cuda\",\"gpu\"],\"host\":{\"kind\":\"c\",\"tag\":\"\",\"keys\":[\"cpu\"]},\"max_num_threads\":1024,\"thread_warp_size\":32,\"arch\":\"sm_120a\"}"
+  },
+  "config": {
+    "accum_dtype": "float32",
+    "allow_tf32": true,
+    "artifact_dir": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/tf32_mma_gemm/artifacts",
+    "blocks": 328,
+    "blocks_per_sm": 4,
+    "description": "TF32 T.gemm using FP32 storage, explicit T.tfloat32/allow_tf32 reference path, independent timing and instruction audit.",
+    "dtype": "tfloat32",
+    "dtype_bytes": 4,
+    "estimated_device_memory_bytes": 30292992,
+    "family": "gemm",
+    "fixed_blocks": 0,
+    "flush_l2": false,
+    "formula": "flops = blocks * inner_iterations * 2 * M * N * K",
+    "inner_iterations": 256,
+    "instruction_artifact_kind": "sass",
+    "l2_bytes": 67108864,
+    "name": "tf32_mma_gemm",
+    "shape": [
+      96,
+      80,
+      48
+    ],
+    "sm_count": 82,
+    "storage_dtype": "float32",
+    "threads": 128,
+    "unroll": 1
+  },
+  "correctness": {
+    "atol": 0.02,
+    "check": "tf32_mma_gemm: every CTA equals iterations*(A@B) in FP32",
+    "checked_before_timing": true,
+    "elements": 2519040,
+    "max_abs_error": 0.0,
+    "passed": true,
+    "rechecked_after_timing": true,
+    "rtol": 0.02
+  },
+  "dtype": "tfloat32",
+  "environment": {
+    "cache": {
+      "CUDA_CACHE_PATH": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/tf32_mma_gemm/nvidia",
+      "TILELANG_CACHE_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/tf32_mma_gemm/tilelang",
+      "TMPDIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/tf32_mma_gemm/tmp",
+      "TORCH_EXTENSIONS_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/tf32_mma_gemm/torch-extensions"
+    },
+    "device": {
+      "arch": "sm_120",
+      "compute_capability": [
+        12,
+        0
+      ],
+      "l2_bytes": 67108864,
+      "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "physical_device": 0,
+      "sm_count": 82,
+      "total_memory_bytes": 25650855936,
+      "visible_device": 0
+    },
+    "finished_at_utc": "2026-10-26T18:49:12.028849Z",
+    "nvidia_smi_after": {
+      "clock_mhz": 1680,
+      "compute_processes": [],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 27.72,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "1680",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "392",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "27.72",
+        "power.limit": "[N/A]",
+        "pstate": "P0",
+        "temperature.gpu": "51",
+        "utilization.gpu": "1"
+      },
+      "temperature_c": 51,
+      "timestamp_utc": "2026-10-26T18:49:12.103763Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 1680,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 392,
+        "name": null,
+        "power.draw": 27.72,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 51,
+        "utilization.gpu": 1
+      }
+    },
+    "nvidia_smi_before": {
+      "clock_mhz": 187,
+      "compute_processes": [],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 15.89,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "187",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "0",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "15.89",
+        "power.limit": "[N/A]",
+        "pstate": "P5",
+        "temperature.gpu": "50",
+        "utilization.gpu": "0"
+      },
+      "temperature_c": 50,
+      "timestamp_utc": "2026-10-26T18:49:08.660659Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 187,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 0,
+        "name": null,
+        "power.draw": 15.89,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 50,
+        "utilization.gpu": 0
+      }
+    },
+    "pid": 2196896,
+    "platform": "Linux-6.18.40.1-aenv-ublk-6.18.40.1-x86_64-with-glibc2.43",
+    "python": "3.12.16 (main, Oct 26 2026, 11:37:43) [GCC 15.3.0]",
+    "started_at_utc": "2026-10-26T18:49:08.757283Z",
+    "versions": {
+      "cuda_runtime": "13.0",
+      "nvidia_driver": "610.74",
+      "tilelang": "0.1.15+cuda.git6c5dbc5a",
+      "torch": "2.14.1+cu130"
+    }
+  },
+  "implementation": {
+    "counting": "logical 2*M*N*K FLOPs; no per-thread warp-instruction multiplier and no cross-dtype rate ratio",
+    "input_storage_dtype": "float32",
+    "lowering": "T.gemm with fragment accumulator and tl.disable_wgmma=true; compiled-artifact audit is authoritative",
+    "reference": "independent torch matmul with explicit allow_tf32 setting, multiplied by inner_iterations",
+    "reference_allow_tf32": true,
+    "source_tl_mma_sync_marker_present": true,
+    "tilelang_dtype": "custom[tfloat32]"
+  },
+  "instruction_audit": {
+    "artifact_bytes": 434387,
+    "artifact_kind": "sass",
+    "artifact_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/tf32_mma_gemm/artifacts/tf32_mma_gemm.sass",
+    "artifact_sha256": "1676eb05ded30c02eccdb2968a4c5acb4da2b774b6c6534c574b1b9e1e6784e9",
+    "benchmark": "tf32_mma_gemm",
+    "evidence_scope": "compiled instruction artifact, not a TileLang function-name/source-marker assertion",
+    "export_method": "export_sass",
+    "forbidden_matches": [],
+    "match_counts": {
+      "\\bHMMA\\.[A-Z0-9_.]*TF32[A-Z0-9_.]*": 90
+    },
+    "matched_required": [
+      [
+        {
+          "count": 90,
+          "minimum": 1,
+          "pattern": "\\bHMMA\\.[A-Z0-9_.]*TF32[A-Z0-9_.]*",
+          "scalar_equivalent": 90
+        }
+      ]
+    ],
+    "missing_required": [],
+    "passed": true,
+    "scalar_equivalent_counts": {
+      "\\bHMMA\\.[A-Z0-9_.]*TF32[A-Z0-9_.]*": 90
+    }
+  },
+  "iqr_ms": 0.022919923067092896,
+  "max_ms": 1.1696319580078125,
+  "median_ms": 1.0687040090560913,
+  "min_ms": 1.0576000213623047,
+  "name": "tf32_mma_gemm",
+  "overhead": {
+    "correction_applied": true,
+    "empty_launch_median_ms": 0.007344000041484833,
+    "event_median_ms": 0.0025919999461621046,
+    "net_median_ms": 1.0613600090146065,
+    "rate_time_ms": 1.0613600090146065
+  },
+  "provenance": {
+    "fit_from_formal_candidates": false,
+    "independent_measurement": true,
+    "measurement": "dedicated_microbenchmark",
+    "ratio_derived": false,
+    "timing": "torch.cuda.Event"
+  },
+  "q1_ms": 1.0639520287513733,
+  "q3_ms": 1.0868719518184662,
+  "rates": {
+    "tf32_gemm_flops_per_second": {
+      "basis": "raw median minus independently measured empty-launch median",
+      "source": "tf32_mma_gemm",
+      "time_ms": 1.0613600090146065,
+      "unit": "FLOP/second",
+      "value": 58328867221478.305,
+      "work": 61907927040
+    }
+  },
+  "raw_samples_ms": [
+    1.1499840021133423,
+    1.063904047012329,
+    1.058303952217102,
+    1.0580799579620361,
+    1.059775948524475,
+    1.0664000511169434,
+    1.0724480152130127,
+    1.0686399936676025,
+    1.064128041267395,
+    1.0576000213623047,
+    1.0617599487304688,
+    1.0582720041275024,
+    1.0585600137710571,
+    1.0603519678115845,
+    1.0617599487304688,
+    1.062432050704956,
+    1.0682560205459595,
+    1.0638400316238403,
+    1.1696319580078125,
+    1.092128038406372,
+    1.1218880414962769,
+    1.0692800283432007,
+    1.0892479419708252,
+    1.108191967010498,
+    1.1082240343093872,
+    1.1011840105056763,
+    1.06876802444458,
+    1.0797439813613892,
+    1.0721280574798584,
+    1.0756479501724243,
+    1.0689599514007568,
+    1.0687999725341797,
+    1.0718079805374146,
+    1.065600037574768,
+    1.1131839752197266,
+    1.0689599514007568,
+    1.094655990600586,
+    1.0646719932556152,
+    1.1194239854812622,
+    1.0654720067977905,
+    1.0903680324554443,
+    1.0663360357284546,
+    1.0645439624786377,
+    1.0656960010528564,
+    1.114527940750122,
+    1.0640959739685059,
+    1.0623680353164673,
+    1.0650559663772583,
+    1.06876802444458,
+    1.0690879821777344
+  ],
+  "repeat": 50,
+  "sample_count": 50,
+  "shape": [
+    96,
+    80,
+    48
+  ],
+  "status": "complete",
+  "uncorrected_rates": {
+    "tf32_gemm_flops_per_second": {
+      "basis": "raw event median including launch",
+      "source": "tf32_mma_gemm",
+      "time_ms": 1.0687040090560913,
+      "unit": "FLOP/second",
+      "value": 57928038554546.805,
+      "work": 61907927040
+    }
+  },
+  "units": {
+    "bytes": "byte",
+    "rate": "FLOP/second",
+    "raw_samples": "millisecond",
+    "shape": "element",
+    "time": "millisecond",
+    "work": "floating_point_operation"
+  },
+  "warmup": 10,
+  "work": {
+    "bytes": 21159936,
+    "flops": 61907927040,
+    "formula": "flops = blocks * inner_iterations * 2 * M * N * K",
+    "launches": 1,
+    "operations": 61907927040
+  }
+}

@@ -1,0 +1,3 @@
+dram_copy: complete
+l2_resident_copy: complete
+Wrote partial calibration to /home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-copy-smoke/result.json; missing=['shared_read', 'shared_write', 'bf16_mma_gemm', 'f16_mma_gemm', 'tf32_mma_gemm', 'cuda_fp32_fma', 'sfu_exp2', 'barrier', 'empty_launch']

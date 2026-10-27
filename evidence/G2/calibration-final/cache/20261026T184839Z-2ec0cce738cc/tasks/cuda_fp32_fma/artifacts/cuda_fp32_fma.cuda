@@ -1,0 +1,40 @@
+#if defined(_MSC_VER) && !defined(__clang__) && _MSC_VER < 1940
+#define _tl_orig_alignas alignas
+#define alignas(N) _tl_orig_alignas((N) <= 64 ? (N) : 64)
+#include <cuda.h>
+#undef alignas
+#define alignas _tl_orig_alignas
+#endif
+#include <tl_templates/cuda/reduce.h>
+#include <tl_templates/cuda/scan.h>
+#include <tl_templates/cuda/ldsm.h>
+#include <tl_templates/cuda/threadblock_swizzle.h>
+#include <tl_templates/cuda/debug.h>
+#ifdef ENABLE_BF16
+#include <tl_templates/cuda/cuda_bf16_fallbacks.cuh>
+#endif
+
+extern "C" __global__ void kernel_kernel(const float* __restrict__ A, const float* __restrict__ B, float* __restrict__ Out);
+extern "C" __global__ void __launch_bounds__(256, 1) kernel_kernel(const float* __restrict__ A, const float* __restrict__ B, float* __restrict__ Out) {
+  float a_local[4];
+  float b_local[4];
+  float accumulator[4];
+  #pragma unroll
+  for (int u = 0; u < 4; ++u) {
+    a_local[u] = A[(((((int)blockIdx.x) * 1024) + (((int)threadIdx.x) * 4)) + u)];
+    b_local[u] = B[(((((int)blockIdx.x) * 1024) + (((int)threadIdx.x) * 4)) + u)];
+    accumulator[u] = 0x0p+0f/*0.000000e+00*/;
+  }
+  for (int iteration = 0; iteration < 8192; ++iteration) {
+    #pragma unroll
+    for (int u_1 = 0; u_1 < 4; ++u_1) {
+      float factor = (a_local[u_1] + (((float)(iteration & 7)) * 0x1p-5f/*3.125000e-02*/));
+      accumulator[u_1] = __fmaf_rn(factor, b_local[u_1], accumulator[u_1]);
+    }
+  }
+  #pragma unroll
+  for (int u_2 = 0; u_2 < 4; ++u_2) {
+    Out[(((((int)blockIdx.x) * 1024) + (((int)threadIdx.x) * 4)) + u_2)] = accumulator[u_2];
+  }
+}
+

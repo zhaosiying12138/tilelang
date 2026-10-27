@@ -1,0 +1,281 @@
+{
+  "accum_dtype": null,
+  "compile": {
+    "execution_backend": "tvm_ffi",
+    "status": "compiled",
+    "target": "cuda"
+  },
+  "config": {
+    "accum_dtype": null,
+    "allow_tf32": false,
+    "blocks": 256,
+    "blocks_per_sm": 0,
+    "description": "Alternating A->B/B->A copies in an L2-sized working set; no timed cache flush.",
+    "dtype": "float32",
+    "dtype_bytes": 4,
+    "elements_per_thread": 16,
+    "estimated_device_memory_bytes": 12582912,
+    "family": "copy",
+    "fixed_blocks": 0,
+    "flush_l2": false,
+    "formula": "bytes = 2 * elements * sizeof(dtype) * inner_iterations",
+    "inner_iterations": 16,
+    "l2_bytes": 67108864,
+    "name": "l2_resident_copy",
+    "shape": [
+      1048576
+    ],
+    "sm_count": 82,
+    "storage_dtype": null,
+    "threads": 256,
+    "unroll": 1,
+    "vector_width": 4
+  },
+  "correctness": {
+    "check": "A and B exactly equal the original input after alternating copies",
+    "checked_before_timing": true,
+    "elements": 2097152,
+    "max_abs_error": 0.0,
+    "passed": true,
+    "rechecked_after_timing": true
+  },
+  "dtype": "float32",
+  "environment": {
+    "cache": {
+      "CUDA_CACHE_PATH": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/l2_resident_copy/nvidia",
+      "TILELANG_CACHE_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/l2_resident_copy/tilelang",
+      "TMPDIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/l2_resident_copy/tmp",
+      "TORCH_EXTENSIONS_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/l2_resident_copy/torch-extensions"
+    },
+    "device": {
+      "arch": "sm_120",
+      "compute_capability": [
+        12,
+        0
+      ],
+      "l2_bytes": 67108864,
+      "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "physical_device": 0,
+      "sm_count": 82,
+      "total_memory_bytes": 25650855936,
+      "visible_device": 0
+    },
+    "finished_at_utc": "2026-10-26T18:48:49.114016Z",
+    "nvidia_smi_after": {
+      "clock_mhz": 1590,
+      "compute_processes": [
+        {
+          "pid": "2196044",
+          "process_name": "[Not Found]",
+          "used_memory": "[N/A]"
+        }
+      ],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 25.22,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "1590",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "330",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "25.22",
+        "power.limit": "[N/A]",
+        "pstate": "P0",
+        "temperature.gpu": "50",
+        "utilization.gpu": "2"
+      },
+      "temperature_c": 50,
+      "timestamp_utc": "2026-10-26T18:48:49.185926Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 1590,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 330,
+        "name": null,
+        "power.draw": 25.22,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 50,
+        "utilization.gpu": 2
+      }
+    },
+    "nvidia_smi_before": {
+      "clock_mhz": 187,
+      "compute_processes": [],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 16.47,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "187",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "0",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "16.47",
+        "power.limit": "[N/A]",
+        "pstate": "P4",
+        "temperature.gpu": "49",
+        "utilization.gpu": "0"
+      },
+      "temperature_c": 49,
+      "timestamp_utc": "2026-10-26T18:48:47.633668Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 187,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 0,
+        "name": null,
+        "power.draw": 16.47,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 49,
+        "utilization.gpu": 0
+      }
+    },
+    "pid": 2196044,
+    "platform": "Linux-6.18.40.1-aenv-ublk-6.18.40.1-x86_64-with-glibc2.43",
+    "python": "3.12.16 (main, Oct 26 2026, 11:37:43) [GCC 15.3.0]",
+    "started_at_utc": "2026-10-26T18:48:47.726594Z",
+    "versions": {
+      "cuda_runtime": "13.0",
+      "nvidia_driver": "610.74",
+      "tilelang": "0.1.15+cuda.git6c5dbc5a",
+      "torch": "2.14.1+cu130"
+    }
+  },
+  "implementation": {
+    "alternating_iterations": 16,
+    "elements_per_thread": 16,
+    "l2_flush_bytes": 0,
+    "vector_width": 4
+  },
+  "instruction_audit": null,
+  "iqr_ms": 0.01383199542760849,
+  "max_ms": 0.22595199942588806,
+  "median_ms": 0.1454080045223236,
+  "min_ms": 0.1409599930047989,
+  "name": "l2_resident_copy",
+  "overhead": {
+    "correction_applied": true,
+    "empty_launch_median_ms": 0.007344000041484833,
+    "event_median_ms": 0.0025919999461621046,
+    "net_median_ms": 0.13806400448083878,
+    "rate_time_ms": 0.13806400448083878
+  },
+  "provenance": {
+    "fit_from_formal_candidates": false,
+    "independent_measurement": true,
+    "measurement": "dedicated_microbenchmark",
+    "ratio_derived": false,
+    "timing": "torch.cuda.Event"
+  },
+  "q1_ms": 0.1432879976928234,
+  "q3_ms": 0.1571199931204319,
+  "rates": {
+    "l2_copy_bytes_per_second": {
+      "basis": "raw median minus independently measured empty-launch median",
+      "source": "l2_resident_copy",
+      "time_ms": 0.13806400448083878,
+      "unit": "byte/second",
+      "value": 972141352155.4594,
+      "work": 134217728
+    }
+  },
+  "raw_samples_ms": [
+    0.22595199942588806,
+    0.19113600254058838,
+    0.18943999707698822,
+    0.15558399260044098,
+    0.14617599546909332,
+    0.14787200093269348,
+    0.14431999623775482,
+    0.1422719955444336,
+    0.14364799857139587,
+    0.18934400379657745,
+    0.14652800559997559,
+    0.1987839937210083,
+    0.15094399452209473,
+    0.14486399292945862,
+    0.14406399428844452,
+    0.18544000387191772,
+    0.1761920005083084,
+    0.1576319932937622,
+    0.17839999496936798,
+    0.14547200500965118,
+    0.1761920005083084,
+    0.17817600071430206,
+    0.1502079963684082,
+    0.15398399531841278,
+    0.17324799299240112,
+    0.14361600577831268,
+    0.144896000623703,
+    0.1422719955444336,
+    0.14105600118637085,
+    0.14451199769973755,
+    0.14633600413799286,
+    0.14742399752140045,
+    0.14268800616264343,
+    0.14204800128936768,
+    0.14326399564743042,
+    0.1419840008020401,
+    0.1440960019826889,
+    0.1416960060596466,
+    0.1438719928264618,
+    0.14287999272346497,
+    0.14534400403499603,
+    0.14236800372600555,
+    0.1409599930047989,
+    0.14294399321079254,
+    0.14336000382900238,
+    0.14502400159835815,
+    0.14627200365066528,
+    0.16649599373340607,
+    0.14099200069904327,
+    0.1457280069589615
+  ],
+  "repeat": 50,
+  "sample_count": 50,
+  "shape": [
+    1048576
+  ],
+  "status": "complete",
+  "uncorrected_rates": {
+    "l2_copy_bytes_per_second": {
+      "basis": "raw event median including launch",
+      "source": "l2_resident_copy",
+      "time_ms": 0.1454080045223236,
+      "unit": "byte/second",
+      "value": 923042224813.6578,
+      "work": 134217728
+    }
+  },
+  "units": {
+    "bytes": "byte",
+    "rate": "byte/second",
+    "raw_samples": "millisecond",
+    "shape": "element",
+    "time": "millisecond",
+    "work": "copied_element"
+  },
+  "warmup": 10,
+  "work": {
+    "bytes": 134217728,
+    "flops": 0,
+    "formula": "bytes = 2 * elements * sizeof(dtype) * inner_iterations",
+    "launches": 1,
+    "operations": 16777216
+  }
+}

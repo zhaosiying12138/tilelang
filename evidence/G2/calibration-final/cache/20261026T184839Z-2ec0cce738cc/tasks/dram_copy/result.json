@@ -1,0 +1,281 @@
+{
+  "accum_dtype": null,
+  "compile": {
+    "execution_backend": "tvm_ffi",
+    "status": "compiled",
+    "target": "cuda"
+  },
+  "config": {
+    "accum_dtype": null,
+    "allow_tf32": false,
+    "blocks": 16384,
+    "blocks_per_sm": 0,
+    "description": "Global FP32 copy with a 512 MiB working set and an untimed L2 flush before each sample.",
+    "dtype": "float32",
+    "dtype_bytes": 4,
+    "elements_per_thread": 16,
+    "estimated_device_memory_bytes": 805306368,
+    "family": "copy",
+    "fixed_blocks": 0,
+    "flush_l2": true,
+    "formula": "bytes = 2 * elements * sizeof(dtype) * inner_iterations",
+    "inner_iterations": 1,
+    "l2_bytes": 67108864,
+    "name": "dram_copy",
+    "shape": [
+      67108864
+    ],
+    "sm_count": 82,
+    "storage_dtype": null,
+    "threads": 256,
+    "unroll": 1,
+    "vector_width": 4
+  },
+  "correctness": {
+    "check": "A and B exactly equal the original input after alternating copies",
+    "checked_before_timing": true,
+    "elements": 134217728,
+    "max_abs_error": 0.0,
+    "passed": true,
+    "rechecked_after_timing": true
+  },
+  "dtype": "float32",
+  "environment": {
+    "cache": {
+      "CUDA_CACHE_PATH": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/dram_copy/nvidia",
+      "TILELANG_CACHE_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/dram_copy/tilelang",
+      "TMPDIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/dram_copy/tmp",
+      "TORCH_EXTENSIONS_DIR": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G2/calibration-final/cache/20261026T184839Z-2ec0cce738cc/tasks/dram_copy/torch-extensions"
+    },
+    "device": {
+      "arch": "sm_120",
+      "compute_capability": [
+        12,
+        0
+      ],
+      "l2_bytes": 67108864,
+      "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "physical_device": 0,
+      "sm_count": 82,
+      "total_memory_bytes": 25650855936,
+      "visible_device": 0
+    },
+    "finished_at_utc": "2026-10-26T18:48:45.475499Z",
+    "nvidia_smi_after": {
+      "clock_mhz": 1605,
+      "compute_processes": [
+        {
+          "pid": "2195797",
+          "process_name": "[Not Found]",
+          "used_memory": "[N/A]"
+        }
+      ],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 70.8,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "1605",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "1142",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "70.80",
+        "power.limit": "[N/A]",
+        "pstate": "P0",
+        "temperature.gpu": "49",
+        "utilization.gpu": "32"
+      },
+      "temperature_c": 49,
+      "timestamp_utc": "2026-10-26T18:48:45.558957Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 1605,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 1142,
+        "name": null,
+        "power.draw": 70.8,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 49,
+        "utilization.gpu": 32
+      }
+    },
+    "nvidia_smi_before": {
+      "clock_mhz": 1590,
+      "compute_processes": [],
+      "device": 0,
+      "max_clock_mhz": 3090,
+      "power_w": 16.67,
+      "raw": {
+        "clocks.max.sm": "3090",
+        "clocks.sm": "1590",
+        "compute_mode": "Default",
+        "driver_version": "610.74",
+        "index": "0",
+        "memory.total": "24463",
+        "memory.used": "0",
+        "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "power.draw": "16.67",
+        "power.limit": "[N/A]",
+        "pstate": "P5",
+        "temperature.gpu": "49",
+        "utilization.gpu": "0"
+      },
+      "temperature_c": 49,
+      "timestamp_utc": "2026-10-26T18:48:44.163966Z",
+      "values": {
+        "clocks.max.sm": 3090,
+        "clocks.sm": 1590,
+        "compute_mode": null,
+        "driver_version": 610.74,
+        "index": 0,
+        "memory.total": 24463,
+        "memory.used": 0,
+        "name": null,
+        "power.draw": 16.67,
+        "power.limit": null,
+        "pstate": null,
+        "temperature.gpu": 49,
+        "utilization.gpu": 0
+      }
+    },
+    "pid": 2195797,
+    "platform": "Linux-6.18.40.1-aenv-ublk-6.18.40.1-x86_64-with-glibc2.43",
+    "python": "3.12.16 (main, Oct 26 2026, 11:37:43) [GCC 15.3.0]",
+    "started_at_utc": "2026-10-26T18:48:44.268330Z",
+    "versions": {
+      "cuda_runtime": "13.0",
+      "nvidia_driver": "610.74",
+      "tilelang": "0.1.15+cuda.git6c5dbc5a",
+      "torch": "2.14.1+cu130"
+    }
+  },
+  "implementation": {
+    "alternating_iterations": 1,
+    "elements_per_thread": 16,
+    "l2_flush_bytes": 268435456,
+    "vector_width": 4
+  },
+  "instruction_audit": null,
+  "iqr_ms": 0.0020720213651657104,
+  "max_ms": 0.778656005859375,
+  "median_ms": 0.7082880139350891,
+  "min_ms": 0.7053760290145874,
+  "name": "dram_copy",
+  "overhead": {
+    "correction_applied": true,
+    "empty_launch_median_ms": 0.007344000041484833,
+    "event_median_ms": 0.0025919999461621046,
+    "net_median_ms": 0.7009440138936043,
+    "rate_time_ms": 0.7009440138936043
+  },
+  "provenance": {
+    "fit_from_formal_candidates": false,
+    "independent_measurement": true,
+    "measurement": "dedicated_microbenchmark",
+    "ratio_derived": false,
+    "timing": "torch.cuda.Event"
+  },
+  "q1_ms": 0.7076159715652466,
+  "q3_ms": 0.7096879929304123,
+  "rates": {
+    "dram_copy_bytes_per_second": {
+      "basis": "raw median minus independently measured empty-launch median",
+      "source": "dram_copy",
+      "time_ms": 0.7009440138936043,
+      "unit": "byte/second",
+      "value": 765925525232.4492,
+      "work": 536870912
+    }
+  },
+  "raw_samples_ms": [
+    0.778656005859375,
+    0.7076159715652466,
+    0.711679995059967,
+    0.7076799869537354,
+    0.7056319713592529,
+    0.7076159715652466,
+    0.709663987159729,
+    0.7063680291175842,
+    0.7102400064468384,
+    0.7086399793624878,
+    0.707647979259491,
+    0.7077119946479797,
+    0.707647979259491,
+    0.7061120271682739,
+    0.7053760290145874,
+    0.7056000232696533,
+    0.7103040218353271,
+    0.7082239985466003,
+    0.7103360295295715,
+    0.7081599831581116,
+    0.7096319794654846,
+    0.7083200216293335,
+    0.7062079906463623,
+    0.7076159715652466,
+    0.7062079906463623,
+    0.7055360078811646,
+    0.7062720060348511,
+    0.7063040137290955,
+    0.707647979259491,
+    0.7056319713592529,
+    0.7097600102424622,
+    0.7124159932136536,
+    0.7096959948539734,
+    0.7096319794654846,
+    0.7082880139350891,
+    0.7083520293235779,
+    0.7121919989585876,
+    0.7097600102424622,
+    0.7083520293235779,
+    0.7103999853134155,
+    0.7082560062408447,
+    0.7095680236816406,
+    0.707584023475647,
+    0.7077119946479797,
+    0.7083520293235779,
+    0.7101119756698608,
+    0.7082880139350891,
+    0.7095680236816406,
+    0.7084800004959106,
+    0.7103999853134155
+  ],
+  "repeat": 50,
+  "sample_count": 50,
+  "shape": [
+    67108864
+  ],
+  "status": "complete",
+  "uncorrected_rates": {
+    "dram_copy_bytes_per_second": {
+      "basis": "raw event median including launch",
+      "source": "dram_copy",
+      "time_ms": 0.7082880139350891,
+      "unit": "byte/second",
+      "value": 757983901234.2815,
+      "work": 536870912
+    }
+  },
+  "units": {
+    "bytes": "byte",
+    "rate": "byte/second",
+    "raw_samples": "millisecond",
+    "shape": "element",
+    "time": "millisecond",
+    "work": "copied_element"
+  },
+  "warmup": 10,
+  "work": {
+    "bytes": 536870912,
+    "flops": 0,
+    "formula": "bytes = 2 * elements * sizeof(dtype) * inner_iterations",
+    "launches": 1,
+    "operations": 67108864
+  }
+}
