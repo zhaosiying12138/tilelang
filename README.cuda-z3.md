@@ -291,4 +291,31 @@ python benchmark/z3_cost_model/compile_matrix.py \
 - 不根据结果删除算子、失败候选或重复轮次。早期失败和协议修正与最终结果一并保留。
 - 原始证据中的 `cache/` 是运行产物，不作为源码构建缓存提交。公开日志、JSONL、CSV、图表和 SHA256 manifest 用于独立重算正文数字。
 
-文章章节目录由 [`article/index.json`](article/index.json) 管理；机制说明位于 `article/mechanisms/`，实测结果位于 `article/results/`。文章构建、知乎 Markdown、证据 ZIP 与图表验收命令见结果章和构建脚本的帮助输出。
+文章章节目录由 [`article/index.json`](article/index.json) 管理；机制说明位于 `article/mechanisms/`，实测结果位于 `article/results/`。
+
+## 九、文章与证据打包
+
+以下命令生成自包含 HTML、知乎 Markdown、公式清单、逐文件 SHA256 manifest 和文章资源 ZIP。构建只读取明确引用的章节、图片与附件，不会把缓存目录隐式打入文章包。
+
+```bash
+python article/build_html.py \
+  --config article/index.json \
+  --output article/_build/tilelang-cuda-z3.html \
+  --zhihu-output article/_build/tilelang-cuda-z3-zhihu.md \
+  --formula-log article/_build/formulas.json \
+  --manifest-output article/_build/article-manifest.json \
+  --zip article/_build/tilelang-cuda-z3-article.zip
+```
+
+完整源码和已提交原始证据在最终 commit 后另存一份快照。它包含正式 trials、分析 JSON/CSV、截图和矩阵日志压缩包，不包含被忽略的 TileLang/CUDA/Torch 缓存或本地临时文件。
+
+```bash
+git archive --format=zip --prefix=tilelang-cuda-z3/ \
+  --output article/_build/tilelang-cuda-z3-repository-evidence.zip HEAD
+cd article/_build
+sha256sum tilelang-cuda-z3.html tilelang-cuda-z3-zhihu.md \
+  tilelang-cuda-z3-article.zip tilelang-cuda-z3-repository-evidence.zip \
+  > SHA256SUMS
+```
+
+`article/_build/` 是生成目录，不作为源码提交。公开 fork 只包含源码、文章源文件和已提交证据；上述命令不在公网发布文章，也不向上游创建 PR。
