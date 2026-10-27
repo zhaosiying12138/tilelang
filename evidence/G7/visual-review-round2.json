@@ -1,0 +1,18 @@
+{
+  "schema": "tilelang.article-visual-review/v1",
+  "round": 2,
+  "render": "article/_build/final-v2/review.pdf",
+  "page_directory": "article/_build/final-v2/review-pages",
+  "total_pages": 103,
+  "failed_pages": 0,
+  "failed_page_numbers": [],
+  "verdict": "pass",
+  "review_coverage": "All 103 pre-rendered A4 page PNGs were individually reviewed by the visual judge.",
+  "evidence": [
+    "Chinese glyphs and KaTeX render correctly.",
+    "All tables, including the 84-item parity table, fit within margins with repeated header rows and visible long-token wrapping.",
+    "Terminal screenshots and charts are unclipped and legible.",
+    "No heading orphans, right-edge overflow, scrollbars, or near-blank pages remain."
+  ],
+  "previous_round": "visual-review-round1.json"
+}

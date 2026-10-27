@@ -1,0 +1,17 @@
+{
+  "schema": "tilelang.article-visual-review/v1",
+  "round": 1,
+  "render": "article/_build/final/review.pdf",
+  "page_directory": "article/_build/final/review-pages",
+  "total_pages": 135,
+  "failed_pages": 35,
+  "failed_page_numbers": [6, 16, 29, 39, 48, 57, 67, 68, 74, 76, 77, 83, 85, 86, 87, 88, 89, 90, 92, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 129, 130, 131, 132],
+  "verdict": "fail",
+  "issues": [
+    "Over-wide tables in the Ascend audit and parity chapters overflow the page width: right columns are clipped and horizontal scrollbars are rendered.",
+    "Multiple headings are stranded at page bottoms or followed by large blank gaps before their content.",
+    "Near-blank pages are caused by keep-together tables being pushed to the next page."
+  ],
+  "review_coverage": "All 135 pre-rendered page PNGs were individually reviewed by the visual judge.",
+  "repair_round": 2
+}

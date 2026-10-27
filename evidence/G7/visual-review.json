@@ -1,0 +1,14 @@
+{
+  "schema": "tilelang.article-visual-acceptance/v1",
+  "accepted": true,
+  "accepted_build": "article/_build/final-v2/tilelang-cuda-z3.html",
+  "accepted_manifest": "article/_build/final-v2/article-manifest.json",
+  "accepted_pdf_review": "article/_build/final-v2/review.pdf",
+  "accepted_pages": 103,
+  "failed_pages": 0,
+  "rounds": [
+    "visual-review-round1.json",
+    "visual-review-round2.json"
+  ],
+  "note": "The first render failed on clipped tables and pagination. Print CSS was repaired and every page of the second render passed. The first 135-page render and its failed verdict are retained, not presented as the accepted build."
+}
