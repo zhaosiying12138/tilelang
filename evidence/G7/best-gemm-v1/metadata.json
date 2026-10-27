@@ -1,0 +1,42 @@
+{
+  "arm": "z3-cm-topk",
+  "cache_root": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G7/best-gemm-v1/cache",
+  "compile_flags": [],
+  "config": {
+    "block_K": 64,
+    "block_M": 128,
+    "block_N": 256,
+    "enable_rasterization": false,
+    "num_stages": 2,
+    "threads": 256
+  },
+  "confirmation": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-confirmation-v1/gemm_square/summary.json",
+  "cubin_sha256": "e85e66977ef79585483fd015a9f051b40a35e960ff8c4503e6d57f19948870d4",
+  "git_commit": "8062e045d6630d9dd482acadb96e01f1624af21b",
+  "gpu_telemetry": "2026/10/27 09:27:35.351, NVIDIA GeForce RTX 5090 Laptop GPU, 610.74, 9.03, 50, 180, 405, 0",
+  "kernel_type": "tilelang.jit.kernel.JITKernel",
+  "nvcc_command": [
+    "/usr/local/cuda-13.3/bin/nvcc",
+    "-ccbin",
+    "/usr/bin/g++",
+    "--cubin",
+    "-O3",
+    "-lineinfo",
+    "-arch",
+    "sm_120a",
+    "-std",
+    "c++20",
+    "-I/home/zhaosiying/codebase/tilelang-cuda-z3/src",
+    "-I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/cutlass/include",
+    "-o",
+    "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G7/best-gemm-v1/kernel.cubin",
+    "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G7/best-gemm-v1/source.cu"
+  ],
+  "nvcc_log": "nvcc.log",
+  "resource_usage": "resource-usage.txt",
+  "sass_log": "kernel.sass",
+  "schema": "tilelang.gemm.winner-artifact/v1",
+  "source_sha256": "0b1515611ccca7947165f92457a338189cb79e32f806fc1d9ad88d63f66d8aeb",
+  "suite": "gemm_square",
+  "target": "{\"kind\":\"cuda\",\"tag\":\"\",\"keys\":[\"cuda\",\"gpu\"],\"host\":{\"kind\":\"c\",\"tag\":\"\",\"keys\":[\"cpu\"]},\"max_num_threads\":1024,\"thread_warp_size\":32,\"arch\":\"sm_120a\"}"
+}

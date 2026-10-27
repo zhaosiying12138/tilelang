@@ -1,0 +1,46 @@
++ set -e
++ set -x
++ cd /home/zhaosiying/codebase/tilelang-cuda-z3
++ source scripts/env.sh
+++++ dirname -- scripts/env.sh
++++ cd -- scripts/..
++++ pwd
+++ TILELANG_REPO_ROOT=/home/zhaosiying/codebase/tilelang-cuda-z3
+++ TILELANG_CONDA_PREFIX=/home/zhaosiying/miniforge3/envs/tilelang-cu133
+++ TILELANG_PYTHON=/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python
+++ [[ ! -x /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python ]]
+++ [[ -z '' ]]
+++ for candidate in /usr/local/cuda-13.3 /usr/local/cuda
+++ [[ -x /usr/local/cuda-13.3/bin/nvcc ]]
+++ CUDA_HOME=/usr/local/cuda-13.3
+++ break
+++ [[ -z /usr/local/cuda-13.3 ]]
+++ [[ ! -x /usr/local/cuda-13.3/bin/nvcc ]]
+++ export TILELANG_REPO_ROOT TILELANG_CONDA_PREFIX TILELANG_PYTHON CUDA_HOME
+++ export PYTHONPATH=/home/zhaosiying/codebase/tilelang-cuda-z3:/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python:
+++ PYTHONPATH=/home/zhaosiying/codebase/tilelang-cuda-z3:/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python:
+++ export CUDAToolkit_ROOT=/usr/local/cuda-13.3
+++ CUDAToolkit_ROOT=/usr/local/cuda-13.3
+++ export 'PATH=/usr/lib/wsl/lib:/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin:/usr/local/cuda-13.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/Microsoft.WindowsTerminal_1.24.12741.0_x64__8wekyb3d8bbwe:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/local/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin/x64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2026.2.1:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Users/Admin1/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin1/AppData/Roaming/npm:/mnt/c/Users/Admin1/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ripgrep:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ugrep:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/usr/bin/vendor_perl:/mnt/c/Program Files/Git/usr/bin/core_perl'
+++ PATH='/usr/lib/wsl/lib:/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin:/usr/local/cuda-13.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/Microsoft.WindowsTerminal_1.24.12741.0_x64__8wekyb3d8bbwe:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/local/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Users/Admin1/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin/x64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2026.2.1:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Users/Admin1/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin1/AppData/Roaming/npm:/mnt/c/Users/Admin1/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ripgrep:/mnt/c/Users/Admin1/AppData/Local/Programs/ZCode/resources/tools/ugrep:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/usr/bin/vendor_perl:/mnt/c/Program Files/Git/usr/bin/core_perl'
+++ export LD_LIBRARY_PATH=/home/zhaosiying/codebase/tilelang-cuda-z3/build/lib:/usr/local/cuda-13.3/lib64:
+++ LD_LIBRARY_PATH=/home/zhaosiying/codebase/tilelang-cuda-z3/build/lib:/usr/local/cuda-13.3/lib64:
+++ export CMAKE_GENERATOR=Ninja
+++ CMAKE_GENERATOR=Ninja
+++ export CMAKE_BUILD_PARALLEL_LEVEL=2
+++ CMAKE_BUILD_PARALLEL_LEVEL=2
+++ export MAX_JOBS=2
+++ MAX_JOBS=2
++ /usr/local/cuda-13.3/bin/cuobjdump --dump-resource-usage evidence/G7/best-gemm-v1/kernel.cubin
+
+Resource usage:
+ Common:
+  GLOBAL:10 CONSTANT[4]:80
+ Function main_kernel:
+  REG:168 STACK:0 SHARED:2048 LOCAL:0 CONSTANT[0]:1280 TEXTURE:0 SURFACE:0 SAMPLER:0
++ /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python -c 'import json; m=json.load(open('\''evidence/G7/best-gemm-v1/metadata.json'\'')); print(m['\''config'\'']); print(m['\''cubin_sha256'\'']); print(m['\''source_sha256'\''])'
+{'block_K': 64, 'block_M': 128, 'block_N': 256, 'enable_rasterization': False, 'num_stages': 2, 'threads': 256}
+e85e66977ef79585483fd015a9f051b40a35e960ff8c4503e6d57f19948870d4
+0b1515611ccca7947165f92457a338189cb79e32f806fc1d9ad88d63f66d8aeb
++ git rev-parse HEAD
+8062e045d6630d9dd482acadb96e01f1624af21b

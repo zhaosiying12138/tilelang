@@ -1,0 +1,24 @@
+{
+    "capture_status":  "accepted_not_black",
+    "captured_at":  "2026-10-27T01:37:38.5912767Z",
+    "script":  "/home/zhaosiying/shot_scripts/tilelang-cuda-z3-best-gemm-v2.sh",
+    "image":  "C:\\Users\\Admin1\\shot\\tilelang-cuda-z3-best-gemm-v3.png",
+    "raw_log":  "C:\\Users\\Admin1\\shot\\tilelang-cuda-z3-best-gemm-v3.log",
+    "exit_status":  0,
+    "image_quality":  {
+                          "validator":  "near_black_grid_v1",
+                          "width":  3840,
+                          "height":  2400,
+                          "sample_stride":  11,
+                          "sampled_pixels":  76650,
+                          "near_black_rgb_max":  12,
+                          "rejection_fraction_threshold":  0.98,
+                          "near_black_fraction":  0.00032615786040443573,
+                          "mean_luminance":  45.302803391971388,
+                          "maximum_luminance":  254.99999999999997,
+                          "accepted_not_black":  true,
+                          "limitation":  "Pixel visibility gate only; human review must check terminal content, theme, popups and command identity."
+                      },
+    "sha256_before_taskbar_crop":  "700f34a27ee8ba8be8da2f0ddfd4700235847ba61714407d80813c42b206b8fe",
+    "review_required":  "Inspect real terminal content, theme, popups and command identity before publication."
+}
