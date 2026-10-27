@@ -39,6 +39,7 @@
 #include "../op/utils.h"
 #include "common/bind_utils.h"
 #include "common/pipeline_utils.h"
+#include "common/z3_schedule_hints.h"
 
 namespace tvm {
 namespace tl {
@@ -98,6 +99,7 @@ const std::vector<const char *> &Z3InputAnnotationKeys() {
       kZ3EnableOffset,
       kZ3ManualStages,
       kZ3ManualSchedule,
+      kZ3ExecutionDomains,
       kZ3Seed,
       kZ3RecalculateBufferVersions,
       kZ3Verbose,
@@ -994,6 +996,13 @@ private:
     const Map<String, Any> &annotations = loop->annotations;
     ICHECK(GetBool(annotations, kZ3Pipeline, false))
         << "Z3PipelinePlanning: tl_z3_pipeline must be True when present";
+    PostOrderVisit(loop->body, [&](const ObjectRef &node) {
+      if (const auto *attr = node.as<AttrStmtNode>()) {
+        ICHECK(attr->attr_key != kZ3CudaStageAttr)
+            << "Z3PipelinePlanning: unnormalized T.Stage marker; run "
+               "NormalizeZ3ScheduleUnits before planning";
+      }
+    });
     bool manual_schedule = GetBool(annotations, kZ3ManualSchedule, false);
     bool has_handwritten_schedule =
         annotations.count("tl_pipeline_order") ||
@@ -1022,6 +1031,11 @@ private:
         << "Z3PipelinePlanning: latencies and resource_flags must have equal lengths";
     ICHECK(n <= static_cast<size_t>(std::numeric_limits<int>::max()))
         << "Z3PipelinePlanning: too many tasks for pipeline order annotations";
+    if (auto domains = annotations.Get(kZ3ExecutionDomains); domains.has_value()) {
+      ICHECK_EQ(Downcast<Array<String>>(domains.value()).size(), n)
+          << "Z3PipelinePlanning: execution-domain count does not match the "
+             "task count";
+    }
     ICHECK(GetNestedIntegerArrays(annotations, kZ3OwnerExclusionDeps).empty())
         << "Z3PipelinePlanning: owner_exclusion_deps are not expressible by "
            "the current CUDA pipeline IR; refusing to discard owner lifetime "
@@ -1123,7 +1137,20 @@ private:
       return pairs;
     };
     base.resource_deps = parse_pairs(kZ3ResourceDeps, true);
-    base.pipe_order_deps = parse_pairs(kZ3PipeOrderDeps, false);
+    if (annotations.count(kZ3PipeOrderDeps)) {
+      base.pipe_order_deps = parse_pairs(kZ3PipeOrderDeps, false);
+    } else if (manual_schedule) {
+      // NormalizeZ3ScheduleUnits removes the helper's empty placeholder for
+      // T.Stage. With inference disabled, derive the same source-order pairs
+      // here that InferZ3PipelineProblem would have produced.
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = i + 1; j < n; ++j) {
+          if ((base.resource_flags[i] & base.resource_flags[j]) != 0) {
+            AddZ3TaskPair(&base.pipe_order_deps, i, j);
+          }
+        }
+      }
+    }
     base.stage_order_deps = parse_pairs(kZ3StageOrderDeps, false);
 
     auto scheduler = ffi::Function::GetGlobal("tl.cuda.transform.z3_schedule_loop_python");

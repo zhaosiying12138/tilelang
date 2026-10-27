@@ -10,6 +10,11 @@ from __future__ import annotations
 
 from tilelang.cuda.language import *  # noqa: F401,F403
 from tilelang.cuda.language import __all__ as __all__  # noqa: F401
+from tilelang.language.annotations import PerRoleTask, Stage, Task  # noqa: F401
+
+# Task/Stage default to the legacy flat schema; recursive markers require an
+# explicit schema="recursive" opt-in. PerRoleTask exists only in that schema.
+__all__ = tuple(dict.fromkeys((*__all__, "PerRoleTask", "Stage", "Task")))
 
 # Imported by name so static type checkers resolve the CUDA-typed signatures
 # through this facade (they cannot evaluate the dynamic __all__).

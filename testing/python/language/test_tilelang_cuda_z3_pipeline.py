@@ -14,6 +14,11 @@ from tilelang.cuda.transform import z3_scheduler
 from tilelang.language.annotations import z3_pipeline_annotations
 
 
+@pytest.fixture(autouse=True)
+def _run_owned_tilelang_cache(tmp_path, monkeypatch):
+    monkeypatch.setenv("TILELANG_CACHE_DIR", str(tmp_path / "tilelang-cache"))
+
+
 @tilelang.testing.requires_cuda
 def test_default_off_and_opt_in_real_solver_and_numerics(tmp_path, monkeypatch):
     block = 128
@@ -181,7 +186,10 @@ def test_sm120_multi_async_stage_real_solver_and_numerics(tmp_path, monkeypatch,
 
 
 @tilelang.testing.requires_cuda_compute_version_eq(12, 0)
-def test_sm120_bind_clone_next_iteration_overwrite_real_solver_and_numerics(tmp_path, monkeypatch):
+@pytest.mark.parametrize("use_source_alias", [False, True], ids=["canonical", "alias-view"])
+def test_sm120_bind_clone_next_iteration_overwrite_real_solver_and_numerics(
+    tmp_path, monkeypatch, use_source_alias
+):
     """Later producer iterations must not overwrite a cloned Bind's source snapshot."""
 
     block = 128
@@ -197,6 +205,11 @@ def test_sm120_bind_clone_next_iteration_overwrite_real_solver_and_numerics(tmp_
         # One thread keeps the numerical check focused on buffer versioning.
         with T.Kernel(1, threads=1):
             source = T.alloc_shared((block,), "float32")
+            source_read = source
+            if use_source_alias:
+                source_read = T.decl_buffer(
+                    (block,), "float32", data=source.data, scope="shared"
+                )
             annotations = z3_pipeline_annotations(
                 latencies=[30, 2, 1],
                 iis=[1, 1, 1],
@@ -214,7 +227,7 @@ def test_sm120_bind_clone_next_iteration_overwrite_real_solver_and_numerics(tmp_
             )
             for k in T.Pipelined(iterations, num_stages=3, annotations=annotations):
                 T.copy(A[k * block : (k + 1) * block], source)
-                value: T.float32 = source[0] + 1.0
+                value: T.float32 = source_read[0] + 1.0
                 for i in T.Parallel(block):
                     B[k * block + i] = value + i
 
@@ -279,3 +292,157 @@ def test_sm120_bind_clone_next_iteration_overwrite_real_solver_and_numerics(tmp_
     for _ in range(4):
         actual = kernel(a)
         torch.testing.assert_close(actual, expected, rtol=0, atol=0)
+
+
+@tilelang.testing.requires_cuda_compute_version_eq(12, 0)
+def test_sm120_public_task_a_plus_b_real_solver_and_numerics():
+    """T.Task preserves the same four scheduler boundaries as flat A+B."""
+    block = 128
+    iterations = 4
+
+    @T.prim_func
+    def main(
+        A: T.Tensor((block * iterations,), "float32"),
+        B: T.Tensor((block * iterations,), "float32"),
+        C: T.Tensor((block * iterations,), "float32"),
+    ):
+        with T.Kernel(1, threads=128):
+            a_shared = T.alloc_shared((block,), "float32")
+            b_shared = T.alloc_shared((block,), "float32")
+            c_fragment = T.alloc_fragment((block,), "float32")
+            annotations = z3_pipeline_annotations(
+                latencies=[4, 4, 2, 2],
+                iis=[1, 1, 1, 1],
+                resource_flags=[1, 1, 16, 2],
+                data_deps=[(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)],
+                resource_deps=[(0, 1)],
+            )
+            for k in T.Pipelined(iterations, num_stages=2, annotations=annotations):
+                with T.Task():
+                    T.copy(A[k * block : (k + 1) * block], a_shared)
+                with T.Task():
+                    T.copy(B[k * block : (k + 1) * block], b_shared)
+                with T.Task():
+                    for i in T.Parallel(block):
+                        c_fragment[i] = a_shared[i] + b_shared[i]
+                with T.Task():
+                    T.copy(c_fragment, C[k * block : (k + 1) * block])
+
+    kernel = tilelang.compile(
+        main,
+        target={"kind": "cuda", "arch": "sm_120a"},
+        out_idx=[2],
+        execution_backend="tvm_ffi",
+        pass_configs={tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING: True},
+    )
+    indices = torch.arange(block * iterations, dtype=torch.float32, device="cuda")
+    actual = kernel(indices, 2 * indices + 1)
+    torch.testing.assert_close(actual, 3 * indices + 1, rtol=0, atol=0)
+
+
+@tilelang.testing.requires_cuda_compute_version_eq(12, 0)
+def test_sm120_public_stage_default_depth_matches_legacy_manual_numerics(monkeypatch):
+    """Stage(0/1) supplies depth two; the old schema remains equivalent."""
+    block = 128
+    iterations = 4
+
+    def make_func(use_stage_markers):
+        if use_stage_markers:
+
+            @T.prim_func
+            def main(
+                A: T.Tensor((block * iterations,), "float32"),
+                B: T.Tensor((block * iterations,), "float32"),
+                C: T.Tensor((block * iterations,), "float32"),
+            ):
+                with T.Kernel(1, threads=128):
+                    a_shared = T.alloc_shared((block,), "float32")
+                    b_shared = T.alloc_shared((block,), "float32")
+                    c_fragment = T.alloc_fragment((block,), "float32")
+                    annotations = z3_pipeline_annotations(
+                        latencies=[4, 4, 2, 2],
+                        iis=[1, 1, 1, 1],
+                        resource_flags=[1, 1, 16, 2],
+                        data_deps=[(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)],
+                        resource_deps=[(0, 1)],
+                        enable_offset=True,
+                    )
+                    # num_stages is deliberately omitted: NormalizeZ3ScheduleUnits
+                    # derives max(Stage) + 1 == 2 before the real solver call.
+                    for k in T.Pipelined(iterations, annotations=annotations):
+                        with T.Stage(0), T.Task():
+                            T.copy(A[k * block : (k + 1) * block], a_shared)
+                        with T.Stage(0), T.Task():
+                            T.copy(B[k * block : (k + 1) * block], b_shared)
+                        with T.Stage(1), T.Task():
+                            for i in T.Parallel(block):
+                                c_fragment[i] = a_shared[i] + b_shared[i]
+                        with T.Stage(1), T.Task():
+                            T.copy(c_fragment, C[k * block : (k + 1) * block])
+
+            return main
+
+        @T.prim_func
+        def main(
+            A: T.Tensor((block * iterations,), "float32"),
+            B: T.Tensor((block * iterations,), "float32"),
+            C: T.Tensor((block * iterations,), "float32"),
+        ):
+            with T.Kernel(1, threads=128):
+                a_shared = T.alloc_shared((block,), "float32")
+                b_shared = T.alloc_shared((block,), "float32")
+                c_fragment = T.alloc_fragment((block,), "float32")
+                annotations = z3_pipeline_annotations(
+                    latencies=[4, 4, 2, 2],
+                    iis=[1, 1, 1, 1],
+                    resource_flags=[1, 1, 16, 2],
+                    data_deps=[(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)],
+                    resource_deps=[(0, 1)],
+                    pipe_order_deps=[(0, 1)],
+                    enable_offset=True,
+                    manual_schedule=True,
+                    manual_stages=[0, 0, 1, 1],
+                )
+                for k in T.Pipelined(iterations, num_stages=2, annotations=annotations):
+                    with T.Task():
+                        T.copy(A[k * block : (k + 1) * block], a_shared)
+                    with T.Task():
+                        T.copy(B[k * block : (k + 1) * block], b_shared)
+                    with T.Task():
+                        for i in T.Parallel(block):
+                            c_fragment[i] = a_shared[i] + b_shared[i]
+                    with T.Task():
+                        T.copy(c_fragment, C[k * block : (k + 1) * block])
+
+        return main
+
+    original = z3_scheduler.z3_schedule_loop_python
+    calls = []
+    active_schema = []
+
+    def counted_solve(*args, **kwargs):
+        result = original(*args, **kwargs)
+        calls.append((active_schema[-1], args, kwargs, result))
+        return result
+
+    monkeypatch.setattr(z3_scheduler, "z3_schedule_loop_python", counted_solve)
+    indices = torch.arange(block * iterations, dtype=torch.float32, device="cuda")
+    for schema in ("stage", "legacy"):
+        active_schema.append(schema)
+        kernel = tilelang.compile(
+            make_func(schema == "stage"),
+            target={"kind": "cuda", "arch": "sm_120a"},
+            out_idx=[2],
+            execution_backend="tvm_ffi",
+            pass_configs={tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING: True},
+        )
+        actual = kernel(indices, 2 * indices + 1)
+        torch.testing.assert_close(actual, 3 * indices + 1, rtol=0, atol=0)
+
+    assert [schema for schema, _, _, _ in calls] == ["stage", "legacy"]
+    for schema, args, kwargs, result in calls:
+        assert args[0] == 2, f"{schema} manual default/bound must be two"
+        assert list(kwargs["manual_stages"]) == [0, 0, 1, 1]
+        assert kwargs["manual_schedule"] is True
+        assert [list(pair) for pair in args[7]] == [[0, 1]]
+        assert result[2] > 0

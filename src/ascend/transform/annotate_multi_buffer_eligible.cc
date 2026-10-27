@@ -50,6 +50,7 @@
 #include "ascend/transform/buffer_version.h"
 #include "op/builtin.h"
 #include "transform/common/attr.h"
+#include "transform/common/write_first.h"
 
 namespace tvm {
 namespace tl {
@@ -103,62 +104,9 @@ Array<Var> NormalizeEligibleStorages(const Any &annotation) {
 // must opt out via T.annotate_buffer_versions({buf: 1}) or explicitly choose an
 // owner whose epoch overwrites the complete read footprint.
 // ---------------------------------------------------------------------------
-enum class AccessOrder {
-  kUntouched,
-  kMaybeWriteFirst,
-  kWriteFirst,
-  kReadFirst,
-};
-
 // Terminal states determine the answer; further sub-events cannot change it.
 bool IsTerminal(AccessOrder order) {
   return order == AccessOrder::kReadFirst || order == AccessOrder::kWriteFirst;
-}
-
-// Sequential composition of two sub-events in program order. Terminal states
-// absorb the suffix; a conditional write followed by a read remains read-first
-// because the write may have been skipped.
-AccessOrder SeqCompose(AccessOrder first, AccessOrder second) {
-  if (IsTerminal(first))
-    return first;
-  if (first == AccessOrder::kUntouched)
-    return second;
-  if (second == AccessOrder::kUntouched)
-    return AccessOrder::kMaybeWriteFirst;
-  return second;
-}
-
-// Merge mutually exclusive then/else branch classifications.
-AccessOrder MergeIfThenElse(AccessOrder then_order, AccessOrder else_order) {
-  if (then_order == AccessOrder::kReadFirst ||
-      else_order == AccessOrder::kReadFirst) {
-    return AccessOrder::kReadFirst;
-  }
-  if (then_order == AccessOrder::kUntouched &&
-      else_order == AccessOrder::kUntouched) {
-    return AccessOrder::kUntouched;
-  }
-  if (then_order == AccessOrder::kWriteFirst &&
-      else_order == AccessOrder::kWriteFirst) {
-    return AccessOrder::kWriteFirst;
-  }
-  return AccessOrder::kMaybeWriteFirst;
-}
-
-// Merge a single then branch with an implicit untouched else branch.
-AccessOrder MergeIfThenOnly(AccessOrder then_order) {
-  if (then_order == AccessOrder::kReadFirst)
-    return AccessOrder::kReadFirst;
-  if (then_order == AccessOrder::kUntouched)
-    return AccessOrder::kUntouched;
-  return AccessOrder::kMaybeWriteFirst;
-}
-
-// A possibly skipped scope cannot provide a guaranteed first write.
-AccessOrder DemoteIfNotMustExecute(AccessOrder order, bool must_execute) {
-  if (!must_execute && order == AccessOrder::kWriteFirst)
-    return AccessOrder::kMaybeWriteFirst;
-  return order;
 }
 
 AccessOrder AssumeForExecutes(AccessOrder body) {

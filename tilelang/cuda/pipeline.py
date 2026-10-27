@@ -136,7 +136,10 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     pass_ctx = tilelang.transform.get_pass_context()
     z3_pipeline_enabled = pass_ctx.config.get(_Z3_PIPELINE_CONFIG, False)
     z3_task_analysis_enabled = pass_ctx.config.get(_Z3_TASK_ANALYSIS_CONFIG, False)
-    has_z3_annotations = (z3_pipeline_enabled or z3_task_analysis_enabled) and _module_has_z3_pipeline_annotations(mod)
+    has_z3_loop_annotations = _module_has_z3_pipeline_annotations(mod)
+    z3_requested = z3_pipeline_enabled or z3_task_analysis_enabled
+    has_z3_annotations = z3_requested and has_z3_loop_annotations
+    normalize_z3_units = z3_requested
     z3_pipeline_module = bool(z3_pipeline_enabled) and has_z3_annotations
     if z3_task_analysis_enabled and has_z3_annotations and not z3_pipeline_enabled:
         raise ValueError(
@@ -210,10 +213,19 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     # pipeline body extraction focused on canonical SeqStmt bodies.
     mod = tilelang.transform.IfStmtBinding()(mod)
 
+    # Public task/stage markers are normalized before unrolling so the latter
+    # can preserve the resulting atomic task bodies. With Z3 disabled this pass
+    # is not run and the stock CUDA behavior remains unchanged.
+    if normalize_z3_units:
+        mod = tilelang.transform.NormalizeZ3ScheduleUnits()(mod)
+
     # Expand only explicitly requested unroll loops before pipeline planning
     # and fold the constants exposed by substitution. This makes their
     # copy/compute statements individual scheduling units.
-    mod = tilelang.transform.UnrollLoop()(mod)
+    if has_z3_annotations:
+        mod = tilelang.transform.UnrollLoopSkipZ3Atomic()(mod)
+    else:
+        mod = tilelang.transform.UnrollLoop()(mod)
     # Simplify the unrolled loop bodies.
     mod = tilelang.transform.Simplify()(mod)
 

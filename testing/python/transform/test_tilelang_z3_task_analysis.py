@@ -112,6 +112,15 @@ def _nested(groups):
     return [_imms(group) for group in groups]
 
 
+def _task(body, *, latency=None, ii=None):
+    metadata = {}
+    if latency is not None:
+        metadata["latency"] = tvm.tirx.IntImm("int64", latency)
+    if ii is not None:
+        metadata["ii"] = tvm.tirx.IntImm("int64", ii)
+    return tvm.tirx.AttrStmt(metadata, "tl.cuda_z3_task", tvm.tirx.IntImm("int32", 1), body)
+
+
 def _complete_annotations(latencies, iis=None, resource_flags=None):
     n = len(latencies)
     if iis is None:
@@ -134,7 +143,9 @@ def _complete_annotations(latencies, iis=None, resource_flags=None):
     }
 
 
-def _make_store_func(statements, buffers, annotations, *, extra_params=(), loop_var=None):
+def _make_store_func(
+    statements, buffers, annotations, *, extra_params=(), loop_var=None, local_buffers=()
+):
     tir = tvm.tirx
     k = tir.Var("k", "int32") if loop_var is None else loop_var
     loop = tir.For(
@@ -145,10 +156,20 @@ def _make_store_func(statements, buffers, annotations, *, extra_params=(), loop_
         tir.SeqStmt(statements) if len(statements) > 1 else statements[0],
         annotations={**annotations, "num_stages": tir.IntImm("int32", 2)},
     )
+    body = (
+        tir.SeqStmt([*[tir.AllocBuffer(buffer) for buffer in local_buffers], loop])
+        if local_buffers
+        else loop
+    )
+    param_buffers = [
+        buffer
+        for buffer in buffers
+        if not any(buffer.same_as(local) for local in local_buffers)
+    ]
     func = tir.PrimFunc(
-        [*extra_params, *[buffer.data for buffer in buffers]],
-        loop,
-        buffer_map={buffer.data: buffer for buffer in buffers},
+        [*extra_params, *[buffer.data for buffer in param_buffers]],
+        body,
+        buffer_map={buffer.data: buffer for buffer in param_buffers},
     )
     return func.with_attr("global_symbol", "main")
 
@@ -596,9 +617,13 @@ def test_aliased_views_keep_clone_raw_war_constraints_and_versions(alias_storage
     """Cross-iteration view aliases must not disappear from inference or clones."""
     tir = tvm.tirx
     written = tir.decl_buffer((8,), "int32", name="dependency_written_view", scope="shared")
+    write = written
     if alias_storage:
         read = tir.decl_buffer(
             (8,), "int32", name="dependency_aliased_view", data=written.data, scope="shared"
+        )
+        write = tir.decl_buffer(
+            (8,), "int32", name="dependency_aliased_write_view", data=written.data, scope="shared"
         )
     else:
         read = tir.decl_buffer((8,), "int32", name="dependency_disjoint_view")
@@ -606,10 +631,11 @@ def test_aliased_views_keep_clone_raw_war_constraints_and_versions(alias_storage
     k = tir.Var("k", "int32")
     value = tir.Var("dependency_view_value", "int32")
     statements = [
-        tir.BufferStore(written, 1, [k]),
-        # Reading the exact written Buffer keeps this Bind scheduled in both
-        # cases. Its same-object W[k] accesses are disjoint across iterations,
-        # so only the second view can introduce cross-iteration RAW/WAR here.
+        tir.BufferStore(write, 1, [k]),
+        # Reading the canonical written Buffer keeps this Bind scheduled in both
+        # cases. Without alias storage, its W[k] accesses are disjoint across
+        # iterations, so only the additional views can introduce cross-iteration
+        # RAW/WAR here.
         tir.Bind(value, tir.BufferLoad(read, [k]) + tir.BufferLoad(written, [k])),
         tir.BufferStore(out, value, [k]),
     ]
@@ -625,7 +651,15 @@ def test_aliased_views_keep_clone_raw_war_constraints_and_versions(alias_storage
         }
     )
     buffers = [written, out] if alias_storage else [written, read, out]
-    inferred = _run_infer(_make_store_func(statements, buffers, annotations, loop_var=k))
+    inferred = _run_infer(
+        _make_store_func(
+            statements,
+            buffers,
+            annotations,
+            loop_var=k,
+            local_buffers=[written] if alias_storage else [],
+        )
+    )
     inferred_loop = _find_pipeline_loop(inferred["main"])
     assert len(inferred_loop.annotations["tl_z3_pipeline_buffer_vars"]) == 1
     assert inferred_loop.annotations["tl_z3_pipeline_buffer_vars"][0].same_as(written.data)
@@ -662,6 +696,44 @@ def test_aliased_views_keep_clone_raw_war_constraints_and_versions(alias_storage
     else:
         assert versions == 1
 
+    if alias_storage:
+        planned = tl.transform.PipelinePlanning()(planned)
+        injected = tl.transform.InjectSoftwarePipeline()(planned)
+        alias_names = {str(read.name), str(write.name)}
+        alias_loads = []
+        alias_stores = []
+
+        def collect_rewritten_aliases(node):
+            if isinstance(node, tir.BufferLoad) and str(node.buffer.name) in alias_names:
+                alias_loads.append(node)
+            elif isinstance(node, tir.BufferStore) and str(node.buffer.name) in alias_names:
+                alias_stores.append(node)
+
+        # The preserved clone-plan annotation intentionally contains the
+        # original, unversioned Bind value. Inspect executable statements only.
+        def strip_for_annotations(node):
+            if isinstance(node, tir.For):
+                return tir.For(
+                    node.loop_var,
+                    node.min,
+                    node.extent,
+                    node.kind,
+                    node.body,
+                    node.thread_binding,
+                    annotations={},
+                    step=node.step,
+                )
+            return None
+
+        executable_body = tir.stmt_functor.ir_transform(
+            injected["main"].body, None, strip_for_annotations
+        )
+        post_order_visit(executable_body, collect_rewritten_aliases)
+        assert alias_loads and alias_stores
+        for access in [*alias_loads, *alias_stores]:
+            assert len(access.indices) == 2
+            assert [int(dim) for dim in access.buffer.shape] == [versions, 8]
+
 
 def test_real_z3_integration_after_inference(tmp_path):
     hardware, calibration = _write_specs(tmp_path)
@@ -692,6 +764,79 @@ def test_real_z3_integration_after_inference(tmp_path):
     assert len(loop.annotations["tl_z3_pipeline_audit_starts"]) == 2
     assert int(loop.annotations["tl_z3_pipeline_audit_ii"]) > 0
     assert len(loop.annotations["tl_pipeline_buffer_versions"]) == 1
+
+
+def test_task_cost_overrides_are_independent_and_task_body_is_one_model_input():
+    tir = tvm.tirx
+    a = tir.decl_buffer((8,), "int32", name="override_A")
+    b = tir.decl_buffer((8,), "int32", name="override_B")
+    k = tir.Var("k", "int32")
+    annotations = _complete_annotations([0, 0], iis=[1, 1], resource_flags=[0, 0])
+    annotations.pop("tl_z3_pipeline_latencies")
+    annotations.pop("tl_z3_pipeline_iis")
+    annotations.update(_mock_paths())
+    first = _task(tir.BufferStore(a, k, [k]), latency=7, ii=2)
+    second_body = tir.SeqStmt(
+        [
+            tir.BufferStore(a, k + 1, [k]),
+            tir.BufferStore(b, tir.BufferLoad(a, [k]) + 2, [k]),
+        ]
+    )
+    second = _task(second_body, latency=50)
+    func = _make_store_func([first, second], [a, b], annotations, loop_var=k)
+    calls = _install_model_mock()
+
+    loop = _find_pipeline_loop(_run_infer(func)["main"])
+
+    assert len(calls) == 1, "A fully overridden task must not require the cost model"
+    assert len(calls[0]["copies"]) == 3, "The serial multi-statement task is one aggregate model input"
+    assert _ints(loop.annotations["tl_z3_pipeline_latencies"]) == [7, 50]
+    assert _ints(loop.annotations["tl_z3_pipeline_iis"])[0] == 2
+    assert _ints(loop.annotations["tl_z3_pipeline_iis"])[1] > 0
+    assert len(loop.body.seq) == 2
+    assert all(stmt.attr_key == "tl.cuda_z3_task" for stmt in loop.body.seq)
+
+
+def test_fully_overridden_task_needs_no_hardware_calibration_or_estimator():
+    tir = tvm.tirx
+    a = tir.decl_buffer((4,), "int32", name="fully_overridden_A")
+    k = tir.Var("k", "int32")
+    annotations = _complete_annotations([0], iis=[1], resource_flags=[0])
+    annotations.pop("tl_z3_pipeline_latencies")
+    annotations.pop("tl_z3_pipeline_iis")
+    func = _make_store_func(
+        [_task(tir.BufferStore(a, k, [k]), latency=7, ii=2)],
+        [a],
+        annotations,
+        loop_var=k,
+    )
+    tvm_ffi.register_global_func(
+        _ESTIMATOR,
+        f=lambda *args: (_ for _ in ()).throw(RuntimeError("fully overridden task called estimator")),
+        override=True,
+    )
+
+    loop = _find_pipeline_loop(_run_infer(func)["main"])
+
+    assert _ints(loop.annotations["tl_z3_pipeline_latencies"]) == [7]
+    assert _ints(loop.annotations["tl_z3_pipeline_iis"]) == [2]
+    assert list(loop.annotations["tl_z3_pipeline_cost_reliability"]) == ["explicit"]
+
+
+def test_task_cost_overrides_do_not_waive_dependency_footprints():
+    tir = tvm.tirx
+    a = tir.decl_buffer((4,), "int32", name="override_footprint_A")
+    k = tir.Var("k", "int32")
+    annotations = _complete_annotations([0], iis=[1], resource_flags=[0])
+    annotations.pop("tl_z3_pipeline_latencies")
+    annotations.pop("tl_z3_pipeline_iis")
+    annotations.pop("tl_z3_pipeline_data_deps")
+    opaque = tir.Evaluate(tir.call_extern("int32", "opaque_inside_task"))
+    task = _task(tir.SeqStmt([opaque, tir.BufferStore(a, k, [k])]), latency=7, ii=2)
+    func = _make_store_func([task], [a], annotations, loop_var=k)
+
+    with pytest.raises(Exception, match="opaque|stateful"):
+        _run_infer(func)
 
 
 def test_regular_package_import_registers_task_cost_ffi_without_explicit_import():

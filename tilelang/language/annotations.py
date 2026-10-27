@@ -13,6 +13,9 @@ from tvm.tirx.script.builder.ir import sblock_attr
 __all__ = [
     "WSID",
     "Z3_PIPELINE_ANNOTATION",
+    "PerRoleTask",
+    "Stage",
+    "Task",
     "use_swizzle",
     "annotate_layout",
     "annotate_safe_value",
@@ -32,6 +35,74 @@ Z3_PIPELINE_ANNOTATION = "tl_z3_pipeline"
 # (kWSOpIdKey in src/transform/common/warp_specialize.h). Shorthand so kernels
 # write ``annotations={T.WSID: "copy_A"}`` on tile ops and loops.
 WSID = "tl.ws_op_id"
+
+
+def _z3_schedule_schema(schema):
+    if schema not in ("flat", "recursive"):
+        raise ValueError(f"schema must be 'flat' or 'recursive', got {schema!r}")
+    return schema
+
+
+def Task(latency: int | None = None, ii: int | None = None, *, schema: str = "flat"):
+    """Group serial statements into one atomic CUDA scheduler task.
+
+    ``schema='flat'`` is the backward-compatible default and emits the markers
+    consumed by ``NormalizeZ3ScheduleUnits``. ``schema='recursive'`` opts into
+    the nested Task/Control grammar consumed by
+    ``cuda.MaterializeZ3ScheduleUnits``. The two marker families are deliberately
+    distinct: a pipeline must select one schema rather than infer precedence
+    when both are present.
+
+    ``latency`` and ``ii`` are exact whole-task overrides and may be omitted
+    independently. Role and warp placement is compiler-owned and is not a
+    public Task argument. Put ``T.Stage`` outside the complete task::
+
+        with T.Stage(0, schema="recursive"), T.Task(latency=4, ii=1, schema="recursive"):
+            T.copy(A[k], A_shared)
+    """
+    schema = _z3_schedule_schema(schema)
+    if latency is not None and (isinstance(latency, bool) or not isinstance(latency, int) or latency < 0):
+        raise ValueError(f"Task latency must be a non-negative integer, got {latency!r}")
+    if ii is not None and (isinstance(ii, bool) or not isinstance(ii, int) or ii <= 0):
+        raise ValueError(f"Task ii must be a positive integer, got {ii!r}")
+    if latency is not None and ii is not None and latency < ii:
+        raise ValueError(f"Task latency must be greater than or equal to ii, got latency={latency} and ii={ii}")
+
+    annotations = {}
+    if latency is not None:
+        annotations["latency"] = IntImm("int64", latency)
+    if ii is not None:
+        annotations["ii"] = IntImm("int64", ii)
+    key = "tl.cuda_task" if schema == "recursive" else "tl.cuda_z3_task"
+    return attr(annotations, key, IntImm("int32", 1))
+
+
+def Stage(stage: int, *, schema: str = "flat"):
+    """Assign a manual stage to complete tasks in the current child list.
+
+    The default ``flat`` schema preserves the existing P01/P02 behavior. Use
+    ``schema='recursive'`` consistently for nested scheduling. In either
+    schema, a staged child list defaults its unannotated siblings to stage zero;
+    nested child lists choose manual or automatic mode independently.
+    """
+    schema = _z3_schedule_schema(schema)
+    if isinstance(stage, bool) or not isinstance(stage, int) or stage < 0:
+        raise ValueError(f"Stage must be a non-negative integer, got {stage!r}")
+    key = "tl.cuda_stage" if schema == "recursive" else "tl.cuda_z3_stage"
+    return attr(IntImm("int64", stage), key, IntImm("int32", 1))
+
+
+def PerRoleTask():
+    """Create one recursive logical task with guarded role candidates.
+
+    Put candidate ``T.Task(..., schema='recursive')`` regions and their dispatch
+    control flow inside this scope. Every candidate must have one compatible
+    role-capability family, access direction, and arrival signature. Static
+    complementary guards are checked for exactly-once execution. Dynamic
+    exactly-once behavior remains an explicit user contract checked by the
+    generated device protocol rather than assumed to be a compile-time proof.
+    """
+    return attr(IntImm("int32", 0), "tl.cuda_per_role_task", IntImm("int32", 1))
 
 
 def use_swizzle(panel_size: int, order: str = "row", enable: bool = True):
@@ -292,6 +363,13 @@ def z3_pipeline_annotations(
     the solver buffer-id order used by the returned
     ``tl_pipeline_buffer_versions`` map. ``memory_groups`` entries have the
     solver-native form ``[capacity, buffer_id, ...]``.
+
+    ``manual_schedule=True`` with ``manual_stages`` is the legacy manual schema.
+    Public ``T.Stage`` markers are a separate schema: leave manual scheduling
+    disabled here when using them. ``NormalizeZ3ScheduleUnits`` rejects a
+    non-empty legacy stage array or ``manual_schedule=True`` combined with
+    ``T.Stage`` rather than silently selecting either contract. The empty
+    arrays emitted by this helper do not conflict with stage markers.
     """
     latencies = _z3_integer_list(latencies, "latencies", minimum=0)
     num_tasks = len(latencies)

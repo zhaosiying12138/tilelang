@@ -27,6 +27,19 @@ def PipelinePlanning():
     return _ffi_api.PipelinePlanning()  # type: ignore
 
 
+def NormalizeZ3ScheduleUnits():
+    """Normalize public CUDA ``T.Task``/``T.Stage`` markers before inference.
+
+    Unmarked legacy Z3 loops and unannotated modules are left unchanged.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The schedule-unit normalization pass.
+    """
+    return _ffi_api.NormalizeZ3ScheduleUnits()  # type: ignore
+
+
 def InferZ3PipelineProblem():
     """Complete missing task, dependency, and cost fields on annotated CUDA loops.
 
@@ -505,6 +518,16 @@ def VerifyReducerConsumed():
         tvm.transform.Pass: The verification pass.
     """
     return _ffi_api.VerifyReducerConsumed()  # type: ignore
+
+
+def UnrollLoopSkipZ3Atomic():
+    """Expand only explicit unroll requests outside CUDA Z3 atomic regions.
+
+    Unlike :func:`UnrollLoop`, this pass performs no automatic, local-access, or
+    factor unrolling. Task, warp-region, parallel, and tile-op bodies are kept
+    intact for pre-schedule analysis.
+    """
+    return _ffi_api.UnrollLoopSkipZ3Atomic()  # type: ignore
 
 
 def UnrollLoop():

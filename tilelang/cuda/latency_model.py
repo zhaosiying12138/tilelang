@@ -252,6 +252,12 @@ _MEMORY_PATH_ALIASES = {
     "strided_bandwidth_bytes_per_second": "strided_bandwidth_bytes_per_cycle",
     "unknown_bandwidth_bytes_per_second": "unknown_bandwidth_bytes_per_cycle",
 }
+_MEMORY_INSTRUCTIONS = frozenset({
+    "auto", "sync", "cp_async", "tma", "tmem_load", "tmem_store", "unknown",
+})
+_INSTRUCTION_CALIBRATED_PATHS = frozenset({"cp_async", "tma", "tmem_load", "tmem_store"})
+_MEMORY_PAYLOAD_ORIGINS = frozenset({"max", "source", "destination"})
+_MEMORY_ROLES = frozenset({"generic", "scale_a", "scale_b", "accumulator"})
 
 
 def _cycles_from_ns(value: Any, clock_hz: float, name: str) -> int:
@@ -335,6 +341,21 @@ def _path_name(src_scope: str, dst_scope: str) -> str:
     return f"{_canonical_scope(src_scope)}->{_canonical_scope(dst_scope)}"
 
 
+def _canonical_memory_path(path: Any) -> str:
+    """Canonicalize ``src->dst[@instruction]`` without losing path identity."""
+
+    raw_path = str(path)
+    base_path, separator, instruction = raw_path.partition("@")
+    if separator and instruction not in _INSTRUCTION_CALIBRATED_PATHS:
+        allowed = ", ".join(sorted(_INSTRUCTION_CALIBRATED_PATHS))
+        raise ValueError(f"Memory path instruction suffix must be one of {allowed}: {raw_path!r}")
+    parts = base_path.split("->")
+    if len(parts) != 2:
+        raise ValueError(f"Memory path must be 'src->dst[@instruction]', got {raw_path!r}")
+    canonical = _path_name(parts[0], parts[1])
+    return f"{canonical}@{instruction}" if separator else canonical
+
+
 def _canonical_dtype(dtype: str) -> str:
     if not isinstance(dtype, str) or not dtype.strip():
         raise ValueError("dtype and acc must be non-empty strings")
@@ -413,10 +434,7 @@ class CudaLatencyParams(_JSONMixin):
         path_names = {}
         for path, value in self.memory_paths.items():
             raw_path = str(path)
-            parts = raw_path.split("->")
-            if len(parts) != 2:
-                raise ValueError(f"Memory path must be 'src->dst', got {raw_path!r}")
-            canonical_path = _path_name(parts[0], parts[1])
+            canonical_path = _canonical_memory_path(raw_path)
             if canonical_path in paths:
                 raise ValueError(f"Duplicate canonical memory path {canonical_path!r}")
             paths[canonical_path] = value if isinstance(value, MemoryPathParams) else MemoryPathParams.from_dict(value)
@@ -761,7 +779,13 @@ def _params_from_gdn(data: Mapping[str, Any], source: str, arch: str | None) -> 
 
 @dataclass(frozen=True)
 class MemoryAccess(_JSONMixin):
-    """One logical descriptor; bytes and width may carry dynamic upper bounds."""
+    """One logical copy with total payload and physical issue geometry.
+
+    ``bytes`` is always the total selected logical payload.  ``lanes`` records
+    the participating-lane proof and never multiplies that payload.  Native
+    extraction selects source, destination, or maximum payload before setting
+    ``bytes`` and records the choice in ``payload_origin``.
+    """
 
     src_scope: str
     dst_scope: str
@@ -769,15 +793,39 @@ class MemoryAccess(_JSONMixin):
     geometry: str = "coalesced"
     width: Extent | int | Mapping[str, Any] | None = 0
     reliability: Reliability | str | bool = Reliability.MEASURED
+    instruction: str = "auto"
+    descriptor_count: Extent | int | Mapping[str, Any] | None = 1
+    lanes: Extent | int | Mapping[str, Any] | None = 1
+    payload_origin: str = "max"
+    role: str = "generic"
+    binding: str = ""
 
     def __post_init__(self) -> None:
         _canonical_scope(self.src_scope)
         _canonical_scope(self.dst_scope)
         object.__setattr__(self, "bytes", _extent_object(self.bytes, "memory bytes"))
         object.__setattr__(self, "width", _extent_object(self.width, "memory width"))
+        object.__setattr__(
+            self, "descriptor_count", _extent_object(self.descriptor_count, "memory descriptor_count")
+        )
+        object.__setattr__(self, "lanes", _extent_object(self.lanes, "memory lanes"))
         object.__setattr__(self, "reliability", _reliability(self.reliability))
         if not isinstance(self.geometry, str):
             raise TypeError("geometry must be a string")
+        for name, allowed in (
+            ("instruction", _MEMORY_INSTRUCTIONS),
+            ("payload_origin", _MEMORY_PAYLOAD_ORIGINS),
+            ("role", _MEMORY_ROLES),
+        ):
+            value = getattr(self, name)
+            if not isinstance(value, str):
+                raise TypeError(f"{name} must be a string")
+            canonical = value.strip().lower().replace("-", "_")
+            if canonical not in allowed:
+                raise ValueError(f"Unknown memory {name} {value!r}; expected one of {sorted(allowed)}")
+            object.__setattr__(self, name, canonical)
+        if not isinstance(self.binding, str):
+            raise TypeError("binding must be a string")
 
     @property
     def src(self) -> str:
@@ -846,9 +894,19 @@ class TaskFeatures(_JSONMixin):
     def __post_init__(self) -> None:
         copies = (self.copies,) if isinstance(self.copies, MemoryAccess) else tuple(self.copies)
         gemms = (self.gemms,) if isinstance(self.gemms, GemmFeature) else tuple(self.gemms)
-        object.__setattr__(self, "copies", tuple(
-            item if isinstance(item, MemoryAccess) else MemoryAccess(**item) for item in copies
-        ))
+
+        def normalize_copy(item: MemoryAccess | Mapping[str, Any]) -> MemoryAccess:
+            if isinstance(item, MemoryAccess):
+                return item
+            values = dict(item)
+            # Pre-P08 feature maps had no instruction field and represented the
+            # existing generic synchronous copy model. Preserve that public
+            # JSON contract; new extractors must emit explicit ``auto`` when
+            # instruction selection is unresolved and therefore unmeasured.
+            values.setdefault("instruction", "sync")
+            return MemoryAccess(**values)
+
+        object.__setattr__(self, "copies", tuple(normalize_copy(item) for item in copies))
         object.__setattr__(self, "gemms", tuple(
             item if isinstance(item, GemmFeature) else GemmFeature(**item) for item in gemms
         ))
@@ -1096,15 +1154,35 @@ def estimate_task(
     for index, access in enumerate(features.copies):
         state.degrade(access.reliability)
         payload = _resolve_extent(access.bytes, f"copies[{index}].bytes", state)
+        descriptors = _resolve_extent(
+            access.descriptor_count, f"copies[{index}].descriptor_count", state, positive=True
+        )
+        lanes = _resolve_extent(access.lanes, f"copies[{index}].lanes", state, positive=True)
         path = _path_name(access.src_scope, access.dst_scope)
-        raw_path = params.memory_paths.get(path)
+        instruction = access.instruction
+        instruction_specific = instruction in _INSTRUCTION_CALIBRATED_PATHS
+        requested_path = f"{path}@{instruction}" if instruction_specific else path
+        calibration_path = requested_path
+        raw_path = params.memory_paths.get(requested_path)
+
+        if instruction in {"auto", "unknown"}:
+            # Auto is unresolved until native instruction selection proves a
+            # concrete instruction.  Neither it nor explicit unknown work may
+            # borrow measured status from a generic streaming benchmark.
+            state.unknown(f"memory_instruction:{instruction}")
+        elif instruction_specific and raw_path is None:
+            # A generic path can supply a nonfree estimate, but it is not an
+            # instruction-specific measurement and must fail measured-only use.
+            state.unknown(f"memory_instruction:{instruction}")
+            generic_path = params.memory_paths.get(path)
+            if generic_path is not None:
+                calibration_path = path
+                raw_path = generic_path
+
         if raw_path is None:
-            item = _mapping_item(params.memory_paths, path, lambda value: value)
-            raw_path = item[1] if item else None
-        if raw_path is None:
-            state.unknown(f"memory_path:{path}")
+            state.unknown(f"memory_path:{requested_path}")
             raw_path = MemoryPathParams()
-        prefix = f"memory_paths.{path}"
+        prefix = f"memory_paths.{calibration_path}"
         for name in ("base_cycles", "descriptor_cycles", "issue_cycles", "min_ii"):
             state.use(f"{prefix}.{name}")
         base = _integer(raw_path.base_cycles, f"{prefix}.base_cycles")
@@ -1144,13 +1222,39 @@ def estimate_task(
                     effective_bw = _usable_rate(raw_path.unknown_bandwidth_bytes_per_cycle, unknown_key, state)
             transfer = _ceil_rate(payload, effective_bw, f"copies[{index}].transfer_cycles")
 
-        completion = _checked_add(_checked_add(base, transfer, "memory completion"), descriptor, "memory completion")
+        per_descriptor = _checked_add(base, descriptor, "memory descriptor completion")
+        descriptor_completion = _checked_mul(descriptors, per_descriptor, "memory descriptor completion")
+        completion = _checked_add(descriptor_completion, transfer, "memory completion")
         memory_latency = _checked_add(memory_latency, completion, "task memory latency")
-        access_ii = _checked_add(max(transfer, min_ii), issue, "memory access II")
-        path_iis[path] = _checked_add(path_iis.get(path, 0), access_ii, f"memory path II {path}")
+        descriptor_min_ii = _checked_mul(descriptors, min_ii, "memory descriptor minimum II")
+        descriptor_issue = _checked_mul(descriptors, issue, "memory descriptor issue II")
+        access_ii = _checked_add(
+            descriptor_issue, max(transfer, descriptor_min_ii), "memory access II"
+        )
+        # Instruction identity is part of a physical issue path.  In
+        # particular, generic calibration fallback must not merge cp.async/TMA
+        # issue with synchronous or each other's descriptor streams.
+        aggregation_path = requested_path
+        path_iis[aggregation_path] = _checked_add(
+            path_iis.get(aggregation_path, 0), access_ii, f"memory path II {aggregation_path}"
+        )
         memory_details.append({
-            "path": path, "bytes": payload, "geometry": geometry, "completion_cycles": completion,
-            "transfer_cycles": transfer, "ii_cycles": access_ii,
+            "path": path,
+            "calibration_path": calibration_path,
+            "aggregation_path": aggregation_path,
+            "instruction": instruction,
+            "descriptor_count": descriptors,
+            "lanes": lanes,
+            "bytes": payload,
+            "total_bytes": payload,
+            "payload_origin": access.payload_origin,
+            "role": access.role,
+            "binding": access.binding,
+            "geometry": geometry,
+            "descriptor_completion_cycles": descriptor_completion,
+            "completion_cycles": completion,
+            "transfer_cycles": transfer,
+            "ii_cycles": access_ii,
             "bandwidth_bytes_per_cycle": _rate_json(effective_bw),
         })
     if path_iis:
@@ -1436,6 +1540,172 @@ def repeat_per_core(cost: TaskCost, trips: int, *, has_cross_wait: bool = False)
     return TaskCost(latency, ii, terms, reliability, fallback)
 
 
+def estimate_composed_task(
+    tree: Mapping[str, Any],
+    params: CudaLatencyParams | Calibration | None = None,
+    *,
+    require_measured: bool = False,
+) -> TaskCost:
+    """Evaluate a strict ``leaf``/``serial``/``repeat``/``branch`` cost tree.
+
+    This is the pure-Python integration point for the native analyzer.  Every
+    node is evaluated, including zero-trip bodies and both branch arms, so
+    structural resources and provenance cannot disappear with a particular
+    cost formula.  ``terms.composition`` is the canonical tree and retains the
+    complete normalized features of every leaf.
+
+    Empty serial compositions and zero-trip repeats return the internal 0/0
+    identity.  The native caller remains responsible for validating that its
+    final schedulable task is nonempty, just as it is for other composed costs.
+    """
+
+    if not isinstance(require_measured, bool):
+        raise TypeError("require_measured must be bool")
+    if params is None:
+        params = CudaLatencyParams()
+    if isinstance(params, Calibration):
+        params = params.params
+    if not isinstance(params, CudaLatencyParams):
+        raise TypeError("params must be CudaLatencyParams, Calibration, or None")
+
+    def finish(cost: TaskCost, resource_flags: int, composition: dict[str, Any]):
+        terms = {
+            "composition": composition,
+            "resource_flags": resource_flags,
+            "resources": [
+                resource.name for resource in Resource
+                if resource not in {Resource.NONE, Resource.ALL} and resource_flags & resource
+            ],
+            "units": {"latency": "cycles", "ii": "cycles"},
+        }
+        normalized = TaskCost(
+            cost.latency, cost.ii, terms, cost.reliability, cost.fallback_used
+        )
+        return normalized, resource_flags, composition
+
+    def evaluate(node: Mapping[str, Any], path: str):
+        if not isinstance(node, Mapping):
+            raise TypeError(f"{path} must be a JSON object")
+        if any(not isinstance(key, str) for key in node):
+            raise TypeError(f"{path} keys must be strings")
+        if "kind" not in node:
+            raise ValueError(f"{path}.kind is required")
+        kind = node["kind"]
+        if not isinstance(kind, str):
+            raise TypeError(f"{path}.kind must be a string")
+        required = {
+            "leaf": {"kind", "features"},
+            "serial": {"kind", "children"},
+            "repeat": {"kind", "trips", "body"},
+            "branch": {"kind", "then", "else"},
+        }
+        if kind not in required:
+            raise ValueError(f"{path}.kind has unknown cost expression kind {kind!r}")
+        expected = required[kind]
+        actual = set(node)
+        if actual != expected:
+            details = []
+            if expected - actual:
+                details.append("missing " + ", ".join(sorted(expected - actual)))
+            if actual - expected:
+                details.append("unexpected " + ", ".join(sorted(actual - expected)))
+            raise ValueError(f"{path} {kind} node has " + "; ".join(details))
+
+        if kind == "leaf":
+            raw_features = node["features"]
+            if isinstance(raw_features, TaskFeatures):
+                features = raw_features
+            elif isinstance(raw_features, Mapping):
+                features = TaskFeatures.from_dict(raw_features)
+            else:
+                raise TypeError(f"{path}.features must be TaskFeatures or a JSON object")
+            cost = estimate_task(features, params, require_measured=require_measured)
+            composition = {"kind": "leaf", "features": features.to_dict()}
+            return finish(cost, int(cost.terms["resource_flags"]), composition)
+
+        if kind == "serial":
+            raw_children = node["children"]
+            if not isinstance(raw_children, (list, tuple)):
+                raise TypeError(f"{path}.children must be an array")
+            children = [
+                evaluate(child, f"{path}.children[{index}]")
+                for index, child in enumerate(raw_children)
+            ]
+            cost = compose_serial(child[0] for child in children)
+            resource_flags = 0
+            for _, child_resources, _ in children:
+                resource_flags |= child_resources
+            composition = {
+                "kind": "serial",
+                "children": [child[2] for child in children],
+            }
+            return finish(cost, resource_flags, composition)
+
+        if kind == "repeat":
+            raw_trips = node["trips"]
+            trip_reliability = Reliability.MEASURED
+            if isinstance(raw_trips, Mapping):
+                if any(not isinstance(key, str) for key in raw_trips):
+                    raise TypeError(f"{path}.trips keys must be strings")
+                allowed = {"upper_bound", "reliability"}
+                if set(raw_trips) - allowed or "upper_bound" not in raw_trips:
+                    raise ValueError(
+                        f"{path}.trips extent requires upper_bound and optional reliability only"
+                    )
+                raw_trips = Extent(
+                    raw_trips["upper_bound"],
+                    raw_trips.get("reliability", Reliability.UPPER_BOUND),
+                )
+            if isinstance(raw_trips, Extent):
+                if raw_trips.upper_bound is None:
+                    raise ValueError(f"{path}.trips needs a finite dynamic extent upper_bound")
+                trips = _integer(raw_trips.upper_bound, f"{path}.trips.upper_bound")
+                trip_reliability = raw_trips.reliability
+                canonical_trips: int | dict[str, Any] = raw_trips.to_dict()
+            else:
+                trips = _integer(raw_trips, f"{path}.trips")
+                canonical_trips = trips
+            body_cost, body_resources, body_composition = evaluate(node["body"], f"{path}.body")
+            repeated = repeat(body_cost, trips)
+            cost = TaskCost(
+                repeated.latency,
+                repeated.ii,
+                repeated.terms,
+                _worst_reliability(repeated.reliability, trip_reliability),
+                repeated.fallback_used,
+            )
+            composition = {
+                "kind": "repeat",
+                "trips": canonical_trips,
+                "body": body_composition,
+            }
+            return finish(cost, body_resources, composition)
+
+        then_cost, then_resources, then_composition = evaluate(node["then"], f"{path}.then")
+        else_cost, else_resources, else_composition = evaluate(node["else"], f"{path}.else")
+        cost = branch(then_cost, else_cost)
+        composition = {
+            "kind": "branch",
+            "then": then_composition,
+            "else": else_composition,
+        }
+        return finish(cost, then_resources | else_resources, composition)
+
+    if not isinstance(tree, Mapping):
+        raise TypeError("tree must be a JSON object")
+    result, _, _ = evaluate(tree, "tree")
+    if require_measured and (
+        result.reliability != Reliability.MEASURED or result.fallback_used
+    ):
+        reasons = list(result.fallback_used)
+        if result.reliability != Reliability.MEASURED:
+            reasons.append(f"reliability:{result.reliability.value}")
+        raise CalibrationError(
+            "Measured composed task estimate required; unavailable: " + ", ".join(reasons)
+        )
+    return result
+
+
 compose_repeat = repeat
 compose_branch = branch
 per_core_phase = aggregate_phase
@@ -1446,6 +1716,6 @@ __all__ = [
     "INT64_MAX", "Calibration", "CalibrationError", "CudaLatencyParams", "DynamicExtent", "Extent",
     "GemmFeature", "MemoryAccess", "MemoryPathParams", "Reliability", "Resource", "TaskCost",
     "TaskFeatures", "VectorOps", "aggregate_per_core", "aggregate_phase", "branch", "compose_branch",
-    "compose_repeat", "compose_serial", "estimate_task", "per_core", "per_core_phase", "repeat",
-    "repeat_per_core", "serial",
+    "compose_repeat", "compose_serial", "estimate_composed_task", "estimate_task", "per_core",
+    "per_core_phase", "repeat", "repeat_per_core", "serial",
 ]

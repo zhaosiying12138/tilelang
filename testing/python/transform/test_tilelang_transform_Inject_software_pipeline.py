@@ -115,6 +115,14 @@ def _find_pipeline_allocation(func, data_or_name):
     return buffers[0]
 
 
+def _find_pipeline_allocation_with_shape(func, shape):
+    allocations = [node.buffer for node in collect_nodes(func, tvm.tirx.AllocBuffer)]
+    allocations.extend(buffer for block in collect_nodes(func, tvm.tirx.SBlock) for buffer in block.alloc_buffers)
+    buffers = [buffer for buffer in allocations if [int(dim) for dim in buffer.shape] == list(shape)]
+    assert len(buffers) == 1, f"Expected exactly one pipeline allocation with shape {shape}, got {len(buffers)}"
+    return buffers[0]
+
+
 def _assert_single_stage_pipeline(func):
     loops = collect_nodes(func, tvm.tirx.For)
     assert all("tl_pipelined_num_stages" not in loop.annotations for loop in loops)
@@ -295,6 +303,9 @@ def _make_multi_async_stage_two_consumer_pipeline(
     duplicate_async_writer=False,
     self_read_copy=False,
     self_read_rmw=False,
+    alias_first_consumer=False,
+    second_consumer_reads=True,
+    task_wrap_copy=False,
 ):
     assert not (self_read_copy and self_read_rmw)
     @T.prim_func
@@ -307,6 +318,15 @@ def _make_multi_async_stage_two_consumer_pipeline(
         for tx in T.thread_binding(0, 16, thread="threadIdx.x"):
             a_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
             b_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
+            a_consumed = a_shared
+            b_consumed = b_shared
+            if alias_first_consumer:
+                a_consumed = T.decl_buffer(
+                    (16, 1), dtype=T.float32, data=a_shared.data, scope="shared"
+                )
+                b_consumed = T.decl_buffer(
+                    (16, 1), dtype=T.float32, data=b_shared.data, scope="shared"
+                )
             annotations = {
                 "software_pipeline_stage": [0, 1, 1, 3],
                 "software_pipeline_order": [0, 1, 2, 3],
@@ -343,25 +363,39 @@ def _make_multi_async_stage_two_consumer_pipeline(
                     else:
                         T.writes(b_shared[tx, 0])
                         if self_read_copy:
-                            T.copy(B[tx, i : i + 1], b_shared[tx, 0:1])
+                            if task_wrap_copy:
+                                # Match the normalized public T.Task body:
+                                # AttrStmt(tl.cuda_z3_task, Evaluate(copy)).
+                                with T.Task():
+                                    T.copy(B[tx, i : i + 1], b_shared[tx, 0:1])
+                            else:
+                                T.copy(B[tx, i : i + 1], b_shared[tx, 0:1])
                         elif self_read_rmw:
                             b_shared[tx, 0] = b_shared[tx, 0] + B[tx, i]
                         else:
                             b_shared[tx, 0] = B[tx, i]
                 with T.sblock("consume_first"):
-                    T.reads(a_shared[tx, 0], b_shared[tx, 0])
+                    T.reads(a_consumed[tx, 0], b_consumed[tx, 0])
                     T.writes(C[tx, i])
-                    C[tx, i] = a_shared[tx, 0] + b_shared[tx, 0]
+                    C[tx, i] = a_consumed[tx, 0] + b_consumed[tx, 0]
                 with T.sblock("consume_second"):
-                    T.reads(a_shared[tx, 0], b_shared[tx, 0])
                     T.writes(D[tx, i])
-                    D[tx, i] = a_shared[tx, 0] - b_shared[tx, 0]
+                    if second_consumer_reads:
+                        T.reads(a_shared[tx, 0], b_shared[tx, 0])
+                        D[tx, i] = a_shared[tx, 0] - b_shared[tx, 0]
+                    else:
+                        D[tx, i] = T.float32(0)
 
     return before
 
 
-def test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer():
-    before = _make_multi_async_stage_two_consumer_pipeline()
+@pytest.mark.parametrize(
+    "alias_first_consumer", [False, True], ids=["canonical", "alias-first-consumer"]
+)
+def test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer(alias_first_consumer):
+    before = _make_multi_async_stage_two_consumer_pipeline(
+        alias_first_consumer=alias_first_consumer
+    )
     mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
     mod = tl.transform.InjectSoftwarePipeline()(mod)
     mod = tl.transform.Simplify()(mod)
@@ -382,10 +416,35 @@ def test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer():
         assert len(positions) == 1
         assert _collect_wait_args(statements[positions[0] - 1]) == [expected_wait]
 
-    a_shared = _find_pipeline_allocation(func, "a_shared")
-    b_shared = _find_pipeline_allocation(func, "b_shared")
+    a_shared = _find_pipeline_allocation_with_shape(func, (4, 16, 1))
+    b_shared = _find_pipeline_allocation_with_shape(func, (3, 16, 1))
     assert [int(dim) for dim in a_shared.shape] == [4, 16, 1]
     assert [int(dim) for dim in b_shared.shape] == [3, 16, 1]
+    if alias_first_consumer:
+        (first_consumer,) = [
+            block
+            for block in collect_nodes(loop.body, tvm.tirx.SBlock)
+            if str(block.name_hint) == "consume_first"
+        ]
+        storage_loads = [
+            load
+            for load in collect_nodes(first_consumer.body, tvm.tirx.BufferLoad)
+            if load.buffer.data.same_as(a_shared.data)
+            or load.buffer.data.same_as(b_shared.data)
+        ]
+        assert storage_loads
+        assert all(len(load.buffer.shape) == 3 for load in storage_loads)
+        storage_regions = [
+            region
+            for region in first_consumer.reads
+            if region.buffer.data.same_as(a_shared.data)
+            or region.buffer.data.same_as(b_shared.data)
+        ]
+        assert storage_regions
+        assert all(
+            len(region.buffer.shape) == 3 and len(region.region) == 3
+            for region in storage_regions
+        )
 
 
 @pytest.mark.parametrize(
@@ -438,16 +497,40 @@ def test_async_pipeline_multi_stage_rejects_async_consumer_with_async_dependenci
         tl.transform.InjectSoftwarePipeline()(mod)
 
 
-def test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata():
-    before = _make_multi_async_stage_two_consumer_pipeline(self_read_copy=True)
+def test_async_pipeline_multi_stage_rejects_async_only_consumer_without_sync_activation():
+    # The later synchronous consumer reads neither producer buffer, so it cannot
+    # activate multi-async handling or provide a wait that hides the omission.
+    before = _make_multi_async_stage_two_consumer_pipeline(
+        async_consumer=True, second_consumer_reads=False
+    )
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    with pytest.raises(
+        tvm.TVMError,
+        match="async consumer blocks requiring cross-stage async waits are unsupported",
+    ):
+        tl.transform.InjectSoftwarePipeline()(mod)
+
+
+@pytest.mark.parametrize("task_wrap_copy", [False, True], ids=["bare", "task-wrapped"])
+def test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata(task_wrap_copy):
+    before = _make_multi_async_stage_two_consumer_pipeline(
+        self_read_copy=True, task_wrap_copy=task_wrap_copy
+    )
+    if task_wrap_copy:
+        (task_attr,) = [
+            node
+            for node in collect_nodes(before.body, tvm.tirx.AttrStmt)
+            if node.attr_key == "tl.cuda_z3_task"
+        ]
+        assert isinstance(task_attr.body, tvm.tirx.Evaluate)
     mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
     mod = tl.transform.InjectSoftwarePipeline()(mod)
     mod = tl.transform.Simplify()(mod)
 
     func = mod["main"]
     assert _collect_wait_args(_find_pipelined_loop(func).body) == [0, 2]
-    a_shared = _find_pipeline_allocation(func, "a_shared")
-    b_shared = _find_pipeline_allocation(func, "b_shared")
+    a_shared = _find_pipeline_allocation_with_shape(func, (4, 16, 1))
+    b_shared = _find_pipeline_allocation_with_shape(func, (3, 16, 1))
     assert [int(dim) for dim in a_shared.shape] == [4, 16, 1]
     assert [int(dim) for dim in b_shared.shape] == [3, 16, 1]
 
@@ -548,8 +631,8 @@ def test_async_pipeline_multi_stage_accepts_exact_version_overrides():
 
     func = mod["main"]
     assert _collect_wait_args(_find_pipelined_loop(func).body) == [0, 2]
-    a_shared = _find_pipeline_allocation(func, "a_shared")
-    b_shared = _find_pipeline_allocation(func, "b_shared")
+    a_shared = _find_pipeline_allocation_with_shape(func, (4, 16, 1))
+    b_shared = _find_pipeline_allocation_with_shape(func, (3, 16, 1))
     assert [int(dim) for dim in a_shared.shape] == [4, 16, 1]
     assert [int(dim) for dim in b_shared.shape] == [3, 16, 1]
 
@@ -606,8 +689,8 @@ def test_async_pipeline_preserves_four_task_z3_shape():
     _, calls = _count_attrs_and_calls(loop.body)
     assert calls.get("tirx.ptx_wait_group", 0) == 1
 
-    a_shared = _find_pipeline_allocation(func, "a_shared")
-    b_shared = _find_pipeline_allocation(func, "b_shared")
+    a_shared = _find_pipeline_allocation_with_shape(func, (4, 16, 1))
+    b_shared = _find_pipeline_allocation_with_shape(func, (3, 16, 1))
     c_fragment = _find_pipeline_allocation(func, "c_fragment")
     assert [int(dim) for dim in a_shared.shape] == [4, 16, 1]
     assert [int(dim) for dim in b_shared.shape] == [3, 16, 1]

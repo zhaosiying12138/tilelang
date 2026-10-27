@@ -203,4 +203,59 @@ def estimate_task(
     return decoded
 
 
-__all__ = ["HARDWARE_SCHEMA", "estimate_task", "memory_group_capacities"]
+def estimate_composed_task(
+    tree: Mapping[str, Any] | str,
+    hardware: Mapping[str, Any] | str | os.PathLike[str],
+    calibration: Mapping[str, Any] | str | os.PathLike[str],
+    require_measured: bool = False,
+) -> dict[str, Any]:
+    """Evaluate a composed cost tree for the future native analyzer.
+
+    This intentionally is not registered as an FFI global yet.  The later
+    ``tl.cuda.estimate_composed_task`` binding can call this function directly
+    after the native ``NativeCostExpr`` extractor is available.  Inputs and
+    results otherwise follow the same strict JSON, hardware, calibration, and
+    measured-only contracts as :func:`estimate_task`.
+    """
+
+    if not isinstance(require_measured, bool):
+        raise TypeError("require_measured must be bool")
+    _, arch, _ = _hardware_parts(hardware)
+    if isinstance(tree, str):
+        tree = json.loads(tree)
+    if not isinstance(tree, Mapping):
+        raise TypeError("tree must be a JSON object, JSON string, or mapping")
+    encoded_tree = json.dumps(_plain(tree), allow_nan=False)
+    decoded_tree = json.loads(encoded_tree)
+    if not isinstance(decoded_tree, dict):
+        raise TypeError("tree must be a JSON object")
+
+    if isinstance(calibration, (str, os.PathLike)):
+        calibrated = _lm.Calibration.load(
+            calibration,
+            arch=arch,
+            require_measured=require_measured,
+        )
+    else:
+        raw_calibration, source, _ = _mapping(calibration, "calibration")
+        calibrated = _lm.Calibration.from_json(
+            raw_calibration,
+            arch=arch,
+            require_measured=require_measured,
+            source=source,
+        )
+    cost = _lm.estimate_composed_task(
+        decoded_tree,
+        calibrated,
+        require_measured=require_measured,
+    )
+    result = cost.to_dict()
+    result["resource_flags"] = int(cost.terms["resource_flags"])
+    encoded = json.dumps(result, allow_nan=False, sort_keys=True)
+    decoded = json.loads(encoded)
+    if not isinstance(decoded, dict):
+        raise TypeError("Composed task cost result must be a JSON object")
+    return decoded
+
+
+__all__ = ["HARDWARE_SCHEMA", "estimate_composed_task", "estimate_task", "memory_group_capacities"]

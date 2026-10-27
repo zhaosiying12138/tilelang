@@ -16,6 +16,7 @@
 #include <tvm/ffi/reflection/registry.h>
 #include <tvm/ir/cast.h>
 #include <tvm/runtime/logging.h>
+#include <tvm/tirx/analysis.h>
 #include <tvm/tirx/expr.h>
 #include <tvm/tirx/stmt.h>
 #include <tvm/tirx/stmt_functor.h>
@@ -28,6 +29,8 @@ namespace tl {
 
 using namespace tirx;
 using namespace ffi;
+
+using VarSet = std::unordered_set<Var, ObjectPtrHash, ObjectPtrEqual>;
 
 namespace {
 
@@ -56,6 +59,90 @@ constexpr const char *kZ3Verbose = "tl_z3_pipeline_verbose";
 constexpr const char *kZ3DebugDir = "tl_z3_pipeline_debug_dir";
 constexpr const char *kZ3AuditII = "tl_z3_pipeline_audit_ii";
 constexpr const char *kZ3AuditStarts = "tl_z3_pipeline_audit_starts";
+
+void CollectExprVars(const PrimExpr &expr, VarSet *vars) {
+  PostOrderVisit(expr, [&](const ObjectRef &node) {
+    if (const auto *var = node.as<VarNode>())
+      vars->insert(GetRef<Var>(var));
+  });
+}
+
+// Match the runtime materializer's conservative definition of role-uniform:
+// host scalar parameters and host-provided symbolic buffer metadata only.
+VarSet KernelRoleUniformVars(const PrimFunc &func) {
+  VarSet vars;
+  for (const Var &param : func->params)
+    vars.insert(param);
+  for (const auto &[param, buffer] : func->buffer_map) {
+    for (const PrimExpr &dim : buffer->shape)
+      CollectExprVars(dim, &vars);
+    for (const PrimExpr &stride : buffer->strides)
+      CollectExprVars(stride, &vars);
+    if (buffer->elem_offset.defined())
+      CollectExprVars(buffer->elem_offset, &vars);
+  }
+  return vars;
+}
+
+void ValidateOwnerRingLoopBounds(const ForNode &loop,
+                                 const VarSet &role_uniform_vars) {
+  auto check_expr = [&](const PrimExpr &expr, const char *what) {
+    bool uniform = true;
+    PostOrderVisit(expr, [&](const ObjectRef &node) {
+      // Pure thread-id intrinsics are still role-dependent, so do not use
+      // expression purity as a proxy for uniformity.
+      if (node.as<CallNode>() || node.as<BufferLoadNode>() ||
+          node.as<ProducerLoadNode>()) {
+        uniform = false;
+      } else if (const auto *var = node.as<VarNode>()) {
+        if (!role_uniform_vars.count(GetRef<Var>(var)))
+          uniform = false;
+      }
+    });
+    ICHECK(uniform)
+        << "Z3OwnerRingPlanning: owner-ring " << what << " of loop '"
+        << loop.loop_var->name_hint
+        << "' must be role-uniform; only constants and host-provided "
+           "scalar/symbolic values are supported, not thread/role-dependent "
+           "or private values, buffer loads, or calls";
+  };
+  check_expr(loop.min, "loop minimum");
+  check_expr(loop.extent, "loop extent");
+  if (loop.step.defined())
+    check_expr(loop.step.value(), "loop step");
+  ICHECK(loop.HasTrivialStep())
+      << "Z3OwnerRingPlanning: owner-ring loop '" << loop.loop_var->name_hint
+      << "' has a non-unit loop step; write the loop with unit step and scale "
+         "the indices in the body instead";
+}
+
+class OwnerRingBoundsValidator : public StmtVisitor {
+ public:
+  OwnerRingBoundsValidator(const std::vector<For> &owners,
+                           VarSet role_uniform_vars)
+      : role_uniform_vars_(std::move(role_uniform_vars)) {
+    for (const For &owner : owners)
+      owner_loops_.insert(owner.get());
+  }
+
+ private:
+  void VisitStmt_(const ForNode *op) final {
+    if (owner_loops_.count(op)) {
+      // Enclosing trip counts multiply both owners' epoch counts and must be
+      // just as uniform as the owner loop's own bounds.
+      for (const ForNode *ancestor : loop_stack_)
+        ValidateOwnerRingLoopBounds(*ancestor, role_uniform_vars_);
+      ValidateOwnerRingLoopBounds(*op, role_uniform_vars_);
+    }
+    loop_stack_.push_back(op);
+    StmtVisitor::VisitStmt_(op);
+    loop_stack_.pop_back();
+  }
+
+  std::unordered_set<const ForNode *> owner_loops_;
+  std::vector<const ForNode *> loop_stack_;
+  VarSet role_uniform_vars_;
+};
 
 int64_t GetInteger(const Map<String, Any> &annotations, const char *key,
                    int64_t default_value) {
@@ -243,6 +330,8 @@ PrimFunc ValidateAndConsume(PrimFunc func) {
     ICHECK_EQ(GetInteger(owners[i]->annotations, kZ3OwnerRing, -1), static_cast<int64_t>(i))
         << "Z3OwnerRingPlanning: owner indices must be exactly 0 and 1";
   }
+  OwnerRingBoundsValidator bounds_validator(owners, KernelRoleUniformVars(func));
+  bounds_validator(func->body);
 
   ICHECK_EQ(schedule->roles.size(), 2);
   ICHECK_EQ(schedule->pipelines.size(), 1);

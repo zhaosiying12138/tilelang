@@ -32,6 +32,7 @@
 #include <tvm/tirx/stmt_functor.h>
 #include <tvm/tirx/transform.h>
 
+#include "../cuda/transform/z3_dependency_analysis.h"
 #include "../op/builtin.h"
 #include "../op/copy.h"
 #include "../op/gemm.h"
@@ -40,6 +41,7 @@
 #include "../op/utils.h"
 #include "common/bind_utils.h"
 #include "common/pipeline_utils.h"
+#include "common/z3_schedule_hints.h"
 
 namespace tvm {
 namespace tl {
@@ -175,127 +177,8 @@ bool KnownModelScope(const std::string &scope) {
          scope == "tmem";
 }
 
-/* The following collector and flattener intentionally mirror the adapter. */
-class TaskBufferRegionCollector : public StmtExprVisitor {
-public:
-  static std::pair<Array<BufferRegion>, Array<BufferRegion>> Collect(
-      const Stmt &stmt, const Map<Var, Buffer> &buffer_data_to_buffer,
-      bool strict_opaque) {
-    SBlock block(/*iter_vars=*/{}, /*reads=*/{}, /*writes=*/{},
-                 /*name_hint=*/"", /*body=*/stmt);
-    TaskBufferRegionCollector collector(buffer_data_to_buffer, strict_opaque);
-    collector(block);
-    return {collector.reads_, collector.writes_};
-  }
-
-private:
-  TaskBufferRegionCollector(const Map<Var, Buffer> &buffer_data_to_buffer,
-                            bool strict_opaque)
-      : buffer_data_to_buffer_(buffer_data_to_buffer),
-        strict_opaque_(strict_opaque) {}
-
-  void HandleTileOp(const TileOperator &tile_op) {
-    if (const auto *parallel = tile_op.as<ParallelOpNode>()) {
-      auto nested = Collect(parallel->GetRoot(), buffer_data_to_buffer_,
-                            strict_opaque_);
-      reads_.insert(reads_.end(), nested.first.begin(), nested.first.end());
-      writes_.insert(writes_.end(), nested.second.begin(), nested.second.end());
-      return;
-    }
-    AccessRegions access = tile_op->GetAccessRegions();
-    reads_.insert(reads_.end(), access.reads.begin(), access.reads.end());
-    writes_.insert(writes_.end(), access.writes.begin(), access.writes.end());
-  }
-
-  void VisitStmt_(const BufferStoreNode *op) final {
-    Array<Range> region;
-    for (const PrimExpr &index : op->indices) {
-      region.push_back(Range::FromMinExtent(index, 1));
-    }
-    writes_.push_back(BufferRegion(op->buffer, region));
-    this->VisitExpr(op->value);
-    for (const PrimExpr &index : op->indices) this->VisitExpr(index);
-    if (op->predicate.defined()) this->VisitExpr(op->predicate.value());
-  }
-
-  void VisitExpr_(const BufferLoadNode *op) final {
-    Array<Range> region;
-    for (const PrimExpr &index : op->indices) {
-      region.push_back(Range::FromMinExtent(index, 1));
-    }
-    reads_.push_back(BufferRegion(op->buffer, region));
-    for (const PrimExpr &index : op->indices) this->VisitExpr(index);
-    if (op->predicate.defined()) this->VisitExpr(op->predicate.value());
-  }
-
-  void VisitExpr_(const CallNode *op) final {
-    if (auto tile_op = ParseOperator(GetRef<Call>(op)); tile_op.defined()) {
-      HandleTileOp(tile_op);
-      StmtExprVisitor::VisitExpr_(op);
-      return;
-    }
-    if (op->op.same_as(builtin::address_of())) {
-      ICHECK(!op->args.empty());
-      BufferRegion buffer_region;
-      if (const auto *load = op->args[0].as<BufferLoadNode>()) {
-        buffer_region = BufferRegion::FullRegion(load->buffer);
-      } else if (const auto *var_node = op->args[0].as<VarNode>()) {
-        auto it = buffer_data_to_buffer_.find(GetRef<Var>(var_node));
-        if (it != buffer_data_to_buffer_.end()) {
-          buffer_region = BufferRegion::FullRegion((*it).second);
-        }
-      }
-      ICHECK(buffer_region.defined() || !strict_opaque_)
-          << "InferZ3PipelineProblem: address_of has an opaque base; automatic "
-             "dependency extraction would be incomplete";
-      if (buffer_region.defined()) reads_.push_back(buffer_region);
-      return;
-    }
-    if (op->op.same_as(tl::access_ptr())) {
-      ICHECK_EQ(op->args.size(), 3U);
-      const auto *load = op->args[0].as<BufferLoadNode>();
-      ICHECK(load != nullptr) << "tl.access_ptr base must be a BufferLoad";
-      BufferRegion region = BufferRegion::FullRegion(load->buffer);
-      int access_mask = GetConservativeAccessMask(op->args[2]);
-      if (access_mask & kAccessRead) reads_.push_back(region);
-      if (access_mask & kAccessWrite) writes_.push_back(region);
-      for (const PrimExpr &index : load->indices) this->VisitExpr(index);
-      if (load->predicate.defined()) this->VisitExpr(load->predicate.value());
-      this->VisitExpr(op->args[1]);
-      this->VisitExpr(op->args[2]);
-      return;
-    }
-    if (op->op.same_as(builtin::tvm_access_ptr())) {
-      ICHECK_GE(op->args.size(), 2U);
-      const auto *buffer_var = op->args[1].as<VarNode>();
-      ICHECK(buffer_var != nullptr);
-      auto it = buffer_data_to_buffer_.find(GetRef<Var>(buffer_var));
-      ICHECK(it != buffer_data_to_buffer_.end() || !strict_opaque_)
-          << "InferZ3PipelineProblem: tvm_access_ptr references an unknown "
-             "buffer; automatic dependency extraction would be incomplete";
-      if (it != buffer_data_to_buffer_.end()) {
-        BufferRegion region = BufferRegion::FullRegion((*it).second);
-        int access_mask = op->args.size() == 5U
-                              ? GetConservativeAccessMask(op->args[4])
-                              : kAccessReadWrite;
-        if (access_mask & kAccessRead) reads_.push_back(region);
-        if (access_mask & kAccessWrite) writes_.push_back(region);
-      }
-      for (size_t i = 2; i < op->args.size(); ++i) this->VisitExpr(op->args[i]);
-      return;
-    }
-    ICHECK(!strict_opaque_ || SideEffect(GetRef<Call>(op)) <= CallEffectKind::kReadState)
-        << "InferZ3PipelineProblem: opaque or stateful Call has no complete "
-           "BufferRegion contract; supply data_deps explicitly: "
-        << GetRef<Call>(op);
-    StmtExprVisitor::VisitExpr_(op);
-  }
-
-  Map<Var, Buffer> buffer_data_to_buffer_;
-  bool strict_opaque_;
-  Array<BufferRegion> reads_;
-  Array<BufferRegion> writes_;
-};
+/* The flattener intentionally mirrors the pipeline adapter. Buffer accesses
+ * use the same strict collector as nested CUDA Z3 analysis. */
 
 class TaskSeqStmtFlattener : public StmtFunctor<Array<Stmt>(const Stmt &)> {
 public:
@@ -347,8 +230,16 @@ ScheduledTaskAnalysis AnalyzeScheduledTasks(
       accesses.push_back({});
       continue;
     }
-    auto access = TaskBufferRegionCollector::Collect(
-        stmt, buffer_data_to_buffer, strict_opaque);
+    cuda::z3::CudaTaskAnalysisOptions access_options;
+    access_options.strict_opaque = strict_opaque;
+    access_options.allow_read_state = true;
+    access_options.collect_attribute_node = false;
+    access_options.explicit_state_contracts = false;
+    access_options.diagnostic_prefix = "InferZ3PipelineProblem";
+    auto collected = cuda::z3::AnalyzeCudaTaskAccesses(
+        stmt, buffer_data_to_buffer, access_options);
+    std::pair<Array<BufferRegion>, Array<BufferRegion>> access{
+        collected.reads, collected.writes};
     for (const BufferRegion &write : access.second) {
       pipeline_write_buffers.insert(write->buffer);
     }
@@ -406,6 +297,40 @@ struct NativeTaskFeatures {
     return result;
   }
 };
+
+struct TaskCostOverride {
+  int64_t latency{-1};
+  int64_t ii{-1};
+};
+
+TaskCostOverride GetTaskCostOverride(const Stmt &stmt) {
+  TaskCostOverride result;
+  const auto *task = stmt.as<AttrStmtNode>();
+  if (task == nullptr || task->attr_key != kZ3CudaTaskAttr) return result;
+  Map<String, Any> metadata = task->node.cast<Map<String, Any>>();
+  for (const auto &[key, value] : metadata) {
+    ICHECK(key == "latency" || key == "ii")
+        << "InferZ3PipelineProblem: unsupported T.Task metadata key " << key;
+    const auto *imm = value.as<IntImmNode>();
+    ICHECK(imm != nullptr)
+        << "InferZ3PipelineProblem: T.Task " << key
+        << " must be a constant integer";
+    if (key == "latency") {
+      ICHECK_GE(imm->value, 0)
+          << "InferZ3PipelineProblem: T.Task latency must be non-negative";
+      result.latency = imm->value;
+    } else {
+      ICHECK_GT(imm->value, 0)
+          << "InferZ3PipelineProblem: T.Task ii must be positive";
+      result.ii = imm->value;
+    }
+  }
+  if (result.latency >= 0 && result.ii >= 0) {
+    ICHECK_GE(result.latency, result.ii)
+        << "InferZ3PipelineProblem: T.Task latency must be >= ii";
+  }
+  return result;
+}
 
 class TaskFeatureExtractor : public StmtExprVisitor {
 public:
@@ -1085,6 +1010,13 @@ private:
     const Map<String, Any> &annotations = loop->annotations;
     ICHECK(GetBool(annotations, kZ3Pipeline, false))
         << "InferZ3PipelineProblem: tl_z3_pipeline must be True when present";
+    PostOrderVisit(loop->body, [&](const ObjectRef &node) {
+      if (const auto *attr = node.as<AttrStmtNode>()) {
+        ICHECK(attr->attr_key != kZ3CudaStageAttr)
+            << "InferZ3PipelineProblem: unnormalized T.Stage marker; run "
+               "NormalizeZ3ScheduleUnits before task inference";
+      }
+    });
     bool need_latencies = !HasAnnotation(annotations, kZ3Latencies);
     bool need_iis = !HasAnnotation(annotations, kZ3IIs);
     bool need_resources = !HasAnnotation(annotations, kZ3ResourceFlags);
@@ -1120,6 +1052,11 @@ private:
         loop->body, buffer_data_to_buffer_, strict_regions);
     size_t n = analysis.scheduled_stmts.size();
     ICHECK_GT(n, 0) << "InferZ3PipelineProblem: no scheduled tasks found";
+    if (auto domains = annotations.Get(kZ3ExecutionDomains); domains.has_value()) {
+      ICHECK_EQ(Downcast<Array<String>>(domains.value()).size(), n)
+          << "InferZ3PipelineProblem: execution-domain count does not match "
+             "the scheduled task count";
+    }
 
     Array<Integer> latencies = GetIntegerArray(annotations, kZ3Latencies);
     Array<Integer> iis = GetIntegerArray(annotations, kZ3IIs);
@@ -1131,31 +1068,86 @@ private:
 
     Map<String, Any> output = annotations;
     if (need_latencies || need_iis || need_resources) {
-      String hardware = GetRequiredPath(annotations, kZ3Hardware);
-      String calibration = GetRequiredPath(annotations, kZ3Calibration);
+      std::vector<TaskCostOverride> overrides;
+      overrides.reserve(n);
+      bool any_model_required = false;
+      for (size_t i = 0; i < n; ++i) {
+        TaskCostOverride override =
+            GetTaskCostOverride(analysis.scheduled_stmts[i]);
+        if (!need_latencies && override.latency >= 0) {
+          ICHECK_EQ(latencies[i]->value, override.latency)
+              << "InferZ3PipelineProblem: T.Task latency override conflicts "
+                 "with the loop-level latency array";
+        }
+        if (!need_iis && override.ii >= 0) {
+          ICHECK_EQ(iis[i]->value, override.ii)
+              << "InferZ3PipelineProblem: T.Task ii override conflicts with "
+                 "the loop-level II array";
+        }
+        bool model_required =
+            (need_latencies && override.latency < 0) ||
+            (need_iis && override.ii < 0) || need_resources;
+        any_model_required = any_model_required || model_required;
+        overrides.push_back(override);
+      }
+
+      String hardware;
+      String calibration;
       bool require_measured = GetBool(annotations, kZ3RequireMeasured, false);
-      auto estimator = ffi::Function::GetGlobal("tl.cuda.estimate_task");
-      ICHECK(estimator.has_value())
-          << "InferZ3PipelineProblem: import tilelang.cuda.task_cost to "
-             "register tl.cuda.estimate_task";
+      Optional<ffi::Function> estimator;
+      if (any_model_required) {
+        hardware = GetRequiredPath(annotations, kZ3Hardware);
+        calibration = GetRequiredPath(annotations, kZ3Calibration);
+        estimator = ffi::Function::GetGlobal("tl.cuda.estimate_task");
+        ICHECK(estimator.has_value())
+            << "InferZ3PipelineProblem: import tilelang.cuda.task_cost to "
+               "register tl.cuda.estimate_task";
+      }
+
       Array<String> reliabilities;
       Array<Array<String>> fallbacks;
       for (size_t i = 0; i < n; ++i) {
-        NativeTaskFeatures native =
-            TaskFeatureExtractor::Extract(analysis.scheduled_stmts[i]);
-        Map<String, Any> result =
-            estimator.value()(native.ToFFI(), hardware, calibration,
-                              require_measured)
-                .cast<Map<String, Any>>();
-        auto get_int = [&](const char *key) -> int64_t {
-          auto value = result.Get(key);
-          ICHECK(value.has_value()) << "Task estimator omitted " << key;
-          return value.value().cast<int64_t>();
-        };
-        int64_t latency = get_int("latency");
-        int64_t ii = get_int("ii");
-        int64_t mask = get_int("resource_flags") |
+        const TaskCostOverride &override = overrides[i];
+        bool model_required =
+            (need_latencies && override.latency < 0) ||
+            (need_iis && override.ii < 0) || need_resources;
+        int64_t model_latency = 0;
+        int64_t model_ii = 1;
+        int64_t model_mask = 0;
+        String reliability = "explicit";
+        Array<String> fallback;
+        if (model_required) {
+          NativeTaskFeatures native =
+              TaskFeatureExtractor::Extract(analysis.scheduled_stmts[i]);
+          Map<String, Any> result =
+              estimator.value()(native.ToFFI(), hardware, calibration,
+                                require_measured)
+                  .cast<Map<String, Any>>();
+          auto get_int = [&](const char *key) -> int64_t {
+            auto value = result.Get(key);
+            ICHECK(value.has_value()) << "Task estimator omitted " << key;
+            return value.value().cast<int64_t>();
+          };
+          model_latency = get_int("latency");
+          model_ii = get_int("ii");
+          model_mask = get_int("resource_flags") |
                        native.structural_resource_mask;
+          auto model_reliability = result.Get("reliability");
+          ICHECK(model_reliability.has_value());
+          reliability = model_reliability.value().cast<String>();
+          auto model_fallback = result.Get("fallback_used");
+          ICHECK(model_fallback.has_value());
+          fallback = model_fallback.value().cast<Array<String>>();
+        }
+
+        int64_t latency = need_latencies
+                              ? (override.latency >= 0 ? override.latency
+                                                       : model_latency)
+                              : latencies[i]->value;
+        int64_t ii = need_iis
+                         ? (override.ii >= 0 ? override.ii : model_ii)
+                         : iis[i]->value;
+        int64_t mask = need_resources ? model_mask : resource_flags[i]->value;
         ICHECK(latency >= 0 && ii > 0 && latency >= ii)
             << "InferZ3PipelineProblem: invalid task cost latency=" << latency
             << ", II=" << ii;
@@ -1164,12 +1156,8 @@ private:
         if (need_latencies) latencies.push_back(Integer(latency));
         if (need_iis) iis.push_back(Integer(ii));
         if (need_resources) resource_flags.push_back(Integer(mask));
-        auto reliability = result.Get("reliability");
-        ICHECK(reliability.has_value());
-        reliabilities.push_back(reliability.value().cast<String>());
-        auto fallback = result.Get("fallback_used");
-        ICHECK(fallback.has_value());
-        fallbacks.push_back(fallback.value().cast<Array<String>>());
+        reliabilities.push_back(reliability);
+        fallbacks.push_back(std::move(fallback));
       }
       if (!HasAnnotation(annotations, kZ3CostReliability)) {
         output.Set(kZ3CostReliability, reliabilities);

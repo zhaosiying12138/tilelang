@@ -346,6 +346,33 @@ class SchemaTests(unittest.TestCase):
         self.assertGreater(calibration.params.vector_throughput_ops_per_cycle["fma"], 0)
         self.assertGreater(calibration.params.memory_paths["shared->register"].bandwidth_bytes_per_cycle, 0)
         self.assertGreater(calibration.params.vector_throughput_ops_per_cycle["exp2"], 0)
+    def test_latency_model_consumer_schema_accepts_instruction_specific_paths(self):
+        path = REPO / "tilelang" / "cuda" / "latency_model.py"
+        spec = importlib.util.spec_from_file_location("_calibration_instruction_latency_cpu_test", path)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+        document = schema.aggregate_calibration(_all_results(), environment=_device_environment())
+        # Add synthetic consumer-view entries only in memory. The benchmark
+        # producer and checked-in calibration records remain unchanged.
+        view = json.loads(json.dumps(document["latency_model"]))
+        generic = view["memory_paths"]["global->shared"]
+        for instruction in ("cp_async", "tma", "tmem_load", "tmem_store"):
+            view["memory_paths"][f"global->shared@{instruction}"] = dict(generic)
+        calibration = module.Calibration.from_json(view)
+        assert set(calibration.params.memory_paths) >= {
+            "global->shared@cp_async",
+            "global->shared@tma",
+            "global->shared@tmem_load",
+            "global->shared@tmem_store",
+        }
+        key = "memory_paths.global->shared@tma.bandwidth_bytes_per_cycle"
+        assert calibration.params.field_sources[key] == "measured"
+        access = module.MemoryAccess("global", "shared", 64, instruction="tma")
+        cost = module.estimate_task(module.TaskFeatures(copies=[access]), calibration)
+        assert cost.terms["memory_accesses"][0]["calibration_path"] == "global->shared@tma"
+        assert "memory_instruction:tma" not in cost.fallback_used
+
     def test_current_cuda_cost_model_accepts_complete_and_rejects_each_new_missing_rate(self):
         path = REPO / "tilelang" / "cuda" / "cost_model.py"
         spec = importlib.util.spec_from_file_location("_calibration_cuda_cost_model_cpu_test", path)

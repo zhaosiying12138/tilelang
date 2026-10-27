@@ -177,6 +177,64 @@ using BufferDefMap = std::unordered_map<Buffer, std::vector<PipelineSpec *>,
 using BufferVersionMap =
     std::unordered_map<Buffer, Buffer, ObjectPtrHash, ObjectPtrEqual>;
 using VarSet = std::unordered_set<Var, ObjectPtrHash, ObjectPtrEqual>;
+
+void CollectExprVars(const PrimExpr &expr, VarSet *vars) {
+  PostOrderVisit(expr, [&](const ObjectRef &node) {
+    if (const auto *var = node.as<VarNode>())
+      vars->insert(GetRef<Var>(var));
+  });
+}
+
+// Only values fixed by the kernel's host interface are provably identical in
+// every warp role. In particular, launch indices, scoped scalar variables and
+// buffer contents are not included, even when their current uses look uniform.
+VarSet KernelRoleUniformVars(const PrimFunc &func) {
+  VarSet vars;
+  for (const Var &param : func->params)
+    vars.insert(param);
+  // Dynamic buffer shapes and strides are host-provided symbolic values too.
+  for (const auto &[param, buffer] : func->buffer_map) {
+    for (const PrimExpr &dim : buffer->shape)
+      CollectExprVars(dim, &vars);
+    for (const PrimExpr &stride : buffer->strides)
+      CollectExprVars(stride, &vars);
+    if (buffer->elem_offset.defined())
+      CollectExprVars(buffer->elem_offset, &vars);
+  }
+  return vars;
+}
+
+void ValidateOwnerRingLoopBounds(const For &loop, const String &scope_id,
+                                 const VarSet &role_uniform_vars) {
+  auto check_expr = [&](const PrimExpr &expr, const char *what) {
+    bool uniform = true;
+    PostOrderVisit(expr, [&](const ObjectRef &node) {
+      // Purity alone is insufficient: a thread-id intrinsic can be pure.
+      // Reject all calls and memory reads rather than guessing uniformity.
+      if (node.as<CallNode>() || node.as<BufferLoadNode>() ||
+          node.as<ProducerLoadNode>()) {
+        uniform = false;
+      } else if (const auto *var = node.as<VarNode>()) {
+        if (!role_uniform_vars.count(GetRef<Var>(var)))
+          uniform = false;
+      }
+    });
+    ICHECK(uniform)
+        << "ws_schedule: owner-ring " << what << " of scope '" << scope_id
+        << "' must be role-uniform; only constants and host-provided "
+           "scalar/symbolic values are supported, not thread/role-dependent "
+           "or private values, buffer loads, or calls";
+  };
+  check_expr(loop->min, "loop minimum");
+  check_expr(loop->extent, "loop extent");
+  if (loop->step.defined())
+    check_expr(loop->step.value(), "loop step");
+  ICHECK(loop->HasTrivialStep())
+      << "ws_schedule: scope '" << scope_id
+      << "' has a non-unit loop step; write the loop with unit step and "
+         "scale the indices in the body instead";
+}
+
 // Pipeline ownership is storage-keyed: T.view / T.reshape aliases that share
 // one data var join the same pipelines and physical versioning. The
 // bindings are sorted outermost scope first (a strictly nested chain).
@@ -517,9 +575,11 @@ bool UsesAsyncProxy(const Call &call, const Target &target) {
 // ---------------------------------------------------------------------------
 class WSScheduleMaterializer {
 public:
-  WSScheduleMaterializer(SBlock block, Var thread_var, Target target)
+  WSScheduleMaterializer(SBlock block, Var thread_var, Target target,
+                         VarSet role_uniform_vars)
       : block_(std::move(block)), thread_var_(std::move(thread_var)),
-        target_(std::move(target)) {}
+        target_(std::move(target)),
+        role_uniform_vars_(std::move(role_uniform_vars)) {}
 
   int NumThreads() const { return num_warps_ * 32; }
 
@@ -917,6 +977,20 @@ private:
     MatchScopeBody(scope, loop->body);
   }
 
+  bool IsOwnerRingRelatedScope(const Scope *scope) const {
+    for (const auto &pipeline : pipelines_) {
+      if (!pipeline->IsOwnerRing())
+        continue;
+      for (Scope *owner : pipeline->owner_scopes) {
+        for (const Scope *s = owner; s != nullptr; s = s->sched_scope) {
+          if (s == scope)
+            return true;
+        }
+      }
+    }
+    return false;
+  }
+
   void RecordScopeForLoop(Scope *scope, const For &loop) {
     ICHECK(scope->IsRoot())
         << "ws_schedule: scope " << scope->id << " matched twice";
@@ -927,12 +1001,15 @@ private:
         << "ws_schedule: scope '" << scope->id
         << "' must be a sequential loop (T.Pipelined, T.serial, or "
            "T.unroll); T.Parallel loops are scheduled as single ops";
-    // Phases count iterations as (loop_var - min); a non-unit step
-    // would break them. TODO: divide by the step.
-    ICHECK(loop->HasTrivialStep())
-        << "ws_schedule: scope '" << scope->id
-        << "' has a non-unit loop step; write the loop with unit step and "
-           "scale the indices in the body instead";
+    // Owner rings additionally require role-uniform bounds. Defer their step
+    // check so a thread-dependent step gets the more precise uniformity
+    // diagnostic, and so enclosing owner scopes receive the same validation.
+    if (!IsOwnerRingRelatedScope(scope)) {
+      ICHECK(loop->HasTrivialStep())
+          << "ws_schedule: scope '" << scope->id
+          << "' has a non-unit loop step; write the loop with unit step and "
+             "scale the indices in the body instead";
+    }
     scope->orig_loop = loop;
     scope->stmt = loop;
     MatchScopeBody(scope, loop->body);
@@ -1128,6 +1205,16 @@ private:
             << "ws_schedule: owner-ring scopes cannot have a while-loop "
                "ancestor (scope '"
             << s->id << "')";
+      }
+    }
+    // A role-dependent owner or enclosing extent changes the number of
+    // hand-offs executed by the two roles. Validate the complete ancestor
+    // chain, de-duplicating the parent shared by both owners.
+    std::unordered_set<const Scope *> validated_loop_scopes;
+    for (Scope *owner : pipeline->owner_scopes) {
+      for (Scope *s = owner; s != nullptr; s = s->sched_scope) {
+        if (s->orig_loop.defined() && validated_loop_scopes.insert(s).second)
+          ValidateOwnerRingLoopBounds(s->orig_loop, s->id, role_uniform_vars_);
       }
     }
 
@@ -3293,6 +3380,7 @@ private:
   int fresh_bind_count_ = 0;
   StoragePipelineMap buffer_pipeline_;
   BufferVersionMap versioned_;
+  VarSet role_uniform_vars_;
 };
 
 // Rewrite every schedule-annotated SBlock in place — a function may
@@ -3300,8 +3388,9 @@ private:
 // threadIdx.x binding is widened to each schedule's warp count.
 class WSScheduleRewriter : public StmtMutator {
 public:
-  explicit WSScheduleRewriter(Optional<Target> target)
-      : target_(std::move(target)) {}
+  WSScheduleRewriter(Optional<Target> target, VarSet role_uniform_vars)
+      : target_(std::move(target)),
+        role_uniform_vars_(std::move(role_uniform_vars)) {}
 
   Stmt VisitStmt_(const AttrStmtNode *op) final {
     if (op->attr_key == tirx::attr::thread_extent) {
@@ -3344,7 +3433,7 @@ public:
         << "ws_schedule: PrimFunc has no bound target (BindTarget must run "
            "before MaterializeWSSchedule)";
     WSScheduleMaterializer materializer(GetRef<SBlock>(op), thread_iv_->var,
-                                        target_.value());
+                                        target_.value(), role_uniform_vars_);
     SBlock block = materializer.Run();
     new_extent_ = materializer.NumThreads();
     return block;
@@ -3352,6 +3441,7 @@ public:
 
 private:
   Optional<Target> target_;
+  VarSet role_uniform_vars_;
   IterVar thread_iv_;
   bool multi_dim_threads_ = false;
   int new_extent_ = -1;
@@ -3359,7 +3449,8 @@ private:
 
 // A function without a schedule annotation is returned untouched.
 PrimFunc MaterializeWSScheduleImpl(PrimFunc f) {
-  WSScheduleRewriter rewriter(f->GetAttr<Target>(tvm::attr::kTarget));
+  WSScheduleRewriter rewriter(f->GetAttr<Target>(tvm::attr::kTarget),
+                              KernelRoleUniformVars(f));
   Stmt body = rewriter(f->body);
   if (body.same_as(f->body))
     return f;

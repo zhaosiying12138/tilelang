@@ -43,6 +43,35 @@ def _materialize(func, *, shared_capacity=_LARGE_CAPACITY):
     return transformed
 
 
+def _launch_thread_var(func):
+    (bind,) = [
+        node
+        for node in collect_nodes(func, tirx.Bind)
+        if isinstance(node.value, tirx.Call)
+        and node.value.op.name == "tl.launch_thread_idx"
+        and int(node.value.args[0]) == 0
+    ]
+    return bind.var
+
+
+def _stamp_owner_step(func, step):
+    def add_step(stmt):
+        if isinstance(stmt, tirx.For) and stmt.annotations.get(T.WSID) == "owner0":
+            return tirx.For(
+                stmt.loop_var,
+                stmt.min,
+                stmt.extent,
+                stmt.kind,
+                stmt.body,
+                stmt.thread_binding,
+                stmt.annotations,
+                step=step,
+            )
+        return None
+
+    return func.with_body(tirx.stmt_functor.ir_transform(func.body, None, add_step, ["tirx.For"]))
+
+
 def _buffers(root, name):
     result = [buf for block in collect_nodes(root, tirx.SBlock) for buf in block.alloc_buffers if buf.name == name]
     result.extend(buf for buf in (node.buffer for node in collect_nodes(root, tirx.AllocBuffer)) if buf.name == name)
@@ -120,6 +149,23 @@ def _sync_body(owner, stage=0, read_first=False):
     }
 
 
+def _owner0_loop_range(variant, extents, A, private_bound):
+    if variant == "constant_bounds":
+        return 2, 2 + extents[0]
+    if variant == "symbolic_bounds":
+        return A.shape[0], A.shape[0] + A.shape[0] + 1
+    if variant == "thread_min":
+        tx = T.get_thread_binding()
+        return tx, tx + extents[0]
+    if variant == "thread_extent":
+        return 0, extents[0] + T.get_thread_binding()
+    if variant == "private_min":
+        return private_bound[0], private_bound[0] + extents[0]
+    if variant == "private_extent":
+        return 0, private_bound[0]
+    return 0, extents[0]
+
+
 def _owner_ring_kernel(
     *,
     depth=2,
@@ -148,10 +194,11 @@ def _owner_ring_kernel(
         roles.insert(1, T.WSRole("Extra", warps_lo=1, warps_hi=2))
 
     @T.prim_func
-    def kernel(A: T.Tensor((64,), T.float32), B: T.Tensor((64,), T.float32)):
+    def kernel(A: T.Tensor((T.dynamic("n"),), T.float32), B: T.Tensor((64,), T.float32)):
         with T.Kernel(1, threads=128) as bx:
             ring = T.alloc_shared((4,), T.float32, scope="shared")
             frag = T.alloc_fragment((4,), T.float32)
+            private_bound = T.alloc_local((1,), T.int32) if variant in ("private_min", "private_extent") else None
             if extra_shared:
                 T.alloc_shared((1,), T.float32, scope="shared")
             if variant == "private":
@@ -189,7 +236,10 @@ def _owner_ring_kernel(
                         T.copy(ring, frag, annotations={T.WSID: "consume1"})
                         T.copy(frag, B[(extents[0] + j) * 4], annotations={T.WSID: "output1"})
             else:
-                for i in T.serial(extents[0], annotations={T.WSID: "owner0"}):
+                for i in T.serial(
+                    *_owner0_loop_range(variant, extents, A, private_bound),
+                    annotations={T.WSID: "owner0"},
+                ):
                     if variant == "async":
                         T.async_copy(A[i * 4], ring, annotations={T.WSID: "produce0"})
                     else:
@@ -333,6 +383,34 @@ def test_global_shared_capacity_includes_aligned_allocations_and_barriers(depth,
         _materialize(_owner_ring_kernel(depth=depth, extra_shared=True), shared_capacity=required_bytes)
 
 
+@pytest.mark.parametrize("variant", ["constant_bounds", "symbolic_bounds"])
+def test_role_uniform_owner_loop_bounds_remain_supported(variant):
+    func = _materialize(_owner_ring_kernel(variant=variant))
+    for first_thread in (0, 128):
+        first, second = _owner_loops(_role_body(func, first_thread))
+        if variant == "constant_bounds":
+            assert int(first.min) == 2
+            assert int(first.extent) == 3
+        else:
+            assert isinstance(first.min, tirx.Var) and first.min.name == "n"
+            tvm.ir.assert_structural_equal(first.extent, first.min + 1)
+        assert int(second.min) == 0
+        assert int(second.extent) == 5
+
+
+def test_thread_dependent_owner_loop_step_rejected():
+    func = _owner_ring_kernel()
+    stepped = _stamp_owner_step(func, _launch_thread_var(func) + 1)
+    with pytest.raises(Exception, match="role-uniform"):
+        _materialize(stepped)
+
+
+def test_nonunit_owner_loop_step_still_rejected():
+    stepped = _stamp_owner_step(_owner_ring_kernel(), tirx.IntImm("int32", 2))
+    with pytest.raises(Exception, match="non-unit loop step"):
+        _materialize(stepped)
+
+
 @pytest.mark.parametrize(
     ("variant", "owner_scopes", "message"),
     [
@@ -350,6 +428,10 @@ def test_global_shared_capacity_includes_aligned_allocations_and_barriers(depth,
         ("nested", ("owner0", "owner1"), "ordered siblings"),
         ("async", ("owner0", "owner1"), "asynchronous atom"),
         ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+        ("thread_min", ("owner0", "owner1"), "role-uniform"),
+        ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+        ("private_min", ("owner0", "owner1"), "role-uniform"),
+        ("private_extent", ("owner0", "owner1"), "role-uniform"),
     ],
 )
 def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):

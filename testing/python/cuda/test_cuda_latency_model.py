@@ -89,7 +89,14 @@ def _params(**changes):
     return lm.Calibration.from_json(data).params
 
 
+def _instruction_params(instruction, path="global->shared", **overrides):
+    data = _calibration_data()
+    data["memory_paths"][f"{path}@{instruction}"] = _path(**overrides)
+    return _params(**data)
+
+
 def _copy(payload=130, **kwargs):
+    kwargs.setdefault("instruction", "sync")
     return lm.MemoryAccess("global", "shared", payload, **kwargs)
 
 
@@ -123,7 +130,7 @@ def test_memory_completion_and_independent_ii_formula():
 def test_memory_completion_sums_accesses_while_ii_takes_path_max():
     accesses = [
         _copy(130),
-        lm.MemoryAccess("shared", "register", 65),
+        lm.MemoryAccess("shared", "register", 65, instruction="sync"),
     ]
     cost = lm.estimate_task(lm.TaskFeatures(copies=accesses), _params())
     # Global completion 15; shared completion = 2 + ceil(65/32) + 1 = 6.
@@ -131,6 +138,176 @@ def test_memory_completion_sums_accesses_while_ii_takes_path_max():
     assert (cost.latency, cost.ii) == (21, 4)
     assert cost.terms["memory_path_iis"] == {"global->shared": 4, "shared->register": 3}
     assert cost.terms["resource_flags"] == int(lm.Resource.GLOBAL_LOAD | lm.Resource.SHARED_MEMORY)
+
+
+def test_descriptor_count_formula_and_lanes_never_multiply_total_payload():
+    params = _instruction_params("tma")
+
+    def estimate(lanes):
+        access = _copy(130, instruction="tma", descriptor_count=3, lanes=lanes)
+        return lm.estimate_task(lm.TaskFeatures(copies=[access]), params, require_measured=True)
+
+    cost = estimate(64)
+    # completion = 3*(10+2) + ceil(130/64) = 39.
+    # path II = 3*1 + max(ceil(130/64), 3*3) = 12.
+    assert (cost.latency, cost.ii) == (39, 12)
+    detail = cost.terms["memory_accesses"][0]
+    assert detail["descriptor_completion_cycles"] == 36
+    assert detail["transfer_cycles"] == 3
+    assert detail["descriptor_count"] == 3
+    assert detail["lanes"] == 64
+    assert detail["bytes"] == detail["total_bytes"] == 130
+    assert detail["calibration_path"] == "global->shared@tma"
+    assert cost.fallback_used == ()
+    # lanes documents/proves partitioning; bytes is already the total payload.
+    one_lane = estimate(1)
+    assert (one_lane.latency, one_lane.ii) == (cost.latency, cost.ii)
+    assert one_lane.terms["memory_accesses"][0]["total_bytes"] == 130
+
+
+def test_instruction_path_ii_sums_within_and_takes_max_across_paths():
+    accesses = [
+        _copy(64, instruction="tma", descriptor_count=2),
+        _copy(64, instruction="tma"),
+        _copy(64, instruction="sync"),
+    ]
+    cost = lm.estimate_task(
+        lm.TaskFeatures(copies=accesses), _instruction_params("tma"), require_measured=True
+    )
+    # TMA completions are 25 and 13; generic synchronous completion is 13.
+    # TMA II is (2+6)+(1+3)=12; synchronous II is a separate four-cycle path.
+    assert (cost.latency, cost.ii) == (51, 12)
+    assert cost.terms["memory_path_iis"] == {"global->shared@tma": 12, "global->shared": 4}
+
+
+def test_source_destination_payload_origin_and_role_binding_are_audited():
+    accesses = [
+        _copy(130, payload_origin="source", role="scale_a", binding="gemm0/sfa"),
+        _copy(64, payload_origin="destination", role="accumulator", binding="gemm0/acc"),
+    ]
+    features = lm.TaskFeatures(copies=accesses)
+    cost = lm.estimate_task(features, _params(), require_measured=True)
+    # Native extraction has already selected each total payload. Different
+    # origins do not multiply, infer, or replace those byte counts in Python.
+    assert (cost.latency, cost.ii) == (28, 8)
+    details = cost.terms["memory_accesses"]
+    assert [item["bytes"] for item in details] == [130, 64]
+    assert [item["payload_origin"] for item in details] == ["source", "destination"]
+    assert [item["role"] for item in details] == ["scale_a", "accumulator"]
+    assert [item["binding"] for item in details] == ["gemm0/sfa", "gemm0/acc"]
+    encoded = features.to_dict()["copies"]
+    assert encoded[0]["payload_origin"] == "source"
+    assert encoded[1]["role"] == "accumulator"
+    assert encoded[1]["binding"] == "gemm0/acc"
+
+
+@pytest.mark.parametrize("instruction", ["cp_async", "tma", "tmem_load", "tmem_store"])
+def test_instruction_specific_calibration_keys_are_independent(instruction):
+    params = _instruction_params(instruction)
+    access = _copy(64, instruction=instruction, descriptor_count=2)
+    cost = lm.estimate_task(lm.TaskFeatures(copies=[access]), params, require_measured=True)
+    assert (cost.latency, cost.ii) == (25, 8)
+    detail = cost.terms["memory_accesses"][0]
+    assert detail["instruction"] == instruction
+    assert detail["calibration_path"] == f"global->shared@{instruction}"
+    assert detail["aggregation_path"] == f"global->shared@{instruction}"
+    assert cost.reliability == lm.Reliability.MEASURED
+    assert cost.fallback_used == ()
+
+
+def test_instruction_specific_generic_fallback_is_explicit_and_unmeasured():
+    access = _copy(64, instruction="cp_async", descriptor_count=2)
+    cost = lm.estimate_task(lm.TaskFeatures(copies=[access]), _params())
+    assert (cost.latency, cost.ii) == (25, 8)  # Nonfree generic estimate.
+    assert cost.reliability == lm.Reliability.UNKNOWN
+    assert "memory_instruction:cp_async" in cost.fallback_used
+    detail = cost.terms["memory_accesses"][0]
+    assert detail["calibration_path"] == "global->shared"
+    assert detail["aggregation_path"] == "global->shared@cp_async"
+    with pytest.raises(lm.CalibrationError, match="memory_instruction:cp_async"):
+        lm.estimate_task(lm.TaskFeatures(copies=[access]), _params(), require_measured=True)
+
+
+@pytest.mark.parametrize("instruction", ["auto", "unknown"])
+def test_unresolved_or_unknown_instruction_is_nonfree_and_unmeasured(instruction):
+    access = _copy(64, instruction=instruction)
+    cost = lm.estimate_task(lm.TaskFeatures(copies=[access]), _params())
+    assert (cost.latency, cost.ii) == (13, 4)
+    assert cost.reliability == lm.Reliability.UNKNOWN
+    assert f"memory_instruction:{instruction}" in cost.fallback_used
+    with pytest.raises(lm.CalibrationError, match=f"memory_instruction:{instruction}"):
+        lm.estimate_task(lm.TaskFeatures(copies=[access]), _params(), require_measured=True)
+
+
+def test_legacy_feature_mapping_without_instruction_keeps_measured_generic_contract():
+    legacy_copy = {
+        "src_scope": "global",
+        "dst_scope": "shared",
+        "bytes": 64,
+        "geometry": "coalesced",
+        "width": 0,
+    }
+    features = lm.TaskFeatures.from_dict({"copies": [legacy_copy]})
+    assert features.copies[0].instruction == "sync"
+    cost = lm.estimate_task(features, _params(), require_measured=True)
+    assert cost.reliability == lm.Reliability.MEASURED
+    assert cost.fallback_used == ()
+    assert cost.terms["memory_accesses"][0]["calibration_path"] == "global->shared"
+
+    explicit_auto = lm.TaskFeatures.from_dict({
+        "copies": [dict(legacy_copy, instruction="auto")],
+    })
+    assert explicit_auto.copies[0].instruction == "auto"
+    unresolved = lm.estimate_task(explicit_auto, _params())
+    assert unresolved.reliability == lm.Reliability.UNKNOWN
+    assert "memory_instruction:auto" in unresolved.fallback_used
+
+
+def test_missing_instruction_and_generic_paths_remain_nonfree():
+    access = lm.MemoryAccess(
+        "tmem", "register", 16, instruction="tmem_load", descriptor_count=2
+    )
+    cost = lm.estimate_task(lm.TaskFeatures(copies=[access]), _params())
+    assert cost.latency > 0 and cost.ii > 0
+    assert "memory_instruction:tmem_load" in cost.fallback_used
+    assert "memory_path:tmem->register@tmem_load" in cost.fallback_used
+    assert cost.reliability == lm.Reliability.UNKNOWN
+
+
+def test_dynamic_descriptor_and_lane_extents_are_bounded_and_checked():
+    access = _copy(64, descriptor_count=lm.Extent(2), lanes=lm.Extent(32))
+    cost = lm.estimate_task(lm.TaskFeatures(copies=[access]), _params())
+    assert (cost.latency, cost.ii) == (25, 8)
+    assert cost.reliability == lm.Reliability.UPPER_BOUND
+
+
+def test_composed_serial_branch_uses_instruction_costs_and_keeps_fallbacks():
+    params = _instruction_params("tma")
+    sync_leaf = {"kind": "leaf", "features": {"copies": [_copy(64).to_dict()]}}
+    tma_leaf = {
+        "kind": "leaf",
+        "features": {
+            "copies": [_copy(64, instruction="tma", descriptor_count=2).to_dict()]
+        },
+    }
+    tree = {"kind": "serial", "children": [sync_leaf, {"kind": "branch", "then": tma_leaf, "else": sync_leaf}]}
+    cost = lm.estimate_composed_task(tree, params, require_measured=True)
+    # sync=(13,4), TMA=(25,8), branch=(25,8), serial=(max(13,4+25),4+8).
+    assert (cost.latency, cost.ii) == (29, 12)
+    composition = cost.terms["composition"]
+    branch_features = composition["children"][1]["then"]["features"]["copies"][0]
+    assert branch_features["instruction"] == "tma"
+    assert branch_features["descriptor_count"] == 2
+
+    fallback_leaf = {
+        "kind": "leaf",
+        "features": {"copies": [_copy(64, instruction="cp_async").to_dict()]},
+    }
+    fallback_tree = {"kind": "serial", "children": [sync_leaf, fallback_leaf]}
+    fallback = lm.estimate_composed_task(fallback_tree, _params())
+    assert "memory_instruction:cp_async" in fallback.fallback_used
+    with pytest.raises(lm.CalibrationError, match="memory_instruction:cp_async"):
+        lm.estimate_composed_task(fallback_tree, _params(), require_measured=True)
 
 
 def test_zero_bandwidth_is_explicit_fallback_not_free():
@@ -272,7 +449,7 @@ def test_scope_alias_normalizes_memory_path_and_provenance():
     data["memory_paths"]["global->shared.dyn"] = data["memory_paths"].pop("global->shared")
     params = lm.Calibration.from_json(data).params
     assert "global->shared" in params.memory_paths
-    task = lm.TaskFeatures(copies=[lm.MemoryAccess("global", "shared.dyn", 64)])
+    task = lm.TaskFeatures(copies=[lm.MemoryAccess("global", "shared.dyn", 64, instruction="sync")])
     cost = lm.estimate_task(task, params, require_measured=True)
     assert (cost.latency, cost.ii) == (13, 4)
 
@@ -372,6 +549,63 @@ def test_capacity_independent_completion_and_issue_intervals_differ():
     assert memory.ii == 4
     assert gemm.terms["gemm_latency"] == 9
     assert gemm.ii == 4
+
+
+def test_descriptor_completion_arithmetic_is_checked_for_overflow():
+    access = _copy(1, instruction="tma", descriptor_count=lm.INT64_MAX)
+    with pytest.raises(OverflowError, match="memory descriptor completion"):
+        lm.estimate_task(lm.TaskFeatures(copies=[access]), _instruction_params("tma"))
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"instruction": "dense"},
+        {"instruction": ""},
+        {"instruction": 1},
+        {"payload_origin": "source_bytes"},
+        {"payload_origin": 1},
+        {"role": "scale"},
+        {"role": 1},
+        {"binding": 1},
+        {"descriptor_count": 0},
+        {"descriptor_count": -1},
+        {"descriptor_count": True},
+        {"descriptor_count": lm.Extent(None)},
+        {"lanes": 0},
+        {"lanes": -1},
+        {"lanes": True},
+        {"lanes": lm.Extent(None)},
+    ],
+)
+def test_invalid_copy_instruction_geometry_and_payload_metadata_are_rejected(changes):
+    with pytest.raises((TypeError, ValueError)):
+        access = _copy(64, **changes)
+        lm.estimate_task(lm.TaskFeatures(copies=[access]), _params())
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "global->shared@",
+        "global->shared@auto",
+        "global->shared@sync",
+        "global->shared@unknown",
+        "global->shared@TMA",
+        "global->shared@tma@cp_async",
+    ],
+)
+def test_invalid_instruction_calibration_suffix_is_rejected(path):
+    with pytest.raises(ValueError, match="instruction suffix"):
+        lm.CudaLatencyParams(memory_paths={path: lm.MemoryPathParams()})
+
+
+def test_duplicate_canonical_instruction_path_is_rejected():
+    with pytest.raises(ValueError, match="Duplicate canonical memory path"):
+        lm.CudaLatencyParams(memory_paths={
+            "global->shared@tma": lm.MemoryPathParams(),
+            "global->shared.dyn@tma": lm.MemoryPathParams(),
+        })
 
 
 def test_integer_overflow_and_invalid_values_are_rejected():

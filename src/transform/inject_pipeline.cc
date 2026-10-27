@@ -32,6 +32,7 @@
 #include "common/bind_utils.h"
 #include "common/mbarrier.h"
 #include "common/pipeline_utils.h"
+#include "common/z3_schedule_hints.h"
 #include "layout/layout.h"
 #include "op/builtin.h"
 #include "op/copy.h"
@@ -61,8 +62,8 @@ using BufferShapeMap =
     std::unordered_map<Buffer, PrimExpr, ObjectPtrHash, ObjectPtrEqual>;
 using BufferVersionOverrideMap =
     std::unordered_map<Var, int, ObjectPtrHash, ObjectPtrEqual>;
-using BufferCommitGroupMap =
-    std::unordered_map<Buffer, int, ObjectPtrHash, ObjectPtrEqual>;
+using StorageCommitGroupMap =
+    std::unordered_map<Var, int, ObjectPtrHash, ObjectPtrEqual>;
 using BlockDependencyGraph =
     std::unordered_map<SBlock, Array<SBlock>, ObjectPtrHash, ObjectPtrEqual>;
 
@@ -176,7 +177,11 @@ public:
   BufferUsageCollector(const Map<Var, Buffer> &buffer_data_to_buffer,
                        const BufferSet &allocated_buffers)
       : buffer_data_to_buffer_(buffer_data_to_buffer),
-        allocated_buffers_(allocated_buffers) {}
+        allocated_buffers_(allocated_buffers) {
+    for (const Buffer &buffer : allocated_buffers) {
+      allocated_buffers_by_data_.emplace(buffer->data, buffer);
+    }
+  }
 
   Array<Buffer> Collect(const Stmt &stmt) {
     this->VisitStmt(stmt);
@@ -233,14 +238,23 @@ private:
   }
 
   void AddBuffer(const Buffer &buffer) {
-    // Only add buffers that are allocated (not function input/output buffers)
+    // Preserve distinct explicit allocations so ambiguous same-storage maps are
+    // still rejected by ReadBufferVersionOverrides. Only non-allocation views
+    // are canonicalized to their owning allocation here.
     if (allocated_buffers_.count(buffer)) {
       used_buffers_.insert(buffer);
+      return;
+    }
+    auto it = allocated_buffers_by_data_.find(buffer->data);
+    if (it != allocated_buffers_by_data_.end()) {
+      used_buffers_.insert(it->second);
     }
   }
 
   const Map<Var, Buffer> &buffer_data_to_buffer_;
   const BufferSet &allocated_buffers_;
+  std::unordered_map<Var, Buffer, ObjectPtrHash, ObjectPtrEqual>
+      allocated_buffers_by_data_;
   BufferSet used_buffers_;
 };
 
@@ -1062,40 +1076,104 @@ public:
                        const Map<Buffer, Buffer> &buffer_remap,
                        For pipeline_loop, bool access_all_versions)
       : buffer_data_to_buffer_(buffer_data_to_buffer),
-        buffer_remap_(buffer_remap), pipeline_loop_(std::move(pipeline_loop)),
-        access_all_versions_(access_all_versions) {}
+        pipeline_loop_(std::move(pipeline_loop)),
+        access_all_versions_(access_all_versions) {
+    for (const auto &kv : buffer_remap) {
+      auto inserted = storage_remap_.emplace(
+          kv.first->data, RemappedStorage{kv.first, kv.second});
+      ICHECK(inserted.second)
+          << "InjectSoftwarePipeline: multiple allocated Buffer objects share "
+             "data Var "
+          << kv.first->data
+          << "; storage versioning requires one canonical allocation";
+    }
+  }
 
-private:
+ private:
+  struct RemappedStorage {
+    Buffer source;
+    Buffer versioned;
+  };
+
+  PrimExpr ElementProduct(const Array<PrimExpr> &input) const {
+    return foldl(
+        [](PrimExpr a, PrimExpr b, Span span) {
+          return mul(std::move(a), std::move(b), std::move(span));
+        },
+        make_const(DataType::Int(32), 1), input);
+  }
+
+  Buffer MakeVersionedView(const Buffer &view,
+                           const RemappedStorage &storage) const {
+    ICHECK(view->dtype == storage.source->dtype)
+        << "InjectSoftwarePipeline: cannot version alias view " << view
+        << " with element dtype different from its canonical allocation "
+        << storage.source;
+    ICHECK(view->axis_separators.empty())
+        << "InjectSoftwarePipeline: cannot prove ring versioning safe for "
+           "alias view with axis separators: "
+        << view;
+
+    ObjectPtr<BufferNode> new_buffer = make_object<BufferNode>(*(view.get()));
+    new_buffer->shape.insert(new_buffer->shape.begin(),
+                             storage.versioned->shape[0]);
+
+    // Every ring slot has the canonical allocation's physical extent. Preserve
+    // the alias's view-relative indexing and elem_offset, but use that canonical
+    // stride for the new leading dimension. Explicit compact trailing strides
+    // are equivalent for an originally compact view and also handle subviews
+    // whose per-version footprint differs from the canonical allocation.
+    PrimExpr version_stride = storage.versioned->strides.empty()
+                                  ? ElementProduct(storage.source->shape)
+                                  : storage.versioned->strides[0];
+    if (view->strides.empty()) {
+      Array<PrimExpr> compact_strides;
+      PrimExpr stride = make_const(DataType::Int(32), 1);
+      for (size_t i = view->shape.size(); i-- > 0;) {
+        compact_strides.insert(compact_strides.begin(), stride);
+        stride = mul(stride, view->shape[i]);
+      }
+      new_buffer->strides = std::move(compact_strides);
+    } else {
+      ICHECK_EQ(view->strides.size(), view->shape.size());
+    }
+    new_buffer->strides.insert(new_buffer->strides.begin(), version_stride);
+    return Buffer(new_buffer);
+  }
+
+  Optional<Buffer> GetVersionedBuffer(const Buffer &buffer) const {
+    auto it = storage_remap_.find(buffer->data);
+    if (it == storage_remap_.end()) {
+      return Optional<Buffer>();
+    }
+    if (buffer.same_as(it->second.source)) {
+      return it->second.versioned;
+    }
+    return MakeVersionedView(buffer, it->second);
+  }
+
   BufferRegion
   RewritePipelineBufferRegion(const BufferRegion &buffer_region) const {
-    auto it = buffer_remap_.find(buffer_region->buffer);
-    if (it != buffer_remap_.end()) {
+    if (Optional<Buffer> new_buffer =
+            GetVersionedBuffer(buffer_region->buffer)) {
       Region new_region = buffer_region->region;
-      const Buffer &new_buffer = (*it).second;
       // For pipeline buffers, relax the access region of the first dimension to
       // full extent if access_all_versions == true
       Range accessed_version =
           access_all_versions_
-              ? Range::FromMinExtent(0, new_buffer->shape[0])
+              ? Range::FromMinExtent(0, new_buffer.value()->shape[0])
               : Range::FromMinExtent(
                     floormod((pipeline_loop_->loop_var - pipeline_loop_->min),
-                             new_buffer->shape[0]),
+                             new_buffer.value()->shape[0]),
                     Integer(1));
       new_region.insert(new_region.begin(), accessed_version);
-      return BufferRegion(new_buffer, new_region);
+      return BufferRegion(new_buffer.value(), new_region);
     }
     return buffer_region;
   }
 
   PrimExpr RewriteBufferAccess(const Call &call,
                                const std::vector<int> &arg_indices) {
-    auto product = [](const Array<PrimExpr> &input) {
-      return foldl(
-          [](PrimExpr a, PrimExpr b, Span span) {
-            return mul(std::move(a), std::move(b), std::move(span));
-          },
-          make_const(DataType::Int(32), 1), input);
-    };
     Array<PrimExpr> new_args = call->args;
     for (int i : arg_indices) {
       auto buffer_var = Downcast<Var>(call->args[i]);
@@ -1104,20 +1182,15 @@ private:
         continue;
       }
       const Buffer &buffer = (*buf_it).second;
-      auto it = buffer_remap_.find(buffer);
-      if (it != buffer_remap_.end()) {
-        const Buffer &new_buffer = (*it).second;
+      if (Optional<Buffer> new_buffer = GetVersionedBuffer(buffer)) {
         const PrimExpr &old_index = call->args[i + 1];
-        PrimExpr offset;
-        if (new_buffer->strides.empty()) {
-          offset = product(buffer->shape);
-        } else {
-          offset = new_buffer->strides[0];
-        }
+        PrimExpr offset = new_buffer.value()->strides.empty()
+                              ? ElementProduct(buffer->shape)
+                              : new_buffer.value()->strides[0];
         PrimExpr new_index =
             old_index +
             floormod((pipeline_loop_->loop_var - pipeline_loop_->min),
-                     new_buffer->shape[0]) *
+                     new_buffer.value()->shape[0]) *
                 offset;
         new_args.Set(i + 1, new_index);
       }
@@ -1145,30 +1218,30 @@ private:
 
   Stmt VisitStmt_(const BufferStoreNode *op) final {
     BufferStore store = Downcast<BufferStore>(StmtExprMutator::VisitStmt_(op));
-    auto it = buffer_remap_.find(store->buffer);
-    if (it == buffer_remap_.end()) {
+    Optional<Buffer> new_buffer = GetVersionedBuffer(store->buffer);
+    if (!new_buffer) {
       return store;
     }
-    const Buffer &new_buffer = (*it).second;
     auto *n = store.CopyOnWrite();
-    n->buffer = new_buffer;
+    n->buffer = new_buffer.value();
     PrimExpr version = floormod(
-        (pipeline_loop_->loop_var - pipeline_loop_->min), new_buffer->shape[0]);
+        (pipeline_loop_->loop_var - pipeline_loop_->min),
+        new_buffer.value()->shape[0]);
     n->indices.insert(n->indices.begin(), version);
     return store;
   }
 
   PrimExpr VisitExpr_(const BufferLoadNode *op) final {
     BufferLoad load = Downcast<BufferLoad>(StmtExprMutator::VisitExpr_(op));
-    auto it = buffer_remap_.find(load->buffer);
-    if (it == buffer_remap_.end()) {
+    Optional<Buffer> new_buffer = GetVersionedBuffer(load->buffer);
+    if (!new_buffer) {
       return load;
     }
-    const Buffer &new_buffer = (*it).second;
     auto *n = load.CopyOnWrite();
-    n->buffer = new_buffer;
+    n->buffer = new_buffer.value();
     PrimExpr version = floormod(
-        (pipeline_loop_->loop_var - pipeline_loop_->min), new_buffer->shape[0]);
+        (pipeline_loop_->loop_var - pipeline_loop_->min),
+        new_buffer.value()->shape[0]);
     n->indices.insert(n->indices.begin(), version);
     return load;
   }
@@ -1198,7 +1271,8 @@ private:
   }
 
   Map<Var, Buffer> buffer_data_to_buffer_;
-  Map<Buffer, Buffer> buffer_remap_;
+  std::unordered_map<Var, RemappedStorage, ObjectPtrHash, ObjectPtrEqual>
+      storage_remap_;
   For pipeline_loop_;
   bool access_all_versions_;
 };
@@ -1332,10 +1406,10 @@ public:
     // dependencies must be known before sizing buffers so an explicit override
     // cannot under-provision this shape.
     AnalyzeMultiAsyncStageDependencies();
-    std::unordered_map<Buffer, BufferAccessInfo, ObjectPtrHash, ObjectPtrEqual>
+    std::unordered_map<Var, BufferAccessInfo, ObjectPtrHash, ObjectPtrEqual>
         infos = GetBufferAccessInfo();
     for (const Buffer &buffer : pipeline_allocs_) {
-      auto it = infos.find(buffer);
+      auto it = infos.find(buffer->data);
       bool has_override = buffer_version_overrides_.count(buffer->data) > 0;
       if (it == infos.end() && !has_override) {
         // Buffer is not accessed in the pipeline blocks, skip it unless an
@@ -1597,8 +1671,25 @@ private:
     // both reads and writes. That metadata is not an asynchronous consumption
     // of the value being overwritten. Restrict the exemption to a standalone
     // copy with a distinct source; an actual RMW or any cross-buffer read must
-    // continue through the async-consumer rejection below.
-    const auto *evaluate = block->body.as<EvaluateNode>();
+    // continue through the async-consumer rejection below. Public T.Task/T.Stage
+    // normalization can leave transparent schedule markers around the copy.
+    // Unwrap only those markers and singleton sequences, never arbitrary
+    // attributes or composite bodies.
+    Stmt body = block->body;
+    while (true) {
+      if (const auto *attr = body.as<AttrStmtNode>();
+          attr != nullptr && IsZ3ScheduleUnitAttrKey(attr->attr_key)) {
+        body = attr->body;
+        continue;
+      }
+      if (const auto *seq = body.as<SeqStmtNode>();
+          seq != nullptr && seq->seq.size() == 1) {
+        body = seq->seq[0];
+        continue;
+      }
+      break;
+    }
+    const auto *evaluate = body.as<EvaluateNode>();
     if (evaluate == nullptr) {
       return false;
     }
@@ -1614,7 +1705,7 @@ private:
   }
 
   void AnalyzeMultiAsyncStageDependencies() {
-    std::unordered_map<Buffer, std::unordered_set<int>, ObjectPtrHash,
+    std::unordered_map<Var, std::unordered_set<int>, ObjectPtrHash,
                        ObjectPtrEqual>
         async_writer_stages;
     for (const auto &[block, anno] : pipeline_info_) {
@@ -1622,17 +1713,18 @@ private:
         continue;
       }
       for (const BufferRegion &write : block->writes) {
-        async_writer_stages[write->buffer].insert(anno.stage);
+        async_writer_stages[write->buffer->data].insert(anno.stage);
       }
     }
 
+    // Activation is a property of the dependency graph, not of whether a
+    // synchronous consumer happens to expose it. Async consumers participate in
+    // this scan as well so the validation below cannot be bypassed when they
+    // are the only consumers of multiple async producer stages.
     for (const auto &[block, anno] : pipeline_info_) {
-      if (anno.async) {
-        continue;
-      }
       std::unordered_set<int> required_stages;
       for (const BufferRegion &read : block->reads) {
-        auto writers = async_writer_stages.find(read->buffer);
+        auto writers = async_writer_stages.find(read->buffer->data);
         if (writers == async_writer_stages.end()) {
           continue;
         }
@@ -1641,9 +1733,12 @@ private:
           if (stage > anno.stage) {
             continue;
           }
+          if (anno.async && stage == anno.stage &&
+              IsSelfProducedCopyDestinationRead(block, read)) {
+            continue;
+          }
           ICHECK_EQ(producer_stage, -1)
-              << "InjectSoftwarePipeline: a synchronous consumer depends on "
-                 "buffer "
+              << "InjectSoftwarePipeline: a consumer depends on buffer "
               << read->buffer
               << " written by multiple async producer stages; this layout is "
                  "unsupported";
@@ -1673,7 +1768,7 @@ private:
              "multi-async-stage pipeline waits cannot be mixed";
       if (anno.async) {
         for (const BufferRegion &read : block->reads) {
-          auto writers = async_writer_stages.find(read->buffer);
+          auto writers = async_writer_stages.find(read->buffer->data);
           if (writers == async_writer_stages.end()) {
             continue;
           }
@@ -1704,9 +1799,9 @@ private:
    * software pipeline, which can be used to compute the number of versions
    * needed to maintain after rewriting.
    */
-  std::unordered_map<Buffer, BufferAccessInfo, ObjectPtrHash, ObjectPtrEqual>
+  std::unordered_map<Var, BufferAccessInfo, ObjectPtrHash, ObjectPtrEqual>
   GetBufferAccessInfo() {
-    std::unordered_map<Buffer, BufferAccessInfo, ObjectPtrHash, ObjectPtrEqual>
+    std::unordered_map<Var, BufferAccessInfo, ObjectPtrHash, ObjectPtrEqual>
         infos;
     for (const auto &pair : pipeline_info_) {
       const SBlock &block = pair.first;
@@ -1714,10 +1809,10 @@ private:
       max_stage_ = std::max(max_stage_, stage);
 
       for (const BufferRegion &write : block->writes) {
-        if (!infos.count(write->buffer)) {
-          infos.emplace(write->buffer, BufferAccessInfo{});
+        if (!infos.count(write->buffer->data)) {
+          infos.emplace(write->buffer->data, BufferAccessInfo{});
         }
-        auto &info = infos.at(write->buffer);
+        auto &info = infos.at(write->buffer->data);
         if (info.def == -1) {
           info.def = stage;
         } else {
@@ -1726,10 +1821,10 @@ private:
       }
 
       for (const BufferRegion &read : block->reads) {
-        if (!infos.count(read->buffer)) {
-          infos.emplace(read->buffer, BufferAccessInfo{});
+        if (!infos.count(read->buffer->data)) {
+          infos.emplace(read->buffer->data, BufferAccessInfo{});
         }
-        auto &info = infos.at(read->buffer);
+        auto &info = infos.at(read->buffer->data);
         info.use = std::max(info.use, stage);
       }
     }
@@ -1798,7 +1893,8 @@ private:
         auto it1 = std::find_if(writer_block->writes.begin(),
                                 writer_block->writes.end(),
                                 [&](const BufferRegion &buffer_region) {
-                                  return buffer_region->buffer.same_as(buffer);
+                                  return buffer_region->buffer->data.same_as(
+                                      buffer->data);
                                 });
         if (it1 == writer_block->writes.end()) {
           continue;
@@ -1810,7 +1906,7 @@ private:
           auto it2 = std::find_if(
               reader_block->reads.begin(), reader_block->reads.end(),
               [&](const BufferRegion &buffer_region) {
-                return buffer_region->buffer.same_as(buffer);
+                return buffer_region->buffer->data.same_as(buffer->data);
               });
           if (it2 == reader_block->reads.end()) {
             continue;
@@ -1848,13 +1944,13 @@ private:
   }
 
   struct AsyncStateGlobal {
-    BufferSet dst_buffers;
-    BufferCommitGroupMap buffer_to_commit_group;
+    VarSet dst_buffers;
+    StorageCommitGroupMap buffer_to_commit_group;
     int commit_group_count{0};
     Optional<PrimExpr> producer_head{PrimExpr(-1)};
 
     bool writes(const Buffer &buffer) const {
-      return dst_buffers.count(buffer) > 0;
+      return dst_buffers.count(buffer->data) > 0;
     }
   };
 
@@ -1866,8 +1962,8 @@ private:
       bool valid() const { return wait_count.defined(); }
     };
 
-    BufferSet seen;
-    BufferCommitGroupMap buffer_to_commit_group;
+    VarSet seen;
+    StorageCommitGroupMap buffer_to_commit_group;
     Optional<PrimExpr> producer_head;
     Optional<PrimExpr> predicate;
     std::vector<std::vector<size_t>> commit_groups;
@@ -2864,15 +2960,15 @@ private:
                  "pipeline";
         }
       }
-      for (const Buffer &buffer : global_state.dst_buffers) {
-        auto local_group = state.buffer_to_commit_group.find(buffer);
-        auto global_group = global_state.buffer_to_commit_group.find(buffer);
+      for (const Var &buffer_data : global_state.dst_buffers) {
+        auto local_group = state.buffer_to_commit_group.find(buffer_data);
+        auto global_group = global_state.buffer_to_commit_group.find(buffer_data);
         ICHECK(local_group != state.buffer_to_commit_group.end() &&
                global_group != global_state.buffer_to_commit_group.end() &&
                local_group->second == global_group->second)
             << "InjectSoftwarePipeline: cannot prove a stable commit-group "
-               "mapping for buffer "
-            << buffer << " in async producer stage " << stage_id;
+               "mapping for Buffer.data Var "
+            << buffer_data << " in async producer stage " << stage_id;
       }
     }
 
@@ -2907,7 +3003,7 @@ private:
       if (new_stmts[i].is_async) {
         auto &local_state = (*async_states_local)[new_stmts[i].stage];
         for (const BufferRegion &write_region : new_stmts[i].writes) {
-          local_state.seen.insert(write_region->buffer);
+          local_state.seen.insert(write_region->buffer->data);
         }
         int commit_group_id = stmt_to_commit_group[i];
         if (commit_group_id >= 0) {
@@ -2923,7 +3019,7 @@ private:
       // Gather every producer stage and buffer before selecting any wait.
       // Commit-group lookup is deliberately deferred to the stage-local (or
       // that stage's global tail) mapping so another stage cannot overwrite it.
-      std::map<int, BufferSet> required_buffers;
+      std::map<int, VarSet> required_buffers;
       for (const BufferRegion &read_region : new_stmts[i].reads) {
         int producer_stage = -1;
         for (const auto &kv : async_states_) {
@@ -2937,7 +3033,7 @@ private:
           }
         }
         if (producer_stage != -1) {
-          required_buffers[producer_stage].insert(read_region->buffer);
+          required_buffers[producer_stage].insert(read_region->buffer->data);
         }
       }
 
@@ -2960,7 +3056,7 @@ private:
           auto &dep_local_state = (*async_states_local)[producer_stage];
           const auto &global_state = async_states_.at(producer_stage);
           int num_commit_group = dep_local_state.commit_groups.size();
-          const BufferCommitGroupMap *buffer_to_commit_group =
+          const StorageCommitGroupMap *buffer_to_commit_group =
               &dep_local_state.buffer_to_commit_group;
           int latest_group_id = -1;
           Optional<PrimExpr> latest_producer_head;
@@ -2992,18 +3088,19 @@ private:
           }
 
           Optional<PrimExpr> stage_wait_count;
-          for (const Buffer &buffer : buffers) {
-            auto group = buffer_to_commit_group->find(buffer);
+          for (const Var &buffer_data : buffers) {
+            auto group = buffer_to_commit_group->find(buffer_data);
             ICHECK(group != buffer_to_commit_group->end())
-                << "InjectSoftwarePipeline: buffer " << buffer
+                << "InjectSoftwarePipeline: Buffer.data Var " << buffer_data
                 << " has no commit-group mapping in async producer stage "
                 << producer_stage;
             int commit_group_id = group->second;
             ICHECK_GE(commit_group_id, 0);
             ICHECK_LT(commit_group_id, num_commit_group);
             ICHECK(latest_producer_head)
-                << "InjectSoftwarePipeline: missing async producer head for buffer "
-                << buffer << " in producer stage " << producer_stage;
+                << "InjectSoftwarePipeline: missing async producer head for "
+                   "Buffer.data Var "
+                << buffer_data << " in producer stage " << producer_stage;
 
             PrimExpr wait_count = analyzer_.Simplify(
                 (latest_producer_head.value() - new_stmts[i].access_index) *
@@ -3055,7 +3152,8 @@ private:
               continue;
             }
             auto it =
-                global_state.buffer_to_commit_group.find(read_region->buffer);
+                global_state.buffer_to_commit_group.find(
+                    read_region->buffer->data);
             if (it == global_state.buffer_to_commit_group.end()) {
               handled = false;
               break;
@@ -3114,7 +3212,8 @@ private:
           continue;
         }
         auto group =
-            dep_local_state.buffer_to_commit_group.find(read_region->buffer);
+            dep_local_state.buffer_to_commit_group.find(
+                read_region->buffer->data);
         ICHECK(group != dep_local_state.buffer_to_commit_group.end())
             << "InjectSoftwarePipeline: missing stage-local commit-group "
                "mapping for buffer "
@@ -3429,29 +3528,28 @@ private:
         }
 
         for (const BufferRegion &write_region : new_block->writes) {
+          const Var &buffer_data = write_region->buffer->data;
           auto &global_state = async_states_[stage];
-          global_state.dst_buffers.insert(write_region->buffer);
+          global_state.dst_buffers.insert(buffer_data);
           if (multi_async_producer_stages_.count(stage)) {
             auto local_group =
-                local_state.buffer_to_commit_group.find(write_region->buffer);
+                local_state.buffer_to_commit_group.find(buffer_data);
             ICHECK(local_group == local_state.buffer_to_commit_group.end() ||
                    local_group->second == commit_group_id)
-                << "InjectSoftwarePipeline: buffer " << write_region->buffer
+                << "InjectSoftwarePipeline: Buffer.data Var " << buffer_data
                 << " changes physical commit group within async producer stage "
                 << stage;
             auto global_group =
-                global_state.buffer_to_commit_group.find(write_region->buffer);
+                global_state.buffer_to_commit_group.find(buffer_data);
             ICHECK(global_group == global_state.buffer_to_commit_group.end() ||
                    global_group->second == commit_group_id)
-                << "InjectSoftwarePipeline: buffer " << write_region->buffer
+                << "InjectSoftwarePipeline: Buffer.data Var " << buffer_data
                 << " changes physical commit group across pipeline fragments "
                    "in async producer stage "
                 << stage;
           }
-          local_state.buffer_to_commit_group[write_region->buffer] =
-              commit_group_id;
-          global_state.buffer_to_commit_group[write_region->buffer] =
-              commit_group_id;
+          local_state.buffer_to_commit_group[buffer_data] = commit_group_id;
+          global_state.buffer_to_commit_group[buffer_data] = commit_group_id;
           global_state.commit_group_count =
               std::max(global_state.commit_group_count,
                        static_cast<int>(local_state.commit_groups.size()));

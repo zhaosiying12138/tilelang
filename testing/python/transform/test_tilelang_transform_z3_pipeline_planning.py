@@ -154,6 +154,38 @@ def _make_statement_func(statements, buffers, annotations, loop_var, *, num_stag
     return func.with_attr("global_symbol", "main")
 
 
+def _public_stage_func(*, num_stages=1):
+    tir = tvm.tirx
+    a = tir.decl_buffer((8,), "int32", name="public_stage_A")
+    b = tir.decl_buffer((8,), "int32", name="public_stage_B")
+    k = tir.Var("k", "int32")
+    annotations = _annotations(
+        latencies=[2, 2],
+        iis=[1, 1],
+        resource_flags=[1, 1],
+        enable_offset=True,
+    )
+
+    def task(body):
+        return tir.AttrStmt({}, "tl.cuda_z3_task", tir.IntImm("int32", 1), body)
+
+    def stage(value, body):
+        return tir.AttrStmt(tir.IntImm("int64", value), "tl.cuda_z3_stage", tir.IntImm("int32", 1), body)
+
+    statements = [
+        stage(1, task(tir.BufferStore(a, k, [k]))),
+        stage(2, task(tir.BufferStore(b, k, [k]))),
+    ]
+    return _make_statement_func(statements, [a, b], annotations, k, num_stages=num_stages)
+
+
+def _run_normalized_z3(func):
+    before = _bound_module(func)
+    normalized = tl.transform.NormalizeZ3ScheduleUnits()(before)
+    with tvm.transform.PassContext(config={_CONFIG: True}):
+        return tl.transform.Z3PipelinePlanning()(normalized)
+
+
 def _clone_plan(loop):
     key = "tl_pipeline_scalar_clone_plan"
     return list(loop.annotations[key]) if key in loop.annotations else []
@@ -1057,6 +1089,25 @@ def test_non_positive_buffer_version_is_rejected():
 
     with pytest.raises(Exception, match="non-positive version"):
         _run_z3(func)
+
+
+def test_public_stage_bound_does_not_truncate_depth_and_source_order_is_derived():
+    calls = _install_solver(([4, 8], [], 4))
+
+    loop = _find_loop(_run_normalized_z3(_public_stage_func(num_stages=1))["main"])
+
+    assert int(calls[0]["num_stages"]) == 1
+    assert _ints(calls[0]["manual_stages"]) == [1, 2]
+    assert _nested_ints(calls[0]["pipe_order_deps"]) == [[0, 1]]
+    assert _ints(loop.annotations["tl_pipeline_stage"]) == [0, 1]
+    assert int(loop.annotations["num_stages"]) == 2
+
+
+def test_public_stage_manual_infeasibility_propagates_without_fallback():
+    _install_solver(tl.cuda.transform.Z3ScheduleInfeasibleError("public stage UNSAT"))
+
+    with pytest.raises(Exception, match="public stage UNSAT"):
+        _run_normalized_z3(_public_stage_func())
 
 
 @pytest.mark.parametrize(

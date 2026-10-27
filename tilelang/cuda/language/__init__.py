@@ -65,6 +65,7 @@ from tilelang.language.kernel import ClusterKernel, CUDASourceCodeKernel  # noqa
 # are recorded on the op and consumed by the CUDA pipeline.
 from .kernel import Kernel  # noqa: F401
 from .reduce_op import reduce_absmax, reduce_max, reduce_min  # noqa: F401
+from .schedule_hint import Stage, Task  # noqa: F401
 from tilelang.language.math_intrinsics import (  # noqa: F401
     __cos,
     __exp,
@@ -140,6 +141,8 @@ _CUDA_API_ALL = (
     "reduce_max",
     "reduce_min",
     "Parallel",
+    "Stage",
+    "Task",
     "Unroll",
     "atomic_add",
     "copy",
