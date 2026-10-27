@@ -43,11 +43,22 @@ bwd guided 的 compile/profile 次数分别减少 **66.7% / 50.0%**。等预算�
 
 ## 3. 预测排序能否保留好候选
 
-fwd 三个合法配置的 Spearman 与 Kendall 都为 1.0。bwd 六个合法配置的 Spearman 为 **0.794461**，Kendall tau-b 为 **0.644503**；top-1/top-2/top-3 recall 分别为 **1.0 / 0.5 / 1.0**。top-1 已保留实测最优；top-2 只覆盖前两名之一，漏掉实测第二，预注册的 top-3 则同时保留前两名。不能把 top-2 recall=0.5 写成漏掉最优。
+排名分析按 direction 和 repetition 分别连接 guided 预测与同轮完整 `z3-legal-exhaustive` 实测。每个配置在每轮只有一个样本，六个 direction/repetition 的 oracle 都完整，没有跨 arm 或跨 repetition  pooled median，也没有把 winner-confirmation 数据混入。表中 recall 是预测最低 k 项与实测最低 k 项的集合交集比例，预测和实测并列均按 canonical compact JSON config 决定选择顺序；展示名次另保留平均 tied rank。
 
-![预测名次与完整 oracle 实测名次](../../evidence/G6/gdn-heldout-t8192-v1/analysis/prediction-rank.png)
+| 方向 / repetition | 配对数 | Spearman | Kendall tau-b | top-1 recall | top-2 recall | top-3 recall | 实际预算 recall |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| fwd / 0、1、2（每轮） | 3 | 1.000000 | 1.000000 | 1.0 | 1.0 | 1.0 | 1.0（top-2） |
+| bwd / 0 | 6 | 0.882735 | 0.787726 | 0.0 | 1.0 | 1.0 | 1.0（top-3） |
+| bwd / 1 | 6 | 0.882735 | 0.787726 | 0.0 | 1.0 | 1.0 | 1.0（top-3） |
+| bwd / 2 | 6 | 0.794461 | 0.644503 | 0.0 | 0.5 | 1.0 | 1.0（top-3） |
 
-这些相关性使用全部 legal 配置的预测和实测，成本单独记录在 `z3-legal-exhaustive` 与 stock-raw 中。模型没有被宣传为绝对延迟预测器；它在这里承担保守剪枝后的候选排序，最终正确性与 latency 仍由真实执行决定。
+三轮中位数为：fwd 的 Spearman/Kendall 均为 1.0；bwd 分别为 **0.882735 / 0.787726**，top-1/top-2/top-3 recall 为 **0 / 1 / 1**。bwd 第 2 轮的 top-2 recall 仍是 0.5，不能只写中位数而隐去逐轮差异。两个方向的实测最优都在三轮的实际 deterministic 预算中，fwd top-2 与 bwd top-3 的预算 recall 均为 1.0。
+
+bwd 每轮都有两组同分：`stage=2, group=16` 与实测最优的 `stage=2, group=8` 同分，平均 rank 都是 1.5；canonical JSON 将 group=16 排第 1、group=8 排第 2，因此 top-1 recall 为 0，而最优项的 canonical rank 为 2。`stage=1` 的 group=16/8 也有同分，平均 rank 为 4.5。这里不再用输入顺序让 top-1“碰巧”覆盖最优，全部 tie、canonical 顺序和逐轮分母见 [prediction-rank.json](../../evidence/G6/gdn-heldout-t8192-v1/analysis/prediction-rank.json)。
+
+![cold-search 预测名次与同轮 legal-oracle 实测名次](../../evidence/G6/gdn-heldout-t8192-v1/analysis/prediction-rank.png)
+
+这些相关性先逐轮计算，再对三轮指标取中位数；完整 legal-oracle 的成本单独记录在 `z3-legal-exhaustive` 与 stock-raw 中，不是免费附赠品。模型没有被宣传为绝对延迟预测器；它在这里承担保守剪枝后的候选排序，最终正确性与 latency 仍由真实执行决定。
 
 ## 4. 七轮独立确认
 

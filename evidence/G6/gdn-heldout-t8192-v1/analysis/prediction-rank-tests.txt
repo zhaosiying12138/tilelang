@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn
+configfile: pytest.ini
+plugins: xdist-3.8.0, platformdirs-4.13.5, durations-1.10.0, timeout-2.4.0
+collected 8 items
+
+benchmark/z3_cost_model/gdn/tests/test_analysis.py ........              [100%]
+
+============================= fixture duration top =============================
+total          name        num med            max           
+0:00:00.000075 grand total   2 0:00:00.000038 0:00:00.000051
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.011569 grand total   8 0:00:00.001219 0:00:00.003845
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.003163 grand total   8 0:00:00.000085 0:00:00.002599
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000246 grand total   8 0:00:00.000030 0:00:00.000040
+============================== 8 passed in 0.06s ===============================

@@ -1,15 +1,1083 @@
 {
   "schema_version": 1,
-  "plot": "prediction_rank",
-  "lower_is_better": true,
-  "tie_rule": "average ranks; top-k ties use prediction input order",
+  "analysis_schema": "gdn-prediction-rank/v2",
+  "measurement_scope": "cold-search trials only; no winner-confirmation measurements",
+  "score_arm": "z3-cm-topk",
+  "oracle_policy": "same direction and repetition; complete z3-legal-exhaustive successful trials, otherwise same-repetition stock-raw successful trials with legal_oracle_complete=false",
+  "config_id_rule": "SHA-256 of canonical compact JSON config",
+  "selection_tie_rule": "finite prediction score or measured latency, then canonical compact JSON config",
+  "display_rank_rule": "predicted_rank/actual_rank are average tied ranks; canonical_*_rank fields are deterministic",
   "top_k": [
     1,
     2,
     3
   ],
+  "actual_budgets": {
+    "fwd": 2,
+    "bwd": 3
+  },
   "suites": {
     "fwd": {
+      "suite": "fwd",
+      "repetitions": [
+        0,
+        1,
+        2
+      ],
+      "aggregate_repetition_count": 3,
+      "aggregate_rule": "median of per-repetition metrics; no candidate latencies or denominators are pooled",
+      "paired_denominators": [
+        3,
+        3,
+        3
+      ],
+      "per_candidate_sample_counts": [
+        1,
+        1,
+        1
+      ],
+      "oracle_kinds": [
+        "z3-legal-exhaustive",
+        "z3-legal-exhaustive",
+        "z3-legal-exhaustive"
+      ],
+      "legal_oracle_complete": [
+        true,
+        true,
+        true
+      ],
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_k_recall": {
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0
+      },
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "oracle_best_prediction_rank": 1,
+      "oracle_best_prediction_average_rank": 1.0,
+      "oracle_best_in_actual_deterministic_top_k_by_repetition": [
+        true,
+        true,
+        true
+      ],
+      "oracle_best_in_actual_deterministic_top_k_count": 3,
+      "per_repetition": [
+        {
+          "suite": "fwd",
+          "direction": "fwd",
+          "repetition": 0,
+          "cache_track": "cold",
+          "num_tokens": 8192,
+          "score_arm": "z3-cm-topk",
+          "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0000/events.jsonl",
+          "score_count": 3,
+          "finite_prediction_count": 3,
+          "nonfinite_score_config_ids": [],
+          "missing_measured_config_ids": [],
+          "paired_denominator": 3,
+          "per_candidate_sample_count": 1,
+          "actual_budget": 2,
+          "oracle_kind": "z3-legal-exhaustive",
+          "oracle_arm": "z3-legal-exhaustive",
+          "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+          "oracle_candidate_count": 3,
+          "oracle_successful_count": 3,
+          "oracle_trial_count": 3,
+          "legal_oracle_complete": true,
+          "legal_oracle_status": "complete",
+          "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+          "legal_candidate_count": 3,
+          "legal_successful_count": 3,
+          "legal_trial_count": 3,
+          "legal_missing_config_ids": [],
+          "legal_unsuccessful_config_ids": [],
+          "legal_incomplete_reasons": [],
+          "fallback_reason": null,
+          "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/stock-raw__rep-0000/events.jsonl",
+          "n": 3,
+          "spearman": 1.0,
+          "kendall_tau_b": 1.0,
+          "top_k_recall": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "top_actual_budget_recall": 1.0,
+          "oracle_best_config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "oracle_best_canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+          "oracle_best_measured_latency_ms": 0.30895426869392395,
+          "oracle_best_prediction_rank": 1,
+          "oracle_best_prediction_average_rank": 1.0,
+          "oracle_best_in_actual_deterministic_top_k": true,
+          "prediction_ties": [],
+          "measured_ties": [],
+          "top_k_selections": {
+            "1": {
+              "label": "1",
+              "k": 1,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "recall": 1.0
+            },
+            "2": {
+              "label": "2",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "recall": 1.0
+            },
+            "3": {
+              "label": "3",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "recall": 1.0
+            },
+            "actual_budget": {
+              "label": "actual_budget",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "recall": 1.0
+            }
+          },
+          "canonical_prediction_order": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "canonical_measured_order": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ]
+        },
+        {
+          "suite": "fwd",
+          "direction": "fwd",
+          "repetition": 1,
+          "cache_track": "cold",
+          "num_tokens": 8192,
+          "score_arm": "z3-cm-topk",
+          "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0001/events.jsonl",
+          "score_count": 3,
+          "finite_prediction_count": 3,
+          "nonfinite_score_config_ids": [],
+          "missing_measured_config_ids": [],
+          "paired_denominator": 3,
+          "per_candidate_sample_count": 1,
+          "actual_budget": 2,
+          "oracle_kind": "z3-legal-exhaustive",
+          "oracle_arm": "z3-legal-exhaustive",
+          "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+          "oracle_candidate_count": 3,
+          "oracle_successful_count": 3,
+          "oracle_trial_count": 3,
+          "legal_oracle_complete": true,
+          "legal_oracle_status": "complete",
+          "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+          "legal_candidate_count": 3,
+          "legal_successful_count": 3,
+          "legal_trial_count": 3,
+          "legal_missing_config_ids": [],
+          "legal_unsuccessful_config_ids": [],
+          "legal_incomplete_reasons": [],
+          "fallback_reason": null,
+          "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/stock-raw__rep-0001/events.jsonl",
+          "n": 3,
+          "spearman": 1.0,
+          "kendall_tau_b": 1.0,
+          "top_k_recall": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "top_actual_budget_recall": 1.0,
+          "oracle_best_config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "oracle_best_canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+          "oracle_best_measured_latency_ms": 0.30255040526390076,
+          "oracle_best_prediction_rank": 1,
+          "oracle_best_prediction_average_rank": 1.0,
+          "oracle_best_in_actual_deterministic_top_k": true,
+          "prediction_ties": [],
+          "measured_ties": [],
+          "top_k_selections": {
+            "1": {
+              "label": "1",
+              "k": 1,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "recall": 1.0
+            },
+            "2": {
+              "label": "2",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "recall": 1.0
+            },
+            "3": {
+              "label": "3",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "recall": 1.0
+            },
+            "actual_budget": {
+              "label": "actual_budget",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "recall": 1.0
+            }
+          },
+          "canonical_prediction_order": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "canonical_measured_order": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ]
+        },
+        {
+          "suite": "fwd",
+          "direction": "fwd",
+          "repetition": 2,
+          "cache_track": "cold",
+          "num_tokens": 8192,
+          "score_arm": "z3-cm-topk",
+          "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0002/events.jsonl",
+          "score_count": 3,
+          "finite_prediction_count": 3,
+          "nonfinite_score_config_ids": [],
+          "missing_measured_config_ids": [],
+          "paired_denominator": 3,
+          "per_candidate_sample_count": 1,
+          "actual_budget": 2,
+          "oracle_kind": "z3-legal-exhaustive",
+          "oracle_arm": "z3-legal-exhaustive",
+          "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+          "oracle_candidate_count": 3,
+          "oracle_successful_count": 3,
+          "oracle_trial_count": 3,
+          "legal_oracle_complete": true,
+          "legal_oracle_status": "complete",
+          "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+          "legal_candidate_count": 3,
+          "legal_successful_count": 3,
+          "legal_trial_count": 3,
+          "legal_missing_config_ids": [],
+          "legal_unsuccessful_config_ids": [],
+          "legal_incomplete_reasons": [],
+          "fallback_reason": null,
+          "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/stock-raw__rep-0002/events.jsonl",
+          "n": 3,
+          "spearman": 1.0,
+          "kendall_tau_b": 1.0,
+          "top_k_recall": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "top_actual_budget_recall": 1.0,
+          "oracle_best_config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "oracle_best_canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+          "oracle_best_measured_latency_ms": 0.30336254835128784,
+          "oracle_best_prediction_rank": 1,
+          "oracle_best_prediction_average_rank": 1.0,
+          "oracle_best_in_actual_deterministic_top_k": true,
+          "prediction_ties": [],
+          "measured_ties": [],
+          "top_k_selections": {
+            "1": {
+              "label": "1",
+              "k": 1,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+              ],
+              "recall": 1.0
+            },
+            "2": {
+              "label": "2",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "recall": 1.0
+            },
+            "3": {
+              "label": "3",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+                "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+              ],
+              "recall": 1.0
+            },
+            "actual_budget": {
+              "label": "actual_budget",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "measured_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "overlap_config_ids": [
+                "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+                "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+              ],
+              "recall": 1.0
+            }
+          },
+          "canonical_prediction_order": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "canonical_measured_order": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ]
+        }
+      ]
+    },
+    "bwd": {
+      "suite": "bwd",
+      "repetitions": [
+        0,
+        1,
+        2
+      ],
+      "aggregate_repetition_count": 3,
+      "aggregate_rule": "median of per-repetition metrics; no candidate latencies or denominators are pooled",
+      "paired_denominators": [
+        6,
+        6,
+        6
+      ],
+      "per_candidate_sample_counts": [
+        1,
+        1,
+        1
+      ],
+      "oracle_kinds": [
+        "z3-legal-exhaustive",
+        "z3-legal-exhaustive",
+        "z3-legal-exhaustive"
+      ],
+      "legal_oracle_complete": [
+        true,
+        true,
+        true
+      ],
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_k_recall": {
+        "1": 0.0,
+        "2": 1.0,
+        "3": 1.0
+      },
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "oracle_best_prediction_rank": 2,
+      "oracle_best_prediction_average_rank": 1.5,
+      "oracle_best_in_actual_deterministic_top_k_by_repetition": [
+        true,
+        true,
+        true
+      ],
+      "oracle_best_in_actual_deterministic_top_k_count": 3,
+      "per_repetition": [
+        {
+          "suite": "bwd",
+          "direction": "bwd",
+          "repetition": 0,
+          "cache_track": "cold",
+          "num_tokens": 8192,
+          "score_arm": "z3-cm-topk",
+          "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0000/events.jsonl",
+          "score_count": 6,
+          "finite_prediction_count": 6,
+          "nonfinite_score_config_ids": [],
+          "missing_measured_config_ids": [],
+          "paired_denominator": 6,
+          "per_candidate_sample_count": 1,
+          "actual_budget": 3,
+          "oracle_kind": "z3-legal-exhaustive",
+          "oracle_arm": "z3-legal-exhaustive",
+          "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+          "oracle_candidate_count": 6,
+          "oracle_successful_count": 6,
+          "oracle_trial_count": 6,
+          "legal_oracle_complete": true,
+          "legal_oracle_status": "complete",
+          "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+          "legal_candidate_count": 6,
+          "legal_successful_count": 6,
+          "legal_trial_count": 6,
+          "legal_missing_config_ids": [],
+          "legal_unsuccessful_config_ids": [],
+          "legal_incomplete_reasons": [],
+          "fallback_reason": null,
+          "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/stock-raw__rep-0000/events.jsonl",
+          "n": 6,
+          "spearman": 0.8827348295047495,
+          "kendall_tau_b": 0.7877263614433762,
+          "top_k_recall": {
+            "1": 0.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "top_actual_budget_recall": 1.0,
+          "oracle_best_config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+          "oracle_best_canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+          "oracle_best_measured_latency_ms": 4.217745780944824,
+          "oracle_best_prediction_rank": 2,
+          "oracle_best_prediction_average_rank": 1.5,
+          "oracle_best_in_actual_deterministic_top_k": true,
+          "prediction_ties": [
+            {
+              "score": 4.542173402733006,
+              "size": 2,
+              "average_rank": 1.5,
+              "config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "canonical_configs": [
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}"
+              ],
+              "canonical_ranks": [
+                1,
+                2
+              ]
+            },
+            {
+              "score": 5.237199787333017,
+              "size": 2,
+              "average_rank": 4.5,
+              "config_ids": [
+                "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+                "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b"
+              ],
+              "canonical_configs": [
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}"
+              ],
+              "canonical_ranks": [
+                4,
+                5
+              ]
+            }
+          ],
+          "measured_ties": [],
+          "top_k_selections": {
+            "1": {
+              "label": "1",
+              "k": 1,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "overlap_config_ids": [],
+              "recall": 0.0
+            },
+            "2": {
+              "label": "2",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+              ],
+              "overlap_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "recall": 1.0
+            },
+            "3": {
+              "label": "3",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "overlap_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "recall": 1.0
+            },
+            "actual_budget": {
+              "label": "actual_budget",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "overlap_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "recall": 1.0
+            }
+          },
+          "canonical_prediction_order": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+            "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138"
+          ],
+          "canonical_measured_order": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+            "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821"
+          ]
+        },
+        {
+          "suite": "bwd",
+          "direction": "bwd",
+          "repetition": 1,
+          "cache_track": "cold",
+          "num_tokens": 8192,
+          "score_arm": "z3-cm-topk",
+          "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0001/events.jsonl",
+          "score_count": 6,
+          "finite_prediction_count": 6,
+          "nonfinite_score_config_ids": [],
+          "missing_measured_config_ids": [],
+          "paired_denominator": 6,
+          "per_candidate_sample_count": 1,
+          "actual_budget": 3,
+          "oracle_kind": "z3-legal-exhaustive",
+          "oracle_arm": "z3-legal-exhaustive",
+          "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+          "oracle_candidate_count": 6,
+          "oracle_successful_count": 6,
+          "oracle_trial_count": 6,
+          "legal_oracle_complete": true,
+          "legal_oracle_status": "complete",
+          "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+          "legal_candidate_count": 6,
+          "legal_successful_count": 6,
+          "legal_trial_count": 6,
+          "legal_missing_config_ids": [],
+          "legal_unsuccessful_config_ids": [],
+          "legal_incomplete_reasons": [],
+          "fallback_reason": null,
+          "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/stock-raw__rep-0001/events.jsonl",
+          "n": 6,
+          "spearman": 0.8827348295047495,
+          "kendall_tau_b": 0.7877263614433762,
+          "top_k_recall": {
+            "1": 0.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "top_actual_budget_recall": 1.0,
+          "oracle_best_config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+          "oracle_best_canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+          "oracle_best_measured_latency_ms": 4.2136759757995605,
+          "oracle_best_prediction_rank": 2,
+          "oracle_best_prediction_average_rank": 1.5,
+          "oracle_best_in_actual_deterministic_top_k": true,
+          "prediction_ties": [
+            {
+              "score": 4.542173402733006,
+              "size": 2,
+              "average_rank": 1.5,
+              "config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "canonical_configs": [
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}"
+              ],
+              "canonical_ranks": [
+                1,
+                2
+              ]
+            },
+            {
+              "score": 5.237199787333017,
+              "size": 2,
+              "average_rank": 4.5,
+              "config_ids": [
+                "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+                "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b"
+              ],
+              "canonical_configs": [
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}"
+              ],
+              "canonical_ranks": [
+                4,
+                5
+              ]
+            }
+          ],
+          "measured_ties": [],
+          "top_k_selections": {
+            "1": {
+              "label": "1",
+              "k": 1,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "overlap_config_ids": [],
+              "recall": 0.0
+            },
+            "2": {
+              "label": "2",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+              ],
+              "overlap_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "recall": 1.0
+            },
+            "3": {
+              "label": "3",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "overlap_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "recall": 1.0
+            },
+            "actual_budget": {
+              "label": "actual_budget",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "overlap_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "recall": 1.0
+            }
+          },
+          "canonical_prediction_order": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+            "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138"
+          ],
+          "canonical_measured_order": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+            "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821"
+          ]
+        },
+        {
+          "suite": "bwd",
+          "direction": "bwd",
+          "repetition": 2,
+          "cache_track": "cold",
+          "num_tokens": 8192,
+          "score_arm": "z3-cm-topk",
+          "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0002/events.jsonl",
+          "score_count": 6,
+          "finite_prediction_count": 6,
+          "nonfinite_score_config_ids": [],
+          "missing_measured_config_ids": [],
+          "paired_denominator": 6,
+          "per_candidate_sample_count": 1,
+          "actual_budget": 3,
+          "oracle_kind": "z3-legal-exhaustive",
+          "oracle_arm": "z3-legal-exhaustive",
+          "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+          "oracle_candidate_count": 6,
+          "oracle_successful_count": 6,
+          "oracle_trial_count": 6,
+          "legal_oracle_complete": true,
+          "legal_oracle_status": "complete",
+          "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+          "legal_candidate_count": 6,
+          "legal_successful_count": 6,
+          "legal_trial_count": 6,
+          "legal_missing_config_ids": [],
+          "legal_unsuccessful_config_ids": [],
+          "legal_incomplete_reasons": [],
+          "fallback_reason": null,
+          "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/stock-raw__rep-0002/events.jsonl",
+          "n": 6,
+          "spearman": 0.7944613465542745,
+          "kendall_tau_b": 0.6445033866354896,
+          "top_k_recall": {
+            "1": 0.0,
+            "2": 0.5,
+            "3": 1.0
+          },
+          "top_actual_budget_recall": 1.0,
+          "oracle_best_config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+          "oracle_best_canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+          "oracle_best_measured_latency_ms": 4.210544109344482,
+          "oracle_best_prediction_rank": 2,
+          "oracle_best_prediction_average_rank": 1.5,
+          "oracle_best_in_actual_deterministic_top_k": true,
+          "prediction_ties": [
+            {
+              "score": 4.542173402733006,
+              "size": 2,
+              "average_rank": 1.5,
+              "config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "canonical_configs": [
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}"
+              ],
+              "canonical_ranks": [
+                1,
+                2
+              ]
+            },
+            {
+              "score": 5.237199787333017,
+              "size": 2,
+              "average_rank": 4.5,
+              "config_ids": [
+                "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+                "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b"
+              ],
+              "canonical_configs": [
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+                "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}"
+              ],
+              "canonical_ranks": [
+                4,
+                5
+              ]
+            }
+          ],
+          "measured_ties": [],
+          "top_k_selections": {
+            "1": {
+              "label": "1",
+              "k": 1,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "overlap_config_ids": [],
+              "recall": 0.0
+            },
+            "2": {
+              "label": "2",
+              "k": 2,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "overlap_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+              ],
+              "recall": 0.5
+            },
+            "3": {
+              "label": "3",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+              ],
+              "overlap_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "recall": 1.0
+            },
+            "actual_budget": {
+              "label": "actual_budget",
+              "k": 3,
+              "available": true,
+              "predicted_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "measured_config_ids": [
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+              ],
+              "overlap_config_ids": [
+                "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+                "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+                "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+              ],
+              "recall": 1.0
+            }
+          },
+          "canonical_prediction_order": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+            "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138"
+          ],
+          "canonical_measured_order": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+            "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821"
+          ]
+        }
+      ]
+    }
+  },
+  "per_repetition": [
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 0,
+      "cache_track": "cold",
+      "num_tokens": 8192,
+      "score_arm": "z3-cm-topk",
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0000/events.jsonl",
+      "score_count": 3,
+      "finite_prediction_count": 3,
+      "nonfinite_score_config_ids": [],
+      "missing_measured_config_ids": [],
+      "paired_denominator": 3,
+      "per_candidate_sample_count": 1,
+      "actual_budget": 2,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "oracle_trial_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "legal_candidate_count": 3,
+      "legal_successful_count": 3,
+      "legal_trial_count": 3,
+      "legal_missing_config_ids": [],
+      "legal_unsuccessful_config_ids": [],
+      "legal_incomplete_reasons": [],
+      "fallback_reason": null,
+      "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/stock-raw__rep-0000/events.jsonl",
       "n": 3,
       "spearman": 1.0,
       "kendall_tau_b": 1.0,
@@ -17,136 +1085,2365 @@
         "1": 1.0,
         "2": 1.0,
         "3": 1.0
-      }
+      },
+      "top_actual_budget_recall": 1.0,
+      "oracle_best_config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+      "oracle_best_canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "oracle_best_measured_latency_ms": 0.30895426869392395,
+      "oracle_best_prediction_rank": 1,
+      "oracle_best_prediction_average_rank": 1.0,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "prediction_ties": [],
+      "measured_ties": [],
+      "top_k_selections": {
+        "1": {
+          "label": "1",
+          "k": 1,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "recall": 1.0
+        },
+        "2": {
+          "label": "2",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "recall": 1.0
+        },
+        "3": {
+          "label": "3",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "recall": 1.0
+        },
+        "actual_budget": {
+          "label": "actual_budget",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "recall": 1.0
+        }
+      },
+      "canonical_prediction_order": [
+        "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+        "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+        "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+      ],
+      "canonical_measured_order": [
+        "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+        "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+        "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+      ]
     },
-    "bwd": {
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "num_tokens": 8192,
+      "score_arm": "z3-cm-topk",
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0001/events.jsonl",
+      "score_count": 3,
+      "finite_prediction_count": 3,
+      "nonfinite_score_config_ids": [],
+      "missing_measured_config_ids": [],
+      "paired_denominator": 3,
+      "per_candidate_sample_count": 1,
+      "actual_budget": 2,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "oracle_trial_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "legal_candidate_count": 3,
+      "legal_successful_count": 3,
+      "legal_trial_count": 3,
+      "legal_missing_config_ids": [],
+      "legal_unsuccessful_config_ids": [],
+      "legal_incomplete_reasons": [],
+      "fallback_reason": null,
+      "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/stock-raw__rep-0001/events.jsonl",
+      "n": 3,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_k_recall": {
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0
+      },
+      "top_actual_budget_recall": 1.0,
+      "oracle_best_config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+      "oracle_best_canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "oracle_best_measured_latency_ms": 0.30255040526390076,
+      "oracle_best_prediction_rank": 1,
+      "oracle_best_prediction_average_rank": 1.0,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "prediction_ties": [],
+      "measured_ties": [],
+      "top_k_selections": {
+        "1": {
+          "label": "1",
+          "k": 1,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "recall": 1.0
+        },
+        "2": {
+          "label": "2",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "recall": 1.0
+        },
+        "3": {
+          "label": "3",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "recall": 1.0
+        },
+        "actual_budget": {
+          "label": "actual_budget",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "recall": 1.0
+        }
+      },
+      "canonical_prediction_order": [
+        "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+        "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+        "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+      ],
+      "canonical_measured_order": [
+        "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+        "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+        "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+      ]
+    },
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "num_tokens": 8192,
+      "score_arm": "z3-cm-topk",
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0002/events.jsonl",
+      "score_count": 3,
+      "finite_prediction_count": 3,
+      "nonfinite_score_config_ids": [],
+      "missing_measured_config_ids": [],
+      "paired_denominator": 3,
+      "per_candidate_sample_count": 1,
+      "actual_budget": 2,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "oracle_trial_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "legal_candidate_count": 3,
+      "legal_successful_count": 3,
+      "legal_trial_count": 3,
+      "legal_missing_config_ids": [],
+      "legal_unsuccessful_config_ids": [],
+      "legal_incomplete_reasons": [],
+      "fallback_reason": null,
+      "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/stock-raw__rep-0002/events.jsonl",
+      "n": 3,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_k_recall": {
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0
+      },
+      "top_actual_budget_recall": 1.0,
+      "oracle_best_config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+      "oracle_best_canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "oracle_best_measured_latency_ms": 0.30336254835128784,
+      "oracle_best_prediction_rank": 1,
+      "oracle_best_prediction_average_rank": 1.0,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "prediction_ties": [],
+      "measured_ties": [],
+      "top_k_selections": {
+        "1": {
+          "label": "1",
+          "k": 1,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4"
+          ],
+          "recall": 1.0
+        },
+        "2": {
+          "label": "2",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "recall": 1.0
+        },
+        "3": {
+          "label": "3",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+            "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+          ],
+          "recall": 1.0
+        },
+        "actual_budget": {
+          "label": "actual_budget",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "measured_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "overlap_config_ids": [
+            "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+            "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1"
+          ],
+          "recall": 1.0
+        }
+      },
+      "canonical_prediction_order": [
+        "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+        "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+        "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+      ],
+      "canonical_measured_order": [
+        "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+        "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+        "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3"
+      ]
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 0,
+      "cache_track": "cold",
+      "num_tokens": 8192,
+      "score_arm": "z3-cm-topk",
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0000/events.jsonl",
+      "score_count": 6,
+      "finite_prediction_count": 6,
+      "nonfinite_score_config_ids": [],
+      "missing_measured_config_ids": [],
+      "paired_denominator": 6,
+      "per_candidate_sample_count": 1,
+      "actual_budget": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "oracle_trial_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "legal_candidate_count": 6,
+      "legal_successful_count": 6,
+      "legal_trial_count": 6,
+      "legal_missing_config_ids": [],
+      "legal_unsuccessful_config_ids": [],
+      "legal_incomplete_reasons": [],
+      "fallback_reason": null,
+      "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/stock-raw__rep-0000/events.jsonl",
+      "n": 6,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_k_recall": {
+        "1": 0.0,
+        "2": 1.0,
+        "3": 1.0
+      },
+      "top_actual_budget_recall": 1.0,
+      "oracle_best_config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+      "oracle_best_canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+      "oracle_best_measured_latency_ms": 4.217745780944824,
+      "oracle_best_prediction_rank": 2,
+      "oracle_best_prediction_average_rank": 1.5,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "prediction_ties": [
+        {
+          "score": 4.542173402733006,
+          "size": 2,
+          "average_rank": 1.5,
+          "config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "canonical_configs": [
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}"
+          ],
+          "canonical_ranks": [
+            1,
+            2
+          ]
+        },
+        {
+          "score": 5.237199787333017,
+          "size": 2,
+          "average_rank": 4.5,
+          "config_ids": [
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b"
+          ],
+          "canonical_configs": [
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}"
+          ],
+          "canonical_ranks": [
+            4,
+            5
+          ]
+        }
+      ],
+      "measured_ties": [],
+      "top_k_selections": {
+        "1": {
+          "label": "1",
+          "k": 1,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "overlap_config_ids": [],
+          "recall": 0.0
+        },
+        "2": {
+          "label": "2",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+          ],
+          "overlap_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "recall": 1.0
+        },
+        "3": {
+          "label": "3",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "overlap_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "recall": 1.0
+        },
+        "actual_budget": {
+          "label": "actual_budget",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "overlap_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "recall": 1.0
+        }
+      },
+      "canonical_prediction_order": [
+        "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+        "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+        "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+        "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+        "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+        "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138"
+      ],
+      "canonical_measured_order": [
+        "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+        "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+        "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+        "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+        "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+        "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821"
+      ]
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "num_tokens": 8192,
+      "score_arm": "z3-cm-topk",
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0001/events.jsonl",
+      "score_count": 6,
+      "finite_prediction_count": 6,
+      "nonfinite_score_config_ids": [],
+      "missing_measured_config_ids": [],
+      "paired_denominator": 6,
+      "per_candidate_sample_count": 1,
+      "actual_budget": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "oracle_trial_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "legal_candidate_count": 6,
+      "legal_successful_count": 6,
+      "legal_trial_count": 6,
+      "legal_missing_config_ids": [],
+      "legal_unsuccessful_config_ids": [],
+      "legal_incomplete_reasons": [],
+      "fallback_reason": null,
+      "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/stock-raw__rep-0001/events.jsonl",
+      "n": 6,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_k_recall": {
+        "1": 0.0,
+        "2": 1.0,
+        "3": 1.0
+      },
+      "top_actual_budget_recall": 1.0,
+      "oracle_best_config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+      "oracle_best_canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+      "oracle_best_measured_latency_ms": 4.2136759757995605,
+      "oracle_best_prediction_rank": 2,
+      "oracle_best_prediction_average_rank": 1.5,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "prediction_ties": [
+        {
+          "score": 4.542173402733006,
+          "size": 2,
+          "average_rank": 1.5,
+          "config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "canonical_configs": [
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}"
+          ],
+          "canonical_ranks": [
+            1,
+            2
+          ]
+        },
+        {
+          "score": 5.237199787333017,
+          "size": 2,
+          "average_rank": 4.5,
+          "config_ids": [
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b"
+          ],
+          "canonical_configs": [
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}"
+          ],
+          "canonical_ranks": [
+            4,
+            5
+          ]
+        }
+      ],
+      "measured_ties": [],
+      "top_k_selections": {
+        "1": {
+          "label": "1",
+          "k": 1,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "overlap_config_ids": [],
+          "recall": 0.0
+        },
+        "2": {
+          "label": "2",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+          ],
+          "overlap_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "recall": 1.0
+        },
+        "3": {
+          "label": "3",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "overlap_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "recall": 1.0
+        },
+        "actual_budget": {
+          "label": "actual_budget",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "overlap_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "recall": 1.0
+        }
+      },
+      "canonical_prediction_order": [
+        "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+        "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+        "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+        "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+        "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+        "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138"
+      ],
+      "canonical_measured_order": [
+        "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+        "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+        "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+        "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+        "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+        "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821"
+      ]
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "num_tokens": 8192,
+      "score_arm": "z3-cm-topk",
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0002/events.jsonl",
+      "score_count": 6,
+      "finite_prediction_count": 6,
+      "nonfinite_score_config_ids": [],
+      "missing_measured_config_ids": [],
+      "paired_denominator": 6,
+      "per_candidate_sample_count": 1,
+      "actual_budget": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "oracle_trial_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "legal_oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "legal_candidate_count": 6,
+      "legal_successful_count": 6,
+      "legal_trial_count": 6,
+      "legal_missing_config_ids": [],
+      "legal_unsuccessful_config_ids": [],
+      "legal_incomplete_reasons": [],
+      "fallback_reason": null,
+      "stock_raw_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/stock-raw__rep-0002/events.jsonl",
       "n": 6,
       "spearman": 0.7944613465542745,
       "kendall_tau_b": 0.6445033866354896,
       "top_k_recall": {
-        "1": 1.0,
+        "1": 0.0,
         "2": 0.5,
         "3": 1.0
-      }
+      },
+      "top_actual_budget_recall": 1.0,
+      "oracle_best_config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+      "oracle_best_canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+      "oracle_best_measured_latency_ms": 4.210544109344482,
+      "oracle_best_prediction_rank": 2,
+      "oracle_best_prediction_average_rank": 1.5,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "prediction_ties": [
+        {
+          "score": 4.542173402733006,
+          "size": 2,
+          "average_rank": 1.5,
+          "config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "canonical_configs": [
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}"
+          ],
+          "canonical_ranks": [
+            1,
+            2
+          ]
+        },
+        {
+          "score": 5.237199787333017,
+          "size": 2,
+          "average_rank": 4.5,
+          "config_ids": [
+            "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+            "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b"
+          ],
+          "canonical_configs": [
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+            "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}"
+          ],
+          "canonical_ranks": [
+            4,
+            5
+          ]
+        }
+      ],
+      "measured_ties": [],
+      "top_k_selections": {
+        "1": {
+          "label": "1",
+          "k": 1,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "overlap_config_ids": [],
+          "recall": 0.0
+        },
+        "2": {
+          "label": "2",
+          "k": 2,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "overlap_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61"
+          ],
+          "recall": 0.5
+        },
+        "3": {
+          "label": "3",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+          ],
+          "overlap_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "recall": 1.0
+        },
+        "actual_budget": {
+          "label": "actual_budget",
+          "k": 3,
+          "available": true,
+          "predicted_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "measured_config_ids": [
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa"
+          ],
+          "overlap_config_ids": [
+            "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+            "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+            "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f"
+          ],
+          "recall": 1.0
+        }
+      },
+      "canonical_prediction_order": [
+        "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+        "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+        "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+        "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+        "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+        "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138"
+      ],
+      "canonical_measured_order": [
+        "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+        "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+        "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+        "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+        "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+        "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821"
+      ]
     }
-  },
+  ],
+  "cache_track": "cold",
+  "repetitions": [
+    0,
+    1,
+    2
+  ],
+  "plot": "prediction_rank",
+  "lower_is_better": true,
+  "figure_rank": "canonical deterministic selection ranks; average tied ranks remain in JSON/CSV",
+  "tie_rule": "average tied display ranks; deterministic selection uses score/latency then canonical compact JSON config",
   "rows": [
     {
       "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 0,
+      "cache_track": "cold",
       "candidate": "fwd:block_DV=16,stage=2,group=16",
+      "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+      "canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
       "predicted": 0.7286909183318904,
-      "measured": 0.30275776982307434,
+      "measured": 0.30895426869392395,
+      "sample_count": 1,
+      "score_sequence": 27,
+      "oracle_trial_sequence": 37,
       "predicted_rank": 1.0,
       "actual_rank": 1.0,
+      "predicted_average_rank": 1.0,
+      "measured_average_rank": 1.0,
+      "canonical_prediction_rank": 1,
+      "canonical_measured_rank": 1,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": true,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
       "spearman": 1.0,
       "kendall_tau_b": 1.0,
       "top_1_recall": 1.0,
       "top_2_recall": 1.0,
-      "top_3_recall": 1.0
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
     },
     {
       "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 0,
+      "cache_track": "cold",
       "candidate": "fwd:block_DV=32,stage=2,group=16",
+      "config_id": "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+      "canonical_config": "{\"block_DV\":32,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 32,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
       "predicted": 0.8276035320447809,
-      "measured": 0.3585718423128128,
+      "measured": 0.35846272110939026,
+      "sample_count": 1,
+      "score_sequence": 28,
+      "oracle_trial_sequence": 43,
       "predicted_rank": 2.0,
       "actual_rank": 2.0,
+      "predicted_average_rank": 2.0,
+      "measured_average_rank": 2.0,
+      "canonical_prediction_rank": 2,
+      "canonical_measured_rank": 2,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
       "spearman": 1.0,
       "kendall_tau_b": 1.0,
       "top_1_recall": 1.0,
       "top_2_recall": 1.0,
-      "top_3_recall": 1.0
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
     },
     {
       "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 0,
+      "cache_track": "cold",
       "candidate": "fwd:block_DV=64,stage=2,group=16",
+      "config_id": "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3",
+      "canonical_config": "{\"block_DV\":64,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 64,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
       "predicted": 1.0254287594705618,
-      "measured": 0.5177292823791504,
+      "measured": 0.5173606276512146,
+      "sample_count": 1,
+      "score_sequence": 29,
+      "oracle_trial_sequence": 47,
       "predicted_rank": 3.0,
       "actual_rank": 3.0,
+      "predicted_average_rank": 3.0,
+      "measured_average_rank": 3.0,
+      "canonical_prediction_rank": 3,
+      "canonical_measured_rank": 3,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
       "spearman": 1.0,
       "kendall_tau_b": 1.0,
       "top_1_recall": 1.0,
       "top_2_recall": 1.0,
-      "top_3_recall": 1.0
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "fwd:block_DV=16,stage=2,group=16",
+      "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+      "canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 0.7286909183318904,
+      "measured": 0.30255040526390076,
+      "sample_count": 1,
+      "score_sequence": 27,
+      "oracle_trial_sequence": 37,
+      "predicted_rank": 1.0,
+      "actual_rank": 1.0,
+      "predicted_average_rank": 1.0,
+      "measured_average_rank": 1.0,
+      "canonical_prediction_rank": 1,
+      "canonical_measured_rank": 1,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": true,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "fwd:block_DV=32,stage=2,group=16",
+      "config_id": "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+      "canonical_config": "{\"block_DV\":32,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 32,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 0.8276035320447809,
+      "measured": 0.35801470279693604,
+      "sample_count": 1,
+      "score_sequence": 28,
+      "oracle_trial_sequence": 43,
+      "predicted_rank": 2.0,
+      "actual_rank": 2.0,
+      "predicted_average_rank": 2.0,
+      "measured_average_rank": 2.0,
+      "canonical_prediction_rank": 2,
+      "canonical_measured_rank": 2,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "fwd:block_DV=64,stage=2,group=16",
+      "config_id": "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3",
+      "canonical_config": "{\"block_DV\":64,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 64,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 1.0254287594705618,
+      "measured": 0.5195949077606201,
+      "sample_count": 1,
+      "score_sequence": 29,
+      "oracle_trial_sequence": 47,
+      "predicted_rank": 3.0,
+      "actual_rank": 3.0,
+      "predicted_average_rank": 3.0,
+      "measured_average_rank": 3.0,
+      "canonical_prediction_rank": 3,
+      "canonical_measured_rank": 3,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "fwd:block_DV=16,stage=2,group=16",
+      "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+      "canonical_config": "{\"block_DV\":16,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 16,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 0.7286909183318904,
+      "measured": 0.30336254835128784,
+      "sample_count": 1,
+      "score_sequence": 27,
+      "oracle_trial_sequence": 38,
+      "predicted_rank": 1.0,
+      "actual_rank": 1.0,
+      "predicted_average_rank": 1.0,
+      "measured_average_rank": 1.0,
+      "canonical_prediction_rank": 1,
+      "canonical_measured_rank": 1,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": true,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "fwd:block_DV=32,stage=2,group=16",
+      "config_id": "ad7137a251b8d75523f95247c9dcd3e0b9e0b0c50ebc06c04015bb75bf272fe1",
+      "canonical_config": "{\"block_DV\":32,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 32,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 0.8276035320447809,
+      "measured": 0.3580217659473419,
+      "sample_count": 1,
+      "score_sequence": 28,
+      "oracle_trial_sequence": 43,
+      "predicted_rank": 2.0,
+      "actual_rank": 2.0,
+      "predicted_average_rank": 2.0,
+      "measured_average_rank": 2.0,
+      "canonical_prediction_rank": 2,
+      "canonical_measured_rank": 2,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "fwd",
+      "direction": "fwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "fwd:block_DV=64,stage=2,group=16",
+      "config_id": "7ac3de46e7cc5d01d0294df1ce8edd90ff333ff7b776876770049af6e7c90dc3",
+      "canonical_config": "{\"block_DV\":64,\"direction\":\"fwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 64,
+        "direction": "fwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 1.0254287594705618,
+      "measured": 0.5188102722167969,
+      "sample_count": 1,
+      "score_sequence": 29,
+      "oracle_trial_sequence": 47,
+      "predicted_rank": 3.0,
+      "actual_rank": 3.0,
+      "predicted_average_rank": 3.0,
+      "measured_average_rank": 3.0,
+      "canonical_prediction_rank": 3,
+      "canonical_measured_rank": 3,
+      "paired_denominator": 3,
+      "score_count": 3,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 3,
+      "oracle_successful_count": 3,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 1.0,
+      "kendall_tau_b": 1.0,
+      "top_1_recall": 1.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 2,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/fwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
     },
     {
       "suite": "bwd",
-      "candidate": "bwd:block_DV=128,stage=2,group=8",
+      "direction": "bwd",
+      "repetition": 0,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=2,group=16",
+      "config_id": "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
       "predicted": 4.542173402733006,
-      "measured": 4.2136759757995605,
+      "measured": 4.2186198234558105,
+      "sample_count": 1,
+      "score_sequence": 52,
+      "oracle_trial_sequence": 86,
+      "predicted_rank": 1.5,
+      "actual_rank": 2.0,
+      "predicted_average_rank": 1.5,
+      "measured_average_rank": 2.0,
+      "canonical_prediction_rank": 1,
+      "canonical_measured_rank": 2,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa\",\"95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 0,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=2,group=8",
+      "config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 4.542173402733006,
+      "measured": 4.217745780944824,
+      "sample_count": 1,
+      "score_sequence": 51,
+      "oracle_trial_sequence": 80,
       "predicted_rank": 1.5,
       "actual_rank": 1.0,
-      "spearman": 0.7944613465542745,
-      "kendall_tau_b": 0.6445033866354896,
-      "top_1_recall": 1.0,
-      "top_2_recall": 0.5,
-      "top_3_recall": 1.0
+      "predicted_average_rank": 1.5,
+      "measured_average_rank": 1.0,
+      "canonical_prediction_rank": 2,
+      "canonical_measured_rank": 1,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa\",\"95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": true,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
     },
     {
       "suite": "bwd",
-      "candidate": "bwd:block_DV=128,stage=2,group=16",
-      "predicted": 4.542173402733006,
-      "measured": 4.227442502975464,
-      "predicted_rank": 1.5,
-      "actual_rank": 3.0,
-      "spearman": 0.7944613465542745,
-      "kendall_tau_b": 0.6445033866354896,
-      "top_1_recall": 1.0,
-      "top_2_recall": 0.5,
-      "top_3_recall": 1.0
-    },
-    {
-      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 0,
+      "cache_track": "cold",
       "candidate": "bwd:block_DV=128,stage=2,group=32",
+      "config_id": "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":32,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 2
+      },
       "predicted": 4.544859308303167,
-      "measured": 4.222563028335571,
+      "measured": 4.220728874206543,
+      "sample_count": 1,
+      "score_sequence": 53,
+      "oracle_trial_sequence": 90,
       "predicted_rank": 3.0,
-      "actual_rank": 2.0,
-      "spearman": 0.7944613465542745,
-      "kendall_tau_b": 0.6445033866354896,
-      "top_1_recall": 1.0,
-      "top_2_recall": 0.5,
-      "top_3_recall": 1.0
+      "actual_rank": 3.0,
+      "predicted_average_rank": 3.0,
+      "measured_average_rank": 3.0,
+      "canonical_prediction_rank": 3,
+      "canonical_measured_rank": 3,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
     },
     {
       "suite": "bwd",
-      "candidate": "bwd:block_DV=128,stage=1,group=8",
-      "predicted": 5.237199787333017,
-      "measured": 4.377552270889282,
-      "predicted_rank": 4.5,
-      "actual_rank": 4.0,
-      "spearman": 0.7944613465542745,
-      "kendall_tau_b": 0.6445033866354896,
-      "top_1_recall": 1.0,
-      "top_2_recall": 0.5,
-      "top_3_recall": 1.0
-    },
-    {
-      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 0,
+      "cache_track": "cold",
       "candidate": "bwd:block_DV=128,stage=1,group=16",
+      "config_id": "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 1
+      },
       "predicted": 5.237199787333017,
-      "measured": 4.387823581695557,
+      "measured": 4.392909049987793,
+      "sample_count": 1,
+      "score_sequence": 55,
+      "oracle_trial_sequence": 70,
       "predicted_rank": 4.5,
       "actual_rank": 6.0,
-      "spearman": 0.7944613465542745,
-      "kendall_tau_b": 0.6445033866354896,
-      "top_1_recall": 1.0,
-      "top_2_recall": 0.5,
-      "top_3_recall": 1.0
+      "predicted_average_rank": 4.5,
+      "measured_average_rank": 6.0,
+      "canonical_prediction_rank": 4,
+      "canonical_measured_rank": 6,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821\",\"12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
     },
     {
       "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 0,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=1,group=8",
+      "config_id": "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 1
+      },
+      "predicted": 5.237199787333017,
+      "measured": 4.381338119506836,
+      "sample_count": 1,
+      "score_sequence": 54,
+      "oracle_trial_sequence": 65,
+      "predicted_rank": 4.5,
+      "actual_rank": 4.0,
+      "predicted_average_rank": 4.5,
+      "measured_average_rank": 4.0,
+      "canonical_prediction_rank": 5,
+      "canonical_measured_rank": 4,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821\",\"12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 0,
+      "cache_track": "cold",
       "candidate": "bwd:block_DV=128,stage=1,group=32",
+      "config_id": "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":32,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 1
+      },
       "predicted": 5.239885692903178,
-      "measured": 4.3870954513549805,
+      "measured": 4.391082286834717,
+      "sample_count": 1,
+      "score_sequence": 56,
+      "oracle_trial_sequence": 74,
       "predicted_rank": 6.0,
       "actual_rank": 5.0,
+      "predicted_average_rank": 6.0,
+      "measured_average_rank": 5.0,
+      "canonical_prediction_rank": 6,
+      "canonical_measured_rank": 5,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0000/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0000/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=2,group=16",
+      "config_id": "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 4.542173402733006,
+      "measured": 4.216851234436035,
+      "sample_count": 1,
+      "score_sequence": 52,
+      "oracle_trial_sequence": 86,
+      "predicted_rank": 1.5,
+      "actual_rank": 2.0,
+      "predicted_average_rank": 1.5,
+      "measured_average_rank": 2.0,
+      "canonical_prediction_rank": 1,
+      "canonical_measured_rank": 2,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa\",\"95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=2,group=8",
+      "config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 4.542173402733006,
+      "measured": 4.2136759757995605,
+      "sample_count": 1,
+      "score_sequence": 51,
+      "oracle_trial_sequence": 80,
+      "predicted_rank": 1.5,
+      "actual_rank": 1.0,
+      "predicted_average_rank": 1.5,
+      "measured_average_rank": 1.0,
+      "canonical_prediction_rank": 2,
+      "canonical_measured_rank": 1,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa\",\"95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": true,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=2,group=32",
+      "config_id": "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":32,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 4.544859308303167,
+      "measured": 4.220731735229492,
+      "sample_count": 1,
+      "score_sequence": 53,
+      "oracle_trial_sequence": 90,
+      "predicted_rank": 3.0,
+      "actual_rank": 3.0,
+      "predicted_average_rank": 3.0,
+      "measured_average_rank": 3.0,
+      "canonical_prediction_rank": 3,
+      "canonical_measured_rank": 3,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=1,group=16",
+      "config_id": "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 1
+      },
+      "predicted": 5.237199787333017,
+      "measured": 4.39174747467041,
+      "sample_count": 1,
+      "score_sequence": 55,
+      "oracle_trial_sequence": 69,
+      "predicted_rank": 4.5,
+      "actual_rank": 6.0,
+      "predicted_average_rank": 4.5,
+      "measured_average_rank": 6.0,
+      "canonical_prediction_rank": 4,
+      "canonical_measured_rank": 6,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821\",\"12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=1,group=8",
+      "config_id": "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 1
+      },
+      "predicted": 5.237199787333017,
+      "measured": 4.373958110809326,
+      "sample_count": 1,
+      "score_sequence": 54,
+      "oracle_trial_sequence": 65,
+      "predicted_rank": 4.5,
+      "actual_rank": 4.0,
+      "predicted_average_rank": 4.5,
+      "measured_average_rank": 4.0,
+      "canonical_prediction_rank": 5,
+      "canonical_measured_rank": 4,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821\",\"12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 1,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=1,group=32",
+      "config_id": "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":32,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 1
+      },
+      "predicted": 5.239885692903178,
+      "measured": 4.3870954513549805,
+      "sample_count": 1,
+      "score_sequence": 56,
+      "oracle_trial_sequence": 74,
+      "predicted_rank": 6.0,
+      "actual_rank": 5.0,
+      "predicted_average_rank": 6.0,
+      "measured_average_rank": 5.0,
+      "canonical_prediction_rank": 6,
+      "canonical_measured_rank": 5,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.8827348295047495,
+      "kendall_tau_b": 0.7877263614433762,
+      "top_1_recall": 0.0,
+      "top_2_recall": 1.0,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0001/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0001/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=2,group=16",
+      "config_id": "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 4.542173402733006,
+      "measured": 4.221354961395264,
+      "sample_count": 1,
+      "score_sequence": 52,
+      "oracle_trial_sequence": 86,
+      "predicted_rank": 1.5,
+      "actual_rank": 3.0,
+      "predicted_average_rank": 1.5,
+      "measured_average_rank": 3.0,
+      "canonical_prediction_rank": 1,
+      "canonical_measured_rank": 3,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa\",\"95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
       "spearman": 0.7944613465542745,
       "kendall_tau_b": 0.6445033866354896,
-      "top_1_recall": 1.0,
+      "top_1_recall": 0.0,
       "top_2_recall": 0.5,
-      "top_3_recall": 1.0
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=2,group=8",
+      "config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 4.542173402733006,
+      "measured": 4.210544109344482,
+      "sample_count": 1,
+      "score_sequence": 51,
+      "oracle_trial_sequence": 80,
+      "predicted_rank": 1.5,
+      "actual_rank": 1.0,
+      "predicted_average_rank": 1.5,
+      "measured_average_rank": 1.0,
+      "canonical_prediction_rank": 2,
+      "canonical_measured_rank": 1,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa\",\"95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": true,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.7944613465542745,
+      "kendall_tau_b": 0.6445033866354896,
+      "top_1_recall": 0.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=2,group=32",
+      "config_id": "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":32,\"prepare_h_num_stages\":2}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 2
+      },
+      "predicted": 4.544859308303167,
+      "measured": 4.21860408782959,
+      "sample_count": 1,
+      "score_sequence": 53,
+      "oracle_trial_sequence": 90,
+      "predicted_rank": 3.0,
+      "actual_rank": 2.0,
+      "predicted_average_rank": 3.0,
+      "measured_average_rank": 2.0,
+      "canonical_prediction_rank": 3,
+      "canonical_measured_rank": 2,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": true,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.7944613465542745,
+      "kendall_tau_b": 0.6445033866354896,
+      "top_1_recall": 0.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=1,group=16",
+      "config_id": "c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":16,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 16,
+        "prepare_h_num_stages": 1
+      },
+      "predicted": 5.237199787333017,
+      "measured": 4.387823581695557,
+      "sample_count": 1,
+      "score_sequence": 55,
+      "oracle_trial_sequence": 70,
+      "predicted_rank": 4.5,
+      "actual_rank": 6.0,
+      "predicted_average_rank": 4.5,
+      "measured_average_rank": 6.0,
+      "canonical_prediction_rank": 4,
+      "canonical_measured_rank": 6,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821\",\"12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.7944613465542745,
+      "kendall_tau_b": 0.6445033866354896,
+      "top_1_recall": 0.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=1,group=8",
+      "config_id": "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":8,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 8,
+        "prepare_h_num_stages": 1
+      },
+      "predicted": 5.237199787333017,
+      "measured": 4.3764848709106445,
+      "sample_count": 1,
+      "score_sequence": 54,
+      "oracle_trial_sequence": 65,
+      "predicted_rank": 4.5,
+      "actual_rank": 4.0,
+      "predicted_average_rank": 4.5,
+      "measured_average_rank": 4.0,
+      "canonical_prediction_rank": 5,
+      "canonical_measured_rank": 4,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": true,
+      "prediction_tie_size": 2,
+      "prediction_tie_config_ids": "[\"c63c4cf7d2bd3214f9a72566e01536bf2eb27030322fda5cb5d688eb2626a821\",\"12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b\"]",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.7944613465542745,
+      "kendall_tau_b": 0.6445033866354896,
+      "top_1_recall": 0.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
+    },
+    {
+      "suite": "bwd",
+      "direction": "bwd",
+      "repetition": 2,
+      "cache_track": "cold",
+      "candidate": "bwd:block_DV=128,stage=1,group=32",
+      "config_id": "866c465169f15536ad3745dafa73a246e34bd749bfd245a42fb58fdf35fa9138",
+      "canonical_config": "{\"block_DV\":128,\"direction\":\"bwd\",\"group_reduce_block_size\":32,\"prepare_h_num_stages\":1}",
+      "config": {
+        "block_DV": 128,
+        "direction": "bwd",
+        "group_reduce_block_size": 32,
+        "prepare_h_num_stages": 1
+      },
+      "predicted": 5.239885692903178,
+      "measured": 4.387518405914307,
+      "sample_count": 1,
+      "score_sequence": 56,
+      "oracle_trial_sequence": 74,
+      "predicted_rank": 6.0,
+      "actual_rank": 5.0,
+      "predicted_average_rank": 6.0,
+      "measured_average_rank": 5.0,
+      "canonical_prediction_rank": 6,
+      "canonical_measured_rank": 5,
+      "paired_denominator": 6,
+      "score_count": 6,
+      "oracle_kind": "z3-legal-exhaustive",
+      "oracle_arm": "z3-legal-exhaustive",
+      "oracle_candidate_count": 6,
+      "oracle_successful_count": 6,
+      "legal_oracle_complete": true,
+      "legal_oracle_status": "complete",
+      "fallback_reason": null,
+      "prediction_exact_tie": false,
+      "prediction_tie_size": 1,
+      "prediction_tie_config_ids": "",
+      "measured_exact_tie": false,
+      "measured_tie_size": 1,
+      "measured_tie_config_ids": "",
+      "is_oracle_best": false,
+      "in_actual_deterministic_top_k": false,
+      "oracle_best_in_actual_deterministic_top_k": true,
+      "spearman": 0.7944613465542745,
+      "kendall_tau_b": 0.6445033866354896,
+      "top_1_recall": 0.0,
+      "top_2_recall": 0.5,
+      "top_3_recall": 1.0,
+      "actual_budget": 3,
+      "top_actual_budget_recall": 1.0,
+      "score_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-cm-topk__rep-0002/events.jsonl",
+      "oracle_events_path": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-heldout-t8192-v1/bwd/z3-legal-exhaustive__rep-0002/events.jsonl",
+      "num_tokens": 8192
     }
   ]
 }
