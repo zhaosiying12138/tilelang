@@ -1,0 +1,61 @@
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+___ test_pre_z3_unroll_preserves_explicit_loop_inside_atomic_parallel_region ___
+
+    def test_pre_z3_unroll_preserves_explicit_loop_inside_atomic_parallel_region():
+        """A parallel region is one schedule task; its interior is not pre-Z3 unrolled."""
+        tir = tvm.tirx
+        original = []
+    
+        def body(_k, output):
+            p = tir.Var("p", "int32")
+            i = tir.Var("i", "int32")
+            inner = tir.For(
+                i,
+                0,
+                2,
+                tir.ForKind.UNROLLED,
+                tir.BufferStore(output, i, [p * 2 + i]),
+                annotations={"pragma_unroll_explicit": True},
+            )
+            original.append(inner)
+            return tir.For(p, 0, 2, tir.ForKind.PARALLEL, inner)
+    
+        recorder, _ = _run_prologue(_make_module(1, body))
+    
+        for pass_name in (_INFER, _PLAN):
+            loop = _z3_loop(recorder.z3_inputs[pass_name])
+            tasks = _top_level_tasks(loop)
+            assert len(tasks) == 1
+            region = tasks[0]
+            assert isinstance(region, tir.For)
+            assert region.kind == tir.ForKind.PARALLEL
+            assert len(loop.annotations["tl_z3_pipeline_latencies"]) == 1
+>           assert isinstance(region.body, tir.For), (
+                f"explicit unroll entered an atomic parallel region before {pass_name}"
+            )
+E           AssertionError: explicit unroll entered an atomic parallel region before tl.InferZ3PipelineProblem
+E           assert False
+E            +  where False = isinstance(output = T.Buffer((32,), "int32")\np = T.int32()\noutput[p * 2] = 0\noutput[p * 2 + 1] = 1, <class 'tvm.tirx.stmt.For'>)
+E            +    where output = T.Buffer((32,), "int32")\np = T.int32()\noutput[p * 2] = 0\noutput[p * 2 + 1] = 1 = for p in T.parallel(2):\n    output = T.Buffer((32,), "int32")\n    output[p * 2] = 0\n    output[p * 2 + 1] = 1.body
+E            +    and   <class 'tvm.tirx.stmt.For'> = <module 'tvm.tirx' from '/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/python/tvm/tirx/__init__.py'>.For
+
+testing/python/transform/test_tilelang_cuda_z3_unroll.py:214: AssertionError
+============================================================================== fixture duration top ===============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.000063 grand total                                                                                                                          2 0:00:00.000032 0:00:00.000035
+============================================================================= test call duration top ==============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.015347 testing/python/transform/test_tilelang_cuda_z3_unroll.py::test_explicit_unroll_materializes_tasks_before_z3_inference_and_planning   1 0:00:00.015347 0:00:00.015347
+0:00:00.014323 testing/python/transform/test_tilelang_cuda_z3_unroll.py::test_non_explicit_unroll_remains_one_atomic_z3_task                        2 0:00:00.007161 0:00:00.010097
+0:00:00.008010 testing/python/transform/test_tilelang_cuda_z3_unroll.py::test_pre_z3_unroll_preserves_explicit_loop_inside_atomic_parallel_region   1 0:00:00.008010 0:00:00.008010
+0:00:00.037680 grand total                                                                                                                          4 0:00:00.008010 0:00:00.015347
+============================================================================= test setup duration top =============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.000504 grand total                                                                                                                          4 0:00:00.000138 0:00:00.000196
+=========================================================================== test teardown duration top ============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.000240 grand total                                                                                                                          4 0:00:00.000059 0:00:00.000066
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_unroll.py::test_pre_z3_unroll_preserves_explicit_loop_inside_atomic_parallel_region
+1 failed, 3 passed in 0.59s

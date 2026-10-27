@@ -1,0 +1,283 @@
+2026-10-27 21:28:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+2026-10-27 21:28:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-27 21:28:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: [(0, 2, 0, 1), (1, 2, 0, 1), (2, 3, 0, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: [(0, 1)]
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=4
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=2, serial_fallback=False
+[CUDA Python Z3 Loop] Task 1: start=0, latency=1, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 0: start=1, latency=1, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 2: start=2, latency=2, II=1, resource=0b0010000
+[CUDA Python Z3 Loop] Task 3: start=4, latency=2, II=1, resource=0b0000010
+2026-10-27 21:28:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.2026-10-27 21:28:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: [(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: [(0, 1)]
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=7
+[CUDA Python Z3 Loop] Testing II=4
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=2, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=1, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=2, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 2: start=6, latency=2, II=1, resource=0b0010000
+[CUDA Python Z3 Loop] Task 3: start=8, latency=2, II=1, resource=0b0000010
+2026-10-27 21:28:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.2026-10-27 21:28:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: [(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: [(0, 1)]
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=7
+[CUDA Python Z3 Loop] Testing II=4
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=2, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=1, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=2, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 2: start=6, latency=2, II=1, resource=0b0010000
+[CUDA Python Z3 Loop] Task 3: start=8, latency=2, II=1, resource=0b0000010
+2026-10-27 21:28:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.2026-10-27 21:28:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: [(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: [(0, 1)]
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=7
+[CUDA Python Z3 Loop] Testing II=4
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=2, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=1, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=2, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 2: start=6, latency=2, II=1, resource=0b0010000
+[CUDA Python Z3 Loop] Task 3: start=8, latency=2, II=1, resource=0b0000010
+2026-10-27 21:28:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.2026-10-27 21:28:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: [(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: [(0, 1)]
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=7
+[CUDA Python Z3 Loop] Testing II=4
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=2, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=1, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=2, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 2: start=6, latency=2, II=1, resource=0b0010000
+[CUDA Python Z3 Loop] Task 3: start=8, latency=2, II=1, resource=0b0000010
+2026-10-27 21:28:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.2026-10-27 21:28:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[1]`
+[CUDA Python Z3 Loop] Scheduling 3 tasks, num_stages=3
+[CUDA Python Z3 Loop] Data dependencies: [(0, 1, 0, 30), (1, 0, -1, 2), (1, 2, 0, 2), (2, 1, 1, 1)]
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [512] / [[1024, 0]]
+[CUDA Python Z3 Loop] Testing II=17
+[CUDA Python Z3 Loop] Testing II=26
+[CUDA Python Z3 Loop] Testing II=30
+[CUDA Python Z3 Loop] Testing II=32
+[CUDA Python Z3 Loop] Testing II=31
+[CUDA Python Z3 Loop] Result II=31, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=30, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 1: start=30, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 2: start=32, latency=1, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=3
+[CUDA Python Z3 Loop] Data dependencies: [(0, 1, 0, 30), (1, 0, -1, 2), (3, 2, 0, 2), (2, 3, 1, 1), (0, 3, 0, 30), (0, 3, -1, 30), (3, 0, -1, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [512] / [[1024, 0]]
+[CUDA Python Z3 Loop] Testing II=18
+[CUDA Python Z3 Loop] Testing II=27
+[CUDA Python Z3 Loop] Testing II=32
+[CUDA Python Z3 Loop] Testing II=30
+[CUDA Python Z3 Loop] Testing II=31
+[CUDA Python Z3 Loop] Result II=31, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=30, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 1: start=30, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 3: start=31, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 2: start=33, latency=1, II=1, resource=0b0000000
+2026-10-27 21:28:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.2026-10-27 21:28:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[1]`
+[CUDA Python Z3 Loop] Scheduling 3 tasks, num_stages=3
+[CUDA Python Z3 Loop] Data dependencies: [(0, 1, 0, 30), (1, 0, -1, 2), (1, 2, 0, 2), (2, 1, 1, 1)]
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [512] / [[1024, 0]]
+[CUDA Python Z3 Loop] Testing II=17
+[CUDA Python Z3 Loop] Testing II=26
+[CUDA Python Z3 Loop] Testing II=30
+[CUDA Python Z3 Loop] Testing II=32
+[CUDA Python Z3 Loop] Testing II=31
+[CUDA Python Z3 Loop] Result II=31, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=30, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 1: start=30, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 2: start=32, latency=1, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=3
+[CUDA Python Z3 Loop] Data dependencies: [(0, 1, 0, 30), (1, 0, -1, 2), (3, 2, 0, 2), (2, 3, 1, 1), (0, 3, 0, 30), (0, 3, -1, 30), (3, 0, -1, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [512] / [[1024, 0]]
+[CUDA Python Z3 Loop] Testing II=18
+[CUDA Python Z3 Loop] Testing II=27
+[CUDA Python Z3 Loop] Testing II=32
+[CUDA Python Z3 Loop] Testing II=30
+[CUDA Python Z3 Loop] Testing II=31
+[CUDA Python Z3 Loop] Result II=31, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=30, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 1: start=30, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 3: start=31, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 2: start=33, latency=1, II=1, resource=0b0000000
+2026-10-27 21:28:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.2026-10-27 21:28:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+2026-10-27 21:28:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.F
+=================================== FAILURES ===================================
+_____ test_sm120_public_stage_default_depth_matches_legacy_manual_numerics _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72e079260d70>
+
+    @tilelang.testing.requires_cuda_compute_version_eq(12, 0)
+    def test_sm120_public_stage_default_depth_matches_legacy_manual_numerics(monkeypatch):
+        """Stage(0/1) supplies depth two; the old schema remains equivalent."""
+        block = 128
+        iterations = 4
+    
+        def make_func(use_stage_markers):
+            if use_stage_markers:
+    
+                @T.prim_func
+                def main(
+                    A: T.Tensor((block * iterations,), "float32"),
+                    B: T.Tensor((block * iterations,), "float32"),
+                    C: T.Tensor((block * iterations,), "float32"),
+                ):
+                    with T.Kernel(1, threads=128):
+                        a_shared = T.alloc_shared((block,), "float32")
+                        b_shared = T.alloc_shared((block,), "float32")
+                        c_fragment = T.alloc_fragment((block,), "float32")
+                        annotations = z3_pipeline_annotations(
+                            latencies=[4, 4, 2, 2],
+                            iis=[1, 1, 1, 1],
+                            resource_flags=[1, 1, 16, 2],
+                            data_deps=[(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)],
+                            resource_deps=[(0, 1)],
+                            enable_offset=True,
+                        )
+                        # num_stages is deliberately omitted: NormalizeZ3ScheduleUnits
+                        # derives max(Stage) + 1 == 2 before the real solver call.
+                        for k in T.Pipelined(iterations, annotations=annotations):
+                            with T.Stage(0), T.Task():
+                                T.copy(A[k * block : (k + 1) * block], a_shared)
+                            with T.Stage(0), T.Task():
+                                T.copy(B[k * block : (k + 1) * block], b_shared)
+                            with T.Stage(1), T.Task():
+                                for i in T.Parallel(block):
+                                    c_fragment[i] = a_shared[i] + b_shared[i]
+                            with T.Stage(1), T.Task():
+                                T.copy(c_fragment, C[k * block : (k + 1) * block])
+    
+                return main
+    
+            @T.prim_func
+            def main(
+                A: T.Tensor((block * iterations,), "float32"),
+                B: T.Tensor((block * iterations,), "float32"),
+                C: T.Tensor((block * iterations,), "float32"),
+            ):
+                with T.Kernel(1, threads=128):
+                    a_shared = T.alloc_shared((block,), "float32")
+                    b_shared = T.alloc_shared((block,), "float32")
+                    c_fragment = T.alloc_fragment((block,), "float32")
+                    annotations = z3_pipeline_annotations(
+                        latencies=[4, 4, 2, 2],
+                        iis=[1, 1, 1, 1],
+                        resource_flags=[1, 1, 16, 2],
+                        data_deps=[(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)],
+                        resource_deps=[(0, 1)],
+                        pipe_order_deps=[(0, 1)],
+                        enable_offset=True,
+                        manual_schedule=True,
+                        manual_stages=[0, 0, 1, 1],
+                    )
+                    for k in T.Pipelined(iterations, num_stages=2, annotations=annotations):
+                        with T.Task():
+                            T.copy(A[k * block : (k + 1) * block], a_shared)
+                        with T.Task():
+                            T.copy(B[k * block : (k + 1) * block], b_shared)
+                        with T.Task():
+                            for i in T.Parallel(block):
+                                c_fragment[i] = a_shared[i] + b_shared[i]
+                        with T.Task():
+                            T.copy(c_fragment, C[k * block : (k + 1) * block])
+    
+            return main
+    
+        original = z3_scheduler.z3_schedule_loop_python
+        calls = []
+        active_schema = []
+    
+        def counted_solve(*args, **kwargs):
+            result = original(*args, **kwargs)
+            calls.append((active_schema[-1], args, kwargs, result))
+            return result
+    
+        monkeypatch.setattr(z3_scheduler, "z3_schedule_loop_python", counted_solve)
+        indices = torch.arange(block * iterations, dtype=torch.float32, device="cuda")
+        for schema in ("stage", "legacy"):
+            active_schema.append(schema)
+            kernel = tilelang.compile(
+                make_func(schema == "stage"),
+                target={"kind": "cuda", "arch": "sm_120a"},
+                out_idx=[2],
+                execution_backend="tvm_ffi",
+                pass_configs={tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING: True},
+            )
+            actual = kernel(indices, 2 * indices + 1)
+            torch.testing.assert_close(actual, 3 * indices + 1, rtol=0, atol=0)
+    
+>       assert [schema for schema, _, _, _ in calls] == ["stage", "legacy"]
+E       AssertionError: assert [] == ['stage', 'legacy']
+E         
+E         Right contains 2 more items, first extra item: 'stage'
+E         
+E         Full diff:
+E         + []
+E         - [
+E         -     'stage',
+E         -     'legacy',
+E         - ]
+
+testing/python/language/test_tilelang_cuda_z3_pipeline.py:437: AssertionError
+============================================================================== fixture duration top ===============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.001848 grand total                                                                                                                         22 0:00:00.000021 0:00:00.000718
+============================================================================= test call duration top ==============================================================================
+total          name                                                                                                                               num med            max           
+0:00:03.244037 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_sm120_multi_async_stage_real_solver_and_numerics                     4 0:00:00.842201 0:00:00.924558
+0:00:02.129631 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_default_off_and_opt_in_real_solver_and_numerics                      1 0:00:02.129631 0:00:02.129631
+0:00:01.500980 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_sm120_public_task_a_plus_b_real_solver_and_numerics                  1 0:00:01.500980 0:00:01.500980
+0:00:01.492083 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_sm120_bind_clone_next_iteration_overwrite_real_solver_and_numerics   2 0:00:00.746041 0:00:00.751442
+0:00:00.014091 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_sm120_public_stage_default_depth_matches_legacy_manual_numerics      1 0:00:00.014091 0:00:00.014091
+0:00:08.380821 grand total                                                                                                                          9 0:00:00.842201 0:00:02.129631
+============================================================================= test setup duration top =============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.003217 grand total                                                                                                                          9 0:00:00.000356 0:00:00.000917
+=========================================================================== test teardown duration top ============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.000685 grand total                                                                                                                          9 0:00:00.000080 0:00:00.000093
+=========================== short test summary info ============================
+FAILED testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_sm120_public_stage_default_depth_matches_legacy_manual_numerics
+1 failed, 8 passed in 8.96s

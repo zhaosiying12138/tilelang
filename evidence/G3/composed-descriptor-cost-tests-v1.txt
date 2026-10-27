@@ -1,0 +1,20 @@
+........................................................................ [ 58%]
+............................................... [ 95%]
+.....                                                        [100%]
+=================================================================================== fixture duration top ====================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.000941 grand total                                                                                                                                   55 0:00:00.000017 0:00:00.000054
+================================================================================== test call duration top ===================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.006865 testing/python/cuda/test_calibration_schema.py::SchemaTests::test_current_cuda_cost_model_accepts_complete_and_rejects_each_new_missing_rate   1 0:00:00.006865 0:00:00.006865
+0:00:00.005644 testing/python/cuda/test_calibration_schema.py::SchemaTests::test_latency_model_consumer_schema_accepts_instruction_specific_paths             1 0:00:00.005644 0:00:00.005644
+0:00:00.005601 testing/python/cuda/test_calibration_schema.py::SchemaTests::test_current_pure_python_latency_model_accepts_complete_view                      1 0:00:00.005601 0:00:00.005601
+0:00:00.005157 testing/python/cuda/test_calibration_schema.py::SchemaTests::test_instruction_audit_is_required_for_new_measured_rates                         1 0:00:00.005157 0:00:00.005157
+0:00:00.067297 grand total                                                                                                                                  124 0:00:00.000314 0:00:00.006865
+================================================================================== test setup duration top ==================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.006851 grand total                                                                                                                                  124 0:00:00.000045 0:00:00.000217
+================================================================================ test teardown duration top =================================================================================
+total          name                                                                                                                                         num med            max           
+0:00:00.003575 grand total                                                                                                                                  124 0:00:00.000025 0:00:00.000091
+124 passed, 37 subtests passed in 0.35s

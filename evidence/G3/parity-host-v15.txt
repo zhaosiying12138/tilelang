@@ -1,0 +1,530 @@
+........................................................................ [ 15%]
+........................................................................ [ 31%]
+........................................................................ [ 46%]
+........................................................................ [ 62%]
+........................................................................ [ 78%]
+........................................................................ [ 93%]
+..........F...FF..FFFFFFFFFF                                             [100%]
+=================================== FAILURES ===================================
+_______ test_mutated_bound_snapshot_and_control_header_scalar_dependency _______
+
+    def test_mutated_bound_snapshot_and_control_header_scalar_dependency():
+        limits = tirx.decl_buffer((1,), "int32", name="limits", scope="shared")
+        out = tirx.decl_buffer((8,), "int32", name="out", scope="shared")
+        bound = tirx.Var("bound", "int32")
+        i = tirx.Var("i", "int32")
+        write_limit = _unit(tirx.BufferStore(limits, 4, [0]), 1, ws_op_id="write_limit")
+        snapshot = _unit(tirx.Bind(bound, limits[0]), 2, ws_op_id="snapshot")
+        child = _unit(tirx.BufferStore(out, i, [i]), 3, ws_op_id="child")
+>       loop = _control(i, bound, [child], 4, "bounded_loop")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py:126: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py:43: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 3, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "child"}, "tl.cuda_task", 1)
+E       out = T.Buffer((8,), "int32", scope="shared")
+E       i = T.int32()
+E       out[i] = idirectly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+________ test_mbarrier_state_and_buffer_contract_cross_control_boundary ________
+
+    def test_mbarrier_state_and_buffer_contract_cross_control_boundary():
+        barrier = tirx.decl_buffer((1,), "int32", name="barrier", scope="shared")
+        i = tirx.Var("i", "int32")
+        arrive = _unit(tirx.Evaluate(T.ptx_arrive_barrier(barrier[0])), 1, ws_op_id="arrive")
+>       inner = _control(i, 2, [arrive], 2, "inner")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py:43: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 1, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "arrive"}, "tl.cuda_task", 1)
+E       barrier = T.Buffer((1,), "int32", scope="shared")
+E       T.ptx_arrive_barrier(barrier[0])directly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+____ test_scalar_chain_and_diamond_cover_bounds_guards_and_nested_consumers ____
+
+    def test_scalar_chain_and_diamond_cover_bounds_guards_and_nested_consumers():
+        out = tirx.decl_buffer((8,), "int32", name="out", scope="shared")
+        a = tirx.Var("a", "int32")
+        b = tirx.Var("b", "int32")
+        c = tirx.Var("c", "int32")
+        d = tirx.Var("d", "int32")
+        i = tirx.Var("i", "int32")
+        bind_a = _unit(tirx.Bind(a, 1), 1, ws_op_id="bind_a")
+        bind_b = _unit(tirx.Bind(b, a + 1), 2, ws_op_id="bind_b")
+        bind_c = _unit(tirx.Bind(c, a + 2), 3, ws_op_id="bind_c")
+        bind_d = _unit(tirx.Bind(d, b + c), 4, ws_op_id="bind_d")
+        consumer = _unit(
+            tirx.BufferStore(out, d, [i]), 5, ws_op_id="consumer", guard=c > 0
+        )
+>       loop = _control(i, b, [consumer], 6, "loop")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py:43: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 5, "stage": -1}, "tl.schedule_unit", 1):
+E       c = T.int32()
+E       if c > 0:
+E           out = T.Buffer((8,), "int32", scope="shared")
+E           d = T.int32()
+E           i = T.int32()
+E           T.attr({"ws_op_id": "consumer"}, "tl.cuda_task", 1)
+E           out[i] = ddirectly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+_____ test_copy_instruction_selection_and_per_role_single_role_resolution ______
+
+    def test_copy_instruction_selection_and_per_role_single_role_resolution():
+        src, dst, shared = _buffers()
+        load = _unit(_copy(src, shared), 1, "load")
+        store = _unit(_copy(shared, dst), 2, "store")
+>       candidates = _plan(_root(tirx.SeqStmt([load, store]), [src, dst, shared]), resolve=False)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:79: in _plan
+    summary = _ffi("tl.cuda.transform.Z3RolePlanning")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectRolePlanning(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String, bool)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)::{lambda(tvm::tl::cuda::z3::IRStructure*)#1}::operator()(tvm::tl::cuda::z3::IRStructure*) const
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::AnalyzeCudaTaskAccesses(tvm::tirx::Stmt const&, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::CudaAccessCollector::VisitExpr_(tvm::tirx::CallNode const*)
+    ???
+<unknown>:0: in tvm::tirx::ExprVisitor::VisitExpr_(tvm::tirx::CallNode const*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(!options_.strict_opaque || effect == CallEffectKind::kPure ||
+E   tvm.error.InternalError: Check failed: (!options_.strict_opaque || effect == CallEffectKind::kPure || (options_.allow_read_state && effect <= CallEffectKind::kReadState)) is false: CUDA Z3 nested task analysis: opaque or stateful Call has no complete BufferRegion/state contract; supply dependencies explicitly: T.region(src[0, 0], 1, 16, 64)
+
+src/cuda/transform/z3_dependency_analysis.cc:309: InternalError
+_____________ test_layout_ineligible_tma_copy_falls_back_to_worker _____________
+
+    def test_layout_ineligible_tma_copy_falls_back_to_worker():
+        from tilelang.layout import Layout
+    
+        src, _, shared = _buffers()
+        padded = Layout([16, 64], lambda i, j: i * 72 + j)
+        load = _unit(_copy(src, shared), 1, "load")
+        root = _root(load, [src, shared], annotations={"layout_map": {shared: padded}})
+>       summary = _plan(root, resolve=False)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:134: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:79: in _plan
+    summary = _ffi("tl.cuda.transform.Z3RolePlanning")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectRolePlanning(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String, bool)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)::{lambda(tvm::tl::cuda::z3::IRStructure*)#1}::operator()(tvm::tl::cuda::z3::IRStructure*) const
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::AnalyzeCudaTaskAccesses(tvm::tirx::Stmt const&, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::CudaAccessCollector::VisitExpr_(tvm::tirx::CallNode const*)
+    ???
+<unknown>:0: in tvm::tirx::ExprVisitor::VisitExpr_(tvm::tirx::CallNode const*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(!options_.strict_opaque || effect == CallEffectKind::kPure ||
+E   tvm.error.InternalError: Check failed: (!options_.strict_opaque || effect == CallEffectKind::kPure || (options_.allow_read_state && effect <= CallEffectKind::kReadState)) is false: CUDA Z3 nested task analysis: opaque or stateful Call has no complete BufferRegion/state contract; supply dependencies explicitly: T.region(src[0, 0], 1, 16, 64)
+
+src/cuda/transform/z3_dependency_analysis.cc:309: InternalError
+_______ test_role_private_guard_rejects_incompatible_role_and_names_task _______
+
+    def test_role_private_guard_rejects_incompatible_role_and_names_task():
+        src, _, shared = _buffers()
+        private = tirx.decl_buffer((1,), "int32", name="private", scope="local")
+        out = tirx.decl_buffer((1,), "int32", name="out", scope="global")
+        definition = _unit(
+            tirx.SeqStmt(
+                [tirx.BufferStore(out, 1, [0]), tirx.BufferStore(private, 1, [0])]
+            ),
+            1,
+            "private_def",
+        )
+        load = _unit(_copy(src, shared), 2, "guarded_load", guard=private[0] > 0)
+>       with pytest.raises(Exception, match="guarded_load|unavailable|empty|Cannot place"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'guarded_load|unavailable|empty|Cannot place'
+E         Actual message: 'Check failed: (!options_.strict_opaque || effect == CallEffectKind::kPure || (options_.allow_read_state && effect <= CallEffectKind::kReadState)) is false: CUDA Z3 nested task analysis: opaque or stateful Call has no complete BufferRegion/state contract; supply dependencies explicitly: T.region(src[0, 0], 1, 16, 64)'
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:150: AssertionError
+_____ test_global_scalar_replicates_but_external_effect_does_not_broadcast _____
+
+    def test_global_scalar_replicates_but_external_effect_does_not_broadcast():
+        src, _, shared = _buffers()
+        predicate_buffer = tirx.decl_buffer((1,), "int32", name="predicate_buffer", scope="global")
+        out = tirx.decl_buffer((1,), "int32", name="out", scope="global")
+        predicate = tirx.Var("predicate", "int32")
+        bind = _unit(tirx.Bind(predicate, predicate_buffer[0]), 1, "bind")
+        load = _unit(_copy(src, shared), 2, "load", guard=predicate > 0)
+        effect = _unit(tirx.BufferStore(out, predicate, [0]), 3, "effect")
+>       summary = _plan(
+            _root(tirx.SeqStmt([bind, load, effect]), [src, shared, predicate_buffer, out])
+        )
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:79: in _plan
+    summary = _ffi("tl.cuda.transform.Z3RolePlanning")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectRolePlanning(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String, bool)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)::{lambda(tvm::tl::cuda::z3::IRStructure*)#1}::operator()(tvm::tl::cuda::z3::IRStructure*) const
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::AnalyzeCudaTaskAccesses(tvm::tirx::Stmt const&, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::CudaAccessCollector::VisitExpr_(tvm::tirx::CallNode const*)
+    ???
+<unknown>:0: in tvm::tirx::ExprVisitor::VisitExpr_(tvm::tirx::CallNode const*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(!options_.strict_opaque || effect == CallEffectKind::kPure ||
+E   tvm.error.InternalError: Check failed: (!options_.strict_opaque || effect == CallEffectKind::kPure || (options_.allow_read_state && effect <= CallEffectKind::kReadState)) is false: CUDA Z3 nested task analysis: opaque or stateful Call has no complete BufferRegion/state contract; supply dependencies explicitly: T.region(src[0, 0], 1, 16, 64)
+
+src/cuda/transform/z3_dependency_analysis.cc:309: InternalError
+_________ test_private_register_chain_and_ancestor_bound_fixed_points __________
+
+    def test_private_register_chain_and_ancestor_bound_fixed_points():
+        src, _, shared = _buffers()
+        private = tirx.decl_buffer((1,), "int32", name="private", scope="local")
+        out = tirx.decl_buffer((16, 64), "float16", name="out", scope="global")
+        x = tirx.Var("x", "int32")
+        bound = tirx.Var("bound", "int32")
+        i = tirx.Var("i", "int32")
+        init = _unit(tirx.BufferStore(private, 1, [0]), 1, "init")
+        chain = _unit(tirx.Bind(x, private[0]), 2, "chain")
+        bind_bound = _unit(tirx.Bind(bound, 2), 3, "bind_bound")
+        load = _unit(_copy(src, shared), 4, "load", guard=x > 0)
+        worker = _unit(_copy(shared, out), 5, "worker")
+        # A plain shared/global compound statement is Worker work; use a direct store
+        # to avoid making the fixed-point fixture depend on another TMA classification.
+        worker = _unit(tirx.BufferStore(out, shared[0, 0], [0, 0]), 5, "worker")
+        loop = _control(i, bound, [load, worker], 6, "loop")
+>       summary = _plan(
+            _root(tirx.SeqStmt([init, chain, bind_bound, loop]), [src, shared, private, out])
+        )
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:79: in _plan
+    summary = _ffi("tl.cuda.transform.Z3RolePlanning")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectRolePlanning(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String, bool)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)::{lambda(tvm::tl::cuda::z3::IRStructure*)#1}::operator()(tvm::tl::cuda::z3::IRStructure*) const
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::RefreshCudaTaskAccesses(tvm::tl::cuda::z3::ScheduledTIR*, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)::{lambda(tvm::tl::cuda::z3::IRStructure*)#1}::operator()(tvm::tl::cuda::z3::IRStructure*) const
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::AnalyzeCudaTaskAccesses(tvm::tirx::Stmt const&, tvm::ffi::Map<tvm::tirx::Var, tvm::tirx::Buffer, void> const&, tvm::tl::cuda::z3::CudaTaskAnalysisOptions const&)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::CudaAccessCollector::VisitExpr_(tvm::tirx::CallNode const*)
+    ???
+<unknown>:0: in tvm::tirx::ExprVisitor::VisitExpr_(tvm::tirx::CallNode const*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(!options_.strict_opaque || effect == CallEffectKind::kPure ||
+E   tvm.error.InternalError: Check failed: (!options_.strict_opaque || effect == CallEffectKind::kPure || (options_.allow_read_state && effect <= CallEffectKind::kReadState)) is false: CUDA Z3 nested task analysis: opaque or stateful Call has no complete BufferRegion/state contract; supply dependencies explicitly: T.region(src[0, 0], 1, 16, 64)
+
+src/cuda/transform/z3_dependency_analysis.cc:309: InternalError
+_________ test_pure_fallback_is_deterministic_with_and_without_worker __________
+
+    def test_pure_fallback_is_deterministic_with_and_without_worker():
+        value = tirx.Var("value", "int32")
+        bind = _unit(tirx.Bind(value, 1), 1, "unused")
+>       assert _task(_plan(_root(bind, [])), "unused")["resolved"] == WORKER
+                     ^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:79: in _plan
+    summary = _ffi("tl.cuda.transform.Z3RolePlanning")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectRolePlanning(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String, bool)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+______ test_loop_exit_includes_later_third_role_and_all_control_producers ______
+
+    def test_loop_exit_includes_later_third_role_and_all_control_producers():
+        src, dst, shared = _buffers()
+        out = tirx.decl_buffer((1,), "int32", name="out", scope="global")
+        bound = tirx.Var("bound", "int32")
+        predicate = tirx.Var("predicate", "int32")
+        i = tirx.Var("i", "int32")
+        bind_bound = _unit(tirx.Bind(bound, 2), 1, "bind_bound")
+        load = _unit(_copy(src, shared), 2, "load")
+        worker = _unit(tirx.BufferStore(out, i, [0]), 3, "worker")
+>       bind_predicate = _unit(tirx.Bind(predicate, i >= 0), 4, "predicate")
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:217: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+3rdparty/tvm/python/tvm/tirx/stmt.py:73: in __init__
+    self.__init_handle_by_constructor__(
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_EQ(value.dtype(), var.dtype());
+E   tvm.error.InternalError: Check failed: value.dtype() == var.dtype() (bool vs. int32) :
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:63: InternalError
+_________ test_role_specific_early_exit_around_shared_loop_is_rejected _________
+
+    def test_role_specific_early_exit_around_shared_loop_is_rejected():
+        src, _, shared = _buffers()
+        out = tirx.decl_buffer((1,), "int32", name="out", scope="global")
+        i = tirx.Var("i", "int32")
+        load = _unit(_copy(src, shared), 1, "load")
+        worker_break = _unit(
+            tirx.SeqStmt(
+                [tirx.BufferStore(out, i, [0]), tirx.Evaluate(T.loop_break())]
+            ),
+            2,
+            "worker_break",
+        )
+        loop = _control(i, 2, [load, worker_break], 3, "loop")
+>       with pytest.raises(Exception, match="worker_break|role demand|broadcast"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'worker_break|role demand|broadcast'
+E         Actual message: 'Check failed: (!options_.strict_opaque || effect == CallEffectKind::kPure || (options_.allow_read_state && effect <= CallEffectKind::kReadState)) is false: CUDA Z3 nested task analysis: opaque or stateful Call has no complete BufferRegion/state contract; supply dependencies explicitly: T.region(src[0, 0], 1, 16, 64)'
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:246: AssertionError
+_____________ test_counter_guards_and_state_join_execution_demand ______________
+
+    def test_counter_guards_and_state_join_execution_demand():
+        predicate = tirx.Var("predicate", "int32")
+>       root = _counter_fixture(predicate)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:269: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:258: in _counter_fixture
+    first = _control(i, 1, [worker], 4, "first")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:60: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 3, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "worker"}, "tl.cuda_task", 1)
+E       shared = T.Buffer((16, 64), "float16", scope="shared")
+E       src = T.Buffer((16, 64), "float16")
+E       shared[0, 0] = src[0, 0]directly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+_________ test_counter_guard_private_to_one_protocol_role_is_rejected __________
+
+    def test_counter_guard_private_to_one_protocol_role_is_rejected():
+        src, _, shared = _buffers()
+        counter = tirx.decl_buffer((1,), "int32", name="counter", scope="local")
+        private = tirx.decl_buffer((1,), "int32", name="private", scope="local")
+        out = tirx.decl_buffer((1,), "int32", name="out", scope="global")
+        i = tirx.Var("i", "int32")
+        definition = _unit(
+            tirx.SeqStmt(
+                [tirx.BufferStore(out, 1, [0]), tirx.BufferStore(private, 1, [0])]
+            ),
+            1,
+            "private_def",
+        )
+        worker = _unit(tirx.BufferStore(shared, src[0, 0], [0, 0]), 2, "worker")
+>       first = _control(i, 1, [worker], 3, "first")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:299: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_role_planning.py:60: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 2, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "worker"}, "tl.cuda_task", 1)
+E       shared = T.Buffer((16, 64), "float16", scope="shared")
+E       src = T.Buffer((16, 64), "float16")
+E       shared[0, 0] = src[0, 0]directly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+=============================== warnings summary ===============================
+testing/python/transform/test_tilelang_z3_schedule_units.py::test_public_frontend_emits_exact_marker_shapes
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_per_role_frontend_emits_only_recursive_marker
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================================================================================= fixture duration top ==========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.010508 grand total                                                                                                                                              496 0:00:00.000017 0:00:00.000842
+======================================================================================== test call duration top =========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:02.153188 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                    1 0:00:02.153188 0:00:02.153188
+0:00:01.147234 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers                        3 0:00:00.048664 0:00:01.052923
+0:00:00.670029 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization                          1 0:00:00.670029 0:00:00.670029
+0:00:00.388426 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                                  18 0:00:00.016044 0:00:00.090222
+0:00:00.308742 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_accepts_role_uniform_loop_bounds                        2 0:00:00.154371 0:00:00.161093
+0:00:00.104403 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum               1 0:00:00.104403 0:00:00.104403
+0:00:00.102524 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                               10 0:00:00.010262 0:00:00.011120
+0:00:00.088031 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                              1 0:00:00.088031 0:00:00.088031
+0:00:00.083343 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                           2 0:00:00.041672 0:00:00.043192
+0:00:00.080007 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                               2 0:00:00.040004 0:00:00.042062
+0:00:00.049013 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer             2 0:00:00.024506 0:00:00.025473
+0:00:00.047681 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata   2 0:00:00.023841 0:00:00.024317
+0:00:00.045710 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering            12 0:00:00.003403 0:00:00.007134
+0:00:00.043948 testing/python/transform/test_tilelang_z3_task_analysis.py::test_aliased_views_keep_clone_raw_war_constraints_and_versions                                 2 0:00:00.021974 0:00:00.025892
+0:00:00.038532 testing/python/transform/test_tilelang_transform_unroll_loop.py::test_unroll_decl_buffer_defs_are_fresh                                                    1 0:00:00.038532 0:00:00.038532
+0:00:00.037239 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_full_commit_wait_placement                   2 0:00:00.018620 0:00:00.021706
+0:00:00.034832 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds                          4 0:00:00.008258 0:00:00.010825
+0:00:00.033365 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_role_uniform_owner_loop_bounds_remain_supported                                         2 0:00:00.016682 0:00:00.017419
+0:00:00.024509 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                              1 0:00:00.024509 0:00:00.024509
+0:00:00.023864 testing/python/transform/test_tilelang_cuda_z3_unroll.py::test_pre_z3_unroll_preserves_explicit_loop_inside_atomic_parallel_region                         1 0:00:00.023864 0:00:00.023864
+0:00:00.023198 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides              1 0:00:00.023198 0:00:00.023198
+0:00:00.023068 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                          2 0:00:00.011534 0:00:00.012519
+0:00:00.022916 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_counter_phases                                               1 0:00:00.022916 0:00:00.022916
+0:00:00.022419 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_var_use_requires_defining_op_in_role                                     1 0:00:00.022419 0:00:00.022419
+0:00:00.021471 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                        3 0:00:00.006806 0:00:00.007884
+0:00:00.020281 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_reaches_mixed_dependency_fixed_point                         1 0:00:00.020281 0:00:00.020281
+0:00:00.020039 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                          2 0:00:00.010020 0:00:00.010694
+0:00:00.019771 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_versions_reshape_and_view_aliases_by_storage                             1 0:00:00.019771 0:00:00.019771
+0:00:00.019519 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline          1 0:00:00.019519 0:00:00.019519
+0:00:00.019310 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_conditional_async_producer           1 0:00:00.019310 0:00:00.019310
+0:00:07.152904 grand total                                                                                                                                              460 0:00:00.003321 0:00:02.153188
+======================================================================================== test setup duration top ========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.041757 grand total                                                                                                                                              460 0:00:00.000040 0:00:00.001040
+====================================================================================== test teardown duration top =======================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.022987 grand total                                                                                                                                              460 0:00:00.000045 0:00:00.000197
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py::test_mutated_bound_snapshot_and_control_header_scalar_dependency
+FAILED testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py::test_mbarrier_state_and_buffer_contract_cross_control_boundary
+FAILED testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py::test_scalar_chain_and_diamond_cover_bounds_guards_and_nested_consumers
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_copy_instruction_selection_and_per_role_single_role_resolution
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_layout_ineligible_tma_copy_falls_back_to_worker
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_role_private_guard_rejects_incompatible_role_and_names_task
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_global_scalar_replicates_but_external_effect_does_not_broadcast
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_private_register_chain_and_ancestor_bound_fixed_points
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_pure_fallback_is_deterministic_with_and_without_worker
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_loop_exit_includes_later_third_role_and_all_control_producers
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_role_specific_early_exit_around_shared_loop_is_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_counter_guards_and_state_join_execution_demand
+FAILED testing/python/transform/test_tilelang_cuda_z3_role_planning.py::test_counter_guard_private_to_one_protocol_role_is_rejected
+13 failed, 447 passed, 3 deselected, 4 warnings in 8.60s

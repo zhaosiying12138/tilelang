@@ -1,0 +1,882 @@
+FFFFFFFFFFFFF.............FFFFFFFFFFFFFFFFFFFF                           [100%]
+=================================== FAILURES ===================================
+_____ test_mutable_control_read_is_snapshotted_before_mutation[condition] ______
+
+control = 'condition'
+
+    @pytest.mark.parametrize("control", ["condition", "loop-bound"])
+    def test_mutable_control_read_is_snapshotted_before_mutation(control):
+        pred = tirx.decl_buffer((1,), "int32", name="pred", scope="shared.dyn")
+        write = tirx.BufferStore(pred, 0, [0])
+        if control == "condition":
+            body = tirx.IfThenElse(pred[0] > 0, write, tirx.BufferStore(pred, 1, [0]))
+        else:
+            body = tirx.For(tirx.Var("i", "int32"), 0, pred[0], tirx.ForKind.SERIAL, write)
+    
+>       after = _normalize(_kernel(body, buffers=[pred]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+_____ test_mutable_control_read_is_snapshotted_before_mutation[loop-bound] _____
+
+control = 'loop-bound'
+
+    @pytest.mark.parametrize("control", ["condition", "loop-bound"])
+    def test_mutable_control_read_is_snapshotted_before_mutation(control):
+        pred = tirx.decl_buffer((1,), "int32", name="pred", scope="shared.dyn")
+        write = tirx.BufferStore(pred, 0, [0])
+        if control == "condition":
+            body = tirx.IfThenElse(pred[0] > 0, write, tirx.BufferStore(pred, 1, [0]))
+        else:
+            body = tirx.For(tirx.Var("i", "int32"), 0, pred[0], tirx.ForKind.SERIAL, write)
+    
+>       after = _normalize(_kernel(body, buffers=[pred]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+_______ test_every_buffer_reading_serial_loop_bound_is_snapshotted[min] ________
+
+field = 'min'
+
+    @pytest.mark.parametrize("field", ["min", "extent", "step"])
+    def test_every_buffer_reading_serial_loop_bound_is_snapshotted(field):
+        pred = tirx.decl_buffer((4,), "int32", name="pred", scope="shared.dyn")
+        values = {"min": 0, "extent": 3, "step": 1}
+        values[field] = pred[0] + 1
+        loop_var = tirx.Var("i", "int32")
+        body = tirx.For(
+            loop_var,
+            values["min"],
+            values["extent"],
+            tirx.ForKind.SERIAL,
+            tirx.BufferStore(pred, 0, [0]),
+            step=values["step"],
+        )
+    
+>       after = _normalize(_kernel(body, buffers=[pred]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+______ test_every_buffer_reading_serial_loop_bound_is_snapshotted[extent] ______
+
+field = 'extent'
+
+    @pytest.mark.parametrize("field", ["min", "extent", "step"])
+    def test_every_buffer_reading_serial_loop_bound_is_snapshotted(field):
+        pred = tirx.decl_buffer((4,), "int32", name="pred", scope="shared.dyn")
+        values = {"min": 0, "extent": 3, "step": 1}
+        values[field] = pred[0] + 1
+        loop_var = tirx.Var("i", "int32")
+        body = tirx.For(
+            loop_var,
+            values["min"],
+            values["extent"],
+            tirx.ForKind.SERIAL,
+            tirx.BufferStore(pred, 0, [0]),
+            step=values["step"],
+        )
+    
+>       after = _normalize(_kernel(body, buffers=[pred]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+_______ test_every_buffer_reading_serial_loop_bound_is_snapshotted[step] _______
+
+field = 'step'
+
+    @pytest.mark.parametrize("field", ["min", "extent", "step"])
+    def test_every_buffer_reading_serial_loop_bound_is_snapshotted(field):
+        pred = tirx.decl_buffer((4,), "int32", name="pred", scope="shared.dyn")
+        values = {"min": 0, "extent": 3, "step": 1}
+        values[field] = pred[0] + 1
+        loop_var = tirx.Var("i", "int32")
+        body = tirx.For(
+            loop_var,
+            values["min"],
+            values["extent"],
+            tirx.ForKind.SERIAL,
+            tirx.BufferStore(pred, 0, [0]),
+            step=values["step"],
+        )
+    
+>       after = _normalize(_kernel(body, buffers=[pred]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+__ test_nested_while_normalizes_and_restores_bottom_up_without_dead_counters ___
+
+    def test_nested_while_normalizes_and_restores_bottom_up_without_dead_counters():
+        pred = tirx.decl_buffer((2,), "int32", name="pred", scope="shared.dyn")
+        output = tirx.decl_buffer((4,), "int32", name="output")
+        stop = tirx.Var("stop", "bool")
+        inner = tirx.While(
+            pred[1] > 0,
+            tirx.SeqStmt(
+                [
+                    tirx.IfThenElse(stop, tirx.Evaluate(T.loop_break()), None),
+                    tirx.BufferStore(output, 1, [0]),
+                ]
+            ),
+        )
+        outer = tirx.While(pred[0] > 0, inner)
+    
+>       normalized = _normalize(_kernel(outer, buffers=[pred, output]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+_________ test_synthetic_while_bound_is_checked_lcm_and_not_pipelined __________
+
+    def test_synthetic_while_bound_is_checked_lcm_and_not_pipelined():
+        i = tirx.Var("i", "int32")
+        j = tirx.Var("j", "int32")
+        body = tirx.SeqStmt(
+            [
+                tirx.For(i, 0, 2, tirx.ForKind.SERIAL, tirx.Evaluate(0), annotations={"num_stages": 3}),
+                tirx.For(j, 0, 2, tirx.ForKind.SERIAL, tirx.Evaluate(0), annotations={"num_stages": 4}),
+            ]
+        )
+>       normalized = _normalize(_kernel(tirx.While(True, body)))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+___________ test_while_inside_opaque_leaf_is_not_rewritten[parallel] ___________
+
+opaque = 'parallel'
+
+    @pytest.mark.parametrize("opaque", ["parallel", "block", "task"])
+    def test_while_inside_opaque_leaf_is_not_rewritten(opaque):
+        pred = tirx.decl_buffer((1,), "int32", name="pred", scope="shared.dyn")
+        loop_var = tirx.Var("p", "int32")
+        while_loop = tirx.While(pred[0] > 0, tirx.BufferStore(pred, 0, [0]))
+        if opaque == "parallel":
+            body = tirx.For(loop_var, 0, 2, tirx.ForKind.PARALLEL, while_loop)
+        elif opaque == "block":
+            body = tirx.SBlock([], [], [], "opaque_block", while_loop)
+        else:
+            body = tirx.AttrStmt({}, "tl.cuda_task", 1, while_loop)
+    
+        before = _kernel(body, buffers=[pred])
+>       after = _normalize(before)
+                ^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+____________ test_while_inside_opaque_leaf_is_not_rewritten[block] _____________
+
+opaque = 'block'
+
+    @pytest.mark.parametrize("opaque", ["parallel", "block", "task"])
+    def test_while_inside_opaque_leaf_is_not_rewritten(opaque):
+        pred = tirx.decl_buffer((1,), "int32", name="pred", scope="shared.dyn")
+        loop_var = tirx.Var("p", "int32")
+        while_loop = tirx.While(pred[0] > 0, tirx.BufferStore(pred, 0, [0]))
+        if opaque == "parallel":
+            body = tirx.For(loop_var, 0, 2, tirx.ForKind.PARALLEL, while_loop)
+        elif opaque == "block":
+            body = tirx.SBlock([], [], [], "opaque_block", while_loop)
+        else:
+            body = tirx.AttrStmt({}, "tl.cuda_task", 1, while_loop)
+    
+        before = _kernel(body, buffers=[pred])
+>       after = _normalize(before)
+                ^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+_____________ test_while_inside_opaque_leaf_is_not_rewritten[task] _____________
+
+opaque = 'task'
+
+    @pytest.mark.parametrize("opaque", ["parallel", "block", "task"])
+    def test_while_inside_opaque_leaf_is_not_rewritten(opaque):
+        pred = tirx.decl_buffer((1,), "int32", name="pred", scope="shared.dyn")
+        loop_var = tirx.Var("p", "int32")
+        while_loop = tirx.While(pred[0] > 0, tirx.BufferStore(pred, 0, [0]))
+        if opaque == "parallel":
+            body = tirx.For(loop_var, 0, 2, tirx.ForKind.PARALLEL, while_loop)
+        elif opaque == "block":
+            body = tirx.SBlock([], [], [], "opaque_block", while_loop)
+        else:
+            body = tirx.AttrStmt({}, "tl.cuda_task", 1, while_loop)
+    
+        before = _kernel(body, buffers=[pred])
+>       after = _normalize(before)
+                ^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:27: in _normalize
+    return _ffi("tl.cuda.transform.NormalizeZ3ControlFlow")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.NormalizeZ3ControlFlow() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+______ test_restore_preserves_residual_loop_var_with_initialized_counter _______
+
+    def test_restore_preserves_residual_loop_var_with_initialized_counter():
+        output = tirx.decl_buffer((16,), "int32", name="output")
+        loop_var = tirx.Var("synthetic", "int32")
+>       body = _restore_synthetic(tirx.BufferStore(output, loop_var, [loop_var]), loop_var)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:212: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:206: in _restore_synthetic
+    return _restore(tvm.IRModule.from_expr(func))["main"].body
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:31: in _restore
+    return _ffi("tl.transform.RestoreWhileLoops")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.transform.RestoreWhileLoops() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+______________ test_restore_avoids_counter_when_loop_var_is_dead _______________
+
+    def test_restore_avoids_counter_when_loop_var_is_dead():
+        output = tirx.decl_buffer((1,), "int32", name="output")
+        loop_var = tirx.Var("synthetic", "int32")
+>       body = _restore_synthetic(tirx.BufferStore(output, 7, [0]), loop_var)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:233: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:206: in _restore_synthetic
+    return _restore(tvm.IRModule.from_expr(func))["main"].body
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:31: in _restore
+    return _ffi("tl.transform.RestoreWhileLoops")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.transform.RestoreWhileLoops() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+______ test_restore_simplifies_version_indices_before_allocating_counter _______
+
+    def test_restore_simplifies_version_indices_before_allocating_counter():
+        output = tirx.decl_buffer((2,), "int32", name="output")
+        loop_var = tirx.Var("synthetic", "int32")
+        inner_var = tirx.Var("inner", "int32")
+        version_index = tirx.indexmod(loop_var * 4 + inner_var, 2)
+        scheduled = tirx.For(
+            inner_var,
+            0,
+            4,
+            tirx.ForKind.SERIAL,
+            tirx.BufferStore(output, 7, [version_index]),
+        )
+    
+>       body = _restore_synthetic(scheduled, loop_var, output)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:206: in _restore_synthetic
+    return _restore(tvm.IRModule.from_expr(func))["main"].body
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+testing/python/transform/test_tilelang_cuda_z3_control_flow.py:31: in _restore
+    return _ffi("tl.transform.RestoreWhileLoops")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.transform.RestoreWhileLoops() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+_____________ test_if_else_becomes_complementary_guarded_siblings ______________
+
+    def test_if_else_becomes_complementary_guarded_siblings():
+        output = tirx.decl_buffer((2,), "int32", name="output")
+        condition = tirx.Var("condition", "bool")
+        body = tirx.IfThenElse(
+            condition,
+            tirx.BufferStore(output, 1, [0]),
+            tirx.BufferStore(output, 2, [1]),
+        )
+    
+>       after = _materialize(_kernel(body, buffers=[output]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:23: in _materialize
+    return _ffi("tl.cuda.transform.MaterializeZ3ScheduleUnits")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+_ test_declarations_and_stage_modes_preserve_sequence_and_nested_independence __
+
+    def test_declarations_and_stage_modes_preserve_sequence_and_nested_independence():
+        output = tirx.decl_buffer((8,), "int32", name="output")
+        root_local = tirx.decl_buffer((1,), "int32", name="root_local", scope="local.var")
+        loop_local = tirx.decl_buffer((1,), "int32", name="loop_local", scope="local.var")
+        i = tirx.Var("i", "int32")
+        nested = tirx.For(
+            i,
+            0,
+            2,
+            tirx.ForKind.SERIAL,
+            tirx.SeqStmt(
+                [
+                    tirx.AllocBuffer(loop_local),
+                    _stage(3, _task(tirx.BufferStore(output, i, [i]))),
+                    tirx.BufferStore(output, i + 1, [i]),
+                ]
+            ),
+        )
+        body = tirx.SeqStmt(
+            [
+                tirx.AttrStmt(None, "tl.ws_op_id", "root_declaration", tirx.DeclBuffer(root_local)),
+                _stage(2, _task(tirx.BufferStore(output, 0, [0]))),
+                tirx.BufferStore(output, 1, [0]),
+                _stage(1, nested),
+            ]
+        )
+    
+>       after = _materialize(_kernel(body, buffers=[output, root_local, loop_local]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:212: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:23: in _materialize
+    return _ffi("tl.cuda.transform.MaterializeZ3ScheduleUnits")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+__________ test_nested_auto_list_does_not_inherit_parent_manual_mode ___________
+
+    def test_nested_auto_list_does_not_inherit_parent_manual_mode():
+        output = tirx.decl_buffer((4,), "int32", name="output")
+        i = tirx.Var("i", "int32")
+        control = tirx.For(
+            i,
+            0,
+            2,
+            tirx.ForKind.SERIAL,
+            tirx.SeqStmt([tirx.BufferStore(output, i, [i]), tirx.BufferStore(output, i + 1, [i])]),
+        )
+        body = tirx.SeqStmt([_stage(1, _task(tirx.BufferStore(output, 0, [0]))), control])
+>       after = _materialize(_kernel(body, buffers=[output]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:23: in _materialize
+    return _ffi("tl.cuda.transform.MaterializeZ3ScheduleUnits")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+___________________ test_compound_worker_task_remains_atomic ___________________
+
+    def test_compound_worker_task_remains_atomic():
+        output = tirx.decl_buffer((2,), "int32", name="output")
+        value = tirx.Var("value", "int32")
+        body = _task(
+            tirx.SeqStmt(
+                [
+                    tirx.Bind(value, 1),
+                    tirx.BufferStore(output, value, [0]),
+                    tirx.BufferStore(output, value + 1, [1]),
+                ]
+            ),
+            latency=3,
+            ii=1,
+        )
+>       after = _materialize(_kernel(body, buffers=[output]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:23: in _materialize
+    return _ffi("tl.cuda.transform.MaterializeZ3ScheduleUnits")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+__________________ test_cross_role_compound_task_is_rejected ___________________
+
+    def test_cross_role_compound_task_is_rejected():
+        source = tirx.decl_buffer((4,), "int32", name="source")
+        shared = tirx.decl_buffer((4,), "int32", name="shared", scope="shared.dyn")
+        body = _task(tirx.SeqStmt([_copy(source, shared), tirx.BufferStore(shared, 1, [0])]))
+>       with pytest.raises(Exception, match="one CUDA role-capability family"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'one CUDA role-capability family'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:271: AssertionError
+__ test_explicit_and_inferred_per_role_candidates_keep_original_guards[True] ___
+
+explicit = True
+
+    @pytest.mark.parametrize("explicit", [True, False])
+    def test_explicit_and_inferred_per_role_candidates_keep_original_guards(explicit):
+        output = tirx.decl_buffer((2,), "int32", name="output")
+        condition = tirx.Var("condition", "bool")
+        then_case = tirx.BufferStore(output, 1, [0])
+        else_case = tirx.BufferStore(output, 2, [1])
+        if explicit:
+            then_case = _task(then_case)
+            else_case = _task(else_case)
+        body = _per_role(tirx.IfThenElse(condition, then_case, else_case))
+    
+>       after = _materialize(_kernel(body, buffers=[output]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:286: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:23: in _materialize
+    return _ffi("tl.cuda.transform.MaterializeZ3ScheduleUnits")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+__ test_explicit_and_inferred_per_role_candidates_keep_original_guards[False] __
+
+explicit = False
+
+    @pytest.mark.parametrize("explicit", [True, False])
+    def test_explicit_and_inferred_per_role_candidates_keep_original_guards(explicit):
+        output = tirx.decl_buffer((2,), "int32", name="output")
+        condition = tirx.Var("condition", "bool")
+        then_case = tirx.BufferStore(output, 1, [0])
+        else_case = tirx.BufferStore(output, 2, [1])
+        if explicit:
+            then_case = _task(then_case)
+            else_case = _task(else_case)
+        body = _per_role(tirx.IfThenElse(condition, then_case, else_case))
+    
+>       after = _materialize(_kernel(body, buffers=[output]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:286: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:23: in _materialize
+    return _ffi("tl.cuda.transform.MaterializeZ3ScheduleUnits")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+________ test_dynamic_snapshot_guard_remains_user_exactly_once_contract ________
+
+    def test_dynamic_snapshot_guard_remains_user_exactly_once_contract():
+        pred = tirx.decl_buffer((1,), "int32", name="pred", scope="shared.dyn")
+        output = tirx.decl_buffer((1,), "int32", name="output")
+        condition = tirx.Var("__cond_0", "bool")
+        body = _per_role(
+            tirx.SeqStmt(
+                [
+                    tirx.Bind(condition, pred[0] > 0),
+                    tirx.IfThenElse(condition, tirx.BufferStore(output, 1, [0]), None),
+                ]
+            )
+        )
+>       after = _materialize(_kernel(body, buffers=[pred, output]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:310: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:23: in _materialize
+    return _ffi("tl.cuda.transform.MaterializeZ3ScheduleUnits")(module)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   TypeError: Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments
+
+python/tvm_ffi/cython/function.pxi:968: TypeError
+___ test_static_per_role_zero_multiple_and_nonexhaustive_cases_are_rejected ____
+
+    def test_static_per_role_zero_multiple_and_nonexhaustive_cases_are_rejected():
+        output = tirx.decl_buffer((1,), "int32", name="output")
+        condition = tirx.Var("condition", "bool")
+        store = tirx.BufferStore(output, 1, [0])
+        cases = [
+            (_per_role(tirx.IfThenElse(False, _task(store), None)), "unreachable"),
+            (_per_role(tirx.SeqStmt([_task(store), _task(store)])), "pairwise exclusive"),
+            (_per_role(tirx.IfThenElse(condition, _task(store), None)), "collectively exhaustive"),
+        ]
+        for body, diagnostic in cases:
+>           with pytest.raises(Exception, match=diagnostic):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: Regex pattern did not match.
+E             Expected regex: 'unreachable'
+E             Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:327: AssertionError
+_________ test_per_role_rejects_mismatched_role_and_access_signatures __________
+
+    def test_per_role_rejects_mismatched_role_and_access_signatures():
+        source = tirx.decl_buffer((1,), "int32", name="source")
+        shared = tirx.decl_buffer((1,), "int32", name="shared", scope="shared.dyn")
+        output = tirx.decl_buffer((1,), "int32", name="output")
+        condition = tirx.Var("condition", "bool")
+    
+        role_mismatch = _per_role(
+            tirx.IfThenElse(condition, _task(_copy(source, shared)), _task(tirx.BufferStore(output, 1, [0])))
+        )
+>       with pytest.raises(Exception, match="same CUDA role-capability family"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'same CUDA role-capability family'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:340: AssertionError
+___________ test_unresolved_opaque_per_role_side_effect_is_rejected ____________
+
+    def test_unresolved_opaque_per_role_side_effect_is_rejected():
+        condition = tirx.Var("condition", "bool")
+        opaque = tirx.Evaluate(tirx.call_extern("int32", "opaque_side_effect"))
+        body = _per_role(tirx.IfThenElse(condition, _task(opaque), _task(opaque)))
+>       with pytest.raises(Exception, match="unresolved opaque side effect"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'unresolved opaque side effect'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:358: AssertionError
+__ test_nested_atomic_and_stage_markers_are_rejected[<lambda>-Nested T.Task] ___
+
+body = <function <lambda> at 0x7fc8fc8b00e0>, diagnostic = 'Nested T.Task'
+
+    @pytest.mark.parametrize(
+        "body,diagnostic",
+        [
+            (lambda store: _task(_task(store)), "Nested T.Task"),
+            (lambda store: _task(_stage(0, store)), "T.Stage cannot appear inside T.Task"),
+            (lambda store: _stage(0, _stage(0, _task(store))), "Nested T.Stage"),
+            (lambda store: _per_role(_per_role(_task(store))), "Nested T.PerRoleTask"),
+            (lambda store: _task(_per_role(_task(store))), "PerRoleTask cannot be nested inside T.Task"),
+        ],
+    )
+    def test_nested_atomic_and_stage_markers_are_rejected(body, diagnostic):
+        output = tirx.decl_buffer((1,), "int32", name="output")
+>       with pytest.raises(Exception, match=diagnostic):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'Nested T.Task'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:374: AssertionError
+_ test_nested_atomic_and_stage_markers_are_rejected[<lambda>-T.Stage cannot appear inside T.Task] _
+
+body = <function <lambda> at 0x7fc8fc8b0180>
+diagnostic = 'T.Stage cannot appear inside T.Task'
+
+    @pytest.mark.parametrize(
+        "body,diagnostic",
+        [
+            (lambda store: _task(_task(store)), "Nested T.Task"),
+            (lambda store: _task(_stage(0, store)), "T.Stage cannot appear inside T.Task"),
+            (lambda store: _stage(0, _stage(0, _task(store))), "Nested T.Stage"),
+            (lambda store: _per_role(_per_role(_task(store))), "Nested T.PerRoleTask"),
+            (lambda store: _task(_per_role(_task(store))), "PerRoleTask cannot be nested inside T.Task"),
+        ],
+    )
+    def test_nested_atomic_and_stage_markers_are_rejected(body, diagnostic):
+        output = tirx.decl_buffer((1,), "int32", name="output")
+>       with pytest.raises(Exception, match=diagnostic):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'T.Stage cannot appear inside T.Task'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:374: AssertionError
+__ test_nested_atomic_and_stage_markers_are_rejected[<lambda>-Nested T.Stage] __
+
+body = <function <lambda> at 0x7fc8fc8b0220>, diagnostic = 'Nested T.Stage'
+
+    @pytest.mark.parametrize(
+        "body,diagnostic",
+        [
+            (lambda store: _task(_task(store)), "Nested T.Task"),
+            (lambda store: _task(_stage(0, store)), "T.Stage cannot appear inside T.Task"),
+            (lambda store: _stage(0, _stage(0, _task(store))), "Nested T.Stage"),
+            (lambda store: _per_role(_per_role(_task(store))), "Nested T.PerRoleTask"),
+            (lambda store: _task(_per_role(_task(store))), "PerRoleTask cannot be nested inside T.Task"),
+        ],
+    )
+    def test_nested_atomic_and_stage_markers_are_rejected(body, diagnostic):
+        output = tirx.decl_buffer((1,), "int32", name="output")
+>       with pytest.raises(Exception, match=diagnostic):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'Nested T.Stage'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:374: AssertionError
+_ test_nested_atomic_and_stage_markers_are_rejected[<lambda>-Nested T.PerRoleTask] _
+
+body = <function <lambda> at 0x7fc8fc8b02c0>
+diagnostic = 'Nested T.PerRoleTask'
+
+    @pytest.mark.parametrize(
+        "body,diagnostic",
+        [
+            (lambda store: _task(_task(store)), "Nested T.Task"),
+            (lambda store: _task(_stage(0, store)), "T.Stage cannot appear inside T.Task"),
+            (lambda store: _stage(0, _stage(0, _task(store))), "Nested T.Stage"),
+            (lambda store: _per_role(_per_role(_task(store))), "Nested T.PerRoleTask"),
+            (lambda store: _task(_per_role(_task(store))), "PerRoleTask cannot be nested inside T.Task"),
+        ],
+    )
+    def test_nested_atomic_and_stage_markers_are_rejected(body, diagnostic):
+        output = tirx.decl_buffer((1,), "int32", name="output")
+>       with pytest.raises(Exception, match=diagnostic):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'Nested T.PerRoleTask'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:374: AssertionError
+_ test_nested_atomic_and_stage_markers_are_rejected[<lambda>-PerRoleTask cannot be nested inside T.Task] _
+
+body = <function <lambda> at 0x7fc8fc8b0360>
+diagnostic = 'PerRoleTask cannot be nested inside T.Task'
+
+    @pytest.mark.parametrize(
+        "body,diagnostic",
+        [
+            (lambda store: _task(_task(store)), "Nested T.Task"),
+            (lambda store: _task(_stage(0, store)), "T.Stage cannot appear inside T.Task"),
+            (lambda store: _stage(0, _stage(0, _task(store))), "Nested T.Stage"),
+            (lambda store: _per_role(_per_role(_task(store))), "Nested T.PerRoleTask"),
+            (lambda store: _task(_per_role(_task(store))), "PerRoleTask cannot be nested inside T.Task"),
+        ],
+    )
+    def test_nested_atomic_and_stage_markers_are_rejected(body, diagnostic):
+        output = tirx.decl_buffer((1,), "int32", name="output")
+>       with pytest.raises(Exception, match=diagnostic):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'PerRoleTask cannot be nested inside T.Task'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:374: AssertionError
+_________ test_flat_and_recursive_markers_are_never_silently_combined __________
+
+    def test_flat_and_recursive_markers_are_never_silently_combined():
+        output = tirx.decl_buffer((1,), "int32", name="output")
+        body = tirx.SeqStmt(
+            [
+                _task(tirx.BufferStore(output, 0, [0]), key="tl.cuda_z3_task"),
+                _task(tirx.BufferStore(output, 1, [0])),
+            ]
+        )
+>       with pytest.raises(Exception, match="flat schema"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'flat schema'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:386: AssertionError
+__ test_public_compiler_owned_task_fields_and_nonconstant_stage_are_rejected ___
+
+    def test_public_compiler_owned_task_fields_and_nonconstant_stage_are_rejected():
+        output = tirx.decl_buffer((1,), "int32", name="output")
+        store = tirx.BufferStore(output, 1, [0])
+>       with pytest.raises(Exception, match="compiler-owned"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'compiler-owned'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:393: AssertionError
+____ test_stage_requires_a_complete_task_and_duplicate_ws_ids_are_rejected _____
+
+    def test_stage_requires_a_complete_task_and_duplicate_ws_ids_are_rejected():
+        output = tirx.decl_buffer((1,), "int32", name="output")
+        local = tirx.decl_buffer((1,), "int32", name="local", scope="local.var")
+>       with pytest.raises(Exception, match="complete scheduler task"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'complete scheduler task'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:404: AssertionError
+_ test_bare_while_and_unknown_guard_attribute_fail_with_integration_diagnostics _
+
+    def test_bare_while_and_unknown_guard_attribute_fail_with_integration_diagnostics():
+        pred = tirx.decl_buffer((1,), "int32", name="pred", scope="shared.dyn")
+        bare = tirx.While(pred[0] > 0, tirx.BufferStore(pred, 0, [0]))
+>       with pytest.raises(Exception, match="NormalizeZ3ControlFlow"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'NormalizeZ3ControlFlow'
+E         Actual message: 'Mismatched number of arguments when calling: `tl.cuda.transform.MaterializeZ3ScheduleUnits() -> transform.Pass`. Expected 0 but got 1 arguments'
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py:416: AssertionError
+=============================== warnings summary ===============================
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_per_role_frontend_emits_only_recursive_marker
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================================================================== fixture duration top ============================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.000778 grand total                                                                                                                   31 0:00:00.000027 0:00:00.000060
+========================================================================== test call duration top ===========================================================================
+total          name                                                                                                                         num med            max           
+0:00:01.035237 testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_mutable_control_read_is_snapshotted_before_mutation       2 0:00:00.517619 0:00:01.034048
+0:00:00.005514 testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default   1 0:00:00.005514 0:00:00.005514
+0:00:01.059268 grand total                                                                                                                   46 0:00:00.000491 0:00:01.034048
+========================================================================== test setup duration top ==========================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.004034 grand total                                                                                                                   46 0:00:00.000038 0:00:00.000241
+======================================================================== test teardown duration top =========================================================================
+total          name                                                                                                                         num med            max           
+0:00:00.003217 grand total                                                                                                                   46 0:00:00.000067 0:00:00.000210
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_mutable_control_read_is_snapshotted_before_mutation[condition]
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_mutable_control_read_is_snapshotted_before_mutation[loop-bound]
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_every_buffer_reading_serial_loop_bound_is_snapshotted[min]
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_every_buffer_reading_serial_loop_bound_is_snapshotted[extent]
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_every_buffer_reading_serial_loop_bound_is_snapshotted[step]
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_nested_while_normalizes_and_restores_bottom_up_without_dead_counters
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_synthetic_while_bound_is_checked_lcm_and_not_pipelined
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_while_inside_opaque_leaf_is_not_rewritten[parallel]
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_while_inside_opaque_leaf_is_not_rewritten[block]
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_while_inside_opaque_leaf_is_not_rewritten[task]
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_restore_preserves_residual_loop_var_with_initialized_counter
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_restore_avoids_counter_when_loop_var_is_dead
+FAILED testing/python/transform/test_tilelang_cuda_z3_control_flow.py::test_restore_simplifies_version_indices_before_allocating_counter
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_if_else_becomes_complementary_guarded_siblings
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_declarations_and_stage_modes_preserve_sequence_and_nested_independence
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_nested_auto_list_does_not_inherit_parent_manual_mode
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_compound_worker_task_remains_atomic
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_cross_role_compound_task_is_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_explicit_and_inferred_per_role_candidates_keep_original_guards[True]
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_explicit_and_inferred_per_role_candidates_keep_original_guards[False]
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_dynamic_snapshot_guard_remains_user_exactly_once_contract
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_static_per_role_zero_multiple_and_nonexhaustive_cases_are_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_per_role_rejects_mismatched_role_and_access_signatures
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_unresolved_opaque_per_role_side_effect_is_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_nested_atomic_and_stage_markers_are_rejected[<lambda>-Nested T.Task]
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_nested_atomic_and_stage_markers_are_rejected[<lambda>-T.Stage cannot appear inside T.Task]
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_nested_atomic_and_stage_markers_are_rejected[<lambda>-Nested T.Stage]
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_nested_atomic_and_stage_markers_are_rejected[<lambda>-Nested T.PerRoleTask]
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_nested_atomic_and_stage_markers_are_rejected[<lambda>-PerRoleTask cannot be nested inside T.Task]
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_flat_and_recursive_markers_are_never_silently_combined
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_public_compiler_owned_task_fields_and_nonconstant_stage_are_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_stage_requires_a_complete_task_and_duplicate_ws_ids_are_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_bare_while_and_unknown_guard_attribute_fail_with_integration_diagnostics
+33 failed, 13 passed, 3 warnings in 2.10s
