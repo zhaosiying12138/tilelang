@@ -11,7 +11,7 @@
 - 默认 CUDA pipeline 与默认 AutoTuner 行为保持不变；新 pass 和 guided arm 都需要显式选择。
 - Z3 `unknown`、timeout 和外部分析不确定均保留候选。只有真正的 UNSAT 才能剪枝，编译失败不属于 UNSAT。
 - `tilelang/cuda/latency_model.py` 为 kernel 内 task 调度提供 latency/II；`tilelang/cuda/cost_model.py` 为外层 AutoTuner 排序候选。二者与 layout cost model、TVM 通用 Z3 prover 不是同一组件。
-- owner exclusion 的 solver 约束已有实现，CUDA owner-ring/runtime synchronization 尚未闭环，adapter 明确拒绝。通用 Let 克隆和多 async producer-stage 也有显式边界，不能宣称任意 Ascend 调度已经端到端等价。
+- owner exclusion 的 solver 约束已有实现；显式双 owner、双 role、stage-zero 的 owner-ring/runtime synchronization 已完成受限设备验证。flat、pure、scheduled scalar Bind 支持跨 stage clone 与 alias-aware ring 重写；稳定 cp.async producer stages 支持保守 wait 合并和尾部 drain。自动 owner 推断、任意控制流 clone、混合异步 consumer 等仍显式拒绝，不能宣称任意 Ascend 调度已经端到端等价。
 - 自动 task 分析覆盖受限 IR 子集；无法证明的依赖、动态尺寸或不透明副作用会保守保留或明确报错。
 - `enable_rasterization` 的 L2 locality 未虚构解析系数。容量估计未知的候选保留并排在有效预测之后。
 - 性能数字只来自本机日志。`collected`、compile-only、GDN compilation smoke 和数值正确性是四种不同证据。
@@ -43,7 +43,7 @@ BUILD_JOBS=2 bash scripts/build_tilelang.sh
 常用测试入口：
 
 ```bash
-# 49 个 CUDA Z3 solver 测试。
+# 54 个 CUDA Z3 solver 测试。
 python -m pytest -q testing/python/transform/test_tilelang_cuda_z3_scheduler.py
 
 # latency/II 与整 kernel 成本公式。

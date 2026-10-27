@@ -1,0 +1,46 @@
+{
+  "schema": "tilelang.article-visual-review/v1",
+  "article": "TileLang CUDA Z3：用一条 A+B 流水理解调度与自动调优",
+  "source_html": "../tilelang-cuda-z3-tutorial-v1.html",
+  "review_pdf": "review-final.pdf",
+  "page_count": 25,
+  "visual_gate": {
+    "status": "accept",
+    "passed_pages": 25,
+    "failed_pages": 0,
+    "reviewer": "documents:visual-judge",
+    "evidence": "All pages were independently inspected. No clipping, overflow, garbled CJK/KaTeX, heading orphans, excessive blank space, unreadable code, or catalog-only pages was found. Cross-page tables repeat headers and prose remains coherent."
+  },
+  "automated_pdf_qa": {
+    "status": "warn",
+    "passed_checks": 11,
+    "warnings": 12,
+    "passed_categories": [
+      "title metadata",
+      "author metadata",
+      "creator metadata",
+      "consistent A4 page size",
+      "no blank pages",
+      "embedded fonts",
+      "no content overflow",
+      "adequate content fill ratio",
+      "full-bleed first page",
+      "symmetric left/right margins",
+      "table centering check complete"
+    ],
+    "warning_categories": [
+      "Chinese line-start punctuation heuristics",
+      "one table-centering heuristic"
+    ],
+    "resolution": "The independent 25-page visual pass found no actual punctuation, overflow, centering, or readability defect. Warnings are retained rather than hidden."
+  },
+  "html_preflight_note": "The generic HTML validator flags KaTeX @font-face descriptors for lacking generic fallbacks. CSS @font-face descriptors require a single family name, and all KaTeX fonts are embedded; no fallback was added. Actual PDF font rendering and embedding passed.",
+  "tutorial_structure": {
+    "main_chapters": 6,
+    "evidence_appendices": 1,
+    "source_markdown_bytes": 71783,
+    "code_snippets": 5,
+    "tables": 5,
+    "review": "One running A+B example teaches latency, II, dependencies, modulo scheduling, versions, Task/Stage, three correctness cases, and guided search without an 84-row catalog in the main text."
+  }
+}

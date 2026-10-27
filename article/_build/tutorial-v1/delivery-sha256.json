@@ -1,0 +1,42 @@
+{
+  "schema": "tilelang.article-delivery-sha256/v1",
+  "byte_identical": true,
+  "files": [
+    {
+      "source": "article/_build/tilelang-cuda-z3-tutorial-v1.html",
+      "download": "/mnt/c/Users/Admin1/Downloads/tilelang-cuda-z3-tutorial-v1.html",
+      "bytes": 1851221,
+      "sha256": "9846eb4d352b016e214c485259d088327e7b54f980fc49bd292251e301341d4e"
+    },
+    {
+      "source": "article/_build/tilelang-cuda-z3-tutorial-v1.zhihu.md",
+      "download": "/mnt/c/Users/Admin1/Downloads/tilelang-cuda-z3-tutorial-v1.zhihu.md",
+      "bytes": 70699,
+      "sha256": "0848900cd0562403ad05cec3057badadfad3efa6023963ced3604fa03ae6ce10"
+    },
+    {
+      "source": "article/_build/tilelang-cuda-z3-tutorial-v1.zip",
+      "download": "/mnt/c/Users/Admin1/Downloads/tilelang-cuda-z3-tutorial-v1.zip",
+      "bytes": 4613086,
+      "sha256": "2481c4c447f2a4af7f64b42399b521f5c3f583b8255464517dd5a5408c79a687"
+    },
+    {
+      "source": "article/_build/tutorial-v1/review-final.pdf",
+      "download": "/mnt/c/Users/Admin1/Downloads/tilelang-cuda-z3-tutorial-v1-review.pdf",
+      "bytes": 1199508,
+      "sha256": "994dbc4c3f476a2f0d90793a509448b5ca06dfa77cb085fea64ca2864c91171a"
+    },
+    {
+      "source": "article/_build/tilelang-cuda-z3-tutorial-v1.formulas.json",
+      "download": "/mnt/c/Users/Admin1/Downloads/tilelang-cuda-z3-tutorial-v1-formulas.json",
+      "bytes": 30024,
+      "sha256": "ba73126b59b8a982e8d90bb9bc73f9948d7ea533fbfafeb702cbfed93860e141"
+    },
+    {
+      "source": "article/_build/tutorial-v1/visual-review.json",
+      "download": "/mnt/c/Users/Admin1/Downloads/tilelang-cuda-z3-tutorial-v1-visual-review.json",
+      "bytes": 2039,
+      "sha256": "dddae7520b1c3c7b4837742114aebac919d4c74c4e6f17c6007649e6559cc546"
+    }
+  ]
+}

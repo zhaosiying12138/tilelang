@@ -356,8 +356,10 @@ def z3_pipeline_annotations(
     ``owner_scopes``. Each owner loop supplies one synthetic group task; other
     dependency kinds belong to the explicit WSSchedule rather than being
     discarded by the function-level owner planner. Stage-order dependencies are forwarded
-    and checked against the solver result when no cross-stage Let clone is
-    required; scheduled Bind cases that require cloning remain explicit errors.
+    and checked against the solver result. Flat, pure, scheduled scalar Bind definitions
+    may be cloned into a consumer stage with fresh variables, virtual buffer reads,
+    dependency/version revalidation and alias-aware ring materialization. Effectful or
+    otherwise noncloneable Bind statements must remain in one stage.
 
     ``buffer_vars`` accepts Buffer objects or their ``.data`` Vars. Its order is
     the solver buffer-id order used by the returned

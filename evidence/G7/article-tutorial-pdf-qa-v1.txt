@@ -1,0 +1,42 @@
+========================================================
+  PDF Quality Assurance Report
+========================================================
+
+ℹ️  Info:
+   File: review.pdf
+   Size: 1194.4 KB
+   Page size: 210mm × 297mm (25 pages)
+   Total text colors: 12 (chromatic: 4)
+   Chromatic colors: #008000, #3d7b7b, #64748b, #aa22ff
+   Fonts used: , AAAAAA+SegoeUI-Bold, BAAAAA+MicrosoftYaHei-Bold, CAAAAA+MicrosoftYaHei, DAAAAA+SegoeUI, EAAAAA+Consolas, FAAAAA+MicrosoftYaHei-Bold, GAAAAA+SegoeUI-Bold, HAAAAA+ArialMT, JAAAAA+Consolas-Bold, KAAAAA+Consolas-Italic, MAAAAA+KaTeX_Math-Italic, NAAAAA+KaTeX_Main-Regular, OAAAAA+KaTeX_Size4-Regular, PAAAAA+KaTeX_Size2-Regular, QAAAAA+KaTeX_Size3-Regular, RAAAAA+NSimSun, SAAAAA+KaTeX_Size1-Regular
+
+✅ Passed (10):
+   Title metadata present ✓
+   Creator metadata present ✓
+   Page size consistent ✓
+   No blank pages ✓
+   All fonts are embedded ✓
+   No content overflow ✓
+   Content fill ratio adequate on all pages ✓
+   Cover page (p1) content extends to page edges (full-bleed) ✓
+   Left/right margins appear symmetric ✓
+   Table centering check complete ✓
+
+⚠️  Warnings (13):
+   [Metadata] Missing author metadata
+   [Punctuation rules] Page 4 - Forbidden line-start punctuation '，': ...，约束写为：
+   [Punctuation rules] Page 4 - Forbidden line-start punctuation '，': ...，加法开始时 A 已可用；
+   [Punctuation rules] Page 4 - Forbidden line-start punctuation '，': ...，B 恰好完成；
+   [Punctuation rules] Page 4 - Forbidden line-start punctuation '，': ...，写回恰好接上结果。
+   [Punctuation rules] Page 5 - Forbidden line-start punctuation '，': ...，这正体现了跨轮次重叠。
+   [Punctuation rules] Page 5 - Forbidden line-start punctuation '、': ...、
+   [Punctuation rules] Page 5 - Forbidden line-start punctuation '。': ...。直接做整数除法和取余，就得到
+   [Punctuation rules] Page 5 - Forbidden line-start punctuation '、': ...、
+   [Punctuation rules] Page 5 - Forbidden line-start punctuation '。': ...。例如 T2 的
+   [Punctuation rules] Page 5 - Forbidden line-start punctuation '，': ...，T3 的
+   [Punctuation rules] ...21 more violations
+   [Table centering] Page 23: Table not centered (L -1048pt, R -839pt)
+
+--------------------------------------------------------
+⚠️  WARN — 13 warning(s), optimization recommended
+--------------------------------------------------------

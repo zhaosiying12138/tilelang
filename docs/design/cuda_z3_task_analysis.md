@@ -79,7 +79,7 @@ cross-iteration distance：
 
 mask 与 `latency_model.Resource` 的七位合同一致：global load/store、shared、tensor core、CUDA core、SFU、scalar。缺失 `resource_deps` 时，对 effective masks 有交集的每对 task 生成一个无序 resource pair。`resource_flags` 显式存在时使用显式值，不用重新估计的值替代。
 
-manual schedule 缺失 `pipe_order_deps` 时按共享 resource mask 补 source-order pairs；自动调度补空列表。`owner_exclusion_deps` 和 `stage_order_deps` 在缺失时也只补空列表。owner 的显式非空值仍由 adapter 拒绝；stage-order 的无 Let clone 子集由 adapter 转发并复核 raw stage，需要跨 stage clone 的 scheduled Bind 仍由下游拒绝。本 pass 不扩展 owner runtime 或通用 Let clone。
+manual schedule 缺失 `pipe_order_deps` 时按共享 resource mask 补 source-order pairs；自动调度补空列表。`owner_exclusion_deps` 和 `stage_order_deps` 在缺失时也只补空列表。裸 owner exclusion 仍由通用 adapter 拒绝；显式双 owner、双 role 的受限 ring 由独立 owner planner 和 WS runtime 处理。stage-order 支持 flat、pure、scheduled scalar Bind 的跨 stage clone、alias-aware 依赖和版本重算；副作用 Bind 与任意控制流仍要求同 stage 或明确报错。
 
 ## 4. TaskFeatures 和 Python FFI
 
@@ -126,9 +126,9 @@ C++ 对每个需要成本或 mask 的 task 调 FFI，只填写缺失的 latency/
 - **dense `T.copy`**：从 src/dst `BufferRegion` extent 和 dtype 计算 payload；src/dst bytes 不同则取较大值并标 upper bound。显式 `coalesced_width` 转成大 model 的 coalesced geometry 和 byte width；未提供时 geometry 为 `unknown`，不声称自动证明 coalescing。
 - **dense `T.gemm`**：提取静态 `M/N/K`、输入 dtype 和 accumulator dtype。当前 `TaskFeatures` 只有一种输入 dtype，mixed-input-dtype GEMM 在自动成本路径报错。`GemmSP`、block-scaled 和其他 tile op 不冒充 dense GEMM。
 - **parallel / scalar expressions**：静态 loop trip count 下计数 add/sub/mul/div/mod/min-max/compare/logic、`exp2` 和其他 special math；scalar expression 计入 scalar，parallel/vector expression 计入 vector。global/shared load/store 转为 memory accesses；fragment/register load 计入 vector read bytes，register write 不虚构独立 bandwidth term。
-- **不支持的 tile op / extern arithmetic**：记录 `vector.unknown`、reliability=unknown，并在结构 mask 上保守 OR `127`，而不是当成零成本零资源。缺少可确定的依赖信息则直接报错。While 成本、非静态 task trip extent 也报错；调用方可显式提供 latency/II/resource override。
+- **不支持的 tile op / extern arithmetic**：记录 `vector.unknown`、reliability=unknown，并在结构 mask 上保守 OR `127`，而不是当成零成本零资源。缺少可确定的依赖信息则直接报错。bounded While 与动态 serial/repeat/branch 通过 composed-cost tree 计算；无法证明 trip upper bound 的 While 必须同时提供 latency 和 II override，依赖与状态 footprint 仍必须完整。
 
-分支两侧当前按 conservative upper-bound 累加并标 `upper_bound`，不是精确 branch composition。地址计算、寄存器写带宽、最终 SASS instruction mix、bank conflict 和 layout-dependent coalescing 不在当前自动提取的精确覆盖范围内。
+分支按互斥路径的完成时间和 II 取最大值，结构 resource mask 则对两侧取并集；serial/repeat 使用组合公式。纯 loop-invariant scalar Bind 在 repeat 外计算一次，buffer/state-reading Bind 保留在 repeat 内。地址计算、寄存器写带宽、最终 SASS instruction mix、bank conflict 和 layout-dependent coalescing 不在当前自动提取的精确覆盖范围内。
 
 ## 5. Buffer size 和 memory group
 
@@ -138,15 +138,11 @@ C++ 对每个需要成本或 mask 的 task 调 FFI，只填写缺失的 latency/
 
 缺失 `memory_groups` 时，只把 effective `buffer_vars` 中 shared/shared.dyn buffer 放入一组，capacity 来自 hardware spec 的 `shared_memory_per_block_optin_bytes`。global 和 register/fragment 不生成 shared memory group。capacity 不自动扣除其他 persistent allocation、reserved bytes 或 downstream storage reuse；存在这些情况时必须显式提供修正后的 memory groups/容量合同，不能把本组当成整 kernel 精确 shared allocation。
 
-## 6. Async producer 的 same-stage 边界
+## 6. Async producer 依赖与多阶段边界
 
-当前 automatic async producer/consumer 仍采用保守 same-stage 约束路径，不把 stage-order 的无 clone 子集误当成完整异步 wait 支持：
+自动和手工 async producer/consumer 使用有序 stage 约束：producer stage 不得晚于 consumer stage，反向顺序明确报错。分析器提取 producer write 与 direct consumer read pairs，并保留 `tl_z3_pipeline_async_same_stage_deps` 审计信息。
 
-- 对已有 `software_pipeline_async_producers` / groups，按 producer write 与 direct consumer read 提取 producer/consumer pairs；同一 group 必须有相同且非空的 direct consumer set。
-- `manual_schedule=True` 时要求每对 manual stages 相等，并写 `tl_z3_pipeline_async_same_stage_deps` 审计 pairs。
-- 自动 schedule 遇到需要 same-stage 的显式 async producer/consumer 时直接报错，不返回不兼容结果。
-
-本 pass 不新生成 implicit async producer flags；downstream `PipelinePlanning` 的 implicit async 分类和校验仍保持原状。owner exclusion 仍明确拒绝；stage-order 仅复用 adapter 的无 Let clone 子集，未扩展通用 clone。
+downstream 对无条件 producer、不同 buffer、稳定 commit-group 和同步 consumer 的受限形态支持多个 async producer stages，按各 stage 计算保守 wait 并合并，保留对应 buffer ring 和尾部 drain。async consumer、conditional producer、同一 buffer 的多阶段 writer、不稳定 group、RMW 与无法证明的混合异步路径显式拒绝。本 pass 不新生成 implicit async producer flags；downstream 的分类与校验仍负责最终同步。裸 owner exclusion 由通用 adapter 拒绝，显式受限 owner-ring 走独立路径。
 
 ## 7. Host 测试范围
 
@@ -157,9 +153,9 @@ C++ 对每个需要成本或 mask 的 task 调 FFI，只填写缺失的 latency/
 - copy geometry/bytes、dense GEMM M/N/K/dtype/acc、parallel vector/SFU/read bytes、scalar resource；
 - 非静态 shared buffer size 和 opaque side-effect 拒绝；
 - 仅在距离 2 冲突的跨迭代依赖保留；
-- manual async same-stage 审计及 automatic 拒绝；
+- 有序 async stage、多 producer-stage wait/ring 和非法 async consumer 拒绝；
 - 真实 `tl.cuda.estimate_task` FFI JSON、measured-only、hardware capacity 缺项；
 - 普通包导入自动注册 FFI，主 CUDA pipeline 中 estimator 先于真实 solver；
 - 推导后接真实 CPU Z3 solver 的集成。
 
-最终构建及 148 项 task-analysis/pipeline 联合 host 回归见 `evidence/G3/main-pipeline-build-final.txt` 与 `evidence/G3/main-pipeline-host-tests-final.txt`。这些测试不需要 GPU，也不编译 CUDA kernel。原生 pass 测试需要主线先 build 新 C++ 文件；纯 Python `task_cost` 可独立做 CPU 测试。当前文档不把 synthetic calibration 的结果解释为真实设备性能。
+当前主干构建与 562 项 host 回归见 `evidence/G3/parity-build-v42.txt` 与 `evidence/G3/parity-host-v24.txt`；其中 2 项是预留给后续 sync/projection 集成的显式 skip，4 项是 SM120 设备用例的 host 分流。递归 compile-only、SM120 精确输出、flat pipeline 与 owner-ring 的设备证据分别见 `evidence/G3/recursive-mainline-sm120-v1.txt`、`evidence/G3/z3-pipeline-sm120-v7.txt` 和 `evidence/G3/owner-sm120-v7.txt`。这些测试不证明任意 IR 或 Ascend 全量 parity，也不把 synthetic calibration 解释为真实设备性能。

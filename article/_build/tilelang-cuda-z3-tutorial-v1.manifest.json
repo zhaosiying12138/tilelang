@@ -1,0 +1,531 @@
+{
+  "schema_version": 1,
+  "title": "TileLang CUDA Z3：用一条 A+B 流水理解调度与自动调优",
+  "source_documents": [
+    {
+      "path": "article/index.json",
+      "role": "config",
+      "bytes": 970,
+      "sha256": "849b0004f9675f2bc186c71fc11651db3bade86150ef550e0b1f66ee22b4de54"
+    },
+    {
+      "path": "article/chapters/01-two-problems.md",
+      "role": "chapter",
+      "bytes": 7642,
+      "sha256": "a965b53994ae897943e4bec1ea5f3f76ca5a93b92040ea20e54928df237d078d"
+    },
+    {
+      "path": "article/chapters/02-one-pipeline.md",
+      "role": "chapter",
+      "bytes": 11655,
+      "sha256": "f3405471fc7bfd0c6f0d63d39d5bad04b5d00bc5e2a521c316046aa51b1a822d"
+    },
+    {
+      "path": "article/chapters/03-cuda-task-stage.md",
+      "role": "chapter",
+      "bytes": 9416,
+      "sha256": "b1ef43adddd693d72ed395fc124a80f46cce156d26956c9a6a1ebb715711fea0"
+    },
+    {
+      "path": "article/chapters/04-correctness-stories.md",
+      "role": "chapter",
+      "bytes": 9547,
+      "sha256": "4d5095b145713f29a3d5ee9ed8730e67b4f42775f7f6f130e128c40257f7c703"
+    },
+    {
+      "path": "article/chapters/05-search-and-results.md",
+      "role": "chapter",
+      "bytes": 17702,
+      "sha256": "ca963f38cf644d9b3561ef4b967c8a7f8c8ee964081defaab54ce093184e96e6"
+    },
+    {
+      "path": "article/chapters/06-takeaways-reproduce.md",
+      "role": "chapter",
+      "bytes": 7410,
+      "sha256": "8ecc2066189d54aca8160e6443b88a02c4942f88a5875a7e9e47139d2827926d"
+    },
+    {
+      "path": "article/chapters/07-evidence-appendix.md",
+      "role": "chapter",
+      "bytes": 8411,
+      "sha256": "b0707be076f79b1a27520ee9b0799e0f7b7dfacfc5f61ac49dad1a4f6b80e287"
+    }
+  ],
+  "files": [
+    {
+      "archive_path": "evidence/G2/calibration-summary.json",
+      "kind": "attachment",
+      "source": "evidence/G2/calibration-summary.json",
+      "media_type": "application/json",
+      "bytes": 3278,
+      "sha256": "c67e11e7d898ae3ed36057fd42350f613670e17e2f05f976f68defd9e4c90ce6"
+    },
+    {
+      "archive_path": "evidence/G2/latency-model-tests.txt",
+      "kind": "attachment",
+      "source": "evidence/G2/latency-model-tests.txt",
+      "media_type": "text/plain",
+      "bytes": 911,
+      "sha256": "dbb57e19d9edeb8649b657e09963cb98f43331b61915ac802d9b2f9c1c5f9050"
+    },
+    {
+      "archive_path": "evidence/G3/device-integration-test.txt",
+      "kind": "attachment",
+      "source": "evidence/G3/device-integration-test.txt",
+      "media_type": "text/plain",
+      "bytes": 19824,
+      "sha256": "d318781431ffb391c2408a8e5d673aac997139732cf05df044db5115ceb7b2c6"
+    },
+    {
+      "archive_path": "evidence/G3/multi-async-host-v2.txt",
+      "kind": "attachment",
+      "source": "evidence/G3/multi-async-host-v2.txt",
+      "media_type": "text/plain",
+      "bytes": 4440,
+      "sha256": "72598e9f51ea65b24d38e0b39f597e319921aa074cb6d23575042690d914b016"
+    },
+    {
+      "archive_path": "evidence/G3/owner-sm120-v1.txt",
+      "kind": "attachment",
+      "source": "evidence/G3/owner-sm120-v1.txt",
+      "media_type": "text/plain",
+      "bytes": 37043,
+      "sha256": "f8e2c96682adf5a994025bb55e6e4d1e37ed525c174f37caae5bfa776f831427"
+    },
+    {
+      "archive_path": "evidence/G3/owner-sm120-v2.txt",
+      "kind": "attachment",
+      "source": "evidence/G3/owner-sm120-v2.txt",
+      "media_type": "text/plain",
+      "bytes": 14057,
+      "sha256": "ec6f920130f21a7f05c8b0a9e9350d45993b8bc19fa11621f0b23f0da70ede18"
+    },
+    {
+      "archive_path": "evidence/G3/owner-sm120-v6.txt",
+      "kind": "attachment",
+      "source": "evidence/G3/owner-sm120-v6.txt",
+      "media_type": "text/plain",
+      "bytes": 7451,
+      "sha256": "19cb261b020df0a3907c8551d8d074eba13f3fea98952e9a57587488251c9029"
+    },
+    {
+      "archive_path": "evidence/G3/z3-pipeline-sm120-v1.txt",
+      "kind": "attachment",
+      "source": "evidence/G3/z3-pipeline-sm120-v1.txt",
+      "media_type": "text/plain",
+      "bytes": 20965,
+      "sha256": "4e757db8e11936988e58c5086fb85c4dd04e200e9aa52840beb6f630f0777139"
+    },
+    {
+      "archive_path": "evidence/G3/z3-pipeline-sm120-v6.txt",
+      "kind": "attachment",
+      "source": "evidence/G3/z3-pipeline-sm120-v6.txt",
+      "media_type": "text/plain",
+      "bytes": 13090,
+      "sha256": "b99f0c520f9a3953364ea6ff186b08f49323bf79d51ca98f382f9b5076b2521c"
+    },
+    {
+      "archive_path": "evidence/G5/gdn-bwd-all-configs.txt",
+      "kind": "attachment",
+      "source": "evidence/G5/gdn-bwd-all-configs.txt",
+      "media_type": "text/plain",
+      "bytes": 20451,
+      "sha256": "e730fc384049108a5fcf6f36421cdddbf8954a937edea9126f0474ee9e41ce75"
+    },
+    {
+      "archive_path": "evidence/G5/gdn-bwd-stage1-group8-determinism.txt",
+      "kind": "attachment",
+      "source": "evidence/G5/gdn-bwd-stage1-group8-determinism.txt",
+      "media_type": "text/plain",
+      "bytes": 126,
+      "sha256": "ae1f7eef40e1dd70b42145e8fbe6b52d1920dfb07346a980d61c4000f7fc194a"
+    },
+    {
+      "archive_path": "evidence/G5/gdn-fwd-shared-memory.json",
+      "kind": "attachment",
+      "source": "evidence/G5/gdn-fwd-shared-memory.json",
+      "media_type": "application/json",
+      "bytes": 1283,
+      "sha256": "dcd05a653a375979415f9d5d8c559d4cc2ff56be67c34d6518e3d78b52976bac"
+    },
+    {
+      "archive_path": "evidence/G5/gdn-prepare-h-shared-memory.json",
+      "kind": "attachment",
+      "source": "evidence/G5/gdn-prepare-h-shared-memory.json",
+      "media_type": "application/json",
+      "bytes": 1034,
+      "sha256": "ad23c8af494234aa0c3ae5486c98a4f02f8e1fa13543e5551a8fa4bd4c44b3a3"
+    },
+    {
+      "archive_path": "evidence/G6/classic-v2/confirmed-analysis/confirmation-comparisons.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/classic-v2/confirmed-analysis/confirmation-comparisons.csv",
+      "media_type": "text/csv",
+      "bytes": 21644,
+      "sha256": "25b65f9734ad6e41c4c90be1b7f5f8b9f98012b32d85491422a8368b17fcaf8a"
+    },
+    {
+      "archive_path": "evidence/G6/classic-v2/confirmed-analysis/confirmed-summary.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/classic-v2/confirmed-analysis/confirmed-summary.csv",
+      "media_type": "text/csv",
+      "bytes": 14721,
+      "sha256": "bbec712e80e72f0c059769553a72ad33feb8aef4b9a42f4ff3f646a724038cca"
+    },
+    {
+      "archive_path": "evidence/G6/classic-v2/main-analysis/summary.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/classic-v2/main-analysis/summary.csv",
+      "media_type": "text/csv",
+      "bytes": 13975,
+      "sha256": "50d902998cb83dd9792ee891032c56d5ac07637db3288fe1ca75423a893f7d28"
+    },
+    {
+      "archive_path": "evidence/G6/classic-v2/sensitivity-analysis/runs.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/classic-v2/sensitivity-analysis/runs.csv",
+      "media_type": "text/csv",
+      "bytes": 76476,
+      "sha256": "c35b9227ffe6f765dcb96c5993a1e0991ece88cd394b5c760f19203078f7c312"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-cache-sensitivity-v1/analysis-no-cache/summary.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-cache-sensitivity-v1/analysis-no-cache/summary.csv",
+      "media_type": "text/csv",
+      "bytes": 2261,
+      "sha256": "824fec0f7b7daa36283f6ca22565e7f9e3c8c541da1a2852f09e1b0192a5c41a"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-cache-sensitivity-v1/analysis-warm/summary.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-cache-sensitivity-v1/analysis-warm/summary.csv",
+      "media_type": "text/csv",
+      "bytes": 2275,
+      "sha256": "930857403d0c6c4c036539d386b569ad4c21b526aab69e7ef3f8ee0dac7a4c96"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-confirmation-v2/bwd/summary.json",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-confirmation-v2/bwd/summary.json",
+      "media_type": "application/json",
+      "bytes": 29474,
+      "sha256": "63f9ba85f18dab2b4572b8d09354d6e735c38a17e7f70735272e81b8b944ad9d"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-heldout-t8192-confirmation-v1/analysis/confirmed-summary.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-heldout-t8192-confirmation-v1/analysis/confirmed-summary.csv",
+      "media_type": "text/csv",
+      "bytes": 3287,
+      "sha256": "79cf7f5906363fade91dddfa67dab2f33c3c34aefc2eec88a36016ed2b29abb2"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-heldout-t8192-confirmation-v1/analysis/gdn-paired-differences.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-heldout-t8192-confirmation-v1/analysis/gdn-paired-differences.csv",
+      "media_type": "text/csv",
+      "bytes": 3442,
+      "sha256": "5068f4653a9d54109074c65d97f1b6b441e9ab903dbee1bfeb37363d418cee4f"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-heldout-t8192-v1/analysis/prediction-rank.json",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-heldout-t8192-v1/analysis/prediction-rank.json",
+      "media_type": "application/json",
+      "bytes": 146749,
+      "sha256": "ee21e812b6fe3d895c1a3edce6be73400292ff09cb8ee3324f4e37416b72a119"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-heldout-t8192-v1/analysis/summary.csv",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-heldout-t8192-v1/analysis/summary.csv",
+      "media_type": "text/csv",
+      "bytes": 5099,
+      "sha256": "7ad90f558c36e55f84c98285384c76f512ae9aceac3265dc24c8b13126ba6ff9"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-heldout-t8192-v1/protocol-audit.json",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-heldout-t8192-v1/protocol-audit.json",
+      "media_type": "application/json",
+      "bytes": 13357,
+      "sha256": "55e454f0523bb0951d3c07c2f6a5aee15c206338943ab4b43a942134d3a8dd00"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-stock-guided-screenshot-v1/guided.log",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-stock-guided-screenshot-v1/guided.log",
+      "media_type": "application/octet-stream",
+      "bytes": 5140,
+      "sha256": "794dda779a2f20ffc0c9dd783b9f1476245459f8c4ee01e270a3897ad1258dad"
+    },
+    {
+      "archive_path": "evidence/G6/gdn-stock-guided-screenshot-v1/stock.log",
+      "kind": "attachment",
+      "source": "evidence/G6/gdn-stock-guided-screenshot-v1/stock.log",
+      "media_type": "application/octet-stream",
+      "bytes": 5936,
+      "sha256": "88d49021a4623a98e5ebd7c221a086bede26be7cc1d768dab143e60ea0fc0f3a"
+    },
+    {
+      "archive_path": "evidence/G7/best-gemm-v1/metadata.json",
+      "kind": "attachment",
+      "source": "evidence/G7/best-gemm-v1/metadata.json",
+      "media_type": "application/json",
+      "bytes": 1698,
+      "sha256": "734769487a77f4dfd1690003bcc642b3a89d4650dc3b9a445c779168d5f1511c"
+    },
+    {
+      "archive_path": "evidence/G7/best-gemm-v1/resource-usage.txt",
+      "kind": "attachment",
+      "source": "evidence/G7/best-gemm-v1/resource-usage.txt",
+      "media_type": "text/plain",
+      "bytes": 161,
+      "sha256": "55c100287493e38e25168ef6b39d46274c14c67f98100b40145eeab0212a2fa6"
+    },
+    {
+      "archive_path": "evidence/G7/best-gemm-v1/tilelang-cuda-z3-best-gemm-v3.log",
+      "kind": "attachment",
+      "source": "evidence/G7/best-gemm-v1/tilelang-cuda-z3-best-gemm-v3.log",
+      "media_type": "application/octet-stream",
+      "bytes": 5267,
+      "sha256": "36aca019fd8d1e0982d9ae8176bb5611bd760dfbaaa67abeedd2ed3c90464b3c"
+    },
+    {
+      "archive_path": "evidence/G7/best-gemm-v1/tilelang-cuda-z3-best-gemm-v3.png",
+      "kind": "attachment",
+      "source": "evidence/G7/best-gemm-v1/tilelang-cuda-z3-best-gemm-v3.png",
+      "media_type": "image/png",
+      "bytes": 395001,
+      "sha256": "a60124c2266b61ea1fd874040eebb89b22e9cb3a540e940dcfc9db0edc8a2bbd"
+    },
+    {
+      "archive_path": "evidence/G7/screenshot-failure-v2/capture-failure.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshot-failure-v2/capture-failure.json",
+      "media_type": "application/json",
+      "bytes": 707,
+      "sha256": "778d1d28596ecfa6f2e5b47ceb591aa6dd99439d72957fe2c3f3082af12c2cde"
+    },
+    {
+      "archive_path": "evidence/G7/screenshot-failure-v3/capture-failure.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshot-failure-v3/capture-failure.json",
+      "media_type": "application/json",
+      "bytes": 707,
+      "sha256": "5abc36639a27656be6010a266155fef1fc47481f3a0f07f9ce790536ce7733b3"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/capture-acceptance-v1.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/capture-acceptance-v1.json",
+      "media_type": "application/json",
+      "bytes": 2474,
+      "sha256": "52e4fd14c40000c28cc55d8805672f86c46b15183c6928a0a0e1dca566608a8e"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/capture-manifest.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/capture-manifest.json",
+      "media_type": "application/json",
+      "bytes": 4205,
+      "sha256": "6c32fde7c5f0baf14adaee31e7586eed6edcc415e5e5842513f4e3c9e89cd35c"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/gdn-confirmation-analysis-v1/analysis.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/gdn-confirmation-analysis-v1/analysis.json",
+      "media_type": "application/json",
+      "bytes": 11460,
+      "sha256": "51d355b41626c6aff59b6b65d00100cc469b06e455b47484de99ae97fc904a8f"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/gdn-confirmation-analysis-v1/confirmation-comparisons.csv",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/gdn-confirmation-analysis-v1/confirmation-comparisons.csv",
+      "media_type": "text/csv",
+      "bytes": 1668,
+      "sha256": "b02eb87f992fd22844da2c8b1566a8d9df527829319c86b69865d7aab07c76ce"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/stock-guided-analysis-v3/analysis.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/stock-guided-analysis-v3/analysis.json",
+      "media_type": "application/json",
+      "bytes": 5552,
+      "sha256": "301de52d88bf696f045a2678c5c3913dd9ec26ace63317ab1602fd4d06dee353"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/stock-guided-analysis-v3/summary.csv",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/stock-guided-analysis-v3/summary.csv",
+      "media_type": "text/csv",
+      "bytes": 1343,
+      "sha256": "c904419b35e86e9051998782cb54edf024f65d6c20d77b3ac96ee98e14165732"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1-original.png",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1-original.png",
+      "media_type": "image/png",
+      "bytes": 986550,
+      "sha256": "0caa43df332a2d063e14446bb67811882827138f12d18a0a8b899515f4c33105"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.crop.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.crop.json",
+      "media_type": "application/json",
+      "bytes": 365,
+      "sha256": "d64cad0387c4813446e5d5381512071f9dae65a43e660a4e15303f13e44d4057"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.json",
+      "media_type": "application/json",
+      "bytes": 1479,
+      "sha256": "e4af4f497200528d7849ac3a621e25ef6db34a8938c08b125a13e029ca06a944"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.log",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.log",
+      "media_type": "application/octet-stream",
+      "bytes": 6903,
+      "sha256": "9a9ba1c1df261351a5e168290cf9e8f3ca6bd70c39864b65c91be486394a5f5a"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.png",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.png",
+      "media_type": "image/png",
+      "bytes": 395205,
+      "sha256": "10bd8e9a052efef6bdf8f29dd9d817702b23c4a37714f52b6daf12e0286fb5ac"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.png.window-binding.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-gdn-confirmation-v1.png.window-binding.json",
+      "media_type": "application/json",
+      "bytes": 9017,
+      "sha256": "5f3de918991c1f92da77c81f0b43347a9113c365b37d66ce3bbeff7fa1edb9e7"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-sample-v3-original.png",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-sample-v3-original.png",
+      "media_type": "image/png",
+      "bytes": 875312,
+      "sha256": "8bead52b9b888bfb1933ee4ddb9579a1130f9da9c54b2aadafe486fec65b6b6f"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-sample-v3.log",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-sample-v3.log",
+      "media_type": "application/octet-stream",
+      "bytes": 8719,
+      "sha256": "5165f19778db3c55e11bce7bb8e7f668764ea4564e762c80ab23962d229b1257"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-sample-v3.png",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-sample-v3.png",
+      "media_type": "image/png",
+      "bytes": 279801,
+      "sha256": "423a51d7a6168fe2fb6c04d841bada2796b8740cc35c640bf3d13b48543911f6"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-sample-v3.png.window-binding.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-sample-v3.png.window-binding.json",
+      "media_type": "application/json",
+      "bytes": 8345,
+      "sha256": "98d7d41adbd7da4b08b4375af5fc981b7f134d1d71e98977d223bd5860400dba"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3-original.png",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3-original.png",
+      "media_type": "image/png",
+      "bytes": 677462,
+      "sha256": "9c1b91a8fd3ec4d82f481133c9586eea252b2cc34e91bb80b00eed1b46349553"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.crop.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.crop.json",
+      "media_type": "application/json",
+      "bytes": 365,
+      "sha256": "e30e55854d6f5b922a04f566b09b7e11a828abc6b7a3b95487e5d68d565e3b61"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.json",
+      "media_type": "application/json",
+      "bytes": 1467,
+      "sha256": "0fde28ab5def9a99f22fe8c47006b01a2ea5f88743bba7681da462112452a4c6"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.log",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.log",
+      "media_type": "application/octet-stream",
+      "bytes": 6684,
+      "sha256": "3647044d5a60d3b657aae5f1aab2c215a83ac0c8cf478118ca223d7ebd78ea54"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.png",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.png",
+      "media_type": "image/png",
+      "bytes": 221044,
+      "sha256": "fed7279b7aaf1d0ac8af8258a74e61b878dc196925d0036cea8c73c5c21d86b7"
+    },
+    {
+      "archive_path": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.png.window-binding.json",
+      "kind": "attachment",
+      "source": "evidence/G7/screenshots/tilelang-cuda-z3-stock-guided-v3.png.window-binding.json",
+      "media_type": "application/json",
+      "bytes": 9024,
+      "sha256": "9b06a3274c11f111020c33fb46003ef9678a2a44bf16446927ccdcccd043e081"
+    },
+    {
+      "archive_path": "manifest/calibration-sm120.json",
+      "kind": "attachment",
+      "source": "manifest/calibration-sm120.json",
+      "media_type": "application/json",
+      "bytes": 172821,
+      "sha256": "32400adf30521b95a238b2de6e49080a34776ae5c141aa36b615086f280a76a6"
+    },
+    {
+      "archive_path": "manifest/hardware-sm120.json",
+      "kind": "attachment",
+      "source": "manifest/hardware-sm120.json",
+      "media_type": "application/json",
+      "bytes": 7943,
+      "sha256": "d8da0754c00c0c78982478552f8d1564d359707e194116de5d4a71252cd2d1da"
+    },
+    {
+      "archive_path": "tilelang-cuda-z3-tutorial-v1.formulas.json",
+      "kind": "generated",
+      "bytes": 30024,
+      "sha256": "ba73126b59b8a982e8d90bb9bc73f9948d7ea533fbfafeb702cbfed93860e141"
+    },
+    {
+      "archive_path": "tilelang-cuda-z3-tutorial-v1.html",
+      "kind": "generated",
+      "bytes": 1851221,
+      "sha256": "9846eb4d352b016e214c485259d088327e7b54f980fc49bd292251e301341d4e"
+    },
+    {
+      "archive_path": "tilelang-cuda-z3-tutorial-v1.zhihu.md",
+      "kind": "generated",
+      "bytes": 70699,
+      "sha256": "0848900cd0562403ad05cec3057badadfad3efa6023963ced3604fa03ae6ce10"
+    }
+  ],
+  "manifest_note": "sha256 对 ZIP 中对应文件字节计算；manifest.json 自身不列入哈希清单。"
+}

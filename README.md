@@ -17,7 +17,7 @@
 [TileLang (Ascend 950)](./tilelang/ascend/README.md)
 </div>
 
-> **CUDA Z3/cost-model branch:** see the [implementation scope, installation, tests, and exact reproduction protocol](README.cuda-z3.md).
+> **CUDA Z3/cost-model branch:** G3 scheduling is default-off and supports documented restricted flat, owner-ring, and recursive CUDA subsets—not full Ascend parity. Start with the [mainline pipeline guide](docs/design/cuda_z3_pipeline.md) and [current focused evidence](docs/design/cuda_z3_parity_evidence.md). For branch installation and broader experiment protocols, see [README.cuda-z3.md](README.cuda-z3.md).
 
 Tile Language (**tile-lang**) is a concise domain-specific language designed to streamline the development of high-performance GPU/CPU/NPU kernels (e.g., GEMM, Dequant GEMM, FlashAttention, LinearAttention). By employing a Pythonic syntax with an underlying compiler infrastructure on top of [TVM](https://tvm.apache.org/), tile-lang allows developers to focus on productivity without sacrificing the low-level optimizations necessary for state-of-the-art performance.
 

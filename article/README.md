@@ -9,6 +9,20 @@
 
 本工具只转换已有内容，**不会生成、补齐或修改性能数字**。原始 Markdown、机制文档和 evidence 不会被改写。正文配置由 `article/index.json` 驱动；下面的配置仅是 schema 示例。
 
+## 当前文章结构
+
+当前正文已经从功能清单改为六章连续解释，外加一个短证据附录，全部位于 `article/chapters/`：
+
+1. `01-two-problems.md`：区分 kernel 内调度与外层自动调优；
+2. `02-one-pipeline.md`：用同一个四任务 A+B 例子手算 latency、II、依赖、最小 II 和 buffer versions；
+3. `03-cuda-task-stage.md`：把该例映射到 SM120 周期估算与 flat Task/Stage；
+4. `04-correctness-stories.md`：用 owner 交接、scalar snapshot 和 async wait 解释物化正确性；
+5. `05-search-and-results.md`：从 raw 候选走到五臂 profiling，以 GDN 为主结果并保留经典算子的预测失误；
+6. `06-takeaways-reproduce.md`：总结心智模型并给出复现命令；
+7. `07-evidence-appendix.md`：集中放置原始证据和已接受捕获包链接。
+
+`article/index.json` 是唯一章节顺序来源。旧 `mechanisms/`、`results/`、`baselines/` 和长盘点附录已退出构建。正文没有截图画廊；附录通过 `package:` 声明把已接受裁图和全屏原图作为非显示附件收入 ZIP，CSV/JSON/log 仍按链接自动收集。发布检查只运行单元测试和 `--check-only`，不生成 PDF，也不执行发布。
+
 ## 1. 依赖
 
 需要 Python 3.10+，以及纯 Python 包：
@@ -32,16 +46,16 @@ python3 -m venv /tmp/article-build-venv
 
 ```json
 {
-  "title": "CUDA Z3 调度机制",
+  "title": "用一条 A+B 流水理解 CUDA Z3",
   "description": "可选的 HTML 摘要",
-  "toc_depth": 3,
+  "toc_depth": 2,
   "chapters": [
-    "mechanisms/01-z3-scheduler.md",
-    {"path": "mechanisms/02-latency-model.md", "id": "latency-model"}
+    "chapters/01-two-problems.md",
+    {"path": "chapters/02-one-pipeline.md", "id": "one-pipeline"}
   ],
   "attachments": [
-    "../evidence/G1/solver-tests.log",
-    {"path": "evidence/G4/guided-pruning-funnel.csv", "name": "results/guided-pruning-funnel.csv"}
+    "../evidence/G3/z3-pipeline-sm120-v6.txt",
+    {"path": "evidence/G6/gdn-heldout-t8192-v1/analysis/summary.csv", "name": "results/gdn-summary.csv"}
   ],
   "katex": {
     "directory": "/absolute/path/to/katex/dist"

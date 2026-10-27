@@ -1,28 +1,14 @@
 {
-  "title": "TileLang CUDA Z3 与成本模型：从 Ascend 调度到 RTX 5090 的实践",
-  "description": "机制实现、真实测试与证据驱动的迁移记录；未完成项显式列出。所有性能与正确性结论均来自本机 TileLang 执行日志，机制示例与性能实验分开标注。",
-  "toc_depth": 3,
+  "title": "TileLang CUDA Z3：用一条 A+B 流水理解调度与自动调优",
+  "description": "面向具备 CUDA 基础、没有 Z3 背景的读者。全篇用同一个四任务 A+B 流水解释 latency、II、依赖、模调度、buffer versions 与 flat Task/Stage，再用三个正确性问题连接 CUDA 物化，最后以五臂协议审查 GDN 和经典算子的搜索收益与预测失误。",
+  "toc_depth": 2,
   "chapters": [
-    "baselines/stock-validation.md",
-    "mechanisms/01-z3-scheduler.md",
-    "mechanisms/02-latency-model.md",
-    "mechanisms/03-guided-search.md",
-    "mechanisms/04-hardware-probe.md",
-    "mechanisms/05-pipeline-adapter.md",
-    "mechanisms/06-gdn-resource-pruning.md",
-    "mechanisms/07-gdn-correctness.md",
-    "mechanisms/08-calibration.md",
-    "results/implementation-status.md",
-    "results/search-protocol.md",
-    "results/gdn-acceptance.md",
-    "results/classic-search.md",
-    "results/compile-matrix.md",
-    "results/terminal-evidence.md",
-    "results/summary.md",
-    {"path": "appendix/parity-inventory.md", "id": "parity-inventory"},
-    {"path": "appendix/parity-evidence.md", "id": "parity-evidence"}
-  ],
-  "katex": {
-    "directory": "/home/zhaosiying/.vscode-server/bin/4fe60c8b1cdac1c4c174f2fb180d0d758272d713/node_modules/katex/dist"
-  }
+    {"path": "chapters/01-two-problems.md", "id": "two-problems"},
+    {"path": "chapters/02-one-pipeline.md", "id": "one-pipeline"},
+    {"path": "chapters/03-cuda-task-stage.md", "id": "cuda-task-stage"},
+    {"path": "chapters/04-correctness-stories.md", "id": "correctness-stories"},
+    {"path": "chapters/05-search-and-results.md", "id": "search-and-results"},
+    {"path": "chapters/06-takeaways-reproduce.md", "id": "takeaways-reproduce"},
+    {"path": "chapters/07-evidence-appendix.md", "id": "evidence-appendix"}
+  ]
 }
