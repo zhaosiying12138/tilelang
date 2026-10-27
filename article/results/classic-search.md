@@ -55,3 +55,18 @@ SM120 没有照搬 sm_80/sm_90 的 atom 条件，因此 unknown=0 不能被解�
 结果聚合要求每个选中配置恰好有一个终态 trial。缺失或重复 trial、cache-only、只收集到节点、错误结束的 run 不进入性能比较。质量比较优先使用完整 legal-oracle；若它不完整，则回退到完整 raw 的实测最优并标记 `quality_reference=stock-raw`。预测相关优先使用完整 legal-oracle，否则只连接 raw 中实际成功的配置，同时标记 `legal_oracle_complete=false` 和实际分母，不把失败候选藏起来。
 
 最终表格同时报告 raw/legal/选中数、compile/profile 次数、各阶段墙钟、搜索内 best、独立确认值、失败候选和预测分母。搜索计数减少与最终配置质量需要分别成立，不能仅凭“少跑了几个候选”宣称模型有效。
+
+## 6. 方形 GEMM 的预算敏感性
+
+下表使用三次 cold run 的中位数。`wall` 是各自 end-to-end 的中位数，`speedup` 是每次 `stock_wall / arm_wall` 的中位数，两种聚合不能直接互换。`search best` 为搜索内最小值，`quality` 为 guided/search-best 相对同空间 legal-oracle 最优的比值；`raw-order quality` 是等预算原始顺序的对应比值。top-1/5/20 均复用 top-10 完整基线，字段 `baseline_shared_with_top10=true` 与 `oracle_shared_with_top10=true` 可直接检查。
+
+| top-k | guided wall (s) | speedup | guided search best (ms) | guided quality | raw-order quality |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 2.950 | 198.912× | 1.466698 | 1.02248 | 1.18185 |
+| 5 | 11.990 | 48.200× | 1.448417 | 1.01797 | 1.16890 |
+| 10 | 21.251 | 26.404× | 1.451868 | 1.01910 | 1.17326 |
+| 20 | 43.863 | 13.163× | 1.453109 | 1.02127 | 1.10980 |
+
+top-5 的质量最好，top-10 没有继续改善，top-20 也没有带来更多收益。原始顺序控制虽然使用相同预算，质量明显更差，说明解析模型在候选选择上有独立作用，不只是少测了配置。另一方面，raw 最优配置仍可能不在 top-20 中，rasterization 的 L2 locality 又明确未建模，因此不能把 top-k 扩大等同于覆盖全局最优。
+
+逐 run 结果和配对分母见 [sensitivity analysis](../../evidence/G6/classic-v2/sensitivity-analysis/analysis.json) 与 [runs.csv](../../evidence/G6/classic-v2/sensitivity-analysis/runs.csv)。基线复用不是免费 oracle：top-10 的 stock/legal 穷举成本已先计入主实验，额外预算只运行 guided 与两个控制。
