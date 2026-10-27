@@ -18,6 +18,7 @@ fwd 的动态 shared memory 公式为 $38912+576\times block\_DV$，因此 128 �
 正式搜索的每一轮都是新的 Python 进程。每个方向执行三次，每次五种策略，合计 30 个 run；搜索 warmup=10、repeat=50。入口为：
 
 ```bash
+export GDN_NUM_TOKENS=8192
 for direction in fwd bwd; do
   for repetition in 0 1 2; do
     bash scripts/run_gdn_cold_fresh.sh \
@@ -44,9 +45,9 @@ $$m_{a,c}=\operatorname{median}_{r\in\mathcal S(a,c)}L_{a,c,r},$$
 
 由于 T4096 已用于这次选择规则迭代，按隔离条款将其转为 validation，并在运行前登记 T8192 为新 held-out。搜索、审计和确认都显式传递 `num_tokens`，防止用默认形状混用证据。新 held-out 只运行一次完整协议，pass/fail 均保留，不通过反复确认挑选答案。
 
-## 4. warm 与 no-cache 的独立敏感性
+## 4. T4096 validation 的 warm 与 no-cache 独立敏感性
 
-敏感性只做 `stock-raw` 与 `z3-cm-topk`，两个方向各一次，共 8 个独立进程。no-cache 同时禁用 TileLang 和 CUDA 编译缓存；warm 先预热，再用新的 tuner 在同一隔离缓存中测量。warmup run 与 measured run 分别有 JSONL 和 summary，预热成本没有被塞进 measured run 的计时。
+本组敏感性全部使用 **T4096 validation**，不是上一节的 T8192 held-out。只做 `stock-raw` 与 `z3-cm-topk`，两个方向各一次，共 8 个独立进程。no-cache 同时禁用 TileLang 和 CUDA 编译缓存；warm 先预热，再用新的 tuner 在同一隔离缓存中测量。warmup run 与 measured run 分别有 JSONL 和 summary，预热成本没有被塞进 measured run 的计时。
 
 下表的 compile 是候选构造尝试次数，warm 命中时不代表重新调用 NVCC。profile wall 是 stock profiler 阶段墙钟，包含其 reference 相关调用，不能解释为纯 kernel 时间。best ms 是该次搜索内最优值，尚未经过七轮独立确认。
 
@@ -61,12 +62,12 @@ $$m_{a,c}=\operatorname{median}_{r\in\mathcal S(a,c)}L_{a,c,r},$$
 | bwd | warm | stock | 9 / 6 | 0.0065 | 3.997 | 4.083 | 2.041240 |
 | bwd | warm | guided | 3 / 3 | 0.0027 | 3.414 | 3.506 | 2.038489 |
 
-按 $S=T_{stock}/T_{guided}$ 计算，no-cache 的 fwd/bwd 搜索时间比分别为 **1.843× / 1.276×**；warm 轨分别为 **1.039× / 1.165×**。这些数字来自单次敏感性，不替代三次 cold 的中位数。no-cache 的主要时间差落在候选构造阶段；warm 阶段则主要剩 profiler、校验和少量调度开销。
+按 $S=T_{stock}/T_{guided}$ 计算，no-cache 的 fwd/bwd 搜索时间比分别为 **1.843× / 1.276×**；warm 轨分别为 **1.039× / 1.165×**。这些数字来自单次 T4096 敏感性，不替代三次 cold 的中位数，也不与 T8192 的绝对 latency 直接比较。no-cache 的主要时间差落在候选构造阶段；warm 阶段则主要剩 profiler、校验和少量调度开销。
 
-机器可读来源为 [no-cache summary](../../evidence/G6/gdn-cache-sensitivity-v1/analysis-no-cache/summary.csv)、[warm summary](../../evidence/G6/gdn-cache-sensitivity-v1/analysis-warm/summary.csv) 和 [协议记录](../../evidence/G6/gdn-cache-sensitivity-v1/protocol.json)。审计确认 8 个 PID 全部不同，no-cache 的两个 disable flag 均为 1，warm 均为 0，before 均为空。单次搜索内的延迟差可能来自计时波动，最终配置质量必须由独立交错测量判断。
+机器可读来源为 [no-cache summary](../../evidence/G6/gdn-cache-sensitivity-v1/analysis-no-cache/summary.csv)、[warm summary](../../evidence/G6/gdn-cache-sensitivity-v1/analysis-warm/summary.csv) 和 [协议记录](../../evidence/G6/gdn-cache-sensitivity-v1/protocol.json)。原协议未记录 `num_tokens`，因此另以 8 个 per-run config 生成 [T4096 shape audit](../../evidence/G6/gdn-cache-sensitivity-v1/shape-audit.json)，不回写历史文件。审计确认 8 个 PID 全部不同且形状均为 T4096，no-cache 的两个 disable flag 均为 1，warm 均为 0，before 均为空。单次搜索内的延迟差可能来自计时波动，最终配置质量必须由独立交错测量判断。
 
 ## 5. 分母与失败保留
 
 `stock-raw` 的 compile attempts 等于 raw 数，但成功 profile 数可能更少：fwd 的 128 与 bwd 的 stage 3 会在 raw 路径触发已记录的资源/启动失败。Z3 的作用是让相同约束在编译前排除这些配置，失败本身不被改写成 UNSAT。guided 与 budget arms 的 compile/profile 计数按实际选中候选计，不能用 raw 数代替。
 
-每个 arm 的 solver、model、compile、validation、profile 和 end-to-end wall 分别保存。`cache_hit`、cache-only、缺失 trial、重复 trial 和收集到的 pytest 节点都不能直接充当性能证据。预测相关性只连接同一配置 ID 的有限预测与完整 oracle 实测，分母随表输出。这样做的目的很具体：少测候选所省的时间必须与最终配置质量同时成立，任何一侧都不能靠改变分母获得表观收益。
+每个 arm 的 solver、model、compile、validation、profile 和 end-to-end wall 分别保存。`cache_hit`、cache-only、缺失 trial、重复 trial 和收集到的 pytest 节点都不能直接充当性能证据。预测相关性按 direction/repetition 连接同一配置 ID 的有限预测与同轮实测，不把不同 arm 或 repetition  pool 成样本数不等的中位数；优先使用同轮完整 legal-oracle，不完整时只回退到同轮 raw 成功项并显式标记分母。这样做的目的很具体：少测候选所省的时间必须与最终配置质量同时成立，任何一侧都不能靠改变分母获得表观收益。
