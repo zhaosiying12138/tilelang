@@ -54,6 +54,8 @@ SM120 没有照搬 sm_80/sm_90 的 atom 条件，因此 unknown=0 不能被解�
 
 结果聚合要求每个选中配置恰好有一个终态 trial。缺失或重复 trial、cache-only、只收集到节点、错误结束的 run 不进入性能比较。质量比较优先使用完整 legal-oracle；若它不完整，则回退到完整 raw 的实测最优并标记 `quality_reference=stock-raw`。预测相关优先使用完整 legal-oracle，否则只连接 raw 中实际成功的配置，同时标记 `legal_oracle_complete=false` 和实际分母，不把失败候选藏起来。
 
+正式主实验的独立协议审计为 `expected_runs=60`、`observed_runs=60`、`distinct_pids=60`、`ignored_sensitivity_runs=27`、`errors=[]`。审计逐项检查 identity、PID、warmup/repeat、候选预算、缓存起点与路径、profile 和 latency，完整记录见 [classic-protocol-audit.json](../../evidence/G6/classic-v2/classic-protocol-audit.json)。
+
 最终表格同时报告 raw/legal/选中数、compile/profile 次数、各阶段墙钟、搜索内 best、独立确认值、失败候选和预测分母。搜索计数减少与最终配置质量需要分别成立，不能仅凭“少跑了几个候选”宣称模型有效。
 
 ## 6. 两个 GEMM 的主预算结果

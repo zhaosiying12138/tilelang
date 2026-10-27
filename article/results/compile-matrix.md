@@ -11,7 +11,7 @@
 | G | GDN compilation/launch smoke | 六个梯度或 fwd 数值正确性 |
 | P | reference-checked numerical parity | 仅因 kernel 能启动就通过 |
 
-失败按 `FAIL_LOWER`、`FAIL_DEVICE_COMPILE`、`FAIL_LAUNCH`、`FAIL_NUMERIC`、`FAIL_ENV`、`FAIL_INFRA` 分类；`SKIP_DEP` 与 `SKIP_ARCH` 不记为通过。NVRTC 错误归入 device compile，动态 shared-memory 设置失败归入 launch，避免误写为 lowering 失败。
+失败按 `FAIL_LOWER`、`FAIL_DEVICE_COMPILE`、`FAIL_LAUNCH`、`FAIL_NUMERIC`、`FAIL_ENV`、`FAIL_INFRA` 分类；`SKIP_DEP`、`SKIP_ARCH` 与默认未启用性能测试的 `SKIP_PERF` 不记为通过。NVRTC 错误归入 device compile，动态 shared-memory 设置失败归入 launch，避免误写为 lowering 失败。
 
 ## 2. 已完成的 host 与 CPU-only 证据
 

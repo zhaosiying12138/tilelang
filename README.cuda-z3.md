@@ -199,7 +199,11 @@ done
 
 python benchmark/z3_cost_model/operators/analyze_results.py \
   --root "$CLASSIC" --output "$CLASSIC/analysis"
+python benchmark/z3_cost_model/operators/audit_cold.py \
+  --root "$CLASSIC" --output "$CLASSIC/classic-protocol-audit.json"
 ```
+
+协议审计要求四个 suite × 五个 arm × 三轮恰好 60 个正式 top-10 run，并检查 60 个不同 PID、空缓存起点、run-owned 路径、预算和成功 profile。预注册的其他 top-k 会单独计为敏感性，不混入 60 个正式分母。
 
 四个 suite 的 cold 搜索完成后，分别执行真实 winner 确认，再做联合分析。确认使用真实 JITKernel、固定输入、7 轮 ABBA、50 warmup 和每轮 200 个 L2-flushed CUDA-event 样本；性能只报告比值和分布，不套用 GDN 的专用通过门槛。
 
@@ -277,7 +281,7 @@ python benchmark/z3_cost_model/compile_matrix.py \
   --output evidence/G5/compile-matrix-z3-opt-in-repro
 ```
 
-每行结果区分 `FAIL_LOWER`、`FAIL_DEVICE_COMPILE`、`FAIL_LAUNCH`、`FAIL_NUMERIC`、`SKIP_DEP` 和真实 pass。GDN smoke 不计入六梯度数值验收。
+每行结果区分 `FAIL_LOWER`、`FAIL_DEVICE_COMPILE`、`FAIL_LAUNCH`、`FAIL_NUMERIC`、`SKIP_DEP`、`SKIP_ARCH`、`SKIP_PERF` 和真实 pass。`SKIP_PERF` 只用于默认关闭、需要显式 `--run-perf` 的性能测试，与依赖或架构 skip 一样不计为通过。GDN smoke 不计入六梯度数值验收。
 
 ## 八、资源与缓存纪律
 
