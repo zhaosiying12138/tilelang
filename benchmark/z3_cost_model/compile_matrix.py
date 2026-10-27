@@ -47,6 +47,7 @@ PASS_NUMERIC = "PASS_NUMERIC"
 G_SMOKE = "G_SMOKE"
 SKIP_ARCH = "SKIP_ARCH"
 SKIP_DEP = "SKIP_DEP"
+SKIP_PERF = "SKIP_PERF"
 FAIL_LOWER = "FAIL_LOWER"
 FAIL_DEVICE_COMPILE = "FAIL_DEVICE_COMPILE"
 FAIL_LAUNCH = "FAIL_LAUNCH"
@@ -61,6 +62,7 @@ STATUSES = (
     G_SMOKE,
     SKIP_ARCH,
     SKIP_DEP,
+    SKIP_PERF,
     FAIL_LOWER,
     FAIL_DEVICE_COMPILE,
     FAIL_LAUNCH,
@@ -70,7 +72,7 @@ STATUSES = (
     NOT_RUN,
 )
 PASS_STATUSES = frozenset((PASS_COMPILE_ONLY, PASS_NUMERIC))
-SKIP_STATUSES = frozenset((SKIP_ARCH, SKIP_DEP))
+SKIP_STATUSES = frozenset((SKIP_ARCH, SKIP_DEP, SKIP_PERF))
 FAIL_STATUSES = frozenset(
     (FAIL_LOWER, FAIL_DEVICE_COMPILE, FAIL_LAUNCH, FAIL_NUMERIC, FAIL_ENV, FAIL_INFRA)
 )
@@ -608,6 +610,13 @@ def z3_pipeline_config_pattern() -> str:
 
 
 def classify_skip(text: str) -> tuple[str, str]:
+    perf_patterns = (
+        r"performance test skipped by default",
+        r"pass --run-perf",
+        r"Skipped \d+ perf test",
+    )
+    if _matches_any(text, perf_patterns):
+        return SKIP_PERF, "pytest reported an opt-in performance-test skip; not counted as passed"
     dependency_patterns = (
         r"requires package",
         r"importorskip",
@@ -633,7 +642,7 @@ def classify_skip(text: str) -> tuple[str, str]:
         return SKIP_ARCH, "pytest reported an architecture/device skip; not counted as passed"
     if has_dep:
         return SKIP_DEP, "pytest reported a dependency skip; not counted as passed"
-    return NOT_RUN, "pytest skip/xfail was not recognized as arch/dependency; not counted as passed"
+    return NOT_RUN, "pytest skip/xfail was not recognized as arch/dependency/perf; not counted as passed"
 
 
 def classify_result(
@@ -659,6 +668,10 @@ def classify_result(
             return FAIL_INFRA, f"pytest collection failed with infrastructure exit {exit_code}"
         return classify_failure(text, numeric_gate=False, default=FAIL_INFRA), "collection did not produce nodes"
     if exit_code in {2, 3, 4, 5}:
+        if exit_code == 5 and counts["skipped"]:
+            status, reason = classify_skip(text)
+            if status in SKIP_STATUSES:
+                return status, reason + "; pytest exit 5 followed an all-skipped selection"
         return FAIL_INFRA, f"pytest infrastructure/usage exit {exit_code}; no tests are treated as passed"
     if exit_code != 0:
         status = classify_failure(text, numeric_gate=row.numeric_gate)
