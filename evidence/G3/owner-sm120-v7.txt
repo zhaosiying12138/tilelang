@@ -1,0 +1,92 @@
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+.......[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+.[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+.2026-10-28 01:17:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `kernel` with `out_idx=None`
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=1
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+2026-10-28 01:17:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `kernel`
+.2026-10-28 01:17:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `kernel` with `out_idx=None`
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+2026-10-28 01:17:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `kernel`
+.2026-10-28 01:17:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `kernel` with `out_idx=None`
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=3
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+2026-10-28 01:17:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `kernel`
+.
+=============================================================================== fixture duration top ===============================================================================
+total          name                                                                                                                                num med            max           
+0:00:00.002311 grand total                                                                                                                          22 0:00:00.000080 0:00:00.000716
+============================================================================== test call duration top ==============================================================================
+total          name                                                                                                                                num med            max           
+0:00:04.938352 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_sm120_owner_ring_forward_wraparound_and_reuse           3 0:00:01.571846 0:00:01.975295
+0:00:01.058372 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds     4 0:00:00.006961 0:00:01.038141
+0:00:00.461382 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization     1 0:00:00.461382 0:00:00.461382
+0:00:00.265842 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_accepts_role_uniform_loop_bounds   2 0:00:00.132921 0:00:00.134898
+0:00:00.006937 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_still_rejects_nonunit_step         1 0:00:00.006937 0:00:00.006937
+0:00:00.006062 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_thread_dependent_step      1 0:00:00.006062 0:00:00.006062
+0:00:06.736947 grand total                                                                                                                          12 0:00:00.069941 0:00:01.975295
+============================================================================= test setup duration top ==============================================================================
+total          name                                                                                                                                num med            max           
+0:00:00.003958 grand total                                                                                                                          12 0:00:00.000267 0:00:00.000872
+============================================================================ test teardown duration top ============================================================================
+total          name                                                                                                                                num med            max           
+0:00:00.000608 grand total                                                                                                                          12 0:00:00.000045 0:00:00.000071
+12 passed in 7.36s

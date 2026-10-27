@@ -1,0 +1,1340 @@
+........................................................................ [ 12%]
+............................FFF......................................... [ 25%]
+........................................................................ [ 38%]
+........................................................................ [ 51%]
+...............F........................................................ [ 64%]
+........................................................................ [ 76%]
+........................................................................ [ 89%]
+.............s..................s.................F.F.FFFF               [100%]
+=================================== FAILURES ===================================
+________ test_dynamic_serial_trips_use_assumptions_and_explicit_bounds _________
+
+    def test_dynamic_serial_trips_use_assumptions_and_explicit_bounds():
+        tir = tvm.tirx
+        out = tir.decl_buffer((8,), "int32", name="dynamic_trip_out")
+        n = tir.Var("dynamic_trip_n", "int32")
+        j = tir.Var("dynamic_trip_j", "int32")
+        k = tir.Var("dynamic_trip_k", "int32")
+        body = tir.For(j, 0, n, tir.ForKind.SERIAL, tir.BufferStore(out, 1, [k]))
+        assumed = tir.AttrStmt(n <= 3, "tl.assume", 1, body)
+        func = _make_store_func(
+            [_task(assumed)], [out], _model_annotations(), extra_params=[n], loop_var=k
+        )
+        calls = _install_model_mock()
+        loop = _find_pipeline_loop(_run_infer(func)["main"])
+        tree = task_cost._plain(calls.composed[0])
+        assert tree["kind"] == "repeat"
+        assert tree["trips"] == {"upper_bound": 3, "reliability": "upper_bound"}
+>       assert list(loop.annotations["tl_z3_pipeline_cost_reliability"]) == ["upper_bound"]
+E       AssertionError: assert ['unknown'] == ['upper_bound']
+E         
+E         At index 0 diff: 'unknown' != 'upper_bound'
+E         
+E         Full diff:
+E           [
+E         -     'upper_bound',
+E         +     'unknown',
+E           ]
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:961: AssertionError
+_______ test_dynamic_copy_extent_uses_assumption_and_static_buffer_shape _______
+
+    def test_dynamic_copy_extent_uses_assumption_and_static_buffer_shape():
+        def build(with_assume):
+            annotations = {"tl_z3_pipeline": True, **_mock_paths()}
+    
+            @T.prim_func
+            def main(n: T.int32, A: T.Tensor((16,), "float32")):
+                with T.Kernel(1, threads=32):
+                    shared = T.alloc_shared((16,), "float32")
+                    for _ in T.Pipelined(1, num_stages=2, annotations=annotations):
+                        if with_assume:
+                            with T.attr(n <= 8, "tl.assume", 1):
+                                T.copy(A[0:n], shared[0:n])
+                        else:
+                            T.copy(A[0:n], shared[0:n])
+    
+            return main
+    
+        for with_assume, expected_bytes in [(True, 32), (False, 64)]:
+            calls = _install_model_mock()
+            loop = _find_pipeline_loop(_run_infer(build(with_assume))["main"])
+            assert len(calls) == 1
+            access = task_cost._plain(calls[0])["copies"][0]
+            assert access["bytes"] == {
+                "upper_bound": expected_bytes,
+                "reliability": "upper_bound",
+            }
+>           assert list(loop.annotations["tl_z3_pipeline_cost_reliability"]) == ["upper_bound"]
+E           AssertionError: assert ['unknown'] == ['upper_bound']
+E             
+E             At index 0 diff: 'unknown' != 'upper_bound'
+E             
+E             Full diff:
+E               [
+E             -     'upper_bound',
+E             +     'unknown',
+E               ]
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:1012: AssertionError
+___ test_bounded_while_composes_and_unbounded_while_requires_both_overrides ____
+
+    def test_bounded_while_composes_and_unbounded_while_requires_both_overrides():
+        tir = tvm.tirx
+        pred = tir.decl_buffer((1,), "int32", name="while_pred")
+        out = tir.decl_buffer((8,), "int32", name="while_out")
+        k = tir.Var("while_k", "int32")
+        condition = tir.BufferLoad(pred, [0]) > 0
+        body = tir.BufferStore(out, 1, [k])
+        bounded_body = tir.AttrStmt(
+            tir.IntImm("int32", 3),
+            "tl.cuda_z3_trip_bound",
+            tir.IntImm("int32", 1),
+            tir.While(condition, body),
+        )
+        bounded_func = _make_store_func(
+            [_task(bounded_body)], [pred, out], _model_annotations(), loop_var=k
+        )
+        calls = _install_model_mock()
+        loop = _find_pipeline_loop(_run_infer(bounded_func)["main"])
+        tree = task_cost._plain(calls.composed[0])
+        assert tree["kind"] == "repeat"
+        assert tree["trips"] == {"upper_bound": 3, "reliability": "upper_bound"}
+>       assert list(loop.annotations["tl_z3_pipeline_cost_reliability"]) == ["upper_bound"]
+E       AssertionError: assert ['unknown'] == ['upper_bound']
+E         
+E         At index 0 diff: 'unknown' != 'upper_bound'
+E         
+E         Full diff:
+E           [
+E         -     'upper_bound',
+E         +     'unknown',
+E           ]
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:1036: AssertionError
+_______________________ test_capacity_deadlock_rejected ________________________
+
+    @tilelang.testing.requires_cuda
+    def test_capacity_deadlock_rejected():
+        """Two roles produce into sibling scopes in opposite orders: each
+        fills its pipeline's depth and blocks on an acquire that only the
+        other's never-reached consumer scope would release. Surfaces only
+        when loops are modeled past two iterations."""
+    
+        @T.prim_func
+        def kernel(A: T.Tensor((256, 64), T.float16), B: T.Tensor((256, 64), T.float16)):
+            with T.Kernel(1, threads=128) as _:
+                S1 = T.alloc_shared((64, 64), T.float16)
+                S2 = T.alloc_shared((64, 64), T.float16)
+                F1 = T.alloc_fragment((64, 64), T.float16)
+                F2 = T.alloc_fragment((64, 64), T.float16)
+    
+                T.annotate_ws_schedule(
+                    T.WSSchedule(
+                        num_warps=8,
+                        roles=[
+                            T.WSRole("Producer", warps_lo=0, warps_hi=1, max_nreg=40),
+                            T.WSRole("Consumer", warps_lo=4, warps_hi=8, max_nreg=224),
+                        ],
+                        pipelines=[
+                            T.WSPipeline("s1", [S1], depth=2),
+                            T.WSPipeline("s2", [S2], depth=2),
+                        ],
+                        scopes=[
+                            T.WSScope(
+                                "loop_a",
+                                {
+                                    "Producer": [
+                                        T.WSSync.producer_acquire("s1"),
+                                        "copy_in1",
+                                        T.WSSync.producer_commit("s1"),
+                                    ],
+                                    "Consumer": [
+                                        T.WSSync.consumer_wait("s1"),
+                                        "copy_frag1",
+                                        T.WSSync.consumer_release("s1"),
+                                        "copy_out1",
+                                    ],
+                                },
+                            ),
+                            T.WSScope(
+                                "loop_b",
+                                {
+                                    "Consumer": [
+                                        T.WSSync.producer_acquire("s2"),
+                                        "copy_in2",
+                                        T.WSSync.producer_commit("s2"),
+                                    ],
+                                    "Producer": [
+                                        T.WSSync.consumer_wait("s2"),
+                                        "copy_frag2",
+                                        T.WSSync.consumer_release("s2"),
+                                        "copy_out2",
+                                    ],
+                                },
+                            ),
+                            T.WSScope(
+                                T.WSScope.ROOT,
+                                {
+                                    "Producer": ["loop_a", "loop_b"],
+                                    "Consumer": ["loop_b", "loop_a"],
+                                },
+                            ),
+                        ],
+                    )
+                )
+    
+                for _i in T.serial(4, annotations={T.WSID: "loop_a"}):
+                    T.copy(A[0, 0], S1, annotations={T.WSID: "copy_in1"})
+                    T.copy(S1, F1, annotations={T.WSID: "copy_frag1"})
+                    T.copy(F1, B[0, 0], annotations={T.WSID: "copy_out1"})
+                for _i in T.serial(4, annotations={T.WSID: "loop_b"}):
+                    T.copy(A[64, 0], S2, annotations={T.WSID: "copy_in2"})
+                    T.copy(S2, F2, annotations={T.WSID: "copy_frag2"})
+                    T.copy(F2, B[64, 0], annotations={T.WSID: "copy_out2"})
+    
+>       with pytest.raises(Exception, match="deadlocks"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Exception
+
+testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py:3199: Failed
+___________ test_nested_fixed_stage_ring_projects_to_stock_pipeline ____________
+
+    def test_nested_fixed_stage_ring_projects_to_stock_pipeline():
+        previous = tvm_ffi.get_global_func(_SOLVER, allow_missing=True)
+        lower_factory = tvm_ffi.get_global_func(
+            "tl.cuda.transform.LowerZ3ScheduleUnits", allow_missing=True
+        )
+        if previous is None or lower_factory is None:
+            pytest.skip("recursive planning requires the centrally rebuilt TileLang library")
+    
+        calls = []
+    
+        def recording_solver(*args):
+            calls.append(args)
+            return previous(*args)
+    
+        tvm_ffi.register_global_func(_SOLVER, f=recording_solver, override=True)
+        try:
+            shared = tirx.decl_buffer((8,), "int32", name="shared", scope="shared")
+            out = tirx.decl_buffer((8,), "int32", name="out", scope="global")
+            inner = tirx.Var("i", "int32")
+            outer = tirx.Var("o", "int32")
+    
+            # Normalized source schedule: produce at stage 0, consume at stage 1,
+            # with an exact two-version public request for the shared ring.
+            producer = _unit(tirx.BufferStore(shared, inner, [inner]), 1, 0)
+            consumer = _unit(
+                tirx.BufferStore(out, shared[inner] + 1, [inner]), 2, 1
+            )
+            inner_loop = _control(
+                inner,
+                4,
+                [producer, consumer],
+                10,
+                annotations={
+                    "num_stages": 2,
+                    "tl_z3_pipeline_enable_offset": True,
+                    "tl_z3_pipeline_resource_flags": [1, 1],
+                    "tl_z3_pipeline_buffer_vars": [shared.data],
+                    "tl_z3_pipeline_buffer_sizes": [32],
+                    "tl_z3_pipeline_memory_groups": [[64, 0]],
+                },
+            )
+            outer_loop = _control(outer, 2, [inner_loop], 20)
+            root = tirx.SBlock(
+                [],
+                [],
+                [],
+                "tilelang_root",
+                outer_loop,
+                alloc_buffers=[shared, out],
+                annotations={
+                    "tl.cuda_z3_buffer_version_requests": {
+                        shared.data: tirx.IntImm("int64", 2)
+                    },
+                    "tl.cuda_z3_buffer_version_mode_requests": {
+                        shared.data: "iteration"
+                    },
+                },
+            )
+    
+            with tvm.transform.PassContext(config={_CONFIG: True}):
+>               planned = tl.transform.Z3PipelinePlanning()(_main_module(root))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_recursive_planning.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveKernelPlannerRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::InitializeList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(imm != nullptr) << "Z3PipelinePlanning: " << key
+E   tvm.error.InternalError: Check failed: (imm != nullptr) is false: Z3PipelinePlanning: num_stages must be an integer annotation
+
+src/transform/z3_pipeline_planning.cc:170: InternalError
+________ test_recursive_builder_emits_one_guarded_shared_ring_protocol _________
+
+    def test_recursive_builder_emits_one_guarded_shared_ring_protocol():
+        build = _ffi("tl.cuda.transform.Z3BuildWSSchedule")
+        _ffi("tl.WSSyncWithGuard")
+        shared = tirx.decl_buffer((4,), "float32", name="ring", scope="shared")
+        source = tirx.decl_buffer((4,), "float32", name="source", scope="global")
+        output = tirx.decl_buffer((4,), "float32", name="output", scope="global")
+        enabled = tirx.Var("enabled", "bool")
+        active = tirx.Var("active", "bool")
+    
+        def region(buffer, mask):
+            indices = [0] * len(buffer.shape)
+            return tirx.Call(
+                "handle",
+                tvm.ir.Op.get("tl.region"),
+                [buffer[tuple(indices)], mask, *buffer.shape],
+            )
+    
+        def copy(src, dst):
+            return tirx.Evaluate(
+                tirx.Call(
+                    "handle",
+                    tvm.ir.Op.get("tl.tileop.copy"),
+                    [region(src, 1), region(dst, 2)],
+                )
+            )
+    
+        def unit(body, source_id, op_id, *, guard=None):
+            stmt = tirx.AttrStmt({"ws_op_id": op_id}, "tl.cuda_task", 1, body)
+            if guard is not None:
+                stmt = tirx.IfThenElse(guard, stmt, None)
+            return tirx.AttrStmt(
+                {"stage": 0, "source_id": source_id}, "tl.schedule_unit", 1, stmt
+            )
+    
+        def owner(index, extent):
+            iv = tirx.Var(f"i{index}", "int32")
+            children = [
+                unit(copy(source, shared), 10 + index * 10, f"load{index}", guard=active),
+                unit(copy(shared, output), 11 + index * 10, f"store{index}", guard=active),
+            ]
+            loop = tirx.For(
+                iv,
+                0,
+                extent,
+                tirx.ForKind.SERIAL,
+                tirx.SeqStmt(children),
+                annotations={"tl.ws_op_id": f"owner{index}"},
+            )
+            return tirx.AttrStmt(
+                {"stage": 0, "source_id": 20 + index * 10}, "tl.schedule_unit", 1, loop
+            )
+    
+        bind = unit(tirx.Bind(active, enabled), 1, "bind_active")
+        root = tirx.SBlock(
+            [],
+            [],
+            [],
+            "tilelang_root",
+            tirx.SeqStmt([bind, owner(0, 2), owner(1, 3)]),
+            alloc_buffers=[shared, source, output],
+            annotations={
+                "tl.buffer_versions_map": {shared.data: 2},
+                "tl.buffer_version_mode": {shared.data: "auto"},
+            },
+        )
+        roles = [
+            T.WSRole("Load", warps_lo=0, warps_hi=1),
+            T.WSRole("Store", warps_lo=1, warps_hi=2),
+        ]
+>       built = build(root, roles, 0, '{"kind":"cuda","arch":"sm_90"}', 0, False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::BuildWSScheduleInspection(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String, long, bool)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::BuildZ3WSSchedule(tvm::tl::cuda::z3::ScheduledTIR*, tvm::tl::cuda::z3::MultiBufferPlan const&, tvm::tl::cuda::z3::CudaRoleTable const&, int, bool)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::ValidateScheduledTIR(tvm::tl::cuda::z3::ScheduledTIR const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(control->task->CandidateRoles() == 0 && control->task->ResolvedRoles() == 0)
+E   tvm.error.InternalError: Check failed: (control->task->CandidateRoles() == 0 && control->task->ResolvedRoles() == 0) is false: Role placement lives on real tasks, not synthetic control headers
+
+src/cuda/transform/z3_schedule_ir.cc:799: InternalError
+__________ test_legacy_two_owner_ring_keeps_original_counter_protocol __________
+
+    def test_legacy_two_owner_ring_keeps_original_counter_protocol():
+        _ffi("tl.WSSyncWithGuard")
+>       func = _materialize(_ring_kernel(guarded=False))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py:413: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py:118: in _ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1788: in impl
+    raise e
+tilelang/language/eager/builder.py:1781: in impl
+    ir_gen.gen(builder)(**annot)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+A = A, B = B, __kwargs = {}
+
+    def kernel(A: T.Tensor((T.dynamic("n"),), T.float32), B: T.Tensor((64,), T.float32)):
+        with T.Kernel(1, threads=128) as _:
+            ring = T.alloc_shared((4,), T.float32, scope="shared")
+            frag = T.alloc_fragment((4,), T.float32)
+            active = None
+            if guarded:
+                with T.ws_op("bind_active"):
+                    active = A.shape[0] > 0
+    
+            def sync(kind, stage=0):
+                return kind(pipeline, stage=stage, guard=active) if guarded else kind(pipeline, stage=stage)
+    
+            T.annotate_ws_schedule(
+                T.WSSchedule(
+                    num_warps=8,
+                    roles=[
+                        T.WSRole("Producer", warps_lo=0, warps_hi=1),
+                        T.WSRole("Consumer", warps_lo=4, warps_hi=8),
+                    ],
+                    pipelines=[
+                        T.WSPipeline(
+                            pipeline,
+                            [ring],
+                            depth=2,
+                            owner_scopes=("owner0", "owner1"),
+                        )
+                    ],
+                    scopes=[
+                        T.WSScope(
+                            "owner0",
+                            {
+                                "Producer": [
+>                                   sync(T.WSSync.producer_acquire),
+                                ^^^^
+                                    "produce0",
+                                    sync(T.WSSync.producer_commit),
+                                ],
+                                "Consumer": [
+                                    sync(T.WSSync.consumer_wait),
+                                    "consume0",
+                                    sync(T.WSSync.consumer_release),
+                                    "output0",
+                                ],
+                            },
+                        ),
+                        T.WSScope(
+                            "owner1",
+                            {
+                                "Producer": [
+                                    sync(T.WSSync.producer_acquire),
+                                    "produce1",
+                                    sync(T.WSSync.producer_commit),
+                                ],
+                                "Consumer": [
+                                    sync(T.WSSync.consumer_wait),
+                                    "consume1",
+                                    sync(T.WSSync.consumer_release),
+                                    "output1",
+                                ],
+                            },
+                        ),
+                        T.WSScope(
+                            T.WSScope.ROOT,
+                            {
+                                "Producer": (["bind_active"] if guarded else []) + ["owner0", "owner1"],
+                                "Consumer": (["bind_active"] if guarded else []) + ["owner0", "owner1"],
+                            },
+                        ),
+                    ],
+                )
+            )
+E           NameError: name 'sync' is not defined
+
+testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py:151: NameError
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 00:45:39  [TileLang:tilelang.language.eager.builder:CRITICAL] (builder.py:1787): Failed to build prim_func from kernel
+args={'A': A, 'B': B}
+source=def make_closure(guarded, pipeline):
+
+    def kernel(__tb):
+        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py'
+        __tb_fn = 'kernel'
+        __tb.set_fileline(__tb_fl, 119, __tb_fn)
+
+        def kernel(A, B, **__kwargs):
+            __tb.set_fileline(__tb_fl, 119, __tb_fn)
+            A = __tb.arg('A', A)
+            __tb.set_fileline(__tb_fl, 119, __tb_fn)
+            B = __tb.arg('B', B)
+            __tb.set_fileline(__tb_fl, 120, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 120, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 120, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(1, threads=128)) as _:
+                __tb.set_fileline(__tb_fl, 121, __tb_fn)
+                ring = __tb.bind('ring', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((4,), __tb.rval('T', T).float32, scope='shared'))
+                __tb.set_fileline(__tb_fl, 122, __tb_fn)
+                frag = __tb.bind('frag', __tb.resolve_call(__tb.rval('T', T).alloc_fragment)((4,), __tb.rval('T', T).float32))
+                __tb.set_fileline(__tb_fl, 123, __tb_fn)
+                active = __tb.bind('active', None)
+                __tb.set_fileline(__tb_fl, 124, __tb_fn)
+                for __0 in __tb.ctx_if(__tb.rval('guarded', guarded)):
+                    __tb.set_fileline(__tb_fl, 124, __tb_fn)
+                    for _ in __tb.ctx_then(__0):
+                        __tb.set_fileline(__tb_fl, 125, __tb_fn)
+                        with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).ws_op)('bind_active')):
+                            __tb.set_fileline(__tb_fl, 126, __tb_fn)
+                            active = __tb.bind('active', __tb.rval('A', A).shape[0] > 0)
+                __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                def make_closure(guarded, pipeline):
+                    __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                    def sync(__tb):
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py'
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb_fn = 'sync'
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                        def sync(kind, stage=0, **__kwargs):
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            kind = __tb.arg('kind', kind)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            stage = __tb.arg('stage', stage)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            return __tb.ret(__tb.ifexp(__tb.rval('guarded', guarded), lambda: __tb.resolve_call(__tb.rval('kind', kind))(__tb.rval('pipeline', pipeline), stage=__tb.rval('stage', stage), guard=__tb.rval('active', active)), lambda: __tb.resolve_call(__tb.rval('kind', kind))(__tb.rval('pipeline', pipeline), stage=__tb.rval('stage', stage))))
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        return sync
+                    __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                    return sync
+                __tb.set_fileline(__tb_fl, 131, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_ws_schedule)(__tb.resolve_call(__tb.rval('T', T).WSSchedule)(num_warps=8, roles=[__tb.resolve_call(__tb.rval('T', T).WSRole)('Producer', warps_lo=0, warps_hi=1), __tb.resolve_call(__tb.rval('T', T).WSRole)('Consumer', warps_lo=4, warps_hi=8)], pipelines=[__tb.resolve_call(__tb.rval('T', T).WSPipeline)(__tb.rval('pipeline', pipeline), [__tb.rval('ring', ring)], depth=2, owner_scopes=('owner0', 'owner1'))], scopes=[__tb.resolve_call(__tb.rval('T', T).WSScope)('owner0', {'Producer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_acquire), 'produce0', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_commit)], 'Consumer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_wait), 'consume0', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_release), 'output0']}), __tb.resolve_call(__tb.rval('T', T).WSScope)('owner1', {'Producer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_acquire), 'produce1', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_commit)], 'Consumer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_wait), 'consume1', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_release), 'output1']}), __tb.resolve_call(__tb.rval('T', T).WSScope)(__tb.rval('T', T).WSScope.ROOT, {'Producer': __tb.ifexp(__tb.rval('guarded', guarded), lambda: ['bind_active'], lambda: []) + ['owner0', 'owner1'], 'Consumer': __tb.ifexp(__tb.rval('guarded', guarded), lambda: ['bind_active'], lambda: []) + ['owner0', 'owner1']})])))
+                __tb.set_fileline(__tb_fl, 190, __tb_fn)
+                for __3 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), 2, annotations={__tb.rval('T', T).WSID: 'owner0'})):
+                    __tb.set_fileline(__tb_fl, 190, __tb_fn)
+                    i = __tb.bind('i', __3, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                    for __2 in __tb.ctx_if(__tb.rval('active', active) is None):
+                        __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                        for _ in __tb.ctx_then(__2):
+                            __tb.set_fileline(__tb_fl, 192, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: 'produce0'}))
+                            __tb.set_fileline(__tb_fl, 193, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume0'}))
+                            __tb.set_fileline(__tb_fl, 194, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: 'output0'}))
+                        __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                        for _ in __tb.ctx_else(__2):
+                            __tb.set_fileline(__tb_fl, 196, __tb_fn)
+                            for __1 in __tb.ctx_if(__tb.rval('active', active)):
+                                __tb.set_fileline(__tb_fl, 196, __tb_fn)
+                                for _ in __tb.ctx_then(__1):
+                                    __tb.set_fileline(__tb_fl, 197, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: 'produce0'}))
+                                    __tb.set_fileline(__tb_fl, 198, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume0'}))
+                                    __tb.set_fileline(__tb_fl, 199, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: 'output0'}))
+                __tb.set_fileline(__tb_fl, 200, __tb_fn)
+                for __6 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), 3, annotations={__tb.rval('T', T).WSID: 'owner1'})):
+                    __tb.set_fileline(__tb_fl, 200, __tb_fn)
+                    j = __tb.bind('j', __6, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                    for __5 in __tb.ctx_if(__tb.rval('active', active) is None):
+                        __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                        for _ in __tb.ctx_then(__5):
+                            __tb.set_fileline(__tb_fl, 202, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('j', j), annotations={__tb.rval('T', T).WSID: 'produce1'}))
+                            __tb.set_fileline(__tb_fl, 203, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume1'}))
+                            __tb.set_fileline(__tb_fl, 204, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[(2 + __tb.rval('j', j)) * 4], annotations={__tb.rval('T', T).WSID: 'output1'}))
+                        __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                        for _ in __tb.ctx_else(__5):
+                            __tb.set_fileline(__tb_fl, 206, __tb_fn)
+                            for __4 in __tb.ctx_if(__tb.rval('active', active)):
+                                __tb.set_fileline(__tb_fl, 206, __tb_fn)
+                                for _ in __tb.ctx_then(__4):
+                                    __tb.set_fileline(__tb_fl, 207, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('j', j), annotations={__tb.rval('T', T).WSID: 'produce1'}))
+                                    __tb.set_fileline(__tb_fl, 208, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume1'}))
+                                    __tb.set_fileline(__tb_fl, 209, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[(2 + __tb.rval('j', j)) * 4], annotations={__tb.rval('T', T).WSID: 'output1'}))
+        return kernel
+    return kernel
+------------------------------ Captured log call -------------------------------
+CRITICAL tilelang.language.eager.builder:builder.py:1787 Failed to build prim_func from kernel
+args={'A': A, 'B': B}
+source=def make_closure(guarded, pipeline):
+
+    def kernel(__tb):
+        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py'
+        __tb_fn = 'kernel'
+        __tb.set_fileline(__tb_fl, 119, __tb_fn)
+
+        def kernel(A, B, **__kwargs):
+            __tb.set_fileline(__tb_fl, 119, __tb_fn)
+            A = __tb.arg('A', A)
+            __tb.set_fileline(__tb_fl, 119, __tb_fn)
+            B = __tb.arg('B', B)
+            __tb.set_fileline(__tb_fl, 120, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 120, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 120, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(1, threads=128)) as _:
+                __tb.set_fileline(__tb_fl, 121, __tb_fn)
+                ring = __tb.bind('ring', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((4,), __tb.rval('T', T).float32, scope='shared'))
+                __tb.set_fileline(__tb_fl, 122, __tb_fn)
+                frag = __tb.bind('frag', __tb.resolve_call(__tb.rval('T', T).alloc_fragment)((4,), __tb.rval('T', T).float32))
+                __tb.set_fileline(__tb_fl, 123, __tb_fn)
+                active = __tb.bind('active', None)
+                __tb.set_fileline(__tb_fl, 124, __tb_fn)
+                for __0 in __tb.ctx_if(__tb.rval('guarded', guarded)):
+                    __tb.set_fileline(__tb_fl, 124, __tb_fn)
+                    for _ in __tb.ctx_then(__0):
+                        __tb.set_fileline(__tb_fl, 125, __tb_fn)
+                        with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).ws_op)('bind_active')):
+                            __tb.set_fileline(__tb_fl, 126, __tb_fn)
+                            active = __tb.bind('active', __tb.rval('A', A).shape[0] > 0)
+                __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                def make_closure(guarded, pipeline):
+                    __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                    def sync(__tb):
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py'
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb_fn = 'sync'
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                        def sync(kind, stage=0, **__kwargs):
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            kind = __tb.arg('kind', kind)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            stage = __tb.arg('stage', stage)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            return __tb.ret(__tb.ifexp(__tb.rval('guarded', guarded), lambda: __tb.resolve_call(__tb.rval('kind', kind))(__tb.rval('pipeline', pipeline), stage=__tb.rval('stage', stage), guard=__tb.rval('active', active)), lambda: __tb.resolve_call(__tb.rval('kind', kind))(__tb.rval('pipeline', pipeline), stage=__tb.rval('stage', stage))))
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        return sync
+                    __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                    return sync
+                __tb.set_fileline(__tb_fl, 131, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_ws_schedule)(__tb.resolve_call(__tb.rval('T', T).WSSchedule)(num_warps=8, roles=[__tb.resolve_call(__tb.rval('T', T).WSRole)('Producer', warps_lo=0, warps_hi=1), __tb.resolve_call(__tb.rval('T', T).WSRole)('Consumer', warps_lo=4, warps_hi=8)], pipelines=[__tb.resolve_call(__tb.rval('T', T).WSPipeline)(__tb.rval('pipeline', pipeline), [__tb.rval('ring', ring)], depth=2, owner_scopes=('owner0', 'owner1'))], scopes=[__tb.resolve_call(__tb.rval('T', T).WSScope)('owner0', {'Producer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_acquire), 'produce0', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_commit)], 'Consumer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_wait), 'consume0', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_release), 'output0']}), __tb.resolve_call(__tb.rval('T', T).WSScope)('owner1', {'Producer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_acquire), 'produce1', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_commit)], 'Consumer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_wait), 'consume1', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_release), 'output1']}), __tb.resolve_call(__tb.rval('T', T).WSScope)(__tb.rval('T', T).WSScope.ROOT, {'Producer': __tb.ifexp(__tb.rval('guarded', guarded), lambda: ['bind_active'], lambda: []) + ['owner0', 'owner1'], 'Consumer': __tb.ifexp(__tb.rval('guarded', guarded), lambda: ['bind_active'], lambda: []) + ['owner0', 'owner1']})])))
+                __tb.set_fileline(__tb_fl, 190, __tb_fn)
+                for __3 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), 2, annotations={__tb.rval('T', T).WSID: 'owner0'})):
+                    __tb.set_fileline(__tb_fl, 190, __tb_fn)
+                    i = __tb.bind('i', __3, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                    for __2 in __tb.ctx_if(__tb.rval('active', active) is None):
+                        __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                        for _ in __tb.ctx_then(__2):
+                            __tb.set_fileline(__tb_fl, 192, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: 'produce0'}))
+                            __tb.set_fileline(__tb_fl, 193, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume0'}))
+                            __tb.set_fileline(__tb_fl, 194, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: 'output0'}))
+                        __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                        for _ in __tb.ctx_else(__2):
+                            __tb.set_fileline(__tb_fl, 196, __tb_fn)
+                            for __1 in __tb.ctx_if(__tb.rval('active', active)):
+                                __tb.set_fileline(__tb_fl, 196, __tb_fn)
+                                for _ in __tb.ctx_then(__1):
+                                    __tb.set_fileline(__tb_fl, 197, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: 'produce0'}))
+                                    __tb.set_fileline(__tb_fl, 198, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume0'}))
+                                    __tb.set_fileline(__tb_fl, 199, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: 'output0'}))
+                __tb.set_fileline(__tb_fl, 200, __tb_fn)
+                for __6 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), 3, annotations={__tb.rval('T', T).WSID: 'owner1'})):
+                    __tb.set_fileline(__tb_fl, 200, __tb_fn)
+                    j = __tb.bind('j', __6, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                    for __5 in __tb.ctx_if(__tb.rval('active', active) is None):
+                        __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                        for _ in __tb.ctx_then(__5):
+                            __tb.set_fileline(__tb_fl, 202, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('j', j), annotations={__tb.rval('T', T).WSID: 'produce1'}))
+                            __tb.set_fileline(__tb_fl, 203, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume1'}))
+                            __tb.set_fileline(__tb_fl, 204, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[(2 + __tb.rval('j', j)) * 4], annotations={__tb.rval('T', T).WSID: 'output1'}))
+                        __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                        for _ in __tb.ctx_else(__5):
+                            __tb.set_fileline(__tb_fl, 206, __tb_fn)
+                            for __4 in __tb.ctx_if(__tb.rval('active', active)):
+                                __tb.set_fileline(__tb_fl, 206, __tb_fn)
+                                for _ in __tb.ctx_then(__4):
+                                    __tb.set_fileline(__tb_fl, 207, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('j', j), annotations={__tb.rval('T', T).WSID: 'produce1'}))
+                                    __tb.set_fileline(__tb_fl, 208, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume1'}))
+                                    __tb.set_fileline(__tb_fl, 209, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[(2 + __tb.rval('j', j)) * 4], annotations={__tb.rval('T', T).WSID: 'output1'}))
+        return kernel
+    return kernel
+____ test_guarded_ring_before_after_ir_has_exact_sync_and_counter_structure ____
+
+    def test_guarded_ring_before_after_ir_has_exact_sync_and_counter_structure():
+        _ffi("tl.WSSyncWithGuard")
+>       before = _ring_kernel(guarded=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py:433: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py:118: in _ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1788: in impl
+    raise e
+tilelang/language/eager/builder.py:1781: in impl
+    ir_gen.gen(builder)(**annot)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+A = A, B = B, __kwargs = {}
+
+    def kernel(A: T.Tensor((T.dynamic("n"),), T.float32), B: T.Tensor((64,), T.float32)):
+        with T.Kernel(1, threads=128) as _:
+            ring = T.alloc_shared((4,), T.float32, scope="shared")
+            frag = T.alloc_fragment((4,), T.float32)
+            active = None
+            if guarded:
+                with T.ws_op("bind_active"):
+                    active = A.shape[0] > 0
+    
+            def sync(kind, stage=0):
+                return kind(pipeline, stage=stage, guard=active) if guarded else kind(pipeline, stage=stage)
+    
+            T.annotate_ws_schedule(
+                T.WSSchedule(
+                    num_warps=8,
+                    roles=[
+                        T.WSRole("Producer", warps_lo=0, warps_hi=1),
+                        T.WSRole("Consumer", warps_lo=4, warps_hi=8),
+                    ],
+                    pipelines=[
+                        T.WSPipeline(
+                            pipeline,
+                            [ring],
+                            depth=2,
+                            owner_scopes=("owner0", "owner1"),
+                        )
+                    ],
+                    scopes=[
+                        T.WSScope(
+                            "owner0",
+                            {
+                                "Producer": [
+>                                   sync(T.WSSync.producer_acquire),
+                                ^^^^
+                                    "produce0",
+                                    sync(T.WSSync.producer_commit),
+                                ],
+                                "Consumer": [
+                                    sync(T.WSSync.consumer_wait),
+                                    "consume0",
+                                    sync(T.WSSync.consumer_release),
+                                    "output0",
+                                ],
+                            },
+                        ),
+                        T.WSScope(
+                            "owner1",
+                            {
+                                "Producer": [
+                                    sync(T.WSSync.producer_acquire),
+                                    "produce1",
+                                    sync(T.WSSync.producer_commit),
+                                ],
+                                "Consumer": [
+                                    sync(T.WSSync.consumer_wait),
+                                    "consume1",
+                                    sync(T.WSSync.consumer_release),
+                                    "output1",
+                                ],
+                            },
+                        ),
+                        T.WSScope(
+                            T.WSScope.ROOT,
+                            {
+                                "Producer": (["bind_active"] if guarded else []) + ["owner0", "owner1"],
+                                "Consumer": (["bind_active"] if guarded else []) + ["owner0", "owner1"],
+                            },
+                        ),
+                    ],
+                )
+            )
+E           NameError: name 'sync' is not defined
+
+testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py:151: NameError
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 00:45:39  [TileLang:tilelang.language.eager.builder:CRITICAL] (builder.py:1787): Failed to build prim_func from kernel
+args={'A': A, 'B': B}
+source=def make_closure(guarded, pipeline):
+
+    def kernel(__tb):
+        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py'
+        __tb_fn = 'kernel'
+        __tb.set_fileline(__tb_fl, 119, __tb_fn)
+
+        def kernel(A, B, **__kwargs):
+            __tb.set_fileline(__tb_fl, 119, __tb_fn)
+            A = __tb.arg('A', A)
+            __tb.set_fileline(__tb_fl, 119, __tb_fn)
+            B = __tb.arg('B', B)
+            __tb.set_fileline(__tb_fl, 120, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 120, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 120, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(1, threads=128)) as _:
+                __tb.set_fileline(__tb_fl, 121, __tb_fn)
+                ring = __tb.bind('ring', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((4,), __tb.rval('T', T).float32, scope='shared'))
+                __tb.set_fileline(__tb_fl, 122, __tb_fn)
+                frag = __tb.bind('frag', __tb.resolve_call(__tb.rval('T', T).alloc_fragment)((4,), __tb.rval('T', T).float32))
+                __tb.set_fileline(__tb_fl, 123, __tb_fn)
+                active = __tb.bind('active', None)
+                __tb.set_fileline(__tb_fl, 124, __tb_fn)
+                for __0 in __tb.ctx_if(__tb.rval('guarded', guarded)):
+                    __tb.set_fileline(__tb_fl, 124, __tb_fn)
+                    for _ in __tb.ctx_then(__0):
+                        __tb.set_fileline(__tb_fl, 125, __tb_fn)
+                        with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).ws_op)('bind_active')):
+                            __tb.set_fileline(__tb_fl, 126, __tb_fn)
+                            active = __tb.bind('active', __tb.rval('A', A).shape[0] > 0)
+                __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                def make_closure(guarded, pipeline):
+                    __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                    def sync(__tb):
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py'
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb_fn = 'sync'
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                        def sync(kind, stage=0, **__kwargs):
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            kind = __tb.arg('kind', kind)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            stage = __tb.arg('stage', stage)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            return __tb.ret(__tb.ifexp(__tb.rval('guarded', guarded), lambda: __tb.resolve_call(__tb.rval('kind', kind))(__tb.rval('pipeline', pipeline), stage=__tb.rval('stage', stage), guard=__tb.rval('active', active)), lambda: __tb.resolve_call(__tb.rval('kind', kind))(__tb.rval('pipeline', pipeline), stage=__tb.rval('stage', stage))))
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        return sync
+                    __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                    return sync
+                __tb.set_fileline(__tb_fl, 131, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_ws_schedule)(__tb.resolve_call(__tb.rval('T', T).WSSchedule)(num_warps=8, roles=[__tb.resolve_call(__tb.rval('T', T).WSRole)('Producer', warps_lo=0, warps_hi=1), __tb.resolve_call(__tb.rval('T', T).WSRole)('Consumer', warps_lo=4, warps_hi=8)], pipelines=[__tb.resolve_call(__tb.rval('T', T).WSPipeline)(__tb.rval('pipeline', pipeline), [__tb.rval('ring', ring)], depth=2, owner_scopes=('owner0', 'owner1'))], scopes=[__tb.resolve_call(__tb.rval('T', T).WSScope)('owner0', {'Producer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_acquire), 'produce0', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_commit)], 'Consumer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_wait), 'consume0', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_release), 'output0']}), __tb.resolve_call(__tb.rval('T', T).WSScope)('owner1', {'Producer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_acquire), 'produce1', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_commit)], 'Consumer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_wait), 'consume1', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_release), 'output1']}), __tb.resolve_call(__tb.rval('T', T).WSScope)(__tb.rval('T', T).WSScope.ROOT, {'Producer': __tb.ifexp(__tb.rval('guarded', guarded), lambda: ['bind_active'], lambda: []) + ['owner0', 'owner1'], 'Consumer': __tb.ifexp(__tb.rval('guarded', guarded), lambda: ['bind_active'], lambda: []) + ['owner0', 'owner1']})])))
+                __tb.set_fileline(__tb_fl, 190, __tb_fn)
+                for __3 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), 2, annotations={__tb.rval('T', T).WSID: 'owner0'})):
+                    __tb.set_fileline(__tb_fl, 190, __tb_fn)
+                    i = __tb.bind('i', __3, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                    for __2 in __tb.ctx_if(__tb.rval('active', active) is None):
+                        __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                        for _ in __tb.ctx_then(__2):
+                            __tb.set_fileline(__tb_fl, 192, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: 'produce0'}))
+                            __tb.set_fileline(__tb_fl, 193, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume0'}))
+                            __tb.set_fileline(__tb_fl, 194, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: 'output0'}))
+                        __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                        for _ in __tb.ctx_else(__2):
+                            __tb.set_fileline(__tb_fl, 196, __tb_fn)
+                            for __1 in __tb.ctx_if(__tb.rval('active', active)):
+                                __tb.set_fileline(__tb_fl, 196, __tb_fn)
+                                for _ in __tb.ctx_then(__1):
+                                    __tb.set_fileline(__tb_fl, 197, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: 'produce0'}))
+                                    __tb.set_fileline(__tb_fl, 198, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume0'}))
+                                    __tb.set_fileline(__tb_fl, 199, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: 'output0'}))
+                __tb.set_fileline(__tb_fl, 200, __tb_fn)
+                for __6 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), 3, annotations={__tb.rval('T', T).WSID: 'owner1'})):
+                    __tb.set_fileline(__tb_fl, 200, __tb_fn)
+                    j = __tb.bind('j', __6, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                    for __5 in __tb.ctx_if(__tb.rval('active', active) is None):
+                        __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                        for _ in __tb.ctx_then(__5):
+                            __tb.set_fileline(__tb_fl, 202, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('j', j), annotations={__tb.rval('T', T).WSID: 'produce1'}))
+                            __tb.set_fileline(__tb_fl, 203, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume1'}))
+                            __tb.set_fileline(__tb_fl, 204, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[(2 + __tb.rval('j', j)) * 4], annotations={__tb.rval('T', T).WSID: 'output1'}))
+                        __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                        for _ in __tb.ctx_else(__5):
+                            __tb.set_fileline(__tb_fl, 206, __tb_fn)
+                            for __4 in __tb.ctx_if(__tb.rval('active', active)):
+                                __tb.set_fileline(__tb_fl, 206, __tb_fn)
+                                for _ in __tb.ctx_then(__4):
+                                    __tb.set_fileline(__tb_fl, 207, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('j', j), annotations={__tb.rval('T', T).WSID: 'produce1'}))
+                                    __tb.set_fileline(__tb_fl, 208, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume1'}))
+                                    __tb.set_fileline(__tb_fl, 209, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[(2 + __tb.rval('j', j)) * 4], annotations={__tb.rval('T', T).WSID: 'output1'}))
+        return kernel
+    return kernel
+------------------------------ Captured log call -------------------------------
+CRITICAL tilelang.language.eager.builder:builder.py:1787 Failed to build prim_func from kernel
+args={'A': A, 'B': B}
+source=def make_closure(guarded, pipeline):
+
+    def kernel(__tb):
+        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py'
+        __tb_fn = 'kernel'
+        __tb.set_fileline(__tb_fl, 119, __tb_fn)
+
+        def kernel(A, B, **__kwargs):
+            __tb.set_fileline(__tb_fl, 119, __tb_fn)
+            A = __tb.arg('A', A)
+            __tb.set_fileline(__tb_fl, 119, __tb_fn)
+            B = __tb.arg('B', B)
+            __tb.set_fileline(__tb_fl, 120, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 120, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 120, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(1, threads=128)) as _:
+                __tb.set_fileline(__tb_fl, 121, __tb_fn)
+                ring = __tb.bind('ring', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((4,), __tb.rval('T', T).float32, scope='shared'))
+                __tb.set_fileline(__tb_fl, 122, __tb_fn)
+                frag = __tb.bind('frag', __tb.resolve_call(__tb.rval('T', T).alloc_fragment)((4,), __tb.rval('T', T).float32))
+                __tb.set_fileline(__tb_fl, 123, __tb_fn)
+                active = __tb.bind('active', None)
+                __tb.set_fileline(__tb_fl, 124, __tb_fn)
+                for __0 in __tb.ctx_if(__tb.rval('guarded', guarded)):
+                    __tb.set_fileline(__tb_fl, 124, __tb_fn)
+                    for _ in __tb.ctx_then(__0):
+                        __tb.set_fileline(__tb_fl, 125, __tb_fn)
+                        with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).ws_op)('bind_active')):
+                            __tb.set_fileline(__tb_fl, 126, __tb_fn)
+                            active = __tb.bind('active', __tb.rval('A', A).shape[0] > 0)
+                __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                def make_closure(guarded, pipeline):
+                    __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                    def sync(__tb):
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py'
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb_fn = 'sync'
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+
+                        def sync(kind, stage=0, **__kwargs):
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            kind = __tb.arg('kind', kind)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                            stage = __tb.arg('stage', stage)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            __tb.set_fileline(__tb_fl, 129, __tb_fn)
+                            return __tb.ret(__tb.ifexp(__tb.rval('guarded', guarded), lambda: __tb.resolve_call(__tb.rval('kind', kind))(__tb.rval('pipeline', pipeline), stage=__tb.rval('stage', stage), guard=__tb.rval('active', active)), lambda: __tb.resolve_call(__tb.rval('kind', kind))(__tb.rval('pipeline', pipeline), stage=__tb.rval('stage', stage))))
+                        __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                        return sync
+                    __tb.set_fileline(__tb_fl, 128, __tb_fn)
+                    return sync
+                __tb.set_fileline(__tb_fl, 131, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_ws_schedule)(__tb.resolve_call(__tb.rval('T', T).WSSchedule)(num_warps=8, roles=[__tb.resolve_call(__tb.rval('T', T).WSRole)('Producer', warps_lo=0, warps_hi=1), __tb.resolve_call(__tb.rval('T', T).WSRole)('Consumer', warps_lo=4, warps_hi=8)], pipelines=[__tb.resolve_call(__tb.rval('T', T).WSPipeline)(__tb.rval('pipeline', pipeline), [__tb.rval('ring', ring)], depth=2, owner_scopes=('owner0', 'owner1'))], scopes=[__tb.resolve_call(__tb.rval('T', T).WSScope)('owner0', {'Producer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_acquire), 'produce0', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_commit)], 'Consumer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_wait), 'consume0', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_release), 'output0']}), __tb.resolve_call(__tb.rval('T', T).WSScope)('owner1', {'Producer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_acquire), 'produce1', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.producer_commit)], 'Consumer': [__tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_wait), 'consume1', __tb.resolve_call(__tb.rval('sync', sync))(__tb.rval('T', T).WSSync.consumer_release), 'output1']}), __tb.resolve_call(__tb.rval('T', T).WSScope)(__tb.rval('T', T).WSScope.ROOT, {'Producer': __tb.ifexp(__tb.rval('guarded', guarded), lambda: ['bind_active'], lambda: []) + ['owner0', 'owner1'], 'Consumer': __tb.ifexp(__tb.rval('guarded', guarded), lambda: ['bind_active'], lambda: []) + ['owner0', 'owner1']})])))
+                __tb.set_fileline(__tb_fl, 190, __tb_fn)
+                for __3 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), 2, annotations={__tb.rval('T', T).WSID: 'owner0'})):
+                    __tb.set_fileline(__tb_fl, 190, __tb_fn)
+                    i = __tb.bind('i', __3, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                    for __2 in __tb.ctx_if(__tb.rval('active', active) is None):
+                        __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                        for _ in __tb.ctx_then(__2):
+                            __tb.set_fileline(__tb_fl, 192, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: 'produce0'}))
+                            __tb.set_fileline(__tb_fl, 193, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume0'}))
+                            __tb.set_fileline(__tb_fl, 194, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: 'output0'}))
+                        __tb.set_fileline(__tb_fl, 191, __tb_fn)
+                        for _ in __tb.ctx_else(__2):
+                            __tb.set_fileline(__tb_fl, 196, __tb_fn)
+                            for __1 in __tb.ctx_if(__tb.rval('active', active)):
+                                __tb.set_fileline(__tb_fl, 196, __tb_fn)
+                                for _ in __tb.ctx_then(__1):
+                                    __tb.set_fileline(__tb_fl, 197, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: 'produce0'}))
+                                    __tb.set_fileline(__tb_fl, 198, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume0'}))
+                                    __tb.set_fileline(__tb_fl, 199, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: 'output0'}))
+                __tb.set_fileline(__tb_fl, 200, __tb_fn)
+                for __6 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), 3, annotations={__tb.rval('T', T).WSID: 'owner1'})):
+                    __tb.set_fileline(__tb_fl, 200, __tb_fn)
+                    j = __tb.bind('j', __6, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                    for __5 in __tb.ctx_if(__tb.rval('active', active) is None):
+                        __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                        for _ in __tb.ctx_then(__5):
+                            __tb.set_fileline(__tb_fl, 202, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('j', j), annotations={__tb.rval('T', T).WSID: 'produce1'}))
+                            __tb.set_fileline(__tb_fl, 203, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume1'}))
+                            __tb.set_fileline(__tb_fl, 204, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[(2 + __tb.rval('j', j)) * 4], annotations={__tb.rval('T', T).WSID: 'output1'}))
+                        __tb.set_fileline(__tb_fl, 201, __tb_fn)
+                        for _ in __tb.ctx_else(__5):
+                            __tb.set_fileline(__tb_fl, 206, __tb_fn)
+                            for __4 in __tb.ctx_if(__tb.rval('active', active)):
+                                __tb.set_fileline(__tb_fl, 206, __tb_fn)
+                                for _ in __tb.ctx_then(__4):
+                                    __tb.set_fileline(__tb_fl, 207, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('j', j), annotations={__tb.rval('T', T).WSID: 'produce1'}))
+                                    __tb.set_fileline(__tb_fl, 208, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: 'consume1'}))
+                                    __tb.set_fileline(__tb_fl, 209, __tb_fn)
+                                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[(2 + __tb.rval('j', j)) * 4], annotations={__tb.rval('T', T).WSID: 'output1'}))
+        return kernel
+    return kernel
+________ test_nested_fixed_stage_projection_uses_prepared_affine_clock _________
+
+    def test_nested_fixed_stage_projection_uses_prepared_affine_clock():
+        if (
+            tvm_ffi.get_global_func(_SOLVER, allow_missing=True) is None
+            or tvm_ffi.get_global_func(
+                "tl.cuda.transform.LowerZ3ScheduleUnits", allow_missing=True
+            )
+            is None
+        ):
+            pytest.skip("recursive projection requires the rebuilt TileLang library")
+    
+        shared = tirx.decl_buffer((8,), "int32", name="shared", scope="shared")
+        out = tirx.decl_buffer((8,), "int32", name="out", scope="global")
+        inner = tirx.Var("i", "int32")
+        outer = tirx.Var("o", "int32")
+    
+        with tvm.transform.PassContext(config={_CONFIG: True}):
+>           planned = tl.transform.Z3PipelinePlanning()(
+                _nested_fixed_stage_module(shared, out, inner, outer)
+            )
+
+testing/python/transform/test_tilelang_cuda_z3_pipeline_projection.py:125: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveKernelPlannerRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::InitializeList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(imm != nullptr) << "Z3PipelinePlanning: " << key
+E   tvm.error.InternalError: Check failed: (imm != nullptr) is false: Z3PipelinePlanning: num_stages must be an integer annotation
+
+src/transform/z3_pipeline_planning.cc:170: InternalError
+______ test_recursive_mainline_compile_only_order_and_before_after_audit _______
+
+    def test_recursive_mainline_compile_only_order_and_before_after_audit():
+        _require_recursive_library()
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_120a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+        audit = _RecursiveAudit()
+        with target, tvm.transform.PassContext(config={_CONFIG: True}, instruments=[audit]):
+>           artifact = tilelang.lower(
+                _nested_fixed_stage_kernel(),
+                target=target,
+                enable_device_compile=False,
+            )
+
+testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tilelang/engine/lower.py:238: in lower
+    return lower_with_context(
+tilelang/engine/lower.py:165: in lower_with_context
+    return _lower_with_context_impl(
+tilelang/engine/lower.py:184: in _lower_with_context_impl
+    host_mod, device_mod, params, target, target_host = lower_to_host_device_ir(
+tilelang/engine/lower.py:136: in lower_to_host_device_ir
+    mod = context.lower(mod)
+          ^^^^^^^^^^^^^^^^^^
+tilelang/backend/module.py:214: in lower
+    return self.module.lower(mod, self.target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/backend/module.py:115: in lower
+    return self.get_pipeline(target).lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/backend/pass_pipeline/pipeline.py:31: in lower
+    return self._lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/cuda/pipeline.py:317: in CUDAPassPipelineBody
+    mod = CUDAPassPipelineBodyPrologue(mod, target)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/cuda/pipeline.py:264: in CUDAPassPipelineBodyPrologue
+    mod = tilelang.transform.Z3PipelinePlanning()(mod)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveKernelPlannerRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveKernelPlannerRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::InitializeList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(imm != nullptr) << "Z3PipelinePlanning: " << key
+E   tvm.error.InternalError: Check failed: (imm != nullptr) is false: Z3PipelinePlanning: num_stages must be an integer annotation
+
+src/transform/z3_pipeline_planning.cc:170: InternalError
+=============================== warnings summary ===============================
+testing/python/transform/test_tilelang_z3_schedule_units.py::test_public_frontend_emits_exact_marker_shapes
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_per_role_frontend_emits_only_recursive_marker
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================================================================================= fixture duration top ==========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.012756 grand total                                                                                                                                              586 0:00:00.000016 0:00:00.000972
+======================================================================================== test call duration top =========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:01.702250 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                    1 0:00:01.702250 0:00:01.702250
+0:00:01.163186 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers                        3 0:00:00.123981 0:00:00.991421
+0:00:00.459257 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization                          1 0:00:00.459257 0:00:00.459257
+0:00:00.316935 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                                  18 0:00:00.015654 0:00:00.044673
+0:00:00.268988 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_accepts_role_uniform_loop_bounds                        2 0:00:00.134494 0:00:00.134956
+0:00:00.107299 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_preserves_four_task_z3_shape                             1 0:00:00.107299 0:00:00.107299
+0:00:00.105317 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                               10 0:00:00.010383 0:00:00.012239
+0:00:00.092140 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                              1 0:00:00.092140 0:00:00.092140
+0:00:00.091948 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                           2 0:00:00.045974 0:00:00.054509
+0:00:00.077634 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_counter_group_guard_equivalence_and_independent_depths                               4 0:00:00.018852 0:00:00.022569
+0:00:00.071481 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                               2 0:00:00.035740 0:00:00.037823
+0:00:00.071148 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_late_guard_definition_uses_lexical_auto_and_rejects_explicit_counter                 1 0:00:00.071148 0:00:00.071148
+0:00:00.046510 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer             2 0:00:00.023255 0:00:00.023727
+0:00:00.046457 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata   2 0:00:00.023228 0:00:00.023596
+0:00:00.040366 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                          2 0:00:00.020183 0:00:00.021070
+0:00:00.040260 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering            12 0:00:00.002924 0:00:00.005918
+0:00:00.038776 testing/python/transform/test_tilelang_z3_task_analysis.py::test_aliased_views_keep_clone_raw_war_constraints_and_versions                                 2 0:00:00.019388 0:00:00.020902
+0:00:00.034719 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_full_commit_wait_placement                   2 0:00:00.017359 0:00:00.019840
+0:00:00.033307 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_compatible_storages_intern_one_counter_domain_and_ids_are_deterministic              1 0:00:00.033307 0:00:00.033307
+0:00:00.030559 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_role_uniform_owner_loop_bounds_remain_supported                                         2 0:00:00.015280 0:00:00.015757
+0:00:00.029194 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds                          4 0:00:00.006560 0:00:00.010184
+0:00:00.026285 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides              1 0:00:00.026285 0:00:00.026285
+0:00:00.024307 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_reaches_mixed_dependency_fixed_point                         1 0:00:00.024307 0:00:00.024307
+0:00:00.024221 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum               1 0:00:00.024221 0:00:00.024221
+0:00:00.022779 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                          2 0:00:00.011389 0:00:00.012002
+0:00:00.021778 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_three_sibling_owners_share_one_continuous_counter_plan                               1 0:00:00.021778 0:00:00.021778
+0:00:00.021567 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters                                      1 0:00:00.021567 0:00:00.021567
+0:00:00.021503 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                              1 0:00:00.021503 0:00:00.021503
+0:00:00.020585 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_guarded_single_owner_uses_counter_for_any_depth                                      2 0:00:00.010293 0:00:00.011796
+0:00:00.020353 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                        3 0:00:00.006633 0:00:00.007396
+0:00:06.684478 grand total                                                                                                                                              560 0:00:00.001640 0:00:01.702250
+======================================================================================== test setup duration top ========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.050473 grand total                                                                                                                                              562 0:00:00.000039 0:00:00.001132
+====================================================================================== test teardown duration top =======================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.026434 grand total                                                                                                                                              562 0:00:00.000042 0:00:00.000169
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_dynamic_serial_trips_use_assumptions_and_explicit_bounds
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_dynamic_copy_extent_uses_assumption_and_static_buffer_shape
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_bounded_while_composes_and_unbounded_while_requires_both_overrides
+FAILED testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_capacity_deadlock_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_recursive_planning.py::test_nested_fixed_stage_ring_projects_to_stock_pipeline
+FAILED testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py::test_recursive_builder_emits_one_guarded_shared_ring_protocol
+FAILED testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py::test_legacy_two_owner_ring_keeps_original_counter_protocol
+FAILED testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py::test_guarded_ring_before_after_ir_has_exact_sync_and_counter_structure
+FAILED testing/python/transform/test_tilelang_cuda_z3_pipeline_projection.py::test_nested_fixed_stage_projection_uses_prepared_affine_clock
+FAILED testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py::test_recursive_mainline_compile_only_order_and_before_after_audit
+10 failed, 550 passed, 2 skipped, 4 deselected, 4 warnings in 8.15s
