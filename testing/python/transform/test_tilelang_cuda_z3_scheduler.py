@@ -7,7 +7,10 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
+import threading
+import time
 
 import pytest
 import tvm_ffi
@@ -427,6 +430,81 @@ def test_repeated_and_threaded_solves_are_deterministic():
         "resource_deps": [(0, 1)],
     }
     assert _straight(**straight_arguments) == _straight(**straight_arguments)
+
+
+def test_solver_lock_serializes_feasibility_checks_across_entry_points(monkeypatch):
+    real_check = z3_scheduler._check_feasibility
+    measurement_lock = threading.Lock()
+    state = {"active": 0, "maximum": 0, "threads": set()}
+
+    def measured_check(solver, description):
+        with measurement_lock:
+            state["active"] += 1
+            state["maximum"] = max(state["maximum"], state["active"])
+            state["threads"].add(threading.get_ident())
+        time.sleep(0.001)
+        try:
+            return real_check(solver, description)
+        finally:
+            with measurement_lock:
+                state["active"] -= 1
+
+    monkeypatch.setattr(z3_scheduler, "_check_feasibility", measured_check)
+
+    def invoke(index):
+        if index % 2:
+            return _loop(latencies=[2, 1], iis=[1, 1], resource_flags=[0, 0], enable_offset=True)
+        return _straight(latencies=[2, 1], iis=[1, 1], resource_flags=[0, 0])
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        results = list(executor.map(invoke, range(12)))
+    assert len(results) == 12
+    assert state["maximum"] == 1
+    assert len(state["threads"]) > 1
+
+
+def test_schedule_results_are_stable_across_processes():
+    straight_arguments = {
+        "latencies": [3, 2, 1],
+        "iis": [1, 1, 1],
+        "resource_flags": [1, 1, 2],
+        "data_deps": [(0, 1, 2)],
+        "resource_deps": [(0, 1)],
+    }
+    loop_arguments = {
+        "num_stages": 3,
+        "latencies": [3, 2, 1],
+        "iis": [1, 1, 1],
+        "resource_flags": [1, 1, 2],
+        "data_deps": [(0, 1, 0, 2)],
+        "resource_deps": [(0, 1)],
+        "owner_exclusion_deps": [],
+        "pipe_order_deps": [],
+        "buffer_sizes": [],
+        "memory_groups": [],
+        "enable_offset": True,
+    }
+    expected = {
+        "straight": _straight(**straight_arguments),
+        "loop": _loop(**loop_arguments),
+    }
+    script = f"""
+import importlib.util
+import json
+spec = importlib.util.spec_from_file_location('scheduler_under_test', {str(_SCHEDULER_PATH)!r})
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+straight = module.z3_schedule_python(**{straight_arguments!r})
+loop = module.z3_schedule_loop_python(**{loop_arguments!r})
+print(json.dumps({{'straight': straight, 'loop': loop}}, sort_keys=True))
+"""
+    outputs = []
+    for hash_seed in ("1", "999"):
+        env = os.environ.copy()
+        env["PYTHONHASHSEED"] = hash_seed
+        outputs.append(subprocess.check_output([sys.executable, "-c", script], env=env, text=True, timeout=30))
+    assert outputs[0] == outputs[1]
+    assert json.loads(outputs[0]) == json.loads(json.dumps(expected))
 
 
 def test_resource_bits_are_configurable_and_checked():

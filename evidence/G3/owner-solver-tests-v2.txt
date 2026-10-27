@@ -1,0 +1,236 @@
+........................FF............................                   [100%]
+=================================== FAILURES ===================================
+______ test_solver_lock_serializes_feasibility_checks_across_entry_points ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7eb4d21e24b0>
+
+    def test_solver_lock_serializes_feasibility_checks_across_entry_points(monkeypatch):
+        real_check = z3_scheduler._check_feasibility
+        measurement_lock = threading.Lock()
+        state = {"active": 0, "maximum": 0, "threads": set()}
+    
+        def measured_check(solver, description):
+            with measurement_lock:
+                state["active"] += 1
+                state["maximum"] = max(state["maximum"], state["active"])
+                state["threads"].add(threading.get_ident())
+            time.sleep(0.001)
+            try:
+                return real_check(solver, description)
+            finally:
+                with measurement_lock:
+                    state["active"] -= 1
+    
+        monkeypatch.setattr(z3_scheduler, "_check_feasibility", measured_check)
+    
+        def invoke(index):
+            if index % 2:
+                return _loop(latencies=[2, 1], enable_offset=True)
+            return _straight(latencies=[2, 1])
+    
+        with ThreadPoolExecutor(max_workers=4) as executor:
+>           results = list(executor.map(invoke, range(12)))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_scheduler.py:460: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/_base.py:619: in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/_base.py:317: in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/_base.py:449: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+testing/python/transform/test_tilelang_cuda_z3_scheduler.py:457: in invoke
+    return _straight(latencies=[2, 1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+testing/python/transform/test_tilelang_cuda_z3_scheduler.py:39: in _straight
+    return z3_scheduler.z3_schedule_python(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/cuda/transform/z3_scheduler.py:348: in z3_schedule_python
+    latencies, iis, resource_flags, resource_bits = _validate_common(latencies, iis, resource_flags, resource_bits)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+latencies = [2, 1], iis = [1], resource_flags = [0], resource_bits = 7
+
+    def _validate_common(latencies, iis, resource_flags, resource_bits):
+        latencies = _integer_list(latencies, "latencies", minimum=0)
+        num_tasks = len(latencies)
+        if num_tasks == 0:
+            raise ValueError("Z3 scheduling requires at least one task")
+        iis = _integer_list(iis, "iis", minimum=1)
+        resource_flags = _integer_list(resource_flags, "resource_flags", minimum=0)
+        if len(iis) != num_tasks or len(resource_flags) != num_tasks:
+>           raise ValueError(
+                "latencies, iis, and resource_flags must have equal lengths; "
+                f"got {num_tasks}, {len(iis)}, and {len(resource_flags)}"
+            )
+E           ValueError: latencies, iis, and resource_flags must have equal lengths; got 2, 1, and 1
+
+tilelang/cuda/transform/z3_scheduler.py:105: ValueError
+______________ test_schedule_results_are_stable_across_processes _______________
+
+    def test_schedule_results_are_stable_across_processes():
+        straight_arguments = {
+            "latencies": [3, 2, 1],
+            "iis": [1, 1, 1],
+            "resource_flags": [1, 1, 2],
+            "data_deps": [(0, 1, 2)],
+            "resource_deps": [(0, 1)],
+        }
+        loop_arguments = {
+            "num_stages": 3,
+            "latencies": [3, 2, 1],
+            "iis": [1, 1, 1],
+            "resource_flags": [1, 1, 2],
+            "data_deps": [(0, 1, 0, 2)],
+            "resource_deps": [(0, 1)],
+            "enable_offset": True,
+        }
+        expected = {
+            "straight": _straight(**straight_arguments),
+            "loop": _loop(**loop_arguments),
+        }
+        script = f"""
+    import importlib.util
+    import json
+    spec = importlib.util.spec_from_file_location('scheduler_under_test', {str(_SCHEDULER_PATH)!r})
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    straight = module.z3_schedule_python(**{straight_arguments!r})
+    loop = module.z3_schedule_loop_python(**{loop_arguments!r})
+    print(json.dumps({{'straight': straight, 'loop': loop}}, sort_keys=True))
+    """
+        outputs = []
+        for hash_seed in ("1", "999"):
+            env = os.environ.copy()
+            env["PYTHONHASHSEED"] = hash_seed
+>           outputs.append(subprocess.check_output([sys.executable, "-c", script], env=env, text=True, timeout=30))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_scheduler.py:501: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/subprocess.py:466: in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = 30, check = True
+popenargs = (['/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python', '-c', "\nimport importlib.util\nimport json\nspec = im...deps': [(0, 1)], 'enable_offset': True})\nprint(json.dumps({'straight': straight, 'loop': loop}, sort_keys=True))\n"],)
+kwargs = {'stdout': -1, 'env': {'SHELL': '/bin/bash', 'WSL2_GUI_APPS_ENABLED': '1', 'WSL_DISTRO_NAME': 'Ubuntu', 'TILELANG_CONDA_PREFIX': '/home/zhaosiying/miniforge3/envs/tilelang-cu133', ...}, 'text': True}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout (seconds) is given and the process takes too long,
+         a TimeoutExpired exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python', '-c', "\nimport importlib.util\nimport json\nspec = importlib.util.spec_from_file_location('scheduler_under_test', '/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/transform/z3_scheduler.py')\nmodule = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(module)\nstraight = module.z3_schedule_python(**{'latencies': [3, 2, 1], 'iis': [1, 1, 1], 'resource_flags': [1, 1, 2], 'data_deps': [(0, 1, 2)], 'resource_deps': [(0, 1)]})\nloop = module.z3_schedule_loop_python(**{'num_stages': 3, 'latencies': [3, 2, 1], 'iis': [1, 1, 1], 'resource_flags': [1, 1, 2], 'data_deps': [(0, 1, 0, 2)], 'resource_deps': [(0, 1)], 'enable_offset': True})\nprint(json.dumps({'straight': straight, 'loop': loop}, sort_keys=True))\n"]' returned non-zero exit status 1.
+
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "<string>", line 8, in <module>
+TypeError: z3_schedule_loop_python() missing 4 required positional arguments: 'owner_exclusion_deps', 'pipe_order_deps', 'buffer_sizes', and 'memory_groups'
+============================================================================= fixture duration top =============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.004450 grand total                                                                                                                      41 0:00:00.000027 0:00:00.003366
+============================================================================ test call duration top ============================================================================
+total          name                                                                                                                            num med            max           
+0:00:01.692829 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_schedule_results_are_stable_across_processes                    1 0:00:01.692829 0:00:01.692829
+0:00:00.546286 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path                                 1 0:00:00.546286 0:00:00.546286
+0:00:00.126754 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_repeated_and_threaded_solves_are_deterministic                  1 0:00:00.126754 0:00:00.126754
+0:00:00.108053 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_png_and_pdf_in_tmp_path                          1 0:00:00.108053 0:00:00.108053
+0:00:00.016801 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_minimizes_makespan_and_stable_tie                 1 0:00:00.016801 0:00:00.016801
+0:00:00.015256 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_start_is_k_ii_plus_r                                       1 0:00:00.015256 0:00:00.015256
+0:00:00.014412 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_negative_distance_recalculates_and_reads_buffer_versions   1 0:00:00.014412 0:00:00.014412
+0:00:00.012675 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_owner_equal_residue_has_explicit_valid_runtime_direction   2 0:00:00.006337 0:00:00.006748
+0:00:00.010398 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_fixed_cross_iteration_distance                             1 0:00:00.010398 0:00:00.010398
+0:00:00.009233 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_ffi_registration_conversion_and_return_shapes                   1 0:00:00.009233 0:00:00.009233
+0:00:00.009212 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_enable_offset_controls_cross_stage_resource_spread         1 0:00:00.009212 0:00:00.009212
+0:00:00.008939 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_private_context_loop_seed_and_rlimit                            1 0:00:00.008939 0:00:00.008939
+0:00:00.008793 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_data_latency_and_resource_exclusion               1 0:00:00.008793 0:00:00.008793
+0:00:00.007925 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_debug_failure_does_not_change_schedule                          1 0:00:00.007925 0:00:00.007925
+0:00:00.006447 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_owner_forward_and_wraparound_exclusion                     1 0:00:00.006447 0:00:00.006447
+0:00:00.006108 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_owner_exclusion_and_pipe_order                    2 0:00:00.003054 0:00:00.003237
+0:00:00.005985 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_manual_pipe_order_infeasible_does_not_fallback             1 0:00:00.005985 0:00:00.005985
+0:00:00.005810 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_stage_order_changes_minimum_ii                             1 0:00:00.005810 0:00:00.005810
+0:00:02.647302 grand total                                                                                                                      54 0:00:00.005897 0:00:01.692829
+=========================================================================== test setup duration top ============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.007813 grand total                                                                                                                      54 0:00:00.000037 0:00:00.003603
+========================================================================== test teardown duration top ==========================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.003385 grand total                                                                                                                      54 0:00:00.000052 0:00:00.000480
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_solver_lock_serializes_feasibility_checks_across_entry_points
+FAILED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_schedule_results_are_stable_across_processes
+2 failed, 52 passed in 2.97s

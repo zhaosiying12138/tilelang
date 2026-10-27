@@ -1,0 +1,117 @@
+........................F.............................                   [100%]
+=================================== FAILURES ===================================
+______ test_solver_lock_serializes_feasibility_checks_across_entry_points ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x79e0a0d38d10>
+
+    def test_solver_lock_serializes_feasibility_checks_across_entry_points(monkeypatch):
+        real_check = z3_scheduler._check_feasibility
+        measurement_lock = threading.Lock()
+        state = {"active": 0, "maximum": 0, "threads": set()}
+    
+        def measured_check(solver, description):
+            with measurement_lock:
+                state["active"] += 1
+                state["maximum"] = max(state["maximum"], state["active"])
+                state["threads"].add(threading.get_ident())
+            time.sleep(0.001)
+            try:
+                return real_check(solver, description)
+            finally:
+                with measurement_lock:
+                    state["active"] -= 1
+    
+        monkeypatch.setattr(z3_scheduler, "_check_feasibility", measured_check)
+    
+        def invoke(index):
+            if index % 2:
+                return _loop(latencies=[2, 1], enable_offset=True)
+            return _straight(latencies=[2, 1], iis=[1, 1], resource_flags=[0, 0])
+    
+        with ThreadPoolExecutor(max_workers=4) as executor:
+>           results = list(executor.map(invoke, range(12)))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_scheduler.py:460: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/_base.py:619: in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/_base.py:317: in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/_base.py:449: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/concurrent/futures/thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+testing/python/transform/test_tilelang_cuda_z3_scheduler.py:456: in invoke
+    return _loop(latencies=[2, 1], enable_offset=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+testing/python/transform/test_tilelang_cuda_z3_scheduler.py:56: in _loop
+    return z3_scheduler.z3_schedule_loop_python(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/cuda/transform/z3_scheduler.py:556: in z3_schedule_loop_python
+    ) = _validate_loop_inputs(
+tilelang/cuda/transform/z3_scheduler.py:447: in _validate_loop_inputs
+    latencies, iis, resource_flags, resource_bits = _validate_common(latencies, iis, resource_flags, resource_bits)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+latencies = [2, 1], iis = [1], resource_flags = [0], resource_bits = 7
+
+    def _validate_common(latencies, iis, resource_flags, resource_bits):
+        latencies = _integer_list(latencies, "latencies", minimum=0)
+        num_tasks = len(latencies)
+        if num_tasks == 0:
+            raise ValueError("Z3 scheduling requires at least one task")
+        iis = _integer_list(iis, "iis", minimum=1)
+        resource_flags = _integer_list(resource_flags, "resource_flags", minimum=0)
+        if len(iis) != num_tasks or len(resource_flags) != num_tasks:
+>           raise ValueError(
+                "latencies, iis, and resource_flags must have equal lengths; "
+                f"got {num_tasks}, {len(iis)}, and {len(resource_flags)}"
+            )
+E           ValueError: latencies, iis, and resource_flags must have equal lengths; got 2, 1, and 1
+
+tilelang/cuda/transform/z3_scheduler.py:105: ValueError
+============================================================================= fixture duration top =============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.012863 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path::tmp_path                       1 0:00:00.012863 0:00:00.012863
+0:00:00.014079 grand total                                                                                                                      41 0:00:00.000031 0:00:00.012863
+============================================================================ test call duration top ============================================================================
+total          name                                                                                                                            num med            max           
+0:00:03.052302 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_schedule_results_are_stable_across_processes                    1 0:00:03.052302 0:00:03.052302
+0:00:00.548946 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path                                 1 0:00:00.548946 0:00:00.548946
+0:00:00.127928 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_repeated_and_threaded_solves_are_deterministic                  1 0:00:00.127928 0:00:00.127928
+0:00:00.106923 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_png_and_pdf_in_tmp_path                          1 0:00:00.106923 0:00:00.106923
+0:00:00.015668 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_start_is_k_ii_plus_r                                       1 0:00:00.015668 0:00:00.015668
+0:00:00.013674 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_negative_distance_recalculates_and_reads_buffer_versions   1 0:00:00.013674 0:00:00.013674
+0:00:00.012784 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_owner_equal_residue_has_explicit_valid_runtime_direction   2 0:00:00.006392 0:00:00.006408
+0:00:00.012484 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_minimizes_makespan_and_stable_tie                 1 0:00:00.012484 0:00:00.012484
+0:00:00.011359 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_solver_lock_serializes_feasibility_checks_across_entry_points   1 0:00:00.011359 0:00:00.011359
+0:00:00.009868 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_enable_offset_controls_cross_stage_resource_spread         1 0:00:00.009868 0:00:00.009868
+0:00:00.009764 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_private_context_loop_seed_and_rlimit                            1 0:00:00.009764 0:00:00.009764
+0:00:00.008918 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_fixed_cross_iteration_distance                             1 0:00:00.008918 0:00:00.008918
+0:00:00.008212 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_ffi_registration_conversion_and_return_shapes                   1 0:00:00.008212 0:00:00.008212
+0:00:00.008015 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_data_latency_and_resource_exclusion               1 0:00:00.008015 0:00:00.008015
+0:00:00.007963 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_manual_stages_are_fixed_then_normalized                    1 0:00:00.007963 0:00:00.007963
+0:00:00.007689 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_debug_failure_does_not_change_schedule                          1 0:00:00.007689 0:00:00.007689
+0:00:00.006414 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_owner_forward_and_wraparound_exclusion                     1 0:00:00.006414 0:00:00.006414
+0:00:00.005683 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_stage_order_changes_minimum_ii                             1 0:00:00.005683 0:00:00.005683
+0:00:00.005230 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_owner_exclusion_and_pipe_order                    2 0:00:00.002615 0:00:00.002707
+0:00:00.005067 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_memory_group_capacity                                      1 0:00:00.005067 0:00:00.005067
+0:00:04.015854 grand total                                                                                                                      54 0:00:00.006403 0:00:03.052302
+=========================================================================== test setup duration top ============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.013117 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path                                 1 0:00:00.013117 0:00:00.013117
+0:00:00.017714 grand total                                                                                                                      54 0:00:00.000042 0:00:00.013117
+========================================================================== test teardown duration top ==========================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.003482 grand total                                                                                                                      54 0:00:00.000050 0:00:00.000479
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_solver_lock_serializes_feasibility_checks_across_entry_points
+1 failed, 53 passed in 4.33s
