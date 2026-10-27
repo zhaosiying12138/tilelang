@@ -201,6 +201,34 @@ python benchmark/z3_cost_model/operators/analyze_results.py \
   --root "$CLASSIC" --output "$CLASSIC/analysis"
 ```
 
+四个 suite 的 cold 搜索完成后，分别执行真实 winner 确认，再做联合分析。确认使用真实 JITKernel、固定输入、7 轮 ABBA、50 warmup 和每轮 200 个 L2-flushed CUDA-event 样本；性能只报告比值和分布，不套用 GDN 的专用通过门槛。
+
+```bash
+CONFIRM=evidence/G6/classic-confirmation-repro
+test ! -e "$CONFIRM"
+for suite in gemm_square gemm_short_k conv2d_stride_tail flash_attention_causal; do
+  python benchmark/z3_cost_model/operators/confirm.py \
+    --suite "$suite" --analysis "$CLASSIC/analysis/analysis.json" \
+    --output-dir "$CONFIRM"
+done
+python benchmark/z3_cost_model/operators/analyze_confirmation.py \
+  --cold-analysis "$CLASSIC/analysis/analysis.json" \
+  --confirmation-root "$CONFIRM" \
+  --output "$CLASSIC/confirmed-analysis"
+```
+
+最佳 GEMM winner 的真实 cubin、SASS 与资源使用可这样导出：
+
+```bash
+python scripts/export_gemm_winner.py \
+  --confirmation "$CONFIRM/gemm_square/summary.json" \
+  --output-dir evidence/G7/best-gemm-repro
+/usr/local/cuda-13.3/bin/cuobjdump \
+  --dump-resource-usage evidence/G7/best-gemm-repro/kernel.cubin
+```
+
+导出目录包含 `source.cu`、`kernel.cubin`、`kernel.sass`、`resource-usage.txt`、配置、compile flags、source/cubin SHA256 和 before/after 清单。`cuobjdump` 的 static shared 字段不代表整个 kernel 的动态 shared 总量。
+
 GEMM 两个空间的 raw/legal 为 288/240，Conv 为 144/120，FA 为 54/54。GEMM 的 48 个动态 shared 超限与版本化公式一一对应，修订后 guided top-10 逐项不变；首批证据保留为 validation。SM120 未猜测 stock atom 规则；这些未编码条件与 solver 返回的 UNKNOWN 分开记录，不能用 unknown=0 推断所有编译合法性都已证明。`compile_attempts`、实际成功 profile、失败候选和 cache-only 结果分别入账。质量比较优先使用完整 legal-oracle；若它不完整，则回退到完整 raw 的实测最优并标记 `quality_reference=stock-raw`。预测相关优先使用完整 legal-oracle，否则只连接 raw 中实际成功的配置，同时标记 `legal_oracle_complete=false` 和实际分母，不把失败候选藏起来。
 
 top-1/5/20 与主 top-10 共用同一 raw/oracle 空间，所以额外预算只运行 guided 和两个等预算控制，并复用同 suite/repetition/cache/seed 的完整 top-10 stock/legal 基线。每行结果都记录 `baseline_top_k=10` 和 `baseline_shared_with_top10=true`，主 top-10 的 oracle 成本单独保留，不能称为免费。若完整基线缺失或空间不一致，相关指标保持 unavailable。协议见 [`manifest/classic-sensitivity-baseline-plan.json`](manifest/classic-sensitivity-baseline-plan.json)。
