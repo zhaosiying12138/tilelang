@@ -17,6 +17,7 @@
     "results/search-protocol.md",
     "results/gdn-acceptance.md",
     "results/classic-search.md",
+    "results/compile-matrix.md",
     {"path": "appendix/parity-inventory.md", "id": "parity-inventory"},
     {"path": "appendix/parity-evidence.md", "id": "parity-evidence"}
   ],
