@@ -132,7 +132,7 @@ FA 的 raw 与 SAT 空间都为 54，因此 legal-exhaustive 没有候选数量�
 
 guided 的 10 个候选全部实测成功，两个控制各有 5 个成功和 5 个失败。这里的 compile/profile 缩减不能与“所有 raw 都合法”混为一谈，失败候选仍在各 arm 的尝试与日志中。
 
-FA 的 Spearman 中位数为 **-0.39058**，Kendall tau-b 为 **-0.27806**；stock 最优配置三轮都排预测第 27，top-10 recall 都为 0.2。搜索期 guided best 比 stock best 慢约 1.16%，并不证明排序准确。它的价值只限于本次 top-10 找到了一个接近的 stage-2 配置，最终差距由独立确认给出。
+FA 的 Spearman 中位数为 **-0.39058**，Kendall tau-b 为 **-0.27806**；stock 最优配置三轮都排预测第 **27/36**，top-10 recall 都为 0.2。54 个 SAT 候选中只有 36 个有限预测，另外 18 个容量 UNKNOWN 被保留并排在有限预测之后；相关性则只连接 30 个成功 raw 实测，配对分母为 30，不能把第 27 名写成 27/30。搜索期 guided best 比 stock best 慢约 1.16%，并不证明排序准确。它的价值只限于本次 top-10 找到了一个接近的 stage-2 配置，最终差距由独立确认给出。
 
 ## 11. 四类 workload 的独立 winner 确认
 
