@@ -673,6 +673,11 @@ def z3_schedule_loop_python(
                 ii_lower = candidate_ii + 1
 
         fallback = best_model is None
+        if fallback and owner_exclusion_deps:
+            raise Z3ScheduleInfeasibleError(
+                "Owner exclusion constraints are infeasible (UNSAT); no serial fallback is "
+                "valid without proving forward and reverse owner hand-offs"
+            )
         if fallback:
             if manual_schedule:
                 raise Z3ScheduleInfeasibleError(

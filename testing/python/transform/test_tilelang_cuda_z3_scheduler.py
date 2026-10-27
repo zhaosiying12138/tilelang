@@ -221,6 +221,35 @@ def test_loop_owner_forward_and_wraparound_exclusion():
     _assert_loop_schedule(starts, versions, ii, arguments)
 
 
+@pytest.mark.parametrize("owner", [[(0, 1, 0, 2)], [(1, 0, 2, 0)]])
+def test_loop_owner_equal_residue_has_explicit_valid_runtime_direction(owner):
+    starts, _, ii = _loop(
+        latencies=[1, 1],
+        iis=[1, 1],
+        resource_flags=[0, 0],
+        owner_exclusion_deps=owner,
+        enable_offset=True,
+    )
+    assert ii == 2
+    assert starts == [0, 0]
+    left, right = 0, 1
+    left_residue, right_residue = starts[left] % ii, starts[right] % ii
+    assert left_residue == right_residue == 0
+    assert right_residue - left_residue >= 0
+    assert left_residue - right_residue + ii >= 2
+
+
+def test_loop_owner_unsat_never_returns_unvalidated_serial_fallback():
+    with pytest.raises(z3_scheduler.Z3ScheduleInfeasibleError, match="Owner exclusion.*no serial fallback"):
+        _loop(
+            latencies=[1, 1],
+            iis=[1, 1],
+            resource_flags=[0, 0],
+            owner_exclusion_deps=[(0, 1, 4, 4)],
+            enable_offset=True,
+        )
+
+
 def test_loop_stage_order_changes_minimum_ii():
     arguments = {
         "latencies": [2, 2],

@@ -1,0 +1,33 @@
+....................................................                     [100%]
+============================================================================= fixture duration top =============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.012360 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path::tmp_path                       1 0:00:00.012360 0:00:00.012360
+0:00:00.013370 grand total                                                                                                                      40 0:00:00.000022 0:00:00.012360
+============================================================================ test call duration top ============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.476691 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path                                 1 0:00:00.476691 0:00:00.476691
+0:00:00.115700 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_repeated_and_threaded_solves_are_deterministic                  1 0:00:00.115700 0:00:00.115700
+0:00:00.099782 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_png_and_pdf_in_tmp_path                          1 0:00:00.099782 0:00:00.099782
+0:00:00.013837 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_start_is_k_ii_plus_r                                       1 0:00:00.013837 0:00:00.013837
+0:00:00.013756 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_owner_exclusion_and_pipe_order                    2 0:00:00.006878 0:00:00.006942
+0:00:00.011710 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_negative_distance_recalculates_and_reads_buffer_versions   1 0:00:00.011710 0:00:00.011710
+0:00:00.010728 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_minimizes_makespan_and_stable_tie                 1 0:00:00.010728 0:00:00.010728
+0:00:00.008349 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_fixed_cross_iteration_distance                             1 0:00:00.008349 0:00:00.008349
+0:00:00.008343 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_owner_equal_residue_has_explicit_valid_runtime_direction   2 0:00:00.004171 0:00:00.004313
+0:00:00.007540 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_private_context_loop_seed_and_rlimit                            1 0:00:00.007540 0:00:00.007540
+0:00:00.007370 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_enable_offset_controls_cross_stage_resource_spread         1 0:00:00.007370 0:00:00.007370
+0:00:00.007205 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_data_latency_and_resource_exclusion               1 0:00:00.007205 0:00:00.007205
+0:00:00.006651 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_debug_failure_does_not_change_schedule                          1 0:00:00.006651 0:00:00.006651
+0:00:00.006557 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_unsat_has_dedicated_exception                     1 0:00:00.006557 0:00:00.006557
+0:00:00.005417 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_ffi_registration_conversion_and_return_shapes                   1 0:00:00.005417 0:00:00.005417
+0:00:00.005392 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_straight_line_unknown_is_not_reported_as_unsat                  1 0:00:00.005392 0:00:00.005392
+0:00:00.005041 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_loop_owner_forward_and_wraparound_exclusion                     1 0:00:00.005041 0:00:00.005041
+0:00:00.840337 grand total                                                                                                                      52 0:00:00.005216 0:00:00.476691
+=========================================================================== test setup duration top ============================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.012524 testing/python/transform/test_tilelang_cuda_z3_scheduler.py::test_verbose_writes_json_in_tmp_path                                 1 0:00:00.012524 0:00:00.012524
+0:00:00.016459 grand total                                                                                                                      52 0:00:00.000032 0:00:00.012524
+========================================================================== test teardown duration top ==========================================================================
+total          name                                                                                                                            num med            max           
+0:00:00.002461 grand total                                                                                                                      52 0:00:00.000034 0:00:00.000362
+52 passed in 4.20s
