@@ -56,7 +56,30 @@ SM120 没有照搬 sm_80/sm_90 的 atom 条件，因此 unknown=0 不能被解�
 
 最终表格同时报告 raw/legal/选中数、compile/profile 次数、各阶段墙钟、搜索内 best、独立确认值、失败候选和预测分母。搜索计数减少与最终配置质量需要分别成立，不能仅凭“少跑了几个候选”宣称模型有效。
 
-## 6. 方形 GEMM 的预算敏感性
+## 6. 两个 GEMM 的主预算结果
+
+下表来自三次 cold repetition。compile/profile 是实际候选构造和成功实测次数；stock 的 48 个容量失败仍保留在 compile/validation 分母。wall、search best、speedup 和 quality 分别按各自定义对三次结果取中位数，不能用表内两个 wall 中位数反推 speedup。quality 以同轮完整 legal-oracle 的实测最优为分母，大于 1 表示搜索期 best 更慢；stock 本身不是该 oracle 的质量基线，因此对应单元格不写 1。
+
+| suite | 策略 | compile / profile | wall (s) | speedup | search best (ms) | quality |
+|---|---|---:|---:|---:|---:|---:|
+| gemm_square | stock-raw | 288 / 240 | 571.282 | 1.000× | 1.418417 | — |
+| gemm_square | z3-legal-exhaustive | 240 / 240 | 474.276 | 1.210× | 1.423988 | 1.00000 |
+| gemm_square | z3-cm-topk | 10 / 10 | 21.251 | 26.404× | 1.451868 | 1.01910 |
+| gemm_square | budget-raw | 10 / 10 | 19.060 | 30.052× | 1.669374 | 1.17326 |
+| gemm_square | budget-random | 10 / 10 | 19.902 | 28.705× | 1.457813 | 1.02207 |
+| gemm_short_k | stock-raw | 288 / 240 | 545.344 | 1.000× | 0.397395 | — |
+| gemm_short_k | z3-legal-exhaustive | 240 / 240 | 441.797 | 1.213× | 0.396822 | 1.00000 |
+| gemm_short_k | z3-cm-topk | 10 / 10 | 20.901 | 26.092× | 0.425074 | 1.07296 |
+| gemm_short_k | budget-raw | 10 / 10 | 18.971 | 28.747× | 0.439400 | 1.10355 |
+| gemm_short_k | budget-random | 10 / 10 | 20.196 | 27.042× | 0.415585 | 1.04017 |
+
+两个形状都显著减少了搜索工作，但排序质量不同。方形 GEMM 的 guided quality 为 1.01910，优于同预算 raw-order 的 1.17326；短 K 的 guided quality 为 1.07296，差于同预算 random 的 1.04017。三轮 Spearman 中位数分别约为 0.3806 和 0.0999，Kendall tau-b 中位数分别为 0.3213 和 0.1018。
+
+更直接的头部审计显示，方形 GEMM 的 oracle 最优预测名次为 32、33、32，三轮 top-10 recall 都为 0；它能取得约 1.9% 的搜索期质量差，是因为保留了其他接近最优的候选，不是因为选中了实测第一名。短 K 的 oracle 最优三轮都排 120/240，top-10 recall 为 0、0、0.1，质量损失更明显。短 K 不能因为搜索加速接近 26× 就被描述为保住了同等配置质量。
+
+逐 run 数字、空间 ID 配对和相关性分母见 [主分析](../../evidence/G6/classic-v2/main-analysis/analysis.json)、[summary.csv](../../evidence/G6/classic-v2/main-analysis/summary.csv) 与 [correlations.csv](../../evidence/G6/classic-v2/main-analysis/correlations.csv)。搜索期 best 还不等于最终确认 latency，四类 suite 的独立 winner 复测在后文单列。
+
+## 7. 方形 GEMM 的预算敏感性
 
 下表使用三次 cold run 的中位数。`wall` 是各自 end-to-end 的中位数，`speedup` 是每次 `stock_wall / arm_wall` 的中位数，两种聚合不能直接互换。`search best` 为搜索内最小值，`quality` 为 guided/search-best 相对同空间 legal-oracle 最优的比值；`raw-order quality` 是等预算原始顺序的对应比值。top-1/5/20 均复用 top-10 完整基线，字段 `baseline_shared_with_top10=true` 与 `oracle_shared_with_top10=true` 可直接检查。
 
@@ -70,3 +93,75 @@ SM120 没有照搬 sm_80/sm_90 的 atom 条件，因此 unknown=0 不能被解�
 top-5 的质量最好，top-10 没有继续改善，top-20 也没有带来更多收益。原始顺序控制虽然使用相同预算，质量明显更差，说明解析模型在候选选择上有独立作用，不只是少测了配置。另一方面，raw 最优配置仍可能不在 top-20 中，rasterization 的 L2 locality 又明确未建模，因此不能把 top-k 扩大等同于覆盖全局最优。
 
 逐 run 结果和配对分母见 [sensitivity analysis](../../evidence/G6/classic-v2/sensitivity-analysis/analysis.json) 与 [runs.csv](../../evidence/G6/classic-v2/sensitivity-analysis/runs.csv)。基线复用不是免费 oracle：top-10 的 stock/legal 穷举成本已先计入主实验，额外预算只运行 guided 与两个控制。
+
+## 8. Conv2D：整体排名相关较高，但 top-10 漏掉最优
+
+三轮 Conv 的 120 个 SAT 候选在 legal-exhaustive 中全部编译、校验和 profile 成功；stock 另有 24 个动态 shared-memory 失败。仅做 Z3 pruning 就将 wall 中位数从 331.768 s 降到 273.114 s。guided top-10 进一步降到 25.093 s，但质量明显损失，必须与搜索加速同时阅读。
+
+| 策略 | compile / profile | wall (s) | speedup | search best (ms) | quality |
+|---|---:|---:|---:|---:|---:|
+| stock-raw | 144 / 120 | 331.768 | 1.000× | 0.013454 | — |
+| z3-legal-exhaustive | 120 / 120 | 273.114 | 1.217× | 0.013654 | 1.00000 |
+| z3-cm-topk | 10 / 10 | 25.093 | 13.218× | 0.016161 | 1.19384 |
+| budget-raw | 10 / 10 | 24.125 | 13.806× | 0.013462 | 0.99196 |
+| budget-random | 10 / 10 | 25.683 | 12.918× | 0.016280 | 1.20226 |
+
+stock 与 legal-oracle 三轮都选 `block_K=32, block_M=64, block_N=64, num_stages=0, threads=256`。这个配置在解析模型中的名次三轮都为 **16/120**，因此 top-10 不可能选中它。guided 三轮的搜索期 best 都是 `block_K=64, block_M=64, block_N=64, num_stages=1, threads=256`。raw-order 选中了前者的原始顺序位置，fixed-seed random 则与 guided 一样落到后者；Conv 的结果不支持“模型排序优于等预算对照”。
+
+三轮 Spearman 中位数为 0.80170，Kendall tau-b 中位数为 0.62314，但 top-1/top-2/top-3 recall 都为 0，top-10 recall 都为 0.6。整体序列相关与头部候选覆盖是两件事，较高的全局相关系数不能保证最优项进入预算。budget-raw 的 quality 小于 1 来自同配置在不同 run 的计时波动，不表示它超越了同空间最优的理论上界；独立确认会对相同配置按身份处理。
+
+## 9. 排名审计字段与证据
+
+`correlations.csv` 现在同时保存 Pearson、Spearman、Kendall tau-b、top-1/2/3/budget-k recall、oracle 最优的 config ID、预测名次、是否进入实际 top-k，以及配对分母。预测名次按有限 score 和 canonical config ID 稳定排序；recall 只连接具有限预测且成功实测的配置。完整 legal-oracle 不可用时，明确标记 `legal_oracle_complete=false`，不会把 raw 中的失败候选从分母说明里隐去。
+
+这些派生量全部由 [analyze_results.py](../../benchmark/z3_cost_model/operators/analyze_results.py) 从 events 重算，不依赖手工摘抄。扩展后的经典算子与共享可视化回归为 **78 passed**，日志见 [operator-rank-analysis-regression.txt](../../evidence/G6/classic-v2/operator-rank-analysis-regression.txt)。
+
+## 10. FlashAttention：没有 Z3 数量剪枝，top-k 仍减少实测
+
+FA 的 raw 与 SAT 空间都为 54，因此 legal-exhaustive 没有候选数量优势，wall 中位数还与 stock 基本相当。两者都有 24 个失败候选，成功 profile 为 30；这说明当前编码的 FA shared-memory 必要条件只是保守下界，并未覆盖所有后续 launch 限制。相应 legal-oracle 不完整，质量分母使用完整 stock-raw 的实测最优，排名只连接 raw 中成功的 30 项并明确标记 `legal_oracle_complete=false`。
+
+| 策略 | compile / profile | wall (s) | speedup | search best (ms) | quality |
+|---|---:|---:|---:|---:|---:|
+| stock-raw | 54 / 30 | 132.564 | 1.000× | 0.140430 | — |
+| z3-legal-exhaustive | 54 / 30 | 133.291 | 0.990× | 0.140566 | 0.99925 |
+| z3-cm-topk | 10 / 10 | 30.903 | 4.321× | 0.142254 | 1.01158 |
+| budget-raw | 10 / 5 | 13.658 | 9.671× | 0.153160 | 1.09065 |
+| budget-random | 10 / 5 | 26.000 | 5.136× | 0.140904 | 1.00338 |
+
+guided 的 10 个候选全部实测成功，两个控制各有 5 个成功和 5 个失败。这里的 compile/profile 缩减不能与“所有 raw 都合法”混为一谈，失败候选仍在各 arm 的尝试与日志中。
+
+FA 的 Spearman 中位数为 **-0.39058**，Kendall tau-b 为 **-0.27806**；stock 最优配置三轮都排预测第 27，top-10 recall 都为 0.2。搜索期 guided best 比 stock best 慢约 1.16%，并不证明排序准确。它的价值只限于本次 top-10 找到了一个接近的 stage-2 配置，最终差距由独立确认给出。
+
+## 11. 四类 workload 的独立 winner 确认
+
+四个 suite 都用 candidate-median 从三次 cold trial 冻结各策略配置，再执行 7 轮 ABBA、50 warmup、每轮 200 个 L2-flushed CUDA-event 样本。下表的 confirmed latency 是每个 arm 独立测量的中位数；pair ratio 则来自该配置对的 pair-local round medians。guided 在不同配置对中会重新测量，因此 ratio 不一定等于表内两个 standalone 中位数相除。
+
+| suite | guided confirmed (ms) | exhaustive confirmed (ms) | guided / exhaustive | guided / budget-raw | guided / budget-random |
+|---|---:|---:|---:|---:|---:|
+| gemm_square | 1.472920 | 1.448576 | 1.017253 | 0.874553 | 0.991945 |
+| gemm_short_k | 0.428928 | 0.410432 | 1.039685 | 0.880870 | 1.000000 |
+| conv2d_stride_tail | 0.016960 | 0.013088 | 1.295844 | 1.295844 | 1.000000（同配置） |
+| flash_attention_causal | 0.144040 | 0.140096 | 1.021014 | 0.921849 | 1.021014（同一对照配置） |
+
+方形 GEMM guided 相对完整合法穷举 winner 慢 1.73%，但比 budget-raw 快 12.54%，也略优于 budget-random。短 K guided 比穷举慢 3.97%，比 budget-raw 快 11.91%，与 budget-random 的 pair median 比为 1；其逐轮差有正有负，不能写成稳定优于随机。
+
+Conv 的独立差距比搜索期更大：guided 相对 stock/legal/budget-raw 的共同 winner 慢 **29.58%**，与 budget-random 则是同一配置。FA guided 相对 stock/legal/budget-random 的共同 stage-1 配置慢 **2.10%**，刚好超过 2% 诊断线；七轮 paired difference 范围为 -0.002112 到 0.006000 ms，存在一轮反向，不能把点估计写成统计上确定的回归。guided 相对 budget-raw 的 ratio 为 0.921849。
+
+这些 classic 比值是描述性结果，不套用 GDN 的专用验收门禁。联合 JSON 的 `acceptance_passed=true` 只对应 `execution_and_correctness_only`；具体 pair 的 `within_2_percent` 或 `not_slower_than_equal_budget_control` 仍可为 false，不能与执行通过混读。完整数据见 [confirmed-summary.csv](../../evidence/G6/classic-v2/confirmed-analysis/confirmed-summary.csv) 和 [confirmation-comparisons.csv](../../evidence/G6/classic-v2/confirmed-analysis/confirmation-comparisons.csv)。
+
+![五种策略在各 suite 的搜索阶段墙钟；分阶段口径不求和](../../evidence/G6/classic-v2/confirmed-analysis/classic-search-time.png)
+
+![独立确认 latency 与真实搜索成本的联合分布](../../evidence/G6/classic-v2/confirmed-analysis/classic-quality-pareto.png)
+
+## 12. 正确性与误差诊断
+
+20 个 suite/arm 的确认记录都通过计时前后 correctness，所有元素均为有限值，且 `mismatched_ratio=0`。判定使用 FP32 中的 `isclose(atol=0.02, rtol=0.02)`，不允许任何超差元素；这与仅报告一个平均误差不同。
+
+| suite | correctness | max abs error | max relative diagnostic | mismatch |
+|---|---|---:|---:|---:|
+| gemm_square | 通过 | 0.00197554 | 33.6663 | 0 |
+| gemm_short_k | 通过 | 0.000488758 | 4.11991 | 0 |
+| conv2d_stride_tail | 通过 | 0.000488639 | 0.733332 | 0 |
+| flash_attention_causal | 通过 | 0.000931025 | 1193.186 | 0 |
+
+relative diagnostic 定义为 $|actual-reference|/(|reference|+10^{-12})$，参考值接近零时可以很大；它不是 `isclose` 的通过率，也不是 mismatch ratio。方形 GEMM 的大相对诊断已定位于近零 reference 元素。正文同时列出绝对误差、相对诊断和严格 mismatch，避免只挑其中一种指标。所有 winner 的真实配置、逐轮样本、缓存清单和源码 SHA 位于 [classic-confirmation-v1](../../evidence/G6/classic-confirmation-v1/)。

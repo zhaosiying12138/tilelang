@@ -21,9 +21,18 @@ forward 输出与 final state、backward 六个梯度均通过计时前后 corre
 
 ## 3. 经典算子给出的不是单一方向的结果
 
-四个经典 workload 的逐策略候选数、编译/profile 分项、搜索期质量和独立确认集中在 [经典算子结果章](classic-search.md)。方形 GEMM 的主 top-10 搜索加速为 26.404×，搜索期质量比为 1.01910；短 K GEMM 为 26.092× 和 1.07296。前者以约 1.9% 的搜索期 latency 代价大幅减少实测，后者约 7.3% 的代价更明显，不能只用前者代表所有形状。
+四个经典 workload 各完成三次 cold、五种策略，winner 另有七轮独立 ABBA。下表把搜索加速、搜索期质量和独立确认放在同一口径中；confirmed ratio 是 guided 相对完整穷举或完整 raw 对照的 pair-local 比值，大于 1 表示 guided 更慢。
 
-方形 GEMM 的 top-1/5/10/20 敏感性中，top-5 的搜索期质量最好；top-20 没有继续改善。短 K 的预测与完整合法 oracle 的 Spearman 约 0.10，方形 GEMM 约 0.38。由此得到的使用边界是：top-k 是实测预算，不是质量保证；rasterization 的 L2 locality 仍明确未建模，raw 全局最优不保证进入 top-20。最终质量必须回到真实候选执行，而不是看预测毫秒数。
+| workload | top-10 搜索加速 | 搜索期 quality | confirmed guided / exhaustive | 结论 |
+|---|---:|---:|---:|---|
+| 方形 GEMM | 26.404× | 1.01910 | 1.017253 | 保留了近优候选，优于两个等预算控制 |
+| 短 K GEMM | 26.092× | 1.07296 | 1.039685 | 搜索大幅减少，最终慢约 3.97% |
+| NHWC Conv2D | 13.218× | 1.19384 | 1.295844 | Z3 容量剪枝有效，top-10 排序明显漏优 |
+| causal FlashAttention | 4.321× | 1.01158 | 1.021014 | 减少实测，最终点估计慢约 2.10% |
+
+所有 oracle 最优都未进入 guided top-10：方形 GEMM 的预测名次为 32–33，短 K 为 120，Conv 为 16，FA 为 27。方形 GEMM 靠其他近优候选取得较小差距；Conv 的整体 Spearman 虽约 0.80，top-10 recall 却只有 0.6，最终差距在独立确认中扩大。FA 的 legal-oracle 只有 30 个成功配置，排名分母和 `legal_oracle_complete=false` 均已保留。
+
+方形 GEMM 的 top-1/5/10/20 敏感性中，top-5 的搜索期质量最好；top-20 没有继续改善。top-k 是实测预算，不是质量保证，rasterization 的 L2 locality 也仍未建模。四个 suite 的 20 个 arm 均通过独立 correctness；性能比较不套用 GDN 的专用通过门槛。逐项配置、等预算对照和误差表见 [经典算子结果章](classic-search.md)。
 
 ## 4. 约束减少与模型排序要分开评价
 
