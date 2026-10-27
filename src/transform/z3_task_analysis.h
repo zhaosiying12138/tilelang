@@ -18,7 +18,7 @@ namespace tl {
  * ``tl_z3_pipeline`` and never replaces an explicitly present solver field.
  * Statement extraction deliberately mirrors Z3PipelinePlanning: normalize the
  * top-level body, recursively flatten SeqStmt, omit buffer declarations and
- * replayable scalar Bind statements, and retain source order.
+ * dependency-closed replayable scalar Bind statements, and retain source order.
  *
  * Cost inference requires these loop annotations:
  *  - ``tl_z3_pipeline_hardware``: hardware-spec JSON path;

@@ -12,10 +12,12 @@
  * PipelinePlanning / LayoutInference / LowerTileOp, so downstream
  * passes see the same tile-op IR a hand-written kernel would produce.
  *
- * A pipeline is one producer/consumer handshake: a "full" and an
+ * A legacy pipeline is one producer/consumer handshake: a "full" and an
  * "empty" mbarrier array protecting a set of buffers. It synchronizes
- * exactly ONE scope, between exactly two roles. A buffer may be bound
- * to several pipelines with strictly nested scopes; the analysis is
+ * exactly ONE scope, between exactly two roles. The restricted owner-ring
+ * form explicitly names two ordered sibling scopes that share the same
+ * barrier arrays and persistent role-local phases. A legacy buffer may be
+ * bound to several pipelines with strictly nested scopes; the analysis is
  * hierarchical — at the enclosing level, the deeper binding's scope is
  * one opaque use, synchronous by default (a tcgen05 watermark covers
  * the role's own in-flight MMA issue), and inner synchronization never
@@ -91,6 +93,7 @@
 #include "op/operator.h"
 #include "op/utils.h"
 #include "transform/common/mbarrier.h"
+#include "transform/common/storage_size.h"
 #include "transform/common/warp_specialize.h"
 
 #include "./auto_schedule/memory_detector.h"
@@ -401,10 +404,13 @@ struct PipelineSpec {
   String name;
   int depth = 1;
   int index = -1; // declaration position; keys deterministic ordering
-  // The single scope whose bodies hold this pipeline's sync entries
-  // (resolved by ResolvePipelineScopes; a pipeline synchronizes exactly
-  // one scope).
+  // The single scope whose bodies hold this legacy pipeline's sync entries
+  // (resolved by ResolvePipelineScopes). Owner-ring pipelines instead use
+  // exactly two explicitly named, ordered sibling scopes.
   Scope *sync_scope = nullptr;
+  std::vector<String> owner_scope_ids;
+  std::vector<Scope *> owner_scopes;
+  bool IsOwnerRing() const { return !owner_scope_ids.empty(); }
   std::vector<Buffer> buffers; // original buffers
   Buffer full, empty;          // materialized barrier buffers
   // Uses at THIS pipeline's level: leaf ops it owns (their innermost
@@ -421,6 +427,26 @@ struct PipelineSpec {
 bool PipelineOrder::operator()(const PipelineSpec *a,
                                const PipelineSpec *b) const {
   return a->index < b->index;
+}
+
+// Legacy pipelines have one synchronization scope. The restricted owner ring
+// has two, explicitly ordered by the frontend metadata. Returning a short
+// vector keeps the legacy loops and diagnostics straightforward.
+std::vector<Scope *> PipelineSyncScopes(const PipelineSpec &pipeline) {
+  if (pipeline.IsOwnerRing())
+    return pipeline.owner_scopes;
+  ICHECK(pipeline.sync_scope != nullptr);
+  return {pipeline.sync_scope};
+}
+
+// Whether an operation at `scope` is inside any synchronization owner.
+bool PipelineContainsScope(const PipelineSpec &pipeline, const Scope *scope) {
+  if (scope == nullptr)
+    return false;
+  for (const Scope *owner : PipelineSyncScopes(pipeline))
+    if (scope->IsNestedIn(owner))
+      return true;
+  return false;
 }
 
 PipelineSet AccessSet::Defs() const {
@@ -442,7 +468,7 @@ InnermostContainingBinding(const std::vector<PipelineSpec *> &bindings,
   if (scope == nullptr)
     return found;
   for (PipelineSpec *p : bindings) // outermost first
-    if (scope->IsNestedIn(p->sync_scope))
+    if (PipelineContainsScope(*p, scope))
       found = p;
   return found;
 }
@@ -501,9 +527,11 @@ public:
     ParseSchedule();
     ResolvePipelineScopes();
     MatchKernel();
+    ValidateOwnerRingStructure();
     PlanVersionedBuffers();
     BuildOpAtoms(); // before BuildUseChains: scope atoms fold the leaf atoms
     BuildUseChains();
+    ValidateOwnerRingAccesses();
     PlanArriveCounts();
     VerifySchedule();
     return RebuildBlock(MarkCustomWS(EmitRoleBranches()));
@@ -620,13 +648,28 @@ private:
       pipeline->name = p->name;
       pipeline->depth = static_cast<int>(p->depth);
       pipeline->index = static_cast<int>(pipelines_.size());
+      for (const String &owner : p->owner_scopes)
+        pipeline->owner_scope_ids.push_back(owner);
+      ICHECK(pipeline->owner_scope_ids.empty() ||
+             pipeline->owner_scope_ids.size() == 2)
+          << "ws_schedule: owner-ring pipeline '" << p->name
+          << "' must name exactly two ordered owner scopes, got "
+          << pipeline->owner_scope_ids.size();
       ICHECK_GE(pipeline->depth, 1);
       for (const tirx::Buffer &b : p->buffers) {
         Buffer buffer = FindBlockBuffer(b);
-        ICHECK(IsSharedBuffer(buffer) || IsTmemBuffer(buffer))
-            << "ws_schedule: pipeline '" << p->name << "' buffer '"
-            << buffer->name << "' must live in shared or tensor memory; "
-            << "each role has its own instance of private storage";
+        if (pipeline->IsOwnerRing()) {
+          ICHECK(IsSharedBuffer(buffer))
+              << "ws_schedule: owner-ring pipeline '" << p->name
+              << "' buffer '" << buffer->name
+              << "' must use CTA-local shared storage; private, global, "
+                 "tensor, and cross-CTA storage are unsupported";
+        } else {
+          ICHECK(IsSharedBuffer(buffer) || IsTmemBuffer(buffer))
+              << "ws_schedule: pipeline '" << p->name << "' buffer '"
+              << buffer->name << "' must live in shared or tensor memory; "
+              << "each role has its own instance of private storage";
+        }
         pipeline->buffers.push_back(std::move(buffer));
       }
       pipelines_.push_back(std::move(pipeline));
@@ -754,11 +797,37 @@ private:
     return nullptr;
   }
 
-  // Every pipeline synchronizes exactly one scope: resolve it from the
-  // sync entries and reject entries spread across scopes. Nesting of
-  // multi-bound buffers is validated in PlanVersionedBuffers, once the
-  // buffers are resolved.
+  PipelineSpec *OwnerRingPipeline() const {
+    for (const auto &pipeline : pipelines_)
+      if (pipeline->IsOwnerRing())
+        return pipeline.get();
+    return nullptr;
+  }
+
+  // Every legacy pipeline synchronizes exactly one scope: resolve it from the
+  // sync entries and reject entries spread across scopes. An owner ring is
+  // different only because its TWO scopes were explicitly declared; no owner
+  // frontier is inferred from accesses or statement order. Nesting of
+  // multi-bound legacy buffers is validated in PlanVersionedBuffers.
   void ResolvePipelineScopes() {
+    for (const auto &pipeline : pipelines_) {
+      if (!pipeline->IsOwnerRing())
+        continue;
+      for (const String &id : pipeline->owner_scope_ids) {
+        std::shared_ptr<Scope> scope = FindScope(id);
+        ICHECK(scope != nullptr)
+            << "ws_schedule: owner-ring pipeline '" << pipeline->name
+            << "' names unknown owner scope '" << id << "'";
+        ICHECK(scope->id != kWSRootScopeId)
+            << "ws_schedule: the root scope cannot be an owner-ring scope";
+        ICHECK(std::find(pipeline->owner_scopes.begin(),
+                         pipeline->owner_scopes.end(),
+                         scope.get()) == pipeline->owner_scopes.end())
+            << "ws_schedule: owner-ring pipeline '" << pipeline->name
+            << "' names scope '" << id << "' more than once";
+        pipeline->owner_scopes.push_back(scope.get());
+      }
+    }
     for (const auto &scope : scopes_) {
       for (const std::vector<BodyEntryPtr> &body : scope->bodies) {
         for (const BodyEntryPtr &entry : body) {
@@ -766,6 +835,15 @@ private:
           if (sync == nullptr)
             continue;
           PipelineSpec &pipeline = *sync->pipeline;
+          if (pipeline.IsOwnerRing()) {
+            ICHECK(std::find(pipeline.owner_scopes.begin(),
+                             pipeline.owner_scopes.end(),
+                             scope.get()) != pipeline.owner_scopes.end())
+                << "ws_schedule: sync entries of owner-ring pipeline '"
+                << pipeline.name << "' must stay in its two declared owner "
+                << "scopes; found scope '" << scope->id << "'";
+            continue;
+          }
           if (pipeline.sync_scope == nullptr) {
             pipeline.sync_scope = scope.get();
           } else {
@@ -782,6 +860,8 @@ private:
       }
     }
     for (const auto &pipeline : pipelines_) {
+      if (pipeline->IsOwnerRing())
+        continue;
       ICHECK(pipeline->sync_scope != nullptr)
           << "ws_schedule: pipeline '" << pipeline->name
           << "' has no sync entries in any scope body";
@@ -1003,6 +1083,140 @@ private:
 
   // ---- planning -----------------------------------------------------------
 
+  // Validate the deliberately restricted owner-ring contract before any
+  // single-scope planning code sees the pipeline. This consumes explicit
+  // metadata; it does not infer owners or frontiers from the kernel.
+  void ValidateOwnerRingStructure() {
+    PipelineSpec *pipeline = OwnerRingPipeline();
+    if (pipeline == nullptr)
+      return;
+    ICHECK_EQ(pipelines_.size(), 1)
+        << "ws_schedule: the restricted owner ring must be the schedule's "
+           "only pipeline";
+    ICHECK_EQ(roles_.size(), 2)
+        << "ws_schedule: owner-ring pipeline '" << pipeline->name
+        << "' requires exactly two fixed nonoverlapping warp roles";
+    ICHECK(!pipeline->buffers.empty())
+        << "ws_schedule: owner-ring pipeline '" << pipeline->name
+        << "' must protect at least one shared buffer";
+    ICHECK(!block_->annotations.count("cluster_dims"))
+        << "ws_schedule: owner-ring pipelines are CTA-local; cluster/cross-CTA "
+           "launches are unsupported";
+    for (const Buffer &buffer : block_->alloc_buffers) {
+      ICHECK(buffer.scope() != "shared.cluster_barrier")
+          << "ws_schedule: owner-ring pipelines do not support cross-CTA "
+             "barriers or storage";
+    }
+
+    Scope *first = pipeline->owner_scopes[0];
+    Scope *second = pipeline->owner_scopes[1];
+    Scope *parent = first->sched_scope;
+    ICHECK(parent != nullptr && second->sched_scope == parent)
+        << "ws_schedule: owner-ring scopes '" << first->id << "' and '"
+        << second->id << "' must be ordered siblings; nested owners are "
+           "unsupported";
+    for (Scope *owner : pipeline->owner_scopes) {
+      ICHECK(owner->orig_loop.defined())
+          << "ws_schedule: owner-ring scope '" << owner->id
+          << "' must be a serial for-loop epoch; while owners are unsupported";
+      for (Scope *s = owner; s != nullptr; s = s->sched_scope) {
+        ICHECK(!s->guard.defined())
+            << "ws_schedule: guarded owner-ring epochs are unsupported "
+               "(scope '"
+            << s->id << "')";
+        ICHECK(!s->orig_while.defined())
+            << "ws_schedule: owner-ring scopes cannot have a while-loop "
+               "ancestor (scope '"
+            << s->id << "')";
+      }
+    }
+
+    std::map<const RoleSpec *, bool> producer_flavor;
+    for (const auto &role_ptr : roles_) {
+      const RoleSpec &role = *role_ptr;
+      std::vector<Scope *> actual_order;
+      for (const BodyEntryPtr &entry : parent->bodies[role.index]) {
+        const Scope *child = entry->AsScope();
+        if (child == first || child == second)
+          actual_order.push_back(child == first ? first : second);
+      }
+      ICHECK(actual_order == pipeline->owner_scopes)
+          << "ws_schedule: every role must enter owner-ring scopes in the "
+             "declared order '"
+          << first->id << "', '" << second->id
+          << "'; different owner orders are unsupported";
+
+      std::optional<bool> role_producer;
+      for (Scope *owner : pipeline->owner_scopes) {
+        int opens = 0, closes = 0;
+        bool open = false;
+        std::optional<bool> owner_producer;
+        std::function<void(const Scope &)> check_unguarded =
+            [&](const Scope &scope) {
+              for (const BodyEntryPtr &entry : scope.bodies[role.index]) {
+                if (const Scope *child = entry->AsScope()) {
+                  ICHECK(!child->guard.defined())
+                      << "ws_schedule: guarded operations inside owner-ring "
+                         "scope '"
+                      << owner->id << "' are unsupported";
+                  check_unguarded(*child);
+                } else if (!entry->AsSync()) {
+                  ICHECK(!entry->AsOperation()->guard.defined())
+                      << "ws_schedule: guarded operation '"
+                      << entry->AsOperation()->id
+                      << "' inside an owner-ring epoch is unsupported";
+                }
+              }
+            };
+        check_unguarded(*owner);
+        for (const BodyEntryPtr &entry : owner->bodies[role.index]) {
+          const Synchronization *sync = entry->AsSync();
+          if (sync == nullptr || sync->pipeline != pipeline)
+            continue;
+          ICHECK_EQ(sync->stage, 0)
+              << "ws_schedule: owner-ring pipeline '" << pipeline->name
+              << "' supports only synchronous stage-zero epochs";
+          if (sync->kind.IsWait()) {
+            ICHECK(!open && opens == 0)
+                << "ws_schedule: owner-ring role " << role.name
+                << " must have exactly one acquire/wait span per iteration "
+                   "of owner '"
+                << owner->id << "'";
+            open = true;
+            ++opens;
+            owner_producer = sync->kind.IsProducer();
+          } else {
+            ICHECK(open && closes == 0)
+                << "ws_schedule: owner-ring role " << role.name
+                << " must pair exactly one commit/release with its "
+                   "acquire/wait in owner '"
+                << owner->id << "'";
+            open = false;
+            ++closes;
+          }
+        }
+        ICHECK(opens == 1 && closes == 1 && !open && owner_producer.has_value())
+            << "ws_schedule: owner-ring role " << role.name
+            << " must have one acquire/commit or wait/release span in every "
+               "iteration of owner '"
+            << owner->id << "'";
+        if (role_producer.has_value()) {
+          ICHECK_EQ(*role_producer, *owner_producer)
+              << "ws_schedule: owner-ring role " << role.name
+              << " changes producer/consumer flavor between owners; the two "
+                 "warp roles must remain fixed";
+        } else {
+          role_producer = *owner_producer;
+        }
+      }
+      producer_flavor.emplace(&role, *role_producer);
+    }
+    ICHECK(producer_flavor[roles_[0].get()] !=
+           producer_flavor[roles_[1].get()])
+        << "ws_schedule: owner-ring roles must be one fixed producer and one "
+           "fixed consumer";
+  }
+
   // Give one logical buffer (an allocation, or a view/reshape alias of it)
   // its versioned counterpart with one leading dimension PER BINDING,
   // outermost first — each level replicates the buffer by its own depth
@@ -1036,10 +1250,21 @@ private:
       pipeline->empty =
           CreateMBarrierBuffer(pipeline->name + "_empty", pipeline->depth);
     }
-    // A multi-bound storage's pipelines must form a strictly nested scope
-    // chain; sort them outermost first so version indices compose
-    // outer-major.
+    // A multi-bound legacy storage's pipelines must form a strictly nested
+    // scope chain; sort them outermost first so version indices compose
+    // outer-major. Owner-ring storage has one binding only: replicating it for
+    // another pipeline would duplicate both versions and allocation lifetime.
     for (auto &[storage, bindings] : buffer_pipeline_) {
+      bool owner_ring = std::any_of(
+          bindings.begin(), bindings.end(),
+          [](const PipelineSpec *p) { return p->IsOwnerRing(); });
+      if (owner_ring) {
+        ICHECK_EQ(bindings.size(), 1)
+            << "ws_schedule: owner-ring storage '" << storage->name_hint
+            << "' cannot be bound to another pipeline or listed through "
+               "duplicate aliases";
+        continue;
+      }
       std::stable_sort(bindings.begin(), bindings.end(),
                        [](const PipelineSpec *a, const PipelineSpec *b) {
                          return a->sync_scope->Depth() < b->sync_scope->Depth();
@@ -1173,6 +1398,247 @@ private:
     }
   }
 
+  // Validate every ring access after storage bindings and op atoms are known.
+  // In particular, a scope's summarized accesses must not hide an external
+  // use, and every owner must carry the same synchronous arrival signature.
+  void ValidateOwnerRingAccesses() {
+    PipelineSpec *pipeline = OwnerRingPipeline();
+    if (pipeline == nullptr)
+      return;
+    VarSet ring_storage;
+    for (const Buffer &buffer : pipeline->buffers)
+      ring_storage.insert(buffer->data);
+    auto touches_ring = [&](const AccessSet &access) {
+      for (const auto *side : {&access.reads, &access.writes})
+        for (const auto &[buffer, defs] : *side)
+          if (ring_storage.count(buffer->data))
+            return true;
+      return false;
+    };
+    auto owner_of = [&](const Scope *scope) -> Scope * {
+      for (Scope *owner : pipeline->owner_scopes)
+        if (scope != nullptr && scope->IsNestedIn(owner))
+          return owner;
+      return nullptr;
+    };
+
+    for (const auto &[id, op_ptr] : ops_) {
+      const Operation &op = *op_ptr;
+      Scope *owner = owner_of(op.sched_scope);
+      if (touches_ring(op.access)) {
+        ICHECK(owner != nullptr)
+            << "ws_schedule: op '" << id
+            << "' accesses owner-ring storage outside both declared owners; "
+               "external accesses are unsupported";
+      }
+      if (owner != nullptr) {
+        ICHECK(op.atom == OpAtom::kSync)
+            << "ws_schedule: owner-ring op '" << id
+            << "' lowers to an asynchronous atom; the restricted ring is "
+               "synchronous only";
+      }
+      PostOrderVisit(op.stmt, [&](const ObjectRef &node) {
+        const auto *call = node.as<CallNode>();
+        if (call == nullptr)
+          return;
+        ICHECK(!call->annotations.count("cluster_mask") &&
+               !call->annotations.count("dst_block"))
+            << "ws_schedule: owner-ring op '" << id
+            << "' contains a cross-CTA copy annotation";
+        ICHECK(!call->op.same_as(ptx_arrive_cluster_barrier()) &&
+               !call->op.same_as(tma_store_cluster()) &&
+               !call->op.same_as(ptx_cluster_store()) &&
+               !call->op.same_as(cluster_sync()))
+            << "ws_schedule: owner-ring op '" << id
+            << "' contains a cross-CTA operation";
+      });
+    }
+
+    // Loop bounds and scope conditions are not leaf ops. Check them directly
+    // so no ring access can escape the per-owner coverage analysis.
+    auto check_scope_expr = [&](const Scope &scope, const PrimExpr &expr,
+                                const char *what) {
+      AccessSet access;
+      QueryAccess(Evaluate(expr), &access);
+      ICHECK(!touches_ring(access))
+          << "ws_schedule: the " << what << " of scope '" << scope.id
+          << "' accesses owner-ring storage outside an epoch span";
+    };
+    for (const auto &scope : scopes_) {
+      if (scope->guard.defined())
+        check_scope_expr(*scope, scope->guard.value(), "guard");
+      if (scope->orig_loop.defined()) {
+        check_scope_expr(*scope, scope->orig_loop->min, "loop minimum");
+        check_scope_expr(*scope, scope->orig_loop->extent, "loop extent");
+      }
+      if (scope->orig_while.defined())
+        check_scope_expr(*scope, scope->orig_while->condition, "condition");
+    }
+
+    for (const auto &role_ptr : roles_) {
+      const RoleSpec &role = *role_ptr;
+      bool producer = false;
+      bool found_flavor = false;
+      for (const BodyEntryPtr &entry :
+           pipeline->owner_scopes[0]->bodies[role.index]) {
+        const Synchronization *sync = entry->AsSync();
+        if (sync != nullptr && sync->pipeline == pipeline &&
+            sync->kind.IsWait()) {
+          producer = sync->kind.IsProducer();
+          found_flavor = true;
+          break;
+        }
+      }
+      ICHECK(found_flavor);
+
+      for (Scope *owner : pipeline->owner_scopes) {
+        bool producer_use = false, consumer_use = false;
+        for (const Operation *op : pipeline->producers) {
+          if (op->PlacedBy(role) && op->sched_scope->IsNestedIn(owner)) {
+            producer_use = true;
+            break;
+          }
+        }
+        for (const Operation *op : pipeline->consumers) {
+          if (op->PlacedBy(role) && op->sched_scope->IsNestedIn(owner)) {
+            consumer_use = true;
+            break;
+          }
+        }
+        // With asynchronous atoms excluded, one expected-side use gives one
+        // per-thread arrive at the close. Requiring it in BOTH owners prevents
+        // the aggregated legacy use sets from hiding a mismatched epoch.
+        ICHECK(producer ? producer_use : consumer_use)
+            << "ws_schedule: owner-ring role " << role.name << " in owner '"
+            << owner->id
+            << "' has a mismatched arrival signature: missing "
+            << (producer ? "producer write" : "consumer read");
+      }
+
+      if (!producer) {
+        const RoleSpec *producer_role =
+            roles_[0].get() == &role ? roles_[1].get() : roles_[0].get();
+        for (Scope *owner : pipeline->owner_scopes) {
+          VarSet written;
+          for (const Operation *op : pipeline->producers) {
+            if (!op->PlacedBy(*producer_role) ||
+                !op->sched_scope->IsNestedIn(owner))
+              continue;
+            for (const auto &[buffer, defs] : op->access.writes)
+              if (ring_storage.count(buffer->data))
+                written.insert(buffer->data);
+          }
+          for (const Operation *op : pipeline->consumers) {
+            if (!op->PlacedBy(role) || !op->sched_scope->IsNestedIn(owner))
+              continue;
+            for (const auto &[buffer, defs] : op->access.reads) {
+              if (!ring_storage.count(buffer->data))
+                continue;
+              ICHECK(written.count(buffer->data))
+                  << "ws_schedule: read-first owner-ring epoch in role "
+                  << role.name << ", owner '" << owner->id << "', op '"
+                  << op->id << "', buffer '" << buffer->name
+                  << "'; the producer must write each consumed slot";
+            }
+          }
+        }
+        continue;
+      }
+      // A producer read before its first write in an epoch would observe an
+      // uninitialized or already-consumed slot. Consumer reads are ordered by
+      // the full wait; this check is specifically for the producer's program
+      // order and covers read-modify-write as read-first too.
+      for (Scope *owner : pipeline->owner_scopes) {
+        VarSet initialized_writes;
+        std::function<void(const Scope &)> walk = [&](const Scope &scope) {
+          for (const BodyEntryPtr &entry : scope.bodies[role.index]) {
+            if (const Scope *child = entry->AsScope()) {
+              walk(*child);
+              continue;
+            }
+            if (entry->AsSync())
+              continue;
+            const Operation &op = *entry->AsOperation();
+            for (const auto &[buffer, defs] : op.access.reads) {
+              if (!ring_storage.count(buffer->data))
+                continue;
+              ICHECK(initialized_writes.count(buffer->data))
+                  << "ws_schedule: read-first owner-ring epoch in role "
+                  << role.name << ", owner '" << owner->id << "', op '"
+                  << op.id << "', buffer '" << buffer->name
+                  << "'; write each slot before reading it";
+            }
+            for (const auto &[buffer, defs] : op.access.writes)
+              if (ring_storage.count(buffer->data))
+                initialized_writes.insert(buffer->data);
+          }
+        };
+        walk(*owner);
+      }
+    }
+
+    ValidateOwnerRingSharedMemory(*pipeline);
+  }
+
+  // Account for ALL block-level shared allocations after versioning, plus the
+  // one full/empty barrier pair. The restricted path requires static shapes
+  // and an explicit target capacity rather than silently deferring an
+  // over-capacity kernel to a later, less precise failure.
+  void ValidateOwnerRingSharedMemory(const PipelineSpec &pipeline) const {
+    int64_t total_bytes = 0;
+    auto add_allocation = [&](const Buffer &original) {
+      Buffer buffer = original;
+      auto versioned = versioned_.find(original);
+      if (versioned != versioned_.end())
+        buffer = versioned->second;
+      int64_t elements = 1;
+      for (const PrimExpr &dim : buffer->shape) {
+        const auto *extent = dim.as<IntImmNode>();
+        ICHECK(extent != nullptr)
+            << "ws_schedule: owner-ring shared-memory capacity validation "
+               "requires static allocation shapes; buffer '"
+            << buffer->name << "' has dynamic extent " << dim;
+        ICHECK_GE(extent->value, 0);
+        ICHECK(extent->value == 0 ||
+               elements <= std::numeric_limits<int64_t>::max() / extent->value)
+            << "ws_schedule: owner-ring shared allocation size overflows";
+        elements *= extent->value;
+      }
+      int64_t scalar_bytes = std::max<int64_t>(
+          1, static_cast<int64_t>(buffer->dtype.bytes()) *
+                 buffer->dtype.lanes());
+      ICHECK(elements <= std::numeric_limits<int64_t>::max() / scalar_bytes)
+          << "ws_schedule: owner-ring shared allocation size overflows";
+      int64_t bytes = GetBufferStorageSizeBytes(elements, buffer->dtype);
+      constexpr int64_t kSharedAlignment = 16;
+      ICHECK(bytes >= 0 &&
+             bytes <= std::numeric_limits<int64_t>::max() - (kSharedAlignment - 1))
+          << "ws_schedule: owner-ring shared-memory size overflows";
+      const int64_t aligned_bytes =
+          (bytes + kSharedAlignment - 1) / kSharedAlignment * kSharedAlignment;
+      ICHECK(aligned_bytes <= std::numeric_limits<int64_t>::max() - total_bytes)
+          << "ws_schedule: owner-ring shared-memory size overflows";
+      total_bytes += aligned_bytes;
+    };
+    for (const Buffer &buffer : block_->alloc_buffers)
+      if (IsSharedBuffer(buffer) || buffer.scope() == "shared.barrier")
+        add_allocation(buffer);
+    add_allocation(pipeline.full);
+    add_allocation(pipeline.empty);
+
+    Optional<Integer> capacity =
+        target_->GetAttr<Integer>("max_shared_memory_per_block");
+    ICHECK(capacity.has_value())
+        << "ws_schedule: owner-ring shared-memory capacity validation "
+           "requires target attribute max_shared_memory_per_block";
+    ICHECK_GE(capacity.value()->value, 0);
+    ICHECK_LE(total_bytes, capacity.value()->value)
+        << "ws_schedule: owner-ring kernel requires " << total_bytes
+        << " bytes of shared memory after versioning and barrier allocation, "
+           "exceeding target capacity "
+        << capacity.value()->value;
+  }
+
   // ---- op atoms -------------------------------------------------------------
 
   void BuildOpAtoms() {
@@ -1242,6 +1708,9 @@ private:
   // copy in the same body — a guarded copy may skip its arrive; a copy
   // inside a child scope would arrive once per child iteration.
   bool TryFuseTmaArrival(const PipelineSpec *p, const BarrierSidePlan &plan) {
+    ICHECK(!p->IsOwnerRing())
+        << "ws_schedule: owner-ring pipelines reject asynchronous atoms "
+           "before TMA arrival planning";
     // All of p's brackets live in its one scope; a producing entry is
     // either a copy owned by p or a collapsed scope (a use of p).
     std::vector<Operation *> cycle_copies;
@@ -1283,25 +1752,27 @@ private:
   // signaling role of each side and derive the count from its uses.
   void PlanArriveCounts() {
     // The signaling role of a side is the role holding its commit /
-    // release entries (all in the pipeline's one scope); it must be
-    // unique.
+    // release entries (in the legacy scope or both declared owner scopes);
+    // it must be unique.
     for (const auto &pipeline : pipelines_) {
       for (const auto &role : roles_) {
-        for (const BodyEntryPtr &entry :
-             pipeline->sync_scope->bodies[role->index]) {
-          const Synchronization *sync = entry->AsSync();
-          if (sync == nullptr || sync->pipeline != pipeline.get() ||
-              sync->kind.IsWait())
-            continue;
-          bool producer_side = sync->kind.IsProducerCommit();
-          BarrierSidePlan &plan =
-              producer_side ? pipeline->full_plan : pipeline->empty_plan;
-          if (plan.signal_role == nullptr) {
-            plan.signal_role = role.get();
-          } else {
-            ICHECK_EQ(plan.signal_role, role.get())
-                << "ws_schedule: pipeline " << pipeline->name
-                << " is committed/released by multiple roles";
+        for (const Scope *sync_scope : PipelineSyncScopes(*pipeline)) {
+          for (const BodyEntryPtr &entry :
+               sync_scope->bodies[role->index]) {
+            const Synchronization *sync = entry->AsSync();
+            if (sync == nullptr || sync->pipeline != pipeline.get() ||
+                sync->kind.IsWait())
+              continue;
+            bool producer_side = sync->kind.IsProducerCommit();
+            BarrierSidePlan &plan =
+                producer_side ? pipeline->full_plan : pipeline->empty_plan;
+            if (plan.signal_role == nullptr) {
+              plan.signal_role = role.get();
+            } else {
+              ICHECK_EQ(plan.signal_role, role.get())
+                  << "ws_schedule: pipeline " << pipeline->name
+                  << " is committed/released by multiple roles";
+            }
           }
         }
       }
@@ -1461,16 +1932,19 @@ private:
       // an outer body.
       std::map<const PipelineSpec *, bool, PipelineOrder> flavor;
       for (const auto &p : pipelines_) {
-        for (const BodyEntryPtr &entry : p->sync_scope->bodies[role.index]) {
-          const Synchronization *sync = entry->AsSync();
-          if (sync == nullptr || sync->pipeline != p.get())
-            continue;
-          auto [fit, first] = flavor.emplace(p.get(), sync->kind.IsProducer());
-          ICHECK(first || fit->second == sync->kind.IsProducer())
-              << "ws_schedule: role " << role.name
-              << " is both a producer and a consumer of pipeline '" << p->name
-              << "'; the flavors are the two parties of the handshake, and "
-                 "a role handing data to itself needs no pipeline";
+        for (const Scope *sync_scope : PipelineSyncScopes(*p)) {
+          for (const BodyEntryPtr &entry :
+               sync_scope->bodies[role.index]) {
+            const Synchronization *sync = entry->AsSync();
+            if (sync == nullptr || sync->pipeline != p.get())
+              continue;
+            auto [fit, first] = flavor.emplace(p.get(), sync->kind.IsProducer());
+            ICHECK(first || fit->second == sync->kind.IsProducer())
+                << "ws_schedule: role " << role.name
+                << " is both a producer and a consumer of pipeline '" << p->name
+                << "'; the flavors are the two parties of the handshake, and "
+                   "a role handing data to itself needs no pipeline";
+          }
         }
       }
       PipelineSet open;   // union of all enclosing bodies' spans
@@ -1834,7 +2308,33 @@ private:
     }
   }
 
+  void ValidateOwnerRingArrivals() const {
+    const PipelineSpec *pipeline = OwnerRingPipeline();
+    if (pipeline == nullptr)
+      return;
+    const BarrierSidePlan &full = pipeline->full_plan;
+    const BarrierSidePlan &empty = pipeline->empty_plan;
+    ICHECK(full.signal_role != nullptr && empty.signal_role != nullptr &&
+           full.signal_role != empty.signal_role)
+        << "ws_schedule: owner-ring arrival sides must have two distinct "
+           "fixed signaling roles";
+    for (const BarrierSidePlan *plan : {&full, &empty}) {
+      ICHECK(plan->has_thread_arrive && !plan->has_transaction &&
+             !plan->has_tcgen05_arrival && !plan->has_cpasync_arrival &&
+             !plan->fused_tma_arrive)
+          << "ws_schedule: owner-ring pipeline '" << pipeline->name
+          << "' must use identical synchronous per-thread arrivals in both "
+             "owners";
+      ICHECK_EQ(plan->count, plan->signal_role->NumThreads())
+          << "ws_schedule: owner-ring pipeline '" << pipeline->name
+          << "' arrival count " << plan->count
+          << " does not match signaling role " << plan->signal_role->name
+          << "'s " << plan->signal_role->NumThreads() << " threads";
+    }
+  }
+
   void VerifySchedule() {
+    ValidateOwnerRingArrivals();
     VerifySpanCoverage();
     VerifyCycleBalance();
     VerifyDeadlockFree();
@@ -1971,19 +2471,22 @@ private:
     return LinearPhase(ctx, ctx.chain.size());
   }
 
-  // A (role, pipeline) pair needs a runtime phase counter when its
-  // cycles are not one-per-counted-iteration of the enclosing for
-  // chain: several cycles per body, or a scope with no linearizable
-  // phase (while ancestor, guard, non-rectangular nest). All of the
-  // pipeline's sync entries live in its one scope; a role without any
-  // never counts.
+  // A (role, legacy pipeline) pair needs a runtime phase counter when its
+  // cycles are not one-per-counted-iteration of the enclosing for chain.
+  // Every participating owner-ring role ALWAYS gets a counter: it is the only
+  // phase representation that continues across the two sibling owner extents
+  // without a reset or an artificial owner frontier.
   bool NeedsCounter(const RoleSpec &role, const PipelineSpec &pipeline) const {
     int closes = 0;
-    for (const BodyEntryPtr &entry : pipeline.sync_scope->bodies[role.index]) {
-      const Synchronization *sync = entry->AsSync();
-      if (sync && sync->pipeline == &pipeline && sync->kind.IsCommit())
-        ++closes;
+    for (const Scope *sync_scope : PipelineSyncScopes(pipeline)) {
+      for (const BodyEntryPtr &entry : sync_scope->bodies[role.index]) {
+        const Synchronization *sync = entry->AsSync();
+        if (sync && sync->pipeline == &pipeline && sync->kind.IsCommit())
+          ++closes;
+      }
     }
+    if (pipeline.IsOwnerRing())
+      return closes != 0;
     if (closes == 0)
       return false; // the role never syncs this pipeline
     return closes > 1 || !pipeline.sync_scope->HasLinearPhase();
@@ -2095,6 +2598,9 @@ private:
       auto cit = ctx.counters.find(&pipeline);
       if (cit != ctx.counters.end())
         return BufferLoad(cit->second, {IntImm(DataType::Int(32), 0)});
+      ICHECK(!pipeline.IsOwnerRing())
+          << "ws_schedule: owner-ring access to " << orig->name
+          << " has no persistent role-local phase counter";
       ICHECK(pipeline.sync_scope->HasLinearPhase())
           << "ws_schedule: an access to " << orig->name << " needs pipeline '"
           << pipeline.name << "'s phase, which cannot be linearized here, "
@@ -2107,6 +2613,9 @@ private:
     // scope runs per enclosing iteration (static For extents only —
     // VerifySpanCoverage admitted the access).
     PrimExpr CompletedCycles(const PipelineSpec &pipeline, const Buffer &orig) {
+      ICHECK(!pipeline.IsOwnerRing())
+          << "ws_schedule: external access to owner-ring buffer " << orig->name
+          << " is unsupported";
       auto cit = ctx.counters.find(&pipeline);
       if (cit != ctx.counters.end())
         return BufferLoad(cit->second, {IntImm(DataType::Int(32), 0)});
@@ -2137,7 +2646,7 @@ private:
         if (depth == 1) {
           out.push_back(IntImm(DataType::Int(32), 0));
         } else if (sched_scope != nullptr &&
-                   sched_scope->IsNestedIn(p->sync_scope)) {
+                   PipelineContainsScope(*p, sched_scope)) {
           out.push_back(floormod(BindingPhase(*p, orig),
                                  IntImm(DataType::Int(32), depth)));
         } else {

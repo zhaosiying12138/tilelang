@@ -405,11 +405,16 @@ void WSRoleNode::RegisterReflection() {
 }
 
 WSPipeline::WSPipeline(String name, Array<tirx::Buffer> buffers,
-                       int64_t depth) {
+                       int64_t depth)
+    : WSPipeline(std::move(name), std::move(buffers), depth, {}) {}
+
+WSPipeline::WSPipeline(String name, Array<tirx::Buffer> buffers, int64_t depth,
+                       Array<String> owner_scopes) {
   auto n = make_object<WSPipelineNode>();
   n->name = std::move(name);
   n->buffers = std::move(buffers);
   n->depth = depth;
+  n->owner_scopes = std::move(owner_scopes);
   data_ = std::move(n);
 }
 
@@ -418,7 +423,8 @@ void WSPipelineNode::RegisterReflection() {
   refl::ObjectDef<WSPipelineNode>()
       .def_ro("name", &WSPipelineNode::name)
       .def_ro("buffers", &WSPipelineNode::buffers)
-      .def_ro("depth", &WSPipelineNode::depth);
+      .def_ro("depth", &WSPipelineNode::depth)
+      .def_ro("owner_scopes", &WSPipelineNode::owner_scopes);
 }
 
 void WSInstrNode::RegisterReflection() {
@@ -519,6 +525,12 @@ TVM_FFI_STATIC_INIT_BLOCK() {
       .def("tl.WSPipeline",
            [](String name, Array<tirx::Buffer> buffers, int64_t depth) {
              return WSPipeline(std::move(name), std::move(buffers), depth);
+           })
+      .def("tl.WSPipelineWithOwnerScopes",
+           [](String name, Array<tirx::Buffer> buffers, int64_t depth,
+              Array<String> owner_scopes) {
+             return WSPipeline(std::move(name), std::move(buffers), depth,
+                               std::move(owner_scopes));
            })
       .def("tl.WSOpRef", [](String id) { return WSOpRef(std::move(id)); })
       .def("tl.WSSync",

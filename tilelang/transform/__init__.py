@@ -55,6 +55,17 @@ def Z3PipelinePlanning():
     return _ffi_api.Z3PipelinePlanning()  # type: ignore
 
 
+def Z3OwnerRingPlanning():
+    """Validate explicit two-owner CUDA rings before WS materialization.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.Z3OwnerRingPlanning()  # type: ignore
+
+
 def LayoutInference():
     """LayoutInference
 

@@ -265,6 +265,7 @@ def z3_pipeline_annotations(
     recalculate_buffer_versions=True,
     verbose=False,
     debug_dir=None,
+    owner_ring=None,
 ):
     """Build and validate For annotations for CUDA :func:`Z3PipelinePlanning`.
 
@@ -277,9 +278,13 @@ def z3_pipeline_annotations(
     ``(source, target, distance, latency)``; a negative distance ``-buffer_id-1``
     references the ordered ``buffer_vars``/``buffer_sizes`` entry. Resource,
     pipe-order and stage-order dependencies are pairs, while owner exclusions
-    are ``(left, right, latency_lr, latency_rl)``. The current C++ adapter
-    rejects owner exclusions because downstream CUDA IR cannot preserve their
-    lifetime and wraparound semantics. Stage-order dependencies are forwarded
+    are ``(left, right, latency_lr, latency_rl)``. Bare owner exclusions
+    without a runtime ring remain explicit errors. A restricted two-owner ring
+    additionally requires ``owner_ring=0`` on the first loop and ``owner_ring=1``
+    on the second, plus a ``T.WSSchedule`` with the matching ordered
+    ``owner_scopes``. Each owner loop supplies one synthetic group task; other
+    dependency kinds belong to the explicit WSSchedule rather than being
+    discarded by the function-level owner planner. Stage-order dependencies are forwarded
     and checked against the solver result when no cross-stage Let clone is
     required; scheduled Bind cases that require cloning remain explicit errors.
 
@@ -329,7 +334,10 @@ def z3_pipeline_annotations(
         raise ValueError("buffer_sizes and buffer_vars must have equal lengths")
 
     def check_task(index, name):
-        if not 0 <= index < num_tasks:
+        if owner_ring is not None:
+            if not 0 <= index < 2:
+                raise ValueError(f"{name} owner group index {index} is outside [0, 2)")
+        elif not 0 <= index < num_tasks:
             raise ValueError(f"{name} task index {index} is outside [0, {num_tasks})")
 
     for index, (source, target, distance, latency) in enumerate(data_deps):
@@ -358,6 +366,16 @@ def z3_pipeline_annotations(
             raise ValueError(f"owner_exclusion_deps[{index}] cannot exclude a task from itself")
         if latency_lr < 0 or latency_rl < 0:
             raise ValueError(f"owner_exclusion_deps[{index}] latencies must be non-negative")
+
+    if owner_ring is not None:
+        if isinstance(owner_ring, bool) or owner_ring not in (0, 1):
+            raise ValueError("owner_ring must be 0, 1, or None")
+        if num_tasks != 1:
+            raise ValueError("owner_ring requires exactly one synthetic group task per owner loop")
+        if data_deps or resource_deps or pipe_order_deps or stage_order_deps:
+            raise ValueError("owner_ring accepts only cross-owner exclusion dependencies")
+        if len(owner_exclusion_deps) != 1 or owner_exclusion_deps[0][:2] != (0, 1):
+            raise ValueError("owner_ring requires one declared (0, 1) exclusion tuple")
 
     groups = []
     for group_index, group in enumerate(_z3_sequence(() if memory_groups is None else memory_groups, "memory_groups")):
@@ -425,6 +443,8 @@ def z3_pipeline_annotations(
         "tl_z3_pipeline_recalculate_buffer_versions": recalculate_buffer_versions,
         "tl_z3_pipeline_verbose": verbose,
     }
+    if owner_ring is not None:
+        annotations["tl_z3_owner_ring"] = IntImm("int64", owner_ring)
     if debug_dir is not None:
         annotations["tl_z3_pipeline_debug_dir"] = debug_dir
     return annotations

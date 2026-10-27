@@ -306,12 +306,22 @@ public:
     std::vector<size_t> scheduled_indices;
     std::vector<size_t> scheduled_stage_indices;
     Array<Integer> replayable_bind_mask;
+    ScalarBindAnalysis scalar;
+    bool has_scalar_binds{false};
   };
 
   ScheduledStmtAnalysis AnalyzeScheduledStmts(const Array<Stmt> &stmts) const {
     BufferSet pipeline_write_buffers = CollectPipelineWriteBuffers(stmts);
     ScheduledStmtAnalysis analysis;
     analysis.original_stmt_count = stmts.size();
+    std::vector<Array<BufferRegion>> reads(stmts.size());
+    for (size_t i = 0; i < stmts.size(); ++i) {
+      if (!IsPipelineDeclarationStmt(stmts[i])) {
+        reads[i] = CollectStmtAccessRegions(stmts[i]).first;
+      }
+    }
+    analysis.scalar =
+        AnalyzeScalarBinds(stmts, reads, pipeline_write_buffers);
     analysis.replayable_bind_mask.reserve(stmts.size());
     size_t stage_stmt_index = 0;
     for (size_t i = 0; i < stmts.size(); ++i) {
@@ -319,8 +329,9 @@ public:
       if (IsPipelineDeclarationStmt(stmt)) {
         continue;
       }
-      bool replayable =
-          IsReplayableScalarBindStmt(stmt, pipeline_write_buffers);
+      bool replayable = analysis.scalar.replayable_binds[i];
+      analysis.has_scalar_binds =
+          analysis.has_scalar_binds || stmt.as<BindNode>() != nullptr;
       analysis.replayable_bind_mask.push_back(Integer(replayable ? 1 : 0));
       if (replayable) {
         ++stage_stmt_index;
@@ -400,8 +411,6 @@ private:
   Target target_;
 };
 
-using ScalarVarSet = std::unordered_set<Var, ObjectPtrHash, ObjectPtrEqual>;
-
 /*! \brief Information about a pipeline stage
  *
  * \param reads Array of buffer regions read by this stage
@@ -448,29 +457,6 @@ public:
       : buffer_data_to_buffer_(std::move(buffer_data_to_buffer)),
         target_(std::move(target)), use_async_copy_(use_async_copy),
         thread_domains_(std::move(thread_domains)) {}
-
-  class ScalarUseDefCollector : public StmtExprVisitor {
-  public:
-    static std::pair<ScalarVarSet, ScalarVarSet> Collect(const Stmt &stmt) {
-      ScalarUseDefCollector collector;
-      collector(stmt);
-      return {std::move(collector.scalar_defs_),
-              std::move(collector.scalar_uses_)};
-    }
-
-  private:
-    void VisitStmt_(const BindNode *op) final {
-      this->VisitExpr(op->value);
-      scalar_defs_.insert(op->var);
-    }
-
-    void VisitExpr_(const VarNode *op) final {
-      scalar_uses_.insert(GetRef<Var>(op));
-    }
-
-    ScalarVarSet scalar_defs_;
-    ScalarVarSet scalar_uses_;
-  };
 
   bool MayBeConditionallyExecuted(const Stmt &stmt) const {
     bool conditional = false;
@@ -1120,10 +1106,7 @@ private:
             break;
           }
         }
-        if (flatten_preserved_original_order &&
-            std::any_of(analysis.replayable_bind_mask.begin(),
-                        analysis.replayable_bind_mask.end(),
-                        [](const Integer &value) { return !is_zero(value); })) {
+        if (flatten_preserved_original_order && analysis.has_scalar_binds) {
           annotations.Set(kPipelineReplayableScalarBinds,
                           analysis.replayable_bind_mask);
         }
@@ -1289,9 +1272,7 @@ private:
                     Array<Integer>(stages));
     annotations.Set(s_tir::attr::software_pipeline_order,
                     Array<Integer>(orders));
-    if (std::any_of(analysis.replayable_bind_mask.begin(),
-                    analysis.replayable_bind_mask.end(),
-                    [](const Integer &value) { return !is_zero(value); })) {
+    if (analysis.has_scalar_binds) {
       annotations.Set(kPipelineReplayableScalarBinds,
                       analysis.replayable_bind_mask);
     }

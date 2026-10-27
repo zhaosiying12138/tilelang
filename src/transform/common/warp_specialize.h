@@ -100,6 +100,13 @@ public:
   ffi::Array<tirx::Buffer> buffers;
   /*! \brief Number of buffer versions. */
   int64_t depth;
+  /*!
+   * \brief Ordered sibling scopes sharing this pipeline, or empty for legacy.
+   *
+   * This is explicit runtime metadata, not an inferred owner frontier. The
+   * restricted CUDA materializer accepts exactly two owner scopes.
+   */
+  ffi::Array<ffi::String> owner_scopes;
 
   static constexpr TVMFFISEqHashKind _type_s_eq_hash_kind =
       kTVMFFISEqHashKindTreeNode;
@@ -112,6 +119,8 @@ class WSPipeline : public ffi::ObjectRef {
 public:
   TVM_DLL WSPipeline(ffi::String name, ffi::Array<tirx::Buffer> buffers,
                      int64_t depth);
+  TVM_DLL WSPipeline(ffi::String name, ffi::Array<tirx::Buffer> buffers,
+                     int64_t depth, ffi::Array<ffi::String> owner_scopes);
   TVM_FFI_DEFINE_OBJECT_REF_METHODS_NULLABLE(WSPipeline, ffi::ObjectRef,
                                              WSPipelineNode);
 };

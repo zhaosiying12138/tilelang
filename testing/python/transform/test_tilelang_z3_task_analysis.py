@@ -284,6 +284,44 @@ def test_missing_ii_is_filled_without_overwriting_explicit_fields():
     assert len(calls) == 1
 
 
+def test_nested_replayability_is_dependency_closed_and_scalar_raw_war_are_inferred():
+    tir = tvm.tirx
+    a = tir.decl_buffer((8,), "int32", name="closure_A")
+    readonly = tir.decl_buffer((8,), "int32", name="closure_readonly")
+    b = tir.decl_buffer((8,), "int32", name="closure_B")
+    k = tir.Var("k", "int32")
+    scheduled = tir.Var("scheduled_scalar", "int32")
+    nested = tir.Var("nested_scalar", "int32")
+    literal = tir.Var("literal_scalar", "int32")
+    read_only_value = tir.Var("read_only_scalar", "int32")
+    affine = tir.Var("affine_scalar", "int32")
+    statements = [
+        tir.BufferStore(a, 1, [k]),
+        # This Bind is scheduled because A is pipeline-written.
+        tir.Bind(scheduled, tir.BufferLoad(a, [k]) + 1),
+        # Although locally pure, this must not be replayed without its def.
+        tir.Bind(nested, scheduled + 1),
+        # Literal/affine and known read-only chains remain replayable.
+        tir.Bind(literal, k + 1),
+        tir.Bind(read_only_value, tir.BufferLoad(readonly, [k])),
+        tir.Bind(affine, read_only_value + literal),
+        tir.BufferStore(b, nested + affine, [k]),
+    ]
+    annotations = _complete_annotations([2, 3, 4, 5])
+    annotations.pop("tl_z3_pipeline_data_deps")
+    func = _make_store_func(statements, [a, readonly, b], annotations, loop_var=k)
+
+    loop = _find_pipeline_loop(_run_infer(func)["main"])
+    assert _ints(loop.annotations["tl_z3_pipeline_latencies"]) == [2, 3, 4, 5]
+    dependencies = _nested_ints(loop.annotations["tl_z3_pipeline_data_deps"])
+    assert [1, 2, 0, 3] in dependencies
+    assert [2, 1, 1, 4] in dependencies
+    assert [2, 3, 0, 4] in dependencies
+    assert [3, 2, 1, 5] in dependencies
+    # Replayable definitions have no solver task and therefore no scalar edge.
+    assert not any(dep[0] > 3 or dep[1] > 3 for dep in dependencies)
+
+
 def test_raw_war_waw_fixed_dependencies_follow_source_order():
     tir = tvm.tirx
     a = tir.decl_buffer((8,), "float32", name="A")
@@ -426,18 +464,18 @@ def test_opaque_side_effect_is_not_silently_dropped_from_dependencies():
         _run_infer(func)
 
 
-def _async_annotations(manual):
+def _async_annotations(manual, stages=(0, 0)):
     annotations = _complete_annotations([1, 1])
     annotations.pop("tl_z3_pipeline_data_deps")
     annotations["software_pipeline_async_producers"] = _imms([1, 0])
     annotations["software_pipeline_async_producer_groups"] = _imms([0, -1])
     if manual:
         annotations["tl_z3_pipeline_manual_schedule"] = True
-        annotations["tl_z3_pipeline_manual_stages"] = _imms([0, 0])
+        annotations["tl_z3_pipeline_manual_stages"] = _imms(list(stages))
     return annotations
 
 
-def _async_func(manual):
+def _async_func(manual, stages=(0, 0)):
     tir = tvm.tirx
     shared = tir.decl_buffer((4,), "float32", name="async_shared", scope="shared")
     out = tir.decl_buffer((4,), "float32", name="async_out")
@@ -448,16 +486,20 @@ def _async_func(manual):
             tir.BufferStore(out, tir.BufferLoad(shared, [k]), [k]),
         ],
         [shared, out],
-        _async_annotations(manual),
+        _async_annotations(manual, stages),
         loop_var=k,
     )
 
 
-def test_async_same_stage_is_audited_for_manual_schedule_and_rejected_otherwise():
-    manual = _find_pipeline_loop(_run_infer(_async_func(True))["main"])
-    assert _nested_ints(manual.annotations["tl_z3_pipeline_async_same_stage_deps"]) == [[0, 1]]
-    with pytest.raises(Exception, match="same-stage"):
-        _run_infer(_async_func(False))
+def test_async_dependencies_allow_automatic_and_ordered_manual_stages():
+    automatic = _find_pipeline_loop(_run_infer(_async_func(False))["main"])
+    assert _nested_ints(automatic.annotations["tl_z3_pipeline_async_same_stage_deps"]) == [[0, 1]]
+    same_stage = _find_pipeline_loop(_run_infer(_async_func(True))["main"])
+    assert _nested_ints(same_stage.annotations["tl_z3_pipeline_async_same_stage_deps"]) == [[0, 1]]
+    forward = _find_pipeline_loop(_run_infer(_async_func(True, (0, 1)))["main"])
+    assert _nested_ints(forward.annotations["tl_z3_pipeline_async_same_stage_deps"]) == [[0, 1]]
+    with pytest.raises(Exception, match="must not occur after consumer"):
+        _run_infer(_async_func(True, (1, 0)))
 
 
 def test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable(tmp_path):
@@ -499,6 +541,126 @@ def test_hardware_capacity_requires_explicit_optin_field():
     }
     with pytest.raises(ValueError, match="shared_memory_per_block_optin_bytes"):
         task_cost.memory_group_capacities(hardware)
+
+
+def test_inferred_scalar_and_buffer_dependencies_support_clone_augmented_scheduling():
+    tir = tvm.tirx
+    a = tir.decl_buffer((8,), "int32", name="inferred_clone_A")
+    b = tir.decl_buffer((8,), "int32", name="inferred_clone_B")
+    k = tir.Var("k", "int32")
+    value = tir.Var("inferred_clone_value", "int32")
+    statements = [
+        tir.BufferStore(a, 1, [k]),
+        tir.Bind(value, tir.BufferLoad(a, [k]) + 1),
+        tir.BufferStore(b, value, [k]),
+    ]
+    annotations = _complete_annotations([1, 1, 1])
+    annotations.pop("tl_z3_pipeline_data_deps")
+    annotations.update(
+        {
+            "tl_z3_pipeline_manual_schedule": True,
+            "tl_z3_pipeline_manual_stages": _imms([0, 0, 1]),
+            "tl_z3_pipeline_enable_offset": True,
+        }
+    )
+    func = _make_store_func(statements, [a, b], annotations, loop_var=k)
+    inferred = _run_infer(func)
+
+    solver = tvm_ffi.get_global_func(_SOLVER)
+    calls = []
+    results = []
+
+    def tracked_solver(*args):
+        calls.append(args)
+        result = solver(*args)
+        results.append(result)
+        return result
+
+    tvm_ffi.register_global_func(_SOLVER, f=tracked_solver, override=True)
+    with tvm.transform.PassContext(config={_Z3_CONFIG: True}):
+        planned = tl.transform.Z3PipelinePlanning()(inferred)
+    loop = _find_pipeline_loop(planned["main"])
+    assert len(calls) == 2
+    assert _ints(calls[1][12]) == [0, 0, 1, 1]
+    assert _ints(loop.annotations["tl_z3_pipeline_audit_starts"]) == _ints(results[-1][0])[:3]
+    assert len(loop.annotations["tl_z3_pipeline_audit_starts"]) == 3
+    plan = list(loop.annotations["tl_pipeline_scalar_clone_plan"])
+    assert len(plan) == 1
+    assert int(plan[0]["definition_task"]) == 1
+    assert int(plan[0]["consumer_task"]) == 2
+    assert int(plan[0]["stage"]) == 1
+
+
+@pytest.mark.parametrize("alias_storage", [True, False])
+def test_aliased_views_keep_clone_raw_war_constraints_and_versions(alias_storage):
+    """Cross-iteration view aliases must not disappear from inference or clones."""
+    tir = tvm.tirx
+    written = tir.decl_buffer((8,), "int32", name="dependency_written_view", scope="shared")
+    if alias_storage:
+        read = tir.decl_buffer(
+            (8,), "int32", name="dependency_aliased_view", data=written.data, scope="shared"
+        )
+    else:
+        read = tir.decl_buffer((8,), "int32", name="dependency_disjoint_view")
+    out = tir.decl_buffer((8,), "int32", name="dependency_view_out")
+    k = tir.Var("k", "int32")
+    value = tir.Var("dependency_view_value", "int32")
+    statements = [
+        tir.BufferStore(written, 1, [k]),
+        # Reading the exact written Buffer keeps this Bind scheduled in both
+        # cases. Its same-object W[k] accesses are disjoint across iterations,
+        # so only the second view can introduce cross-iteration RAW/WAR here.
+        tir.Bind(value, tir.BufferLoad(read, [k]) + tir.BufferLoad(written, [k])),
+        tir.BufferStore(out, value, [k]),
+    ]
+    annotations = _complete_annotations([2, 3, 4])
+    annotations.pop("tl_z3_pipeline_data_deps")
+    annotations.pop("tl_z3_pipeline_buffer_sizes")
+    annotations.pop("tl_z3_pipeline_buffer_vars")
+    annotations.update(
+        {
+            "tl_z3_pipeline_manual_schedule": True,
+            "tl_z3_pipeline_manual_stages": _imms([0, 0, 1]),
+            "tl_z3_pipeline_enable_offset": True,
+        }
+    )
+    buffers = [written, out] if alias_storage else [written, read, out]
+    inferred = _run_infer(_make_store_func(statements, buffers, annotations, loop_var=k))
+    inferred_loop = _find_pipeline_loop(inferred["main"])
+    assert len(inferred_loop.annotations["tl_z3_pipeline_buffer_vars"]) == 1
+    assert inferred_loop.annotations["tl_z3_pipeline_buffer_vars"][0].same_as(written.data)
+    dependencies = _nested_ints(inferred_loop.annotations["tl_z3_pipeline_data_deps"])
+    original_raw_war = ([0, 1, -1, 2], [1, 0, -1, 3])
+    for dependency in original_raw_war:
+        assert (list(dependency) in dependencies) == alias_storage
+
+    solver = tvm_ffi.get_global_func(_SOLVER)
+    calls = []
+
+    def tracked_solver(*args):
+        calls.append(args)
+        return solver(*args)
+
+    tvm_ffi.register_global_func(_SOLVER, f=tracked_solver, override=True)
+    with tvm.transform.PassContext(config={_Z3_CONFIG: True}):
+        planned = tl.transform.Z3PipelinePlanning()(inferred)
+    loop = _find_pipeline_loop(planned["main"])
+    assert len(calls) == 2
+    assert _ints(calls[-1][12]) == [0, 0, 1, 1]
+    augmented_dependencies = _nested_ints(calls[-1][4])
+    clone_raw_war = ([0, 3, -1, 2], [3, 0, -1, 3])
+    for dependency in (*original_raw_war, *clone_raw_war):
+        assert (list(dependency) in augmented_dependencies) == alias_storage
+
+    plan = list(loop.annotations["tl_pipeline_scalar_clone_plan"])
+    assert len(plan) == 1
+    assert int(plan[0]["definition_task"]) == 1
+    assert int(plan[0]["consumer_task"]) == 2
+    versions = int(loop.annotations["tl_pipeline_buffer_versions"][written.data])
+    if alias_storage:
+        assert versions >= 2
+    else:
+        assert versions == 1
 
 
 def test_real_z3_integration_after_inference(tmp_path):

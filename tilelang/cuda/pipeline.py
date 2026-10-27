@@ -44,6 +44,36 @@ def _module_has_z3_pipeline_annotations(mod: IRModule) -> bool:
     return found
 
 
+def _module_has_z3_owner_ring_annotations(mod: IRModule) -> bool:
+    """Return whether any loop carries an explicit owner-ring index."""
+    found = False
+
+    def visit(node):
+        nonlocal found
+        if isinstance(node, tirx.For) and "tl_z3_owner_ring" in node.annotations:
+            found = True
+
+    for _, func in mod.functions.items():
+        if isinstance(func, PrimFunc):
+            post_order_visit(func.body, visit)
+    return found
+
+
+def _module_has_z3_owner_ring_validated(mod: IRModule) -> bool:
+    """Return whether function-level owner validation has accepted the WS schedule."""
+    found = False
+
+    def visit(node):
+        nonlocal found
+        if isinstance(node, SBlock) and "tl_z3_owner_ring_validated" in node.annotations:
+            found = True
+
+    for _, func in mod.functions.items():
+        if isinstance(func, PrimFunc):
+            post_order_visit(func.body, visit)
+    return found
+
+
 def _module_has_existing_warp_specialization(mod: IRModule) -> bool:
     """Return whether a handwritten or materialized WS schedule is present."""
     found = False
@@ -113,7 +143,11 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
             "CUDA Z3 task analysis requires tl.enable_z3_pipeline_planning in the main CUDA pipeline. "
             "For offline annotation inspection, call InferZ3PipelineProblem directly without stock planning."
         )
-    if z3_pipeline_module and _module_has_existing_warp_specialization(mod):
+    if (
+        z3_pipeline_module
+        and _module_has_existing_warp_specialization(mod)
+        and not _module_has_z3_owner_ring_annotations(mod)
+    ):
         raise ValueError("CUDA Z3 pipeline planning cannot overwrite an existing warp-specialization schedule")
     if z3_pipeline_module and pass_ctx.config.get(_AUTO_WS_CONFIG) is not None:
         raise ValueError(
@@ -188,7 +222,10 @@ def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
     if z3_task_analysis_enabled and has_z3_annotations:
         mod = tilelang.transform.InferZ3PipelineProblem()(mod)
     if z3_pipeline_enabled:
+        mod = tilelang.transform.Z3OwnerRingPlanning()(mod)
         mod = tilelang.transform.Z3PipelinePlanning()(mod)
+    if z3_pipeline_module and _module_has_z3_owner_ring_validated(mod):
+        mod = tilelang.cuda.transform.MaterializeWSSchedule()(mod)
     mod = tilelang.transform.PipelinePlanning()(mod)
     mod = tilelang.transform.InjectSoftwarePipeline()(mod)
     mod = tilelang.transform.Simplify()(mod)

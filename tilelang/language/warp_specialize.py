@@ -71,10 +71,12 @@ class WSPipeline(Node):
 
     The producer waits for the empty barrier and signals the full barrier;
     the consumer waits for the full barrier and signals the empty barrier.
-    A pipeline synchronizes exactly one scope, between exactly two roles.
-    Multiple buffers can share one pipeline; conversely, a buffer may be
-    bound to several pipelines whose scopes are strictly nested — its
-    version count is then the product of their depths (outer-major slots).
+    A legacy pipeline synchronizes exactly one scope, between exactly two roles.
+    The restricted owner-ring form instead names two ordered sibling scopes
+    that share one barrier pair and one continuous phase. Multiple buffers can
+    share one pipeline; conversely, a legacy buffer may be bound to several
+    pipelines whose scopes are strictly nested — its version count is then the
+    product of their depths (outer-major slots).
 
     Parameters
     ----------
@@ -84,10 +86,21 @@ class WSPipeline(Node):
         The on-chip buffers this pipeline protects (and multi-versions).
     depth : int
         The number of versions this pipeline contributes to each buffer.
+    owner_scopes : tuple[str, ...] or list[str], optional
+        Explicit ordered sibling scope IDs for the restricted two-owner ring.
+        Empty retains the legacy single-scope pipeline behavior. This metadata
+        is consumed by ``MaterializeWSSchedule``; no owner frontier is inferred.
     """
 
-    def __init__(self, name: str, buffers: list[tirx.Buffer], depth: int):
-        self.__init_handle_by_constructor__(_ffi_api.WSPipeline, name, list(buffers), depth)
+    def __init__(self, name: str, buffers: list[tirx.Buffer], depth: int, owner_scopes=()):
+        owners = list(owner_scopes)
+        if owners:
+            self.__init_handle_by_constructor__(
+                _ffi_api.WSPipelineWithOwnerScopes, name, list(buffers), depth, owners
+            )
+        else:
+            # Keep the legacy three-argument FFI call and constructor behavior.
+            self.__init_handle_by_constructor__(_ffi_api.WSPipeline, name, list(buffers), depth)
 
 
 @tvm_ffi.register_object("tl.WSInstr")

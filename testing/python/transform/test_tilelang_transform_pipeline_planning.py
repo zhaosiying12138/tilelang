@@ -815,6 +815,98 @@ def test_pipeline_planning_keeps_bind_that_reads_pipeline_written_buffer():
     assert replayable_binds == [1, 0, 0, 0]
 
 
+@pytest.mark.parametrize("alias_storage", [True, False])
+def test_pipeline_planning_bind_replay_uses_buffer_storage_identity(alias_storage):
+    """A write through one view must prevent replay through an aliased view."""
+    tir = tvm.tirx
+    written = tir.decl_buffer((4,), "float32", name="written_view", scope="shared")
+    if alias_storage:
+        read = tir.decl_buffer(
+            (4,), "float32", name="aliased_read_view", data=written.data, scope="shared"
+        )
+    else:
+        read = tir.decl_buffer((4,), "float32", name="disjoint_read_only")
+    out = tir.decl_buffer((4,), "float32", name="view_replay_out")
+    snapshot = tir.Var("view_snapshot", "float32")
+    k = tir.Var("k", "int32")
+    statements = [
+        tir.BufferStore(written, 1.0, [0]),
+        # The consumer and a non-replayable Bind must share a stage. This
+        # independent intervening overwrite makes replay at the consumer unsafe
+        # exactly when the read view aliases the written storage.
+        tir.Bind(snapshot, tir.BufferLoad(read, [0]) + 1.0),
+        tir.BufferStore(written, 2.0, [0]),
+        tir.BufferStore(out, snapshot, [k]),
+    ]
+    stages = [0, 1, 1, 1] if alias_storage else [0, 1, 1]
+    orders = [0, 1, 2, 3] if alias_storage else [0, 1, 2]
+    loop = tir.For(
+        k,
+        0,
+        4,
+        tir.ForKind.SERIAL,
+        tir.SeqStmt(statements),
+        annotations={
+            "num_stages": tir.IntImm("int32", 2),
+            # Use the explicit planner contract. Supplying only num_stages with
+            # software_pipeline_* would instead request automatic replanning,
+            # which puts these non-copy statements together in the last stage.
+            "tl_pipeline_stage": stages,
+            "tl_pipeline_order": orders,
+        },
+    )
+    params = [out.data]
+    buffer_map = {out.data: out}
+    if not alias_storage:
+        params.append(read.data)
+        buffer_map[read.data] = read
+    func = tir.PrimFunc(
+        params,
+        tir.SeqStmt([tir.AllocBuffer(written), loop]),
+        buffer_map=buffer_map,
+    ).with_attr("global_symbol", "main")
+
+    mod = _run_pipeline_planning(func, sm80_target)
+    anno = _collect_pipeline_loop_annotations(mod["main"])[0]
+    expected_mask = [0, 0, 0, 0] if alias_storage else [0, 1, 0, 0]
+    assert [int(v) for v in anno["software_pipeline_replayable_scalar_binds"]] == expected_mask
+    assert [int(v) for v in anno["software_pipeline_stage"]] == stages
+    assert [int(v) for v in anno["software_pipeline_order"]] == orders
+
+    injected = tl.transform.InjectSoftwarePipeline()(mod)
+    consumer_event_orders = []
+    for block in collect_nodes(injected["main"], tir.SBlock):
+        events = []
+
+        def record_event(node):
+            if isinstance(node, tir.Bind) and node.var.name == snapshot.name:
+                events.append("bind")
+            elif isinstance(node, tir.BufferStore) and node.buffer.data.same_as(out.data):
+                assert isinstance(node.value, tir.Var)
+                assert node.value.name == snapshot.name
+                events.append("consume")
+            elif (
+                isinstance(node, tir.BufferStore)
+                and node.buffer.data.same_as(written.data)
+                and isinstance(node.value, tir.FloatImm)
+                and node.value.value == 2.0
+            ):
+                events.append("overwrite")
+
+        post_order_visit(block.body, record_event)
+        if {"bind", "overwrite", "consume"}.issubset(events):
+            consumer_event_orders.append(events)
+
+    expected_events = (
+        ["bind", "overwrite", "consume"]
+        if alias_storage
+        else ["overwrite", "bind", "consume"]
+    )
+    # Main pipeline and epilogue must both preserve the scheduled snapshot for
+    # aliases, or replay the stable disjoint read only after the overwrite.
+    assert consumer_event_orders == [expected_events, expected_events]
+
+
 @tilelang.testing.requires_cuda
 def test_pipeline_planning_propagates_buffer_producer_through_bind():
     """A copy's scalar index can depend transitively on a shared-buffer store."""
@@ -1088,7 +1180,7 @@ def test_pipeline_planning_keeps_bind_that_reads_atomic_target():
 
     assert stages == [0, 0, 1, 1]
     assert orders == [0, 1, 2, 3]
-    assert "software_pipeline_replayable_scalar_binds" not in anno
+    assert [int(v) for v in anno["software_pipeline_replayable_scalar_binds"]] == [0, 0, 0, 0]
 
 
 @tilelang.testing.requires_cuda

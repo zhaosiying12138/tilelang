@@ -104,6 +104,17 @@ def _find_alloc_buffer(func, data):
     return buffers[0]
 
 
+def _find_pipeline_allocation(func, data_or_name):
+    allocations = [node.buffer for node in collect_nodes(func, tvm.tirx.AllocBuffer)]
+    allocations.extend(buffer for block in collect_nodes(func, tvm.tirx.SBlock) for buffer in block.alloc_buffers)
+    if isinstance(data_or_name, str):
+        buffers = [buffer for buffer in allocations if str(buffer.name) == data_or_name]
+    else:
+        buffers = [buffer for buffer in allocations if buffer.data.same_as(data_or_name)]
+    assert len(buffers) == 1, f"Expected exactly one pipeline allocation for {data_or_name}, got {len(buffers)}"
+    return buffers[0]
+
+
 def _assert_single_stage_pipeline(func):
     loops = collect_nodes(func, tvm.tirx.For)
     assert all("tl_pipelined_num_stages" not in loop.annotations for loop in loops)
@@ -256,6 +267,351 @@ def test_async_pipeline_waits_for_individual_physical_commit_group():
         1,
         0,
     ], f"Expected physical tail drain waits, got {all_waits}"
+
+
+def _collect_multi_async_sync_events(func):
+    events = []
+    block_names = {"copy_a", "copy_b", "consume_first", "consume_second"}
+
+    def visit(node):
+        if isinstance(node, tvm.tirx.SBlock) and str(node.name_hint) in block_names:
+            events.append(str(node.name_hint))
+        if isinstance(node, tvm.tirx.Call) and isinstance(node.op, tvm.ir.Op):
+            if node.op.name == "tirx.ptx_commit_group":
+                events.append("commit")
+            elif node.op.name == "tirx.ptx_wait_group":
+                events.append(f"wait{int(node.args[0])}")
+
+    tvm.tirx.stmt_functor.post_order_visit(func.body, visit)
+    return events
+
+
+def _make_multi_async_stage_two_consumer_pipeline(
+    *,
+    buffer_versions=None,
+    extent=12,
+    async_consumer=False,
+    conditional_producer=False,
+    duplicate_async_writer=False,
+    self_read_copy=False,
+    self_read_rmw=False,
+):
+    assert not (self_read_copy and self_read_rmw)
+    @T.prim_func
+    def before(
+        A: T.Tensor((16, 12), T.float32),
+        B: T.Tensor((16, 12), T.float32),
+        C: T.Tensor((16, 12), T.float32),
+        D: T.Tensor((16, 12), T.float32),
+    ):
+        for tx in T.thread_binding(0, 16, thread="threadIdx.x"):
+            a_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
+            b_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
+            annotations = {
+                "software_pipeline_stage": [0, 1, 1, 3],
+                "software_pipeline_order": [0, 1, 2, 3],
+                "software_pipeline_async_stages": [0, 1],
+                "software_pipeline_async_producers": [1, 1, 1 if async_consumer else 0, 0],
+                "software_pipeline_async_producer_groups": [0, 0, 0 if async_consumer else -1, -1],
+                "num_stages": 4,
+            }
+            if buffer_versions is not None:
+                a_versions, b_versions = buffer_versions
+                annotations["tl_pipeline_buffer_versions"] = {
+                    a_shared.data: tvm.tirx.IntImm("int32", a_versions),
+                    b_shared.data: tvm.tirx.IntImm("int32", b_versions),
+                }
+            for i in T.serial(0, extent, annotations=annotations):
+                with T.sblock("copy_a"):
+                    T.reads(A[tx, i])
+                    T.writes(a_shared[tx, 0])
+                    if conditional_producer:
+                        if i < extent:
+                            a_shared[tx, 0] = A[tx, i]
+                    else:
+                        a_shared[tx, 0] = A[tx, i]
+                with T.sblock("copy_b"):
+                    if self_read_copy or self_read_rmw:
+                        # Reproduce conservative destination read+write metadata
+                        # on an async producer at stage one.
+                        T.reads(B[tx, i], b_shared[tx, 0])
+                    else:
+                        T.reads(B[tx, i])
+                    if duplicate_async_writer:
+                        T.writes(a_shared[tx, 0])
+                        a_shared[tx, 0] = B[tx, i]
+                    else:
+                        T.writes(b_shared[tx, 0])
+                        if self_read_copy:
+                            T.copy(B[tx, i : i + 1], b_shared[tx, 0:1])
+                        elif self_read_rmw:
+                            b_shared[tx, 0] = b_shared[tx, 0] + B[tx, i]
+                        else:
+                            b_shared[tx, 0] = B[tx, i]
+                with T.sblock("consume_first"):
+                    T.reads(a_shared[tx, 0], b_shared[tx, 0])
+                    T.writes(C[tx, i])
+                    C[tx, i] = a_shared[tx, 0] + b_shared[tx, 0]
+                with T.sblock("consume_second"):
+                    T.reads(a_shared[tx, 0], b_shared[tx, 0])
+                    T.writes(D[tx, i])
+                    D[tx, i] = a_shared[tx, 0] - b_shared[tx, 0]
+
+    return before
+
+
+def test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer():
+    before = _make_multi_async_stage_two_consumer_pipeline()
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    mod = tl.transform.InjectSoftwarePipeline()(mod)
+    mod = tl.transform.Simplify()(mod)
+
+    func = mod["main"]
+    loop = _find_pipelined_loop(func)
+    assert _collect_wait_args(loop.body) == [0, 2]
+    _, calls = _count_attrs_and_calls(loop.body)
+    assert calls.get("tirx.ptx_wait_group", 0) == 2
+
+    statements = list(loop.body.seq)
+    for name, expected_wait in (("consume_first", 0), ("consume_second", 2)):
+        positions = [
+            index
+            for index, stmt in enumerate(statements)
+            if any(str(block.name_hint) == name for block in collect_nodes(stmt, tvm.tirx.SBlock))
+        ]
+        assert len(positions) == 1
+        assert _collect_wait_args(statements[positions[0] - 1]) == [expected_wait]
+
+    a_shared = _find_pipeline_allocation(func, "a_shared")
+    b_shared = _find_pipeline_allocation(func, "b_shared")
+    assert [int(dim) for dim in a_shared.shape] == [4, 16, 1]
+    assert [int(dim) for dim in b_shared.shape] == [3, 16, 1]
+
+
+@pytest.mark.parametrize(
+    "extent,epilogue",
+    [
+        pytest.param(
+            12,
+            [
+                ["copy_b", "commit", "wait0", "consume_first", "wait0", "consume_second"],
+                ["wait0", "consume_second"],
+                ["wait0", "consume_second"],
+            ],
+            id="steady-loop",
+        ),
+        pytest.param(
+            4,
+            [
+                ["copy_b", "commit", "wait0", "consume_first", "wait2", "consume_second"],
+                ["wait1", "consume_second"],
+                ["wait0", "consume_second"],
+            ],
+            id="unit-body-boundary",
+        ),
+    ],
+)
+def test_async_pipeline_multi_stage_full_commit_wait_placement(extent, epilogue):
+    before = _make_multi_async_stage_two_consumer_pipeline(extent=extent)
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    mod = tl.transform.InjectSoftwarePipeline()(mod)
+    mod = tl.transform.Simplify()(mod)
+
+    prologue = [
+        ["copy_a", "commit"],
+        ["copy_a", "commit", "copy_b", "commit", "wait0", "consume_first"],
+        ["copy_a", "commit", "copy_b", "commit", "wait0", "consume_first"],
+    ]
+    body = [["copy_a", "commit", "copy_b", "commit", "wait0", "consume_first", "wait2", "consume_second"]]
+    fragments = [*prologue, *body, *epilogue]
+    expected = [event for fragment in fragments for event in fragment]
+    assert _collect_multi_async_sync_events(mod["main"]) == expected
+
+
+def test_async_pipeline_multi_stage_rejects_async_consumer_with_async_dependencies():
+    before = _make_multi_async_stage_two_consumer_pipeline(async_consumer=True)
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    with pytest.raises(
+        tvm.TVMError,
+        match="async consumer blocks requiring cross-stage async waits are unsupported",
+    ):
+        tl.transform.InjectSoftwarePipeline()(mod)
+
+
+def test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata():
+    before = _make_multi_async_stage_two_consumer_pipeline(self_read_copy=True)
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    mod = tl.transform.InjectSoftwarePipeline()(mod)
+    mod = tl.transform.Simplify()(mod)
+
+    func = mod["main"]
+    assert _collect_wait_args(_find_pipelined_loop(func).body) == [0, 2]
+    a_shared = _find_pipeline_allocation(func, "a_shared")
+    b_shared = _find_pipeline_allocation(func, "b_shared")
+    assert [int(dim) for dim in a_shared.shape] == [4, 16, 1]
+    assert [int(dim) for dim in b_shared.shape] == [3, 16, 1]
+
+
+def test_async_pipeline_multi_stage_rejects_async_producer_rmw():
+    before = _make_multi_async_stage_two_consumer_pipeline(self_read_rmw=True)
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    with pytest.raises(
+        tvm.TVMError,
+        match="async consumer blocks requiring cross-stage async waits are unsupported",
+    ):
+        tl.transform.InjectSoftwarePipeline()(mod)
+
+
+def test_async_pipeline_multi_stage_rejects_conditional_async_producer():
+    before = _make_multi_async_stage_two_consumer_pipeline(conditional_producer=True)
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    with pytest.raises(tvm.TVMError, match="conditional async producers.*unsupported"):
+        tl.transform.InjectSoftwarePipeline()(mod)
+
+
+def test_async_pipeline_multi_stage_rejects_shared_writer_across_async_stages():
+    before = _make_multi_async_stage_two_consumer_pipeline(duplicate_async_writer=True)
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    with pytest.raises(tvm.TVMError, match="multiple async producer stages"):
+        tl.transform.InjectSoftwarePipeline()(mod)
+
+
+def test_async_pipeline_multi_stage_rejects_buffer_changing_commit_group():
+    @T.prim_func
+    def before(
+        A: T.Tensor((16, 12), T.float32),
+        X: T.Tensor((16, 12), T.float32),
+        B: T.Tensor((16, 12), T.float32),
+        C: T.Tensor((16, 12), T.float32),
+    ):
+        for tx in T.thread_binding(0, 16, thread="threadIdx.x"):
+            a_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
+            x_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
+            b_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
+            for i in T.serial(
+                0,
+                12,
+                annotations={
+                    "software_pipeline_stage": [0, 0, 0, 1, 2],
+                    "software_pipeline_order": [0, 1, 2, 3, 4],
+                    "software_pipeline_async_stages": [0, 1],
+                    "software_pipeline_async_producers": [1, 1, 1, 1, 0],
+                    "software_pipeline_async_producer_groups": [0, 1, 0, 0, -1],
+                    "num_stages": 3,
+                },
+            ):
+                with T.sblock("copy_a"):
+                    T.reads(A[tx, i])
+                    T.writes(a_shared[tx, 0])
+                    a_shared[tx, 0] = A[tx, i]
+                with T.sblock("copy_x"):
+                    T.reads(X[tx, i])
+                    T.writes(x_shared[tx, 0])
+                    x_shared[tx, 0] = X[tx, i]
+                with T.sblock("copy_x_again"):
+                    T.reads(X[tx, i])
+                    T.writes(x_shared[tx, 0])
+                    x_shared[tx, 0] = X[tx, i] + T.float32(1)
+                with T.sblock("copy_b"):
+                    T.reads(B[tx, i])
+                    T.writes(b_shared[tx, 0])
+                    b_shared[tx, 0] = B[tx, i]
+                with T.sblock("consume"):
+                    T.reads(a_shared[tx, 0], x_shared[tx, 0], b_shared[tx, 0])
+                    T.writes(C[tx, i])
+                    C[tx, i] = a_shared[tx, 0] + x_shared[tx, 0] + b_shared[tx, 0]
+
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    with pytest.raises(tvm.TVMError, match="changes physical commit group within async producer stage"):
+        tl.transform.InjectSoftwarePipeline()(mod)
+
+
+def test_async_pipeline_multi_stage_rejects_underprovisioned_version_override():
+    before = _make_multi_async_stage_two_consumer_pipeline(buffer_versions=(3, 3))
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    with pytest.raises(tvm.TVMError, match="under-provisioned.*at least 4"):
+        tl.transform.InjectSoftwarePipeline()(mod)
+
+
+def test_async_pipeline_multi_stage_rejects_underprovisioned_b_version_override():
+    before = _make_multi_async_stage_two_consumer_pipeline(buffer_versions=(4, 2))
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    with pytest.raises(tvm.TVMError, match="under-provisioned.*at least 3"):
+        tl.transform.InjectSoftwarePipeline()(mod)
+
+
+def test_async_pipeline_multi_stage_accepts_exact_version_overrides():
+    before = _make_multi_async_stage_two_consumer_pipeline(buffer_versions=(4, 3))
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    mod = tl.transform.InjectSoftwarePipeline()(mod)
+    mod = tl.transform.Simplify()(mod)
+
+    func = mod["main"]
+    assert _collect_wait_args(_find_pipelined_loop(func).body) == [0, 2]
+    a_shared = _find_pipeline_allocation(func, "a_shared")
+    b_shared = _find_pipeline_allocation(func, "b_shared")
+    assert [int(dim) for dim in a_shared.shape] == [4, 16, 1]
+    assert [int(dim) for dim in b_shared.shape] == [3, 16, 1]
+
+
+def test_async_pipeline_preserves_four_task_z3_shape():
+    @T.prim_func
+    def before(
+        A: T.Tensor((16, 12), T.float32),
+        B: T.Tensor((16, 12), T.float32),
+        C: T.Tensor((16, 12), T.float32),
+    ):
+        for tx in T.thread_binding(0, 16, thread="threadIdx.x"):
+            a_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
+            b_shared = T.alloc_buffer((16, 1), dtype=T.float32, scope="shared")
+            c_fragment = T.alloc_buffer((16, 1), dtype=T.float32, scope="local.fragment")
+            for i in T.serial(
+                0,
+                12,
+                annotations={
+                    # starts=[1, 2, 6, 8], II=2, normalized to stages 0/1/3/4.
+                    "software_pipeline_stage": [0, 1, 3, 4],
+                    "software_pipeline_order": [1, 0, 2, 3],
+                    "software_pipeline_async_stages": [0, 1],
+                    "software_pipeline_async_producers": [1, 1, 0, 0],
+                    "software_pipeline_async_producer_groups": [0, 0, -1, -1],
+                    "num_stages": 5,
+                },
+            ):
+                with T.sblock("copy_a"):
+                    T.reads(A[tx, i])
+                    T.writes(a_shared[tx, 0])
+                    a_shared[tx, 0] = A[tx, i]
+                with T.sblock("copy_b"):
+                    T.reads(B[tx, i])
+                    T.writes(b_shared[tx, 0])
+                    b_shared[tx, 0] = B[tx, i]
+                with T.sblock("consume"):
+                    T.reads(a_shared[tx, 0], b_shared[tx, 0])
+                    T.writes(c_fragment[tx, 0])
+                    c_fragment[tx, 0] = a_shared[tx, 0] + T.float32(2) * b_shared[tx, 0]
+                with T.sblock("output"):
+                    T.reads(c_fragment[tx, 0])
+                    T.writes(C[tx, i])
+                    C[tx, i] = c_fragment[tx, 0]
+
+    mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+    mod = tl.transform.InjectSoftwarePipeline()(mod)
+    mod = tl.transform.Simplify()(mod)
+
+    func = mod["main"]
+    loop = _find_pipelined_loop(func)
+    assert int(loop.annotations["tl_pipelined_num_stages"]) == 5
+    assert _collect_wait_args(loop.body) == [2]
+    _, calls = _count_attrs_and_calls(loop.body)
+    assert calls.get("tirx.ptx_wait_group", 0) == 1
+
+    a_shared = _find_pipeline_allocation(func, "a_shared")
+    b_shared = _find_pipeline_allocation(func, "b_shared")
+    c_fragment = _find_pipeline_allocation(func, "c_fragment")
+    assert [int(dim) for dim in a_shared.shape] == [4, 16, 1]
+    assert [int(dim) for dim in b_shared.shape] == [3, 16, 1]
+    assert [int(dim) for dim in c_fragment.shape] == [2, 16, 1]
 
 
 def test_async_pipeline_only_wraps_producer_statements_from_explicit_group_annotations():

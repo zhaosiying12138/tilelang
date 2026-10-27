@@ -328,8 +328,10 @@ struct ScheduledTaskAnalysis {
   Array<Stmt> flat_stmts;
   Array<Stmt> scheduled_stmts;
   std::vector<size_t> scheduled_indices;
+  std::vector<int> scheduled_for_flat;
   std::vector<Array<BufferRegion>> reads;
   std::vector<Array<BufferRegion>> writes;
+  ScalarBindAnalysis scalar;
 };
 
 ScheduledTaskAnalysis AnalyzeScheduledTasks(
@@ -355,12 +357,20 @@ ScheduledTaskAnalysis AnalyzeScheduledTasks(
 
   ScheduledTaskAnalysis analysis;
   analysis.flat_stmts = flat_stmts;
+  std::vector<Array<BufferRegion>> flat_reads;
+  flat_reads.reserve(flat_stmts.size());
+  for (const auto &access : accesses) flat_reads.push_back(access.first);
+  analysis.scalar =
+      AnalyzeScalarBinds(flat_stmts, flat_reads, pipeline_write_buffers);
+  analysis.scheduled_for_flat.assign(flat_stmts.size(), -1);
   for (size_t i = 0; i < flat_stmts.size(); ++i) {
     const Stmt &stmt = flat_stmts[i];
     if (IsPipelineDeclarationStmt(stmt)) continue;
-    if (IsReplayableScalarBind(stmt, accesses[i].first, pipeline_write_buffers)) {
+    if (analysis.scalar.replayable_binds[i]) {
       continue;
     }
+    analysis.scheduled_for_flat[i] =
+        static_cast<int>(analysis.scheduled_stmts.size());
     analysis.scheduled_indices.push_back(i);
     analysis.scheduled_stmts.push_back(stmt);
     analysis.reads.push_back(std::move(accesses[i].first));
@@ -778,7 +788,10 @@ private:
   bool DistinctIterationsDisjoint(const BufferRegion &left,
                                   const BufferRegion &right,
                                   const ForNode *loop) const {
-    if (!left->buffer.same_as(right->buffer)) return true;
+    if (!left->buffer->data.same_as(right->buffer->data)) return true;
+    // Region coordinates are view-relative. Without a physical layout proof,
+    // distinct views of one allocation must conservatively remain conflicting.
+    if (!left->buffer.same_as(right->buffer)) return false;
     if (!left->buffer->strides.empty() || !right->buffer->strides.empty() ||
         left->region.size() != right->region.size()) {
       return false;
@@ -886,9 +899,10 @@ private:
                          int64_t source, int64_t target, int64_t distance,
                          int64_t latency) const {
     ICHECK_GE(latency, 0);
-    for (const Array<Integer> &existing : *dependencies) {
+    for (Array<Integer> &existing : *dependencies) {
       if (existing[0]->value == source && existing[1]->value == target &&
           existing[2]->value == distance) {
+        if (existing[3]->value < latency) existing.Set(3, Integer(latency));
         return;
       }
     }
@@ -933,6 +947,21 @@ private:
         consider(i, j, analysis.writes[i], analysis.writes[j]); // WAW
         consider(i, j, analysis.reads[i], analysis.writes[j]);  // WAR
       }
+    }
+    // Scalar Bind uses are dependencies even when the expression has no
+    // BufferRegion. The reverse distance-one edge protects the definition in
+    // the next iteration from a longer-latency consumer in this iteration.
+    for (const ScalarUseDefEdge &edge : analysis.scalar.edges) {
+      ICHECK_LT(edge.definition, edge.use)
+          << "InferZ3PipelineProblem: a flat scalar Bind must precede every "
+             "use in the same enclosing statement stream";
+      int source = analysis.scheduled_for_flat[edge.definition];
+      int target = analysis.scheduled_for_flat[edge.use];
+      if (source < 0 || target < 0) continue;
+      AddDataDependency(&dependencies, source, target, 0,
+                        latencies[source]->value);
+      AddDataDependency(&dependencies, target, source, 1,
+                        latencies[target]->value);
     }
     return dependencies;
   }
@@ -1017,20 +1046,39 @@ private:
     }
     if (pairs.empty()) return pairs;
     bool manual = GetBool(annotations, kZ3ManualSchedule, false);
-    ICHECK(manual)
-        << "InferZ3PipelineProblem: async producer/consumer same-stage "
-           "constraints are not expressible in the current Z3 schema. Use "
-           "manual_schedule with equal manual stages, or remove the explicit "
-           "async annotations; no incompatible automatic result is emitted";
+    if (!manual) return pairs;
     Array<Integer> stages = GetIntegerArray(annotations, kZ3ManualStages);
     ValidateArraySize(stages, n, kZ3ManualStages);
     for (const Array<Integer> &pair : pairs) {
-      ICHECK_EQ(stages[pair[0]->value]->value, stages[pair[1]->value]->value)
+      ICHECK_LE(stages[pair[0]->value]->value, stages[pair[1]->value]->value)
           << "InferZ3PipelineProblem: async producer " << pair[0]->value
-          << " and consumer " << pair[1]->value
-          << " must have equal manual stages";
+          << " must not occur after consumer " << pair[1]->value
+          << "; producer and consumer may share a stage or use ordered stages";
     }
     return pairs;
+  }
+
+  Array<Array<Integer>> InferScalarStageOrder(
+      const ScheduledTaskAnalysis &analysis) const {
+    Array<Array<Integer>> result;
+    auto add_pair = [&](int64_t left, int64_t right) {
+      for (const auto &pair : result) {
+        if (pair[0]->value == left && pair[1]->value == right) return;
+      }
+      result.push_back(Array<Integer>{Integer(left), Integer(right)});
+    };
+    for (const ScalarUseDefEdge &edge : analysis.scalar.edges) {
+      int source = analysis.scheduled_for_flat[edge.definition];
+      int target = analysis.scheduled_for_flat[edge.use];
+      if (source < 0 || target < 0 ||
+          analysis.scalar.cloneable_binds[edge.definition]) {
+        continue;
+      }
+      // Two directed inequalities express stage equality in the solver schema.
+      add_pair(source, target);
+      add_pair(target, source);
+    }
+    return result;
   }
 
   Stmt InferLoop(const ForNode *loop) {
@@ -1167,7 +1215,7 @@ private:
       output.Set(kZ3OwnerExclusionDeps, Array<Array<Integer>>());
     }
     if (!HasAnnotation(annotations, kZ3StageOrderDeps)) {
-      output.Set(kZ3StageOrderDeps, Array<Array<Integer>>());
+      output.Set(kZ3StageOrderDeps, InferScalarStageOrder(analysis));
     }
     if (need_buffer_vars) output.Set(kZ3BufferVars, buffer_vars);
     if (need_buffer_sizes) output.Set(kZ3BufferSizes, buffer_sizes);

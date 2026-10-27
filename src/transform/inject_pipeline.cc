@@ -72,6 +72,7 @@ struct PipelineAnnotation {
   int order;
   bool async{false};
   int async_group_id{-1};
+  bool scalar_clone{false};
 };
 
 using PipelineInfo = std::unordered_map<SBlock, PipelineAnnotation,
@@ -930,13 +931,29 @@ Map<Buffer, Buffer> ExpandPipelineBarriers(
  */
 Buffer RewritePipelineTmaBarriers(
     Array<SBlock> &original_order, PipelineInfo &pipeline_info,
-    const Array<Integer> &tma_copies, Map<Var, Buffer> &buffer_data_to_buffer,
+    Array<Integer> tma_copies, Map<Var, Buffer> &buffer_data_to_buffer,
     BufferSet &allocated_buffers, Array<Buffer> &block_local_allocs,
     Var loop_var, PrimExpr loop_min, int num_stages) {
   if (!std::any_of(tma_copies.begin(), tma_copies.end(),
                    [](const Integer &tc) { return !is_zero(tc); })) {
     return Buffer();
   }
+
+  // Scalar clones are additional schedule units and have no slot in the
+  // original per-task TMA annotation. Align that annotation to the materialized
+  // stream without assigning producer ownership to a clone.
+  Array<Integer> aligned_tma_copies;
+  size_t original_task = 0;
+  for (const SBlock &block : original_order) {
+    if (pipeline_info.at(block).scalar_clone) {
+      aligned_tma_copies.push_back(Integer(0));
+      continue;
+    }
+    ICHECK_LT(original_task, tma_copies.size());
+    aligned_tma_copies.push_back(tma_copies[original_task++]);
+  }
+  ICHECK_EQ(original_task, tma_copies.size());
+  tma_copies = std::move(aligned_tma_copies);
 
   // Create pipeline barrier buffer with a single slot.  The generic
   // ExpandPipelineBarriers pass (called later) will expand it to
@@ -985,6 +1002,11 @@ Buffer RewritePipelineTmaBarriers(
     if (waits_inserted)
       break;
     SBlock old_block = original_order[i];
+    if (pipeline_info.at(old_block).scalar_clone) {
+      // Keep the wait in the original consumer block. Folding it into a clone
+      // Bind would hide the fresh scalar from subsequent schedule units.
+      continue;
+    }
     int stage = pipeline_info.at(old_block).stage;
     if (stage == 0)
       continue; // still in producer stage
@@ -1306,7 +1328,10 @@ public:
 
   Stmt BuildPipeline() {
     // Step 1: Analyze accesses to the buffers in the pipeline and compute the
-    // number of versions need to maintain for each buffer.
+    // number of versions need to maintain for each buffer. Multi-async-stage
+    // dependencies must be known before sizing buffers so an explicit override
+    // cannot under-provision this shape.
+    AnalyzeMultiAsyncStageDependencies();
     std::unordered_map<Buffer, BufferAccessInfo, ObjectPtrHash, ObjectPtrEqual>
         infos = GetBufferAccessInfo();
     for (const Buffer &buffer : pipeline_allocs_) {
@@ -1356,13 +1381,15 @@ public:
 
     Stmt stmt = pipeline_parts.size() == 1 ? pipeline_parts[0]
                                            : SeqStmt(pipeline_parts);
-    stmt = AsyncPipelineLoopWaitRelaxer(this)(stmt);
-    Array<Stmt> relaxed_pipeline_parts = FlattenTopLevelSeq(stmt);
-    relaxed_pipeline_parts =
-        RelaxTrailingConsumerWaits(std::move(relaxed_pipeline_parts),
-                                   PipelinedRetainGroups(pipeline_num_stages));
-    stmt = relaxed_pipeline_parts.size() == 1 ? relaxed_pipeline_parts[0]
-                                              : SeqStmt(relaxed_pipeline_parts);
+    if (!has_multi_async_stage_dependency_) {
+      stmt = AsyncPipelineLoopWaitRelaxer(this)(stmt);
+      Array<Stmt> relaxed_pipeline_parts = FlattenTopLevelSeq(stmt);
+      relaxed_pipeline_parts =
+          RelaxTrailingConsumerWaits(std::move(relaxed_pipeline_parts),
+                                     PipelinedRetainGroups(pipeline_num_stages));
+      stmt = relaxed_pipeline_parts.size() == 1 ? relaxed_pipeline_parts[0]
+                                                : SeqStmt(relaxed_pipeline_parts);
+    }
 
     // Step 3: Make a new block only when the rewritten pipeline owns local
     // allocations.  When all buffers are already allocated by an outer block
@@ -1513,6 +1540,163 @@ private:
                      buffer_data_to_buffer_);
   }
 
+  bool MayBeConditionallyExecuted(const Stmt &stmt) const {
+    bool conditional = false;
+    PostOrderVisit(stmt, [&](const ObjectRef &node) {
+      if (conditional) {
+        return;
+      }
+      if (node.as<IfThenElseNode>()) {
+        conditional = true;
+        return;
+      }
+      if (const auto *realize = node.as<SBlockRealizeNode>()) {
+        if (!is_one(realize->predicate)) {
+          conditional = true;
+        }
+      }
+    });
+    return conditional;
+  }
+
+  bool ContainsTmaCopy(const Stmt &stmt) const {
+    bool found = false;
+    PostOrderVisit(stmt, [&](const ObjectRef &node) {
+      if (found) {
+        return;
+      }
+      if (const auto *call = node.as<CallNode>()) {
+        auto tile_op = ParseOperator(GetRef<Call>(call));
+        if (const auto *copy = tile_op.as<CopyNode>()) {
+          found = GetIsTmaCopy(*copy);
+        }
+      }
+    });
+    return found;
+  }
+
+  bool ContainsExternalAsyncCopy(const Stmt &stmt) const {
+    bool found = false;
+    PostOrderVisit(stmt, [&](const ObjectRef &node) {
+      if (found) {
+        return;
+      }
+      if (const auto *call = node.as<CallNode>()) {
+        auto tile_op = ParseOperator(GetRef<Call>(call));
+        if (const auto *copy = tile_op.as<CopyNode>()) {
+          found = GetIsAsyncCopy(*copy);
+        }
+      }
+    });
+    return found;
+  }
+
+  bool IsSelfProducedCopyDestinationRead(
+      const SBlock &block, const BufferRegion &read) const {
+    // Some tile-copy access contracts conservatively include the destination in
+    // both reads and writes. That metadata is not an asynchronous consumption
+    // of the value being overwritten. Restrict the exemption to a standalone
+    // copy with a distinct source; an actual RMW or any cross-buffer read must
+    // continue through the async-consumer rejection below.
+    const auto *evaluate = block->body.as<EvaluateNode>();
+    if (evaluate == nullptr) {
+      return false;
+    }
+    const auto *call = evaluate->value.as<CallNode>();
+    if (call == nullptr) {
+      return false;
+    }
+    auto tile_op = ParseOperator(GetRef<Call>(call));
+    const auto *copy = tile_op.as<CopyNode>();
+    return copy != nullptr &&
+           copy->dst->data.same_as(read->buffer->data) &&
+           !copy->src->data.same_as(read->buffer->data);
+  }
+
+  void AnalyzeMultiAsyncStageDependencies() {
+    std::unordered_map<Buffer, std::unordered_set<int>, ObjectPtrHash,
+                       ObjectPtrEqual>
+        async_writer_stages;
+    for (const auto &[block, anno] : pipeline_info_) {
+      if (!anno.async) {
+        continue;
+      }
+      for (const BufferRegion &write : block->writes) {
+        async_writer_stages[write->buffer].insert(anno.stage);
+      }
+    }
+
+    for (const auto &[block, anno] : pipeline_info_) {
+      if (anno.async) {
+        continue;
+      }
+      std::unordered_set<int> required_stages;
+      for (const BufferRegion &read : block->reads) {
+        auto writers = async_writer_stages.find(read->buffer);
+        if (writers == async_writer_stages.end()) {
+          continue;
+        }
+        int producer_stage = -1;
+        for (int stage : writers->second) {
+          if (stage > anno.stage) {
+            continue;
+          }
+          ICHECK_EQ(producer_stage, -1)
+              << "InjectSoftwarePipeline: a synchronous consumer depends on "
+                 "buffer "
+              << read->buffer
+              << " written by multiple async producer stages; this layout is "
+                 "unsupported";
+          producer_stage = stage;
+        }
+        if (producer_stage != -1) {
+          required_stages.insert(producer_stage);
+        }
+      }
+      if (required_stages.size() > 1) {
+        has_multi_async_stage_dependency_ = true;
+        multi_async_producer_stages_.insert(required_stages.begin(),
+                                            required_stages.end());
+      }
+    }
+
+    if (!has_multi_async_stage_dependency_) {
+      return;
+    }
+    for (const auto &[block, anno] : pipeline_info_) {
+      ICHECK(!ContainsTmaCopy(block->body))
+          << "InjectSoftwarePipeline: TMA and mixed-async dependencies are "
+             "unsupported in a multi-async-stage pipeline";
+      ICHECK(!ContainsExternalAsyncCopy(block->body) &&
+             !ContainsPipelineAsyncControlAttrs(block->body))
+          << "InjectSoftwarePipeline: externally managed async copies and "
+             "multi-async-stage pipeline waits cannot be mixed";
+      if (anno.async) {
+        for (const BufferRegion &read : block->reads) {
+          auto writers = async_writer_stages.find(read->buffer);
+          if (writers == async_writer_stages.end()) {
+            continue;
+          }
+          for (int producer_stage : writers->second) {
+            if (producer_stage == anno.stage &&
+                IsSelfProducedCopyDestinationRead(block, read)) {
+              continue;
+            }
+            ICHECK(producer_stage > anno.stage)
+                << "InjectSoftwarePipeline: async consumer blocks requiring "
+                   "cross-stage async waits are unsupported in a "
+                   "multi-async-stage pipeline; buffer "
+                << read->buffer << " is read at stage " << anno.stage
+                << " but written by async producer stage " << producer_stage;
+          }
+        }
+        ICHECK(!MayBeConditionallyExecuted(block->body))
+            << "InjectSoftwarePipeline: conditional async producers are "
+               "unsupported in a multi-async-stage pipeline";
+      }
+    }
+  }
+
   /*!
    * \brief Analyze accesses to the buffers in the software pipeline.
    *
@@ -1556,9 +1740,10 @@ private:
    * \brief Compute the number of versions need to maintain for buffer accessed
    * in the software pipeline.
    *
-   * Annotation `kPipelineBufferVersions` overrides the analysis for selected
-   * buffers. An explicit positive count is returned before the external-buffer
-   * and double-buffering heuristics, so it is never adjusted implicitly.
+   * Annotation `kPipelineBufferVersions` overrides the allocation size for
+   * selected buffers. The automatic liveness requirement is still computed;
+   * multi-async-stage dependencies reject an override below that requirement.
+   * Other pipelines retain the legacy explicit-override behavior.
    * Unannotated buffers retain the liveness analysis below.
    *
    * \param buffer The target buffer
@@ -1567,11 +1752,29 @@ private:
    */
   int ComputeBufferVersions(const Buffer &buffer,
                             const BufferAccessInfo &buffer_info) {
+    // Always compute the automatic requirement. In particular, a solver- or
+    // user-provided override must not hide an under-provisioned ring when a
+    // consumer depends on multiple async producer stages.
+    int automatic_versions =
+        ComputeAutomaticBufferVersions(buffer, buffer_info);
     auto explicit_version = buffer_version_overrides_.find(buffer->data);
     if (explicit_version != buffer_version_overrides_.end()) {
+      if (has_multi_async_stage_dependency_) {
+        ICHECK_GE(explicit_version->second, automatic_versions)
+            << "ValueError: InjectSoftwarePipeline annotation '"
+            << kPipelineBufferVersions << "' for Buffer.data Var "
+            << buffer->data << " is under-provisioned for a "
+               "multi-async-stage dependency: got "
+            << explicit_version->second << ", but at least "
+            << automatic_versions << " versions are required.";
+      }
       return explicit_version->second;
     }
+    return automatic_versions;
+  }
 
+  int ComputeAutomaticBufferVersions(const Buffer &buffer,
+                                     const BufferAccessInfo &buffer_info) {
     if (buffer_info.def == -1) {
       // Keep the original number of versions as buffers defined outside the
       // software pipeline should not be mutated.
@@ -1664,6 +1867,7 @@ private:
     };
 
     BufferSet seen;
+    BufferCommitGroupMap buffer_to_commit_group;
     Optional<PrimExpr> producer_head;
     Optional<PrimExpr> predicate;
     std::vector<std::vector<size_t>> commit_groups;
@@ -2609,10 +2813,11 @@ private:
     return seq;
   }
 
-  void PopulateWaitCounts(const std::vector<RewrittenStmtInfo> &new_stmts,
-                          arith::Analyzer *ana_normalized,
-                          const BufferCommitGroupMap &buffer_to_commit_group,
-                          std::map<int, AsyncStateLocal> *async_states_local) {
+  void PopulateWaitCounts(
+      const std::vector<RewrittenStmtInfo> &new_stmts,
+      arith::Analyzer *ana_normalized,
+      std::map<int, AsyncStateLocal> *async_states_local,
+      std::map<int, PrimExpr> *coalesced_wait_counts) {
     std::vector<int> stmt_to_commit_group(new_stmts.size(), -1);
     std::map<int, std::vector<int>> commit_group_last_stmt;
     for (const auto &[stage_id, state] : *async_states_local) {
@@ -2630,6 +2835,47 @@ private:
       }
     }
 
+    // A commit-group id describes exactly one physical ptx_commit_group. Do
+    // not infer waits from a group that is split, changes layout between
+    // pipeline fragments, or is guarded by an unproven producer predicate.
+    for (int stage_id : multi_async_producer_stages_) {
+      auto local_it = async_states_local->find(stage_id);
+      if (local_it == async_states_local->end() ||
+          !local_it->second.producer_head) {
+        continue; // This producer is not inbound in the current fragment.
+      }
+      const AsyncStateLocal &state = local_it->second;
+      const AsyncStateGlobal &global_state = async_states_.at(stage_id);
+      ICHECK(!state.predicate ||
+             ana_normalized->CanProve(state.predicate.value()))
+          << "InjectSoftwarePipeline: conditional async producers are "
+             "unsupported in a multi-async-stage pipeline";
+      ICHECK_EQ(static_cast<int>(state.commit_groups.size()),
+                global_state.commit_group_count)
+          << "InjectSoftwarePipeline: async commit-group layout changes "
+             "between pipeline fragments for stage "
+          << stage_id;
+      for (const auto &group : state.commit_groups) {
+        ICHECK(!group.empty());
+        for (size_t i = 1; i < group.size(); ++i) {
+          ICHECK_EQ(group[i], group[i - 1] + 1)
+              << "InjectSoftwarePipeline: split or non-contiguous async "
+                 "commit groups are unsupported in a multi-async-stage "
+                 "pipeline";
+        }
+      }
+      for (const Buffer &buffer : global_state.dst_buffers) {
+        auto local_group = state.buffer_to_commit_group.find(buffer);
+        auto global_group = global_state.buffer_to_commit_group.find(buffer);
+        ICHECK(local_group != state.buffer_to_commit_group.end() &&
+               global_group != global_state.buffer_to_commit_group.end() &&
+               local_group->second == global_group->second)
+            << "InjectSoftwarePipeline: cannot prove a stable commit-group "
+               "mapping for buffer "
+            << buffer << " in async producer stage " << stage_id;
+      }
+    }
+
     std::map<int, int> last_committed_group;
     auto record_pending_wait = [&](AsyncStateLocal *state, int commit_group_id,
                                    int insert_before, PrimExpr wait_count) {
@@ -2639,6 +2885,22 @@ private:
       } else if (analyzer_.CanProve(wait_count < pending_wait.wait_count)) {
         pending_wait = {pending_wait.insert_before, wait_count};
       }
+    };
+
+    auto take_provable_minimum = [&](Optional<PrimExpr> *current,
+                                     PrimExpr candidate) {
+      candidate = ana_normalized->Simplify(candidate);
+      if (!current->defined()) {
+        *current = candidate;
+        return;
+      }
+      if (ana_normalized->CanProve(candidate <= current->value())) {
+        *current = candidate;
+        return;
+      }
+      ICHECK(ana_normalized->CanProve(current->value() <= candidate))
+          << "InjectSoftwarePipeline: cannot prove the minimum conservative "
+             "async wait count; refusing to drop or reorder the wait";
     };
 
     for (size_t i = 0; i < new_stmts.size(); ++i) {
@@ -2658,22 +2920,118 @@ private:
         continue;
       }
 
-      int producer_stage_idx = -1;
+      // Gather every producer stage and buffer before selecting any wait.
+      // Commit-group lookup is deliberately deferred to the stage-local (or
+      // that stage's global tail) mapping so another stage cannot overwrite it.
+      std::map<int, BufferSet> required_buffers;
       for (const BufferRegion &read_region : new_stmts[i].reads) {
+        int producer_stage = -1;
         for (const auto &kv : async_states_) {
           if (kv.first <= new_stmts[i].stage &&
               kv.second.writes(read_region->buffer)) {
-            ICHECK(producer_stage_idx == -1 || producer_stage_idx == kv.first)
-                << "A dependency on multiple async stages is not supported";
-            producer_stage_idx = kv.first;
+            ICHECK_EQ(producer_stage, -1)
+                << "InjectSoftwarePipeline: buffer " << read_region->buffer
+                << " is written by multiple async producer stages; this "
+                   "dependency is unsupported";
+            producer_stage = kv.first;
           }
+        }
+        if (producer_stage != -1) {
+          required_buffers[producer_stage].insert(read_region->buffer);
         }
       }
 
-      if (producer_stage_idx == -1) {
+      if (required_buffers.empty()) {
         continue;
       }
 
+      if (required_buffers.size() > 1) {
+        ICHECK(has_multi_async_stage_dependency_)
+            << "InjectSoftwarePipeline: multi-async-stage dependency analysis "
+               "is inconsistent with the rewritten statements";
+
+        // Each required target permits all groups newer than that target to
+        // remain outstanding. A single hardware wait must satisfy every target,
+        // so the strongest conservative count is the MINIMUM, independently
+        // computed within each producer stage and then across stages. Never sum
+        // or max independent stage counts, and keep this wait at this consumer.
+        Optional<PrimExpr> coalesced_wait_count;
+        for (const auto &[producer_stage, buffers] : required_buffers) {
+          auto &dep_local_state = (*async_states_local)[producer_stage];
+          const auto &global_state = async_states_.at(producer_stage);
+          int num_commit_group = dep_local_state.commit_groups.size();
+          const BufferCommitGroupMap *buffer_to_commit_group =
+              &dep_local_state.buffer_to_commit_group;
+          int latest_group_id = -1;
+          Optional<PrimExpr> latest_producer_head;
+
+          if (num_commit_group == 0) {
+            ICHECK(!dep_local_state.producer_head);
+            PrimExpr tail_start = analyzer_.Simplify(
+                pipeline_loop_->min + pipeline_loop_->extent -
+                PrimExpr(max_stage_));
+            ICHECK(ana_normalized->CanProve(new_stmts[i].access_index >=
+                                            tail_start) &&
+                   global_state.commit_group_count > 0)
+                << "InjectSoftwarePipeline: cannot prove the physical commit "
+                   "groups required by a multi-async-stage consumer";
+            num_commit_group = global_state.commit_group_count;
+            buffer_to_commit_group = &global_state.buffer_to_commit_group;
+            latest_group_id = num_commit_group - 1;
+            latest_producer_head = global_state.producer_head.value();
+          } else {
+            ICHECK(dep_local_state.producer_head);
+            if (auto it = last_committed_group.find(producer_stage);
+                it != last_committed_group.end()) {
+              latest_group_id = it->second;
+              latest_producer_head = dep_local_state.producer_head.value();
+            } else {
+              latest_group_id = num_commit_group - 1;
+              latest_producer_head = dep_local_state.producer_head.value() - 1;
+            }
+          }
+
+          Optional<PrimExpr> stage_wait_count;
+          for (const Buffer &buffer : buffers) {
+            auto group = buffer_to_commit_group->find(buffer);
+            ICHECK(group != buffer_to_commit_group->end())
+                << "InjectSoftwarePipeline: buffer " << buffer
+                << " has no commit-group mapping in async producer stage "
+                << producer_stage;
+            int commit_group_id = group->second;
+            ICHECK_GE(commit_group_id, 0);
+            ICHECK_LT(commit_group_id, num_commit_group);
+            ICHECK(latest_producer_head)
+                << "InjectSoftwarePipeline: missing async producer head for buffer "
+                << buffer << " in producer stage " << producer_stage;
+
+            PrimExpr wait_count = analyzer_.Simplify(
+                (latest_producer_head.value() - new_stmts[i].access_index) *
+                    num_commit_group +
+                (latest_group_id - commit_group_id));
+            if (!ana_normalized->CanProve(wait_count >= 0)) {
+              // Prologue arithmetic can produce a negative lower bound when no
+              // earlier physical group is outstanding. Match the stock path:
+              // wait for zero groups rather than rejecting a valid first epoch.
+              wait_count = PrimExpr(0);
+            }
+            take_provable_minimum(&stage_wait_count, wait_count);
+          }
+          ICHECK(stage_wait_count.defined());
+          take_provable_minimum(&coalesced_wait_count,
+                                stage_wait_count.value());
+        }
+        ICHECK(coalesced_wait_count.defined());
+        auto inserted = coalesced_wait_counts->emplace(
+            static_cast<int>(i), coalesced_wait_count.value());
+        ICHECK(inserted.second)
+            << "InjectSoftwarePipeline: duplicate coalesced wait at consumer";
+        continue;
+      }
+
+      // Preserve the legacy single-producer-stage path, including its pending
+      // wait coalescing and tail handling.
+      int producer_stage_idx = required_buffers.begin()->first;
       auto &dep_local_state = (*async_states_local)[producer_stage_idx];
       int num_commit_group = dep_local_state.commit_groups.size();
 
@@ -2755,7 +3113,13 @@ private:
         if (!async_states_[producer_stage_idx].writes(read_region->buffer)) {
           continue;
         }
-        auto commit_group_id = buffer_to_commit_group.at(read_region->buffer);
+        auto group =
+            dep_local_state.buffer_to_commit_group.find(read_region->buffer);
+        ICHECK(group != dep_local_state.buffer_to_commit_group.end())
+            << "InjectSoftwarePipeline: missing stage-local commit-group "
+               "mapping for buffer "
+            << read_region->buffer;
+        int commit_group_id = group->second;
         ICHECK_GE(commit_group_id, 0);
         ICHECK_LT(commit_group_id, num_commit_group);
         if (!need_wait_count[commit_group_id]) {
@@ -2784,6 +3148,7 @@ private:
   std::vector<FinalStmtInfo> CompletePipelineLoopStatements(
       const std::vector<RewrittenStmtInfo> &stmts,
       const std::map<int, AsyncStateLocal> &async_states_local,
+      const std::map<int, PrimExpr> &coalesced_wait_counts,
       arith::Analyzer *ana_normalized) const {
     std::vector<FinalStmtInfo> new_stmts;
     new_stmts.reserve(stmts.size());
@@ -2849,7 +3214,18 @@ private:
 
     std::vector<FinalStmtInfo> result;
     for (size_t i = 0; i < new_stmts.size();) {
-      if (auto it = waits_before_stmt.find(i); it != waits_before_stmt.end()) {
+      auto coalesced = coalesced_wait_counts.find(static_cast<int>(i));
+      if (coalesced != coalesced_wait_counts.end()) {
+        ICHECK(waits_before_stmt.find(static_cast<int>(i)) ==
+               waits_before_stmt.end())
+            << "InjectSoftwarePipeline: refusing to merge independent waits "
+               "at a multi-async-stage consumer";
+        Stmt wait_stmt = make_wait_stmt(new_stmts[i].stage, coalesced->second,
+                                        Evaluate(0));
+        result.push_back({new_stmts[i].stage, new_stmts[i].access_index,
+                          new_stmts[i].predicate, wait_stmt});
+      } else if (auto it = waits_before_stmt.find(i);
+                 it != waits_before_stmt.end()) {
         for (const auto &[stage_id, wait_count] : it->second) {
           Stmt wait_stmt = make_wait_stmt(stage_id, wait_count, Evaluate(0));
           if (auto state_it = async_states_local.find(stage_id);
@@ -2971,7 +3347,7 @@ private:
 
     std::vector<RewrittenStmtInfo> new_stmts;
     std::map<int, AsyncStateLocal> async_states_local;
-    BufferCommitGroupMap buffer_to_commit_group;
+    std::map<int, PrimExpr> coalesced_wait_counts;
 
     for (const SBlock &block : ordered_stmts_) {
       const auto &pipeline_anno = pipeline_info_.at(block);
@@ -3008,7 +3384,7 @@ private:
       }
       new_block = Downcast<SBlock>(Substitute(
           new_block, {{pipeline_loop_->loop_var, normalized_access_index}}));
-      bool scheduled_bind = new_block->body.as<BindNode>() != nullptr;
+      bool scheduled_bind = IsFlatScalarBindChain(new_block->body);
       new_block = ReplayScalarBindings(new_block, normalized_access_index);
 
       Stmt rewritten_stmt = SBlockRealize({}, inbound, new_block);
@@ -3055,12 +3431,30 @@ private:
         for (const BufferRegion &write_region : new_block->writes) {
           auto &global_state = async_states_[stage];
           global_state.dst_buffers.insert(write_region->buffer);
+          if (multi_async_producer_stages_.count(stage)) {
+            auto local_group =
+                local_state.buffer_to_commit_group.find(write_region->buffer);
+            ICHECK(local_group == local_state.buffer_to_commit_group.end() ||
+                   local_group->second == commit_group_id)
+                << "InjectSoftwarePipeline: buffer " << write_region->buffer
+                << " changes physical commit group within async producer stage "
+                << stage;
+            auto global_group =
+                global_state.buffer_to_commit_group.find(write_region->buffer);
+            ICHECK(global_group == global_state.buffer_to_commit_group.end() ||
+                   global_group->second == commit_group_id)
+                << "InjectSoftwarePipeline: buffer " << write_region->buffer
+                << " changes physical commit group across pipeline fragments "
+                   "in async producer stage "
+                << stage;
+          }
+          local_state.buffer_to_commit_group[write_region->buffer] =
+              commit_group_id;
           global_state.buffer_to_commit_group[write_region->buffer] =
               commit_group_id;
           global_state.commit_group_count =
               std::max(global_state.commit_group_count,
                        static_cast<int>(local_state.commit_groups.size()));
-          buffer_to_commit_group[write_region->buffer] = commit_group_id;
         }
         async_states_[stage].producer_head = normalized_access_index;
         local_state.producer_head = normalized_access_index;
@@ -3085,10 +3479,10 @@ private:
       }
     }
 
-    PopulateWaitCounts(new_stmts, &ana_normalized, buffer_to_commit_group,
-                       &async_states_local);
+    PopulateWaitCounts(new_stmts, &ana_normalized, &async_states_local,
+                       &coalesced_wait_counts);
     std::vector<FinalStmtInfo> final_stmts = CompletePipelineLoopStatements(
-        new_stmts, async_states_local, &ana_normalized);
+        new_stmts, async_states_local, coalesced_wait_counts, &ana_normalized);
 
     Array<Stmt> stmts;
     for (const auto &stmt_info : final_stmts) {
@@ -3153,6 +3547,8 @@ private:
   Array<SBlock> ordered_stmts_;
   std::vector<ScalarBinding> scalar_bindings_;
   ScalarBindingMap scalar_binding_map_;
+  bool has_multi_async_stage_dependency_{false};
+  std::unordered_set<int> multi_async_producer_stages_;
   std::map<int, AsyncStateGlobal> async_states_;
 };
 
@@ -3368,12 +3764,256 @@ private:
     }
   }
 
+  void MaterializeScheduledBindClones(
+      const ForNode *loop, Array<SBlock> &original_order,
+      Array<SBlock> &scheduled_order, PipelineInfo *pipeline_info) {
+    auto annotation = loop->annotations.Get(kPipelineScalarClonePlan);
+    if (!annotation.has_value()) {
+      return;
+    }
+    auto original_count_anno =
+        loop->annotations.Get(kPipelineScalarCloneOriginalTaskCount);
+    ICHECK(original_count_anno.has_value())
+        << "InjectSoftwarePipeline: scalar clone plan lacks original task count";
+    int64_t original_count =
+        Downcast<IntImm>(original_count_anno.value())->value;
+    ICHECK_GE(original_count, 1);
+    ICHECK_EQ(scheduled_order.size(), original_count)
+        << "InjectSoftwarePipeline: scalar clone original task count does not "
+           "match the scheduled statement stream";
+    auto original_flat_anno =
+        loop->annotations.Get(kPipelineScalarCloneOriginalFlatIndices);
+    ICHECK(original_flat_anno.has_value())
+        << "InjectSoftwarePipeline: scalar clone plan lacks the original "
+           "task-to-flat statement mapping";
+    Array<Integer> original_flat_indices =
+        Downcast<Array<Integer>>(original_flat_anno.value());
+    ICHECK_EQ(original_flat_indices.size(), original_count)
+        << "InjectSoftwarePipeline: scalar clone task-to-flat mapping has the "
+           "wrong size";
+
+    // Clone metadata uses full-flat statement indices, while original_order has
+    // already removed AllocBuffer/DeclBuffer declarations and scheduled_order
+    // has also removed replayable Bind statements. Resolve through task ids and
+    // validate the full-flat indices instead of indexing either stripped array
+    // directly.
+    std::unordered_map<SBlock, size_t, ObjectPtrHash, ObjectPtrEqual>
+        original_positions;
+    for (size_t i = 0; i < original_order.size(); ++i) {
+      original_positions.emplace(original_order[i], i);
+    }
+    auto executable_index = [&](int64_t task) {
+      ICHECK(task >= 0 && task < original_count);
+      auto position = original_positions.find(scheduled_order[task]);
+      ICHECK(position != original_positions.end())
+          << "InjectSoftwarePipeline: scheduled scalar clone task is missing "
+             "from the executable statement stream";
+      return position->second;
+    };
+
+    struct CloneEntry {
+      int64_t clone_task;
+      int64_t definition_task;
+      int64_t consumer_task;
+      int64_t definition_stmt;
+      int64_t consumer_stmt;
+      size_t definition_index;
+      size_t consumer_index;
+      int64_t stage;
+      int64_t schedule_position;
+      int64_t consumer_schedule_position;
+      Var definition_var;
+      PrimExpr value;
+      Span span;
+      std::vector<int64_t> scalar_inputs;
+      SBlock block;
+    };
+    std::vector<CloneEntry> entries;
+    for (const Map<String, Any> &item :
+         Downcast<Array<Map<String, Any>>>(annotation.value())) {
+      auto integer = [&](const char *key) -> int64_t {
+        auto value = item.Get(key);
+        ICHECK(value.has_value())
+            << "InjectSoftwarePipeline: clone entry lacks " << key;
+        return Downcast<IntImm>(value.value())->value;
+      };
+      CloneEntry entry;
+      entry.clone_task = integer("clone_task");
+      entry.definition_task = integer("definition_task");
+      entry.consumer_task = integer("consumer_task");
+      entry.definition_stmt = integer("definition_stmt");
+      entry.consumer_stmt = integer("consumer_stmt");
+      entry.stage = integer("stage");
+      entry.schedule_position = integer("schedule_position");
+      entry.consumer_schedule_position = integer("consumer_schedule_position");
+      ICHECK(entry.clone_task >= original_count &&
+             entry.definition_task >= 0 &&
+             entry.definition_task < original_count &&
+             entry.consumer_task >= 0 && entry.consumer_task < original_count &&
+             entry.definition_stmt >= 0 && entry.consumer_stmt >= 0 &&
+             entry.schedule_position >= 0 &&
+             entry.consumer_schedule_position >= 0)
+          << "InjectSoftwarePipeline: scalar clone metadata index is out of range";
+      ICHECK_EQ(entry.definition_stmt,
+                original_flat_indices[entry.definition_task]->value)
+          << "InjectSoftwarePipeline: clone definition flat index does not "
+             "match its definition task";
+      ICHECK_EQ(entry.consumer_stmt,
+                original_flat_indices[entry.consumer_task]->value)
+          << "InjectSoftwarePipeline: clone consumer flat index does not match "
+             "its consumer task";
+      entry.definition_index = executable_index(entry.definition_task);
+      entry.consumer_index = executable_index(entry.consumer_task);
+      entry.definition_var = Downcast<Var>(item.at("definition_var"));
+      entry.value = Downcast<PrimExpr>(item.at("value"));
+      entry.span = original_order[entry.definition_index]->body->span;
+      ICHECK(IsCloneableScalarBind(
+          original_order[entry.definition_index]->body))
+          << "InjectSoftwarePipeline: refusing to clone non-pure or opaque "
+             "scalar definition "
+          << entry.definition_var;
+      for (const Integer &input :
+           Downcast<Array<Integer>>(item.at("scalar_inputs"))) {
+        entry.scalar_inputs.push_back(input->value);
+      }
+      entries.push_back(std::move(entry));
+    }
+    std::sort(entries.begin(), entries.end(),
+              [](const CloneEntry &left, const CloneEntry &right) {
+                return std::tie(left.schedule_position, left.clone_task) <
+                       std::tie(right.schedule_position, right.clone_task);
+              });
+    std::unordered_map<int64_t, size_t> entry_by_task;
+    for (size_t i = 0; i < entries.size(); ++i) {
+      auto inserted = entry_by_task.emplace(entries[i].clone_task, i);
+      ICHECK(inserted.second)
+          << "InjectSoftwarePipeline: duplicate clone_task in scalar clone plan";
+    }
+
+    using SubstitutionMap =
+        std::unordered_map<Var, PrimExpr, ObjectPtrHash, ObjectPtrEqual>;
+    std::unordered_map<int64_t, SubstitutionMap> consumer_substitutions;
+    std::unordered_map<int64_t, std::vector<size_t>> consumer_entries;
+    std::unordered_map<int64_t, Var> clone_vars;
+    for (size_t i = 0; i < entries.size(); ++i) {
+      CloneEntry &entry = entries[i];
+      SBlock consumer = original_order[entry.consumer_index];
+      const auto &consumer_annotation = pipeline_info->at(consumer);
+      ICHECK_EQ(entry.stage, consumer_annotation.stage)
+          << "InjectSoftwarePipeline: clone stage differs from consumer stage";
+      ICHECK_EQ(entry.consumer_schedule_position, consumer_annotation.order)
+          << "InjectSoftwarePipeline: clone consumer position differs from "
+             "the augmented original-task order";
+      const auto &definition_annotation =
+          pipeline_info->at(original_order[entry.definition_index]);
+      ICHECK_LE(definition_annotation.stage, consumer_annotation.stage)
+          << "InjectSoftwarePipeline: clone definition occurs after consumer";
+
+      SubstitutionMap input_substitutions;
+      for (int64_t input : entry.scalar_inputs) {
+        if (input < original_count) {
+          continue;
+        }
+        auto previous = entry_by_task.find(input);
+        auto fresh = clone_vars.find(input);
+        ICHECK(previous != entry_by_task.end() && fresh != clone_vars.end())
+            << "InjectSoftwarePipeline: clone input is not defined before use";
+        input_substitutions.emplace(entries[previous->second].definition_var,
+                                    fresh->second);
+      }
+      PrimExpr value = entry.value;
+      if (!input_substitutions.empty()) {
+        value = tirx::Substitute(value, input_substitutions);
+      }
+      Var fresh = entry.definition_var.copy_with_suffix("");
+      entry.block = MakeBlock(Bind(fresh, value, entry.span),
+                              buffer_data_to_buffer_);
+
+      // A clone is an independent schedule unit, not a consumer prefix. Its
+      // inferred reads therefore have to be complete before dependency, async,
+      // and buffer-version analysis. Check every materialized BufferLoad against
+      // the fresh SBlock contract rather than trusting virtual_reads metadata.
+      PostOrderVisit(entry.block->body, [&](const ObjectRef &node) {
+        const auto *load = node.as<BufferLoadNode>();
+        if (load == nullptr) {
+          return;
+        }
+        bool represented = std::any_of(
+            entry.block->reads.begin(), entry.block->reads.end(),
+            [&](const BufferRegion &read) {
+              return read->buffer.same_as(load->buffer);
+            });
+        ICHECK(represented)
+            << "InjectSoftwarePipeline: materialized scalar clone BufferLoad "
+               "is missing from the clone block reads";
+      });
+
+      PipelineAnnotation clone_annotation{
+          static_cast<int>(entry.stage),
+          static_cast<int>(entry.schedule_position), /*async=*/false,
+          /*async_group_id=*/-1, /*scalar_clone=*/true};
+      auto inserted =
+          pipeline_info->emplace(entry.block, clone_annotation);
+      ICHECK(inserted.second)
+          << "InjectSoftwarePipeline: duplicate scalar clone schedule block";
+      auto fresh_inserted = clone_vars.emplace(entry.clone_task, fresh);
+      ICHECK(fresh_inserted.second);
+      auto substitution_inserted =
+          consumer_substitutions[entry.consumer_task].emplace(
+              entry.definition_var, fresh);
+      ICHECK(substitution_inserted.second)
+          << "InjectSoftwarePipeline: duplicate clone definition for one "
+             "consumer";
+      consumer_entries[entry.consumer_task].push_back(i);
+    }
+
+    // Rewire each root consumer to the fresh definitions, then rebuild its
+    // reads/writes from the materialized body. The clone units themselves carry
+    // the clone-only BufferLoads; consumer metadata is still refreshed because
+    // scalar substitution can change its surrounding access expressions.
+    for (const auto &[consumer_task, substitutions] : consumer_substitutions) {
+      const std::vector<size_t> &indices = consumer_entries.at(consumer_task);
+      ICHECK(!indices.empty());
+      size_t consumer_index = entries[indices.front()].consumer_index;
+      SBlock old_block = original_order[consumer_index];
+      const auto consumer_annotation = pipeline_info->at(old_block);
+      SBlock consumer = old_block;
+      consumer.CopyOnWrite()->body =
+          tirx::Substitute(consumer->body, substitutions);
+      consumer = MakeBlock(SBlockRealize({}, Bool(true), consumer),
+                           buffer_data_to_buffer_);
+      original_order.Set(consumer_index, consumer);
+      for (size_t i = 0; i < scheduled_order.size(); ++i) {
+        if (scheduled_order[i].same_as(old_block)) {
+          scheduled_order.Set(i, consumer);
+        }
+      }
+      pipeline_info->erase(old_block);
+      pipeline_info->emplace(consumer, consumer_annotation);
+    }
+
+    // Keep the validation stream in original dataflow order, placing each clone
+    // at its logical use site. PipelineAnnotation.order remains the independent
+    // augmented physical order used by PipelineRewriter, so an intervening
+    // overwrite cannot be silently moved across the clone.
+    Array<SBlock> materialized_order;
+    for (int64_t task = 0; task < original_count; ++task) {
+      if (auto it = consumer_entries.find(task); it != consumer_entries.end()) {
+        for (size_t index : it->second) {
+          materialized_order.push_back(entries[index].block);
+        }
+      }
+      materialized_order.push_back(scheduled_order[task]);
+    }
+    scheduled_order = std::move(materialized_order);
+  }
+
   void ValidateScheduledBindDependencies(const PipelineInfo &pipeline_info,
                                          const Array<SBlock> &scheduled_order) {
     std::unordered_map<Var, SBlock, ObjectPtrHash, ObjectPtrEqual>
         bind_producers;
     for (const SBlock &block : scheduled_order) {
-      if (const auto *bind = block->body.as<BindNode>()) {
+      if (const auto *bind = TrailingFlatScalarBind(block->body)) {
         bind_producers.emplace(bind->var, block);
       }
     }
@@ -3860,6 +4500,9 @@ private:
       }
     }
 
+    const size_t original_scheduled_count = scheduled_order.size();
+    MaterializeScheduledBindClones(op, original_order, scheduled_order,
+                                   &pipeline_info);
     ValidateScheduledBindDependencies(pipeline_info, scheduled_order);
     ValidatePipelineBody(pipeline_info, scheduled_order);
 
@@ -3902,14 +4545,14 @@ private:
           auto raw_tma_copies =
               Downcast<Array<Integer>>(tma_copies_anno.value());
           Array<Integer> tma_copies;
-          if (raw_tma_copies.size() == scheduled_order.size()) {
+          if (raw_tma_copies.size() == original_scheduled_count) {
             tma_copies = raw_tma_copies;
           } else if (raw_tma_copies.size() == original_order.size()) {
             for (size_t annotation_index : scheduled_annotation_indices) {
               tma_copies.push_back(raw_tma_copies[annotation_index]);
             }
           }
-          if (tma_copies.size() == scheduled_order.size()) {
+          if (tma_copies.size() == original_scheduled_count) {
             bool has_tma_copy =
                 std::any_of(tma_copies.begin(), tma_copies.end(),
                             [](const Integer &tc) { return !is_zero(tc); });
