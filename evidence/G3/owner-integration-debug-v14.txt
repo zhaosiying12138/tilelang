@@ -1,0 +1,26 @@
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+.
+============================================================================== fixture duration top ==============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.001190 grand total                                                                                                                         2 0:00:00.000595 0:00:00.001155
+============================================================================= test call duration top =============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.780621 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization   1 0:00:00.780621 0:00:00.780621
+0:00:00.780621 grand total                                                                                                                         1 0:00:00.780621 0:00:00.780621
+============================================================================ test setup duration top =============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.001376 grand total                                                                                                                         1 0:00:00.001376 0:00:00.001376
+=========================================================================== test teardown duration top ===========================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.000073 grand total                                                                                                                         1 0:00:00.000073 0:00:00.000073
+1 passed in 1.78s

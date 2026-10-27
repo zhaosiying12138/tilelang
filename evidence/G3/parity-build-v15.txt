@@ -1,0 +1,157 @@
+Using pip 26.2.2 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Obtaining file:///home/zhaosiying/codebase/tilelang-cuda-z3
+  Checking if build backend supports build_editable: started
+  Running command Checking if build backend supports build_editable
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Running command Preparing editable metadata (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 18:03:38,556 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (metadata_editable)
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: tilelang
+  Building editable for tilelang (pyproject.toml): started
+  Running command Building editable for tilelang (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 18:03:38,731 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (editable)
+  *** Configuring CMake...
+  loading initial cache file build/CMakeInit.txt
+  -- Using ccache: /usr/bin/ccache with base_dir=/home/zhaosiying/codebase/tilelang-cuda-z3
+  -- Using TVM source: /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm
+  -- CUDA Backend is enabled
+  -- Ascend Backend is enabled
+  -- CANN aprof_pub.h was not found; building Ascend without native profiling. Set ASCEND_HOME_PATH to the CANN SDK root and reconfigure to enable CANN Node reporting.
+  -- Find Z3 in path: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3
+  -- Found Z3 include dir: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/include
+  -- Found Z3 library: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/lib/libz3.so
+  -- Forbidding undefined symbols in shared library, using -Wl,--no-undefined on platform Linux
+  -- Build with RPC support...
+  -- Build Alloc alignment set to 64
+  -- CMAKE_C_COMPILER_LAUNCHER already defined.  Not using ccache.
+  -- Custom CUDA_PATH=/usr/local/cuda-13.3
+  -- Found CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-13.3
+  -- Found CUDA_CUDA_LIBRARY=/usr/local/cuda-13.3/targets/x86_64-linux/lib/stubs/libcuda.so
+  -- Found CUDA_CUDART_LIBRARY=cudart_stub
+  -- Found CUDA_CUDNN_INCLUDE_DIRS=
+  -- Found CUDA_CUDNN_LIBRARY=
+  -- Found CUDA_CUBLAS_LIBRARY=/usr/local/cuda-13.3/lib64/libcublas.so
+  -- Found CUDA_CURAND_LIBRARY=/usr/local/cuda-13.3/lib64/libcurand.so
+  -- Found CUDA_CUBLASLT_LIBRARY=/usr/local/cuda-13.3/lib64/libcublasLt.so
+  -- Found CUDA_NVTX_LIBRARY=/usr/local/cuda-13.3/lib64/libnvtx3interop.so
+  -- Found CUDA_nvToolsExt_LIBRARY=
+  -- Build with CUDA  support
+  -- Build with contrib.random
+  -- Build with contrib.sort
+  -- Git found: /usr/bin/git
+  -- Found TVM_GIT_COMMIT_HASH=4211874e9e4b8770fd20ad0d98ab80afd1df5028
+  -- Found TVM_GIT_COMMIT_TIME=2026-09-28 19:01:43 +0800
+  -- Detected target triple: x86_64-linux-gnu
+  -- Setting C++ macro TVM_FFI_USE_LIBBACKTRACE - 1
+  -- Setting C++ macro TVM_FFI_BACKTRACE_ON_SEGFAULT - 1
+  -- Build with thread support...
+  -- Added "-fuse-ld=mold" to linker flags
+  -- Configuring done (7.7s)
+  -- Generating done (0.1s)
+  -- Build files have been written to: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+  *** Building project with Ninja...
+  [0/2] Re-checking globbed directories...
+  [1/3] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o
+  FAILED: [code=1] CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o
+  /usr/bin/ccache /usr/bin/g++ -DCUDA_MAJOR_VERSION=13 -DDMLC_USE_LOGGING_LIBRARY="<tvm/runtime/logging.h>" -DTVM_LOG_CUSTOMIZE=1 -I/home/zhaosiying/codebase/tilelang-cuda-z3/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/dlpack/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl -O3 -DNDEBUG -fPIC -MD -MT CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o -MF CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o.d -o CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o -c /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc: In constructor ‘tvm::tl::{anonymous}::OwnerRingRewriter::OwnerRingRewriter(const std::vector<tvm::tirx::For>&, const tvm::tirx::SBlock&, int64_t, const tvm::ffi::Array<long int>&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:205:51: error: no matching function for call to ‘tvm::ffi::Array<tvm::IntImm>::Array(const tvm::ffi::Array<long int>&)’
+    205 |       : schedule_block_(schedule_block), ii_(ii), starts_(starts) {
+        |                                                   ^~~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:205:51: note: there are 11 candidates
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:14:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:306:3: note: candidate 1: ‘template<class IterType> tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(IterType, IterType) [with T = tvm::IntImm; <template-parameter-1-2> = void]’
+    306 |   Array(IterType first, IterType last) {  // NOLINT(performance-unnecessary-value-param)
+        |   ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:306:3: note: candidate expects 2 arguments, 1 provided
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:253:3: note: candidate 2: ‘template<class U, class> tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(const tvm::ffi::Array<U>&) [with <template-parameter-2-2> = U; T = tvm::IntImm; <template-parameter-1-2> = void]’
+    253 |   Array(const Array<U>& other)  // NOLINT(google-explicit-constructor)
+        |   ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:253:3: note: template argument deduction/substitution failed:
+  In file included from /usr/include/c++/15/bits/cpp_type_traits.h:42,
+                   from /usr/include/c++/15/bits/stl_algobase.h:61,
+                   from /usr/include/c++/15/algorithm:62,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:6:
+  /usr/include/c++/15/type_traits: In substitution of ‘template<bool _Cond, class _Tp> using std::enable_if_t = typename std::enable_if::type [with bool _Cond = false; _Tp = void]’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:252:25:   required from here
+    252 |   template <typename U, typename = std::enable_if_t<details::type_contains_v<T, U>>>
+        |                         ^~~~~~~~
+  /usr/include/c++/15/type_traits:2838:11: error: no type named ‘type’ in ‘struct std::enable_if<false, void>’
+   2838 |     using enable_if_t = typename enable_if<_Cond, _Tp>::type;
+        |           ^~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:245:3: note: candidate 3: ‘template<class U, class> tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(tvm::ffi::Array<U>&&) [with <template-parameter-2-2> = U; T = tvm::IntImm; <template-parameter-1-2> = void]’
+    245 |   Array(Array<U>&& other)  // NOLINT(google-explicit-constructor)
+        |   ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:245:3: note: template argument deduction/substitution failed:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:205:51: note:   types ‘tvm::ffi::Array<T>’ and ‘const tvm::ffi::Array<long int>’ have incompatible cv-qualifiers
+    205 |       : schedule_block_(schedule_block), ii_(ii), starts_(starts) {
+        |                                                   ^~~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:333:12: note: candidate 4: ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(size_t, const T&) [with T = tvm::IntImm; <template-parameter-1-2> = void; size_t = long unsigned int]’
+    333 |   explicit Array(const size_t n, const T& val) { data_ = ArrayObj::CreateRepeated(n, val); }
+        |            ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:333:12: note: candidate expects 2 arguments, 1 provided
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:324:3: note: candidate 5: ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(const std::vector<T>&) [with T = tvm::IntImm; <template-parameter-1-2> = void]’
+    324 |   Array(const std::vector<T>& init) {  // NOLINT(*)
+        |   ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:324:31: note: no known conversion for argument 1 from ‘const tvm::ffi::Array<long int>’ to ‘const std::vector<tvm::IntImm, std::allocator<tvm::IntImm> >&’
+    324 |   Array(const std::vector<T>& init) {  // NOLINT(*)
+        |         ~~~~~~~~~~~~~~~~~~~~~~^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:316:3: note: candidate 6: ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(std::initializer_list<_Tp>) [with T = tvm::IntImm; <template-parameter-1-2> = void]’
+    316 |   Array(std::initializer_list<T> init) {  // NOLINT(*)
+        |   ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:316:34: note: no known conversion for argument 1 from ‘const tvm::ffi::Array<long int>’ to ‘std::initializer_list<tvm::IntImm>’
+    316 |   Array(std::initializer_list<T> init) {  // NOLINT(*)
+        |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:297:12: note: candidate 7: ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(tvm::ffi::ObjectPtr<tvm::ffi::Object>) [with T = tvm::IntImm; <template-parameter-1-2> = void]’
+    297 |   explicit Array(ObjectPtr<Object> n) : ObjectRef(std::move(n)) {}
+        |            ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:297:36: note: no known conversion for argument 1 from ‘const tvm::ffi::Array<long int>’ to ‘tvm::ffi::ObjectPtr<tvm::ffi::Object>’
+    297 |   explicit Array(ObjectPtr<Object> n) : ObjectRef(std::move(n)) {}
+        |                  ~~~~~~~~~~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:238:3: note: candidate 8: ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(const tvm::ffi::Array<T>&) [with T = tvm::IntImm; <template-parameter-1-2> = void; typename std::enable_if<storage_enabled_v<T>, void>::type = void]’
+    238 |   Array(const Array<T>& other) : ObjectRef(other.data_) {}  // NOLINT(google-explicit-constructor)
+        |   ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:238:25: note: no known conversion for argument 1 from ‘const tvm::ffi::Array<long int>’ to ‘const tvm::ffi::Array<tvm::IntImm>&’
+    238 |   Array(const Array<T>& other) : ObjectRef(other.data_) {}  // NOLINT(google-explicit-constructor)
+        |         ~~~~~~~~~~~~~~~~^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:232:3: note: candidate 9: ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(tvm::ffi::Array<T>&&) [with T = tvm::IntImm; <template-parameter-1-2> = void; typename std::enable_if<storage_enabled_v<T>, void>::type = void]’
+    232 |   Array(Array<T>&& other)  // NOLINT(google-explicit-constructor)
+        |   ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:232:20: note: no known conversion for argument 1 from ‘const tvm::ffi::Array<long int>’ to ‘tvm::ffi::Array<tvm::IntImm>&&’
+    232 |   Array(Array<T>&& other)  // NOLINT(google-explicit-constructor)
+        |         ~~~~~~~~~~~^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:227:3: note: candidate 10: ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array() [with T = tvm::IntImm; <template-parameter-1-2> = void]’
+    227 |   Array() { data_ = ArrayObj::Empty(); }  // NOLINT(modernize-use-equals-default)
+        |   ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:227:3: note: candidate expects 0 arguments, 1 provided
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:223:12: note: candidate 11: ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(tvm::ffi::UnsafeInit) [with T = tvm::IntImm; <template-parameter-1-2> = void]’
+    223 |   explicit Array(UnsafeInit tag) : ObjectRef(tag) {}
+        |            ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:223:29: note: no known conversion for argument 1 from ‘const tvm::ffi::Array<long int>’ to ‘tvm::ffi::UnsafeInit’
+    223 |   explicit Array(UnsafeInit tag) : ObjectRef(tag) {}
+        |                  ~~~~~~~~~~~^~~
+  ninja: build stopped: subcommand failed.
+
+  *** CMake build failed
+  error: subprocess-exited-with-error
+  
+  × Building editable for tilelang (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> No available output.
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  full command: /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py build_editable /tmp/tmpyaxjjjtc
+  cwd: /home/zhaosiying/codebase/tilelang-cuda-z3
+  Building editable for tilelang (pyproject.toml): finished with status 'error'
+  ERROR: Failed building editable for tilelang
+Failed to build tilelang
+error: failed-wheel-build-for-install
+
+× Failed to build installable wheels for some pyproject.toml based projects
+╰─> tilelang

@@ -1,0 +1,29 @@
+[17:26:39] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3831: Warning: CLONE DEBUG: substitutions=1 changed=1 original=bind_B = T.Buffer((8,), "int32")
+scheduled_value = T.int32()
+k = T.int32()
+bind_B[k] = scheduled_value replaced=bind_B = T.Buffer((8,), "int32")
+scheduled_value = T.int32()
+k = T.int32()
+bind_B[k] = scheduled_value
+[17:26:39] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3835: Warning: CLONE DEBUG: remaining var bind_B matches original=0
+[17:26:39] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3835: Warning: CLONE DEBUG: remaining var scheduled_value matches original=0
+[17:26:39] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3835: Warning: CLONE DEBUG: remaining var k matches original=0
+[17:26:39] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3857: Warning: CLONE DEBUG: rewritten consumer body=bind_A = T.Buffer((8,), "int32")
+k = T.int32()
+scheduled_value: T.int32 = bind_A[k] + 1
+bind_B = T.Buffer((8,), "int32")
+bind_B[k] = scheduled_value
+.
+============================= fixture duration top =============================
+total          name        num med            max           
+0:00:00.000027 grand total   1 0:00:00.000027 0:00:00.000027
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.002699 grand total   1 0:00:00.002699 0:00:00.002699
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000103 grand total   1 0:00:00.000103 0:00:00.000103
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000059 grand total   1 0:00:00.000059 0:00:00.000059
+1 passed in 3.90s

@@ -1,0 +1,59 @@
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+F
+=================================== FAILURES ===================================
+___________ test_function_level_owner_validation_and_materialization ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-114/test_function_level_owner_vali0')
+
+    def test_function_level_owner_validation_and_materialization(tmp_path):
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_100a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+        func = _owner_kernel(2, str(tmp_path)).with_attr("global_symbol", "main")
+        mod = tvm.IRModule.from_expr(func)
+        mod = tvm.tirx.transform.BindTarget(target)(mod)
+        mod = tilelang.transform.MaterializeKernelLaunch()(mod)
+        mod = _function_pass(mod, config_key)
+        validated = [
+            block
+            for block in collect_nodes(mod["main"], tvm.tirx.SBlock)
+            if "tl_z3_owner_ring_validated" in block.annotations
+        ]
+        assert len(validated) == 1
+        for loop in collect_nodes(mod["main"], tvm.tirx.For):
+>           assert "tl_z3_owner_ring" not in loop.annotations
+E           assert 'tl_z3_owner_ring' not in {"tl_z3_pipeline": True, "tl_z3_pipeline_latencies": (T.int64(4),), "tl_z3_pipeline_iis": (T.int64(1),), "tl_z3_pipeline_resource_flags": (T.int64(1),), "tl_z3_pipeline_data_deps": (), "tl_z3_pipeline_resource_deps": (), "tl_z3_pipeline_owner_exclusion_deps": ((T.int64(0), T.int64(1), T.int64(1), T.int64(2)),), "tl_z3_pipeline_pipe_order_deps": (), "tl_z3_pipeline_stage_order_deps": (), "tl_z3_pipeline_buffer_sizes": (), "tl_z3_pipeline_memory_groups": (), "tl_z3_pipeline_buffer_vars": (), "tl_z3_pipeline_resource_bits": T.int64(7), "tl_z3_pipeline_enable_offset": False, "tl_z3_pipeline_manual_stages": (), "tl_z3_pipeline_manual_schedule": False, "tl_z3_pipeline_seed": T.int64(42), "tl_z3_pipeline_recalculate_buffer_versions": True, "tl_z3_pipeline_verbose": True, "tl_z3_owner_ring": T.int64(0), "tl_z3_pipeline_debug_dir": "/tmp/pytest-of-zhaosiying/pytest-114/test_function_level_owner_vali0", "tl.ws_op_id": "owner0", "num_stages": 2}
+E            +  where {"tl_z3_pipeline": True, "tl_z3_pipeline_latencies": (T.int64(4),), "tl_z3_pipeline_iis": (T.int64(1),), "tl_z3_pipeline_resource_flags": (T.int64(1),), "tl_z3_pipeline_data_deps": (), "tl_z3_pipeline_resource_deps": (), "tl_z3_pipeline_owner_exclusion_deps": ((T.int64(0), T.int64(1), T.int64(1), T.int64(2)),), "tl_z3_pipeline_pipe_order_deps": (), "tl_z3_pipeline_stage_order_deps": (), "tl_z3_pipeline_buffer_sizes": (), "tl_z3_pipeline_memory_groups": (), "tl_z3_pipeline_buffer_vars": (), "tl_z3_pipeline_resource_bits": T.int64(7), "tl_z3_pipeline_enable_offset": False, "tl_z3_pipeline_manual_stages": (), "tl_z3_pipeline_manual_schedule": False, "tl_z3_pipeline_seed": T.int64(42), "tl_z3_pipeline_recalculate_buffer_versions": True, "tl_z3_pipeline_verbose": True, "tl_z3_owner_ring": T.int64(0), "tl_z3_pipeline_debug_dir": "/tmp/pytest-of-zhaosiying/pytest-114/test_function_level_owner_vali0", "tl.ws_op_id": "owner0", "num_stages": 2} = for i in T.serial(3, annotations={"num_stages": 2, "tl.ws_op_id": "owner0", "tl_z3_owner_ring": T.int64(0), "tl_z3_pipeline": True, "tl_z3_pipeline_buffer_sizes": [], "tl_z3_pipeline_buffer_vars": [], "tl_z3_pipeline_data_deps": [], "tl_z3_pipeline_debug_dir": "/tmp/pytest-of-zhaosiying/pytest-114/test_function_level_owner_vali0", "tl_z3_pipeline_enable_offset": False, "tl_z3_pipeline_iis": [T.int64(1)], "tl_z3_pipeline_latencies": [T.int64(4)], "tl_z3_pipeline_manual_schedule": False, "tl_z3_pipeline_manual_stages": [], "tl_z3_pipeline_memory_groups": [], "tl_z3_pipeline_owner_exclusion_deps": [[T.int64(0), T.int64(1), T.int64(1), T.int64(2)]], "tl_z3_pipeline_pipe_order_deps": [], "tl_z3_pipeline_recalculate_buffer_versions": True, "tl_z3_pipeline_resource_bits": T.int64(7), "tl_z3_pipeline_resource_deps": [], "tl_z3_pipeline_resource_flags": [T.int64(1)], "tl_z3_pipeline_seed": T.int64(42), "tl_z3_pipeline_stage_order_deps": [], "tl_z3_pipeline_verbose": True}):\n    ring = T.Buffer((4,), scope="shared")\n    T.fill(T.region(ring[0], 2, 4), i, tl.ws_op_id="produce0")\n    frag = T.Buffer((4,), scope="local.fragment")\n    T.copy(T.region(ring[0], 1, 4), T.region(frag[0], 2, 4), tl.ws_op_id="consume0")\n    B = T.Buffer((64,), strides=(1,))\n    T.copy(T.region(frag[0], 1, 4), T.region(B[i * 4], 2, 4), tl.ws_op_id="output0").annotations
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:118: AssertionError
+============================================================================== fixture duration top ==============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.000790 grand total                                                                                                                         2 0:00:00.000395 0:00:00.000759
+============================================================================= test call duration top =============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.616008 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization   1 0:00:00.616008 0:00:00.616008
+0:00:00.616008 grand total                                                                                                                         1 0:00:00.616008 0:00:00.616008
+============================================================================ test setup duration top =============================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.000923 grand total                                                                                                                         1 0:00:00.000923 0:00:00.000923
+=========================================================================== test teardown duration top ===========================================================================
+total          name                                                                                                                              num med            max           
+0:00:00.000056 grand total                                                                                                                         1 0:00:00.000056 0:00:00.000056
+=========================== short test summary info ============================
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization
+1 failed in 4.50s

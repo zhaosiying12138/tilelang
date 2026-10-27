@@ -1,0 +1,16 @@
+..
+==================================================================================== fixture duration top =====================================================================================
+total          name                                                                                                                                           num med            max           
+       0:00:00 grand total                                                                                                                                      0        0:00:00        0:00:00
+=================================================================================== test call duration top ====================================================================================
+total          name                                                                                                                                           num med            max           
+0:00:00.028652 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer   1 0:00:00.028652 0:00:00.028652
+0:00:00.013206 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_preserves_four_task_z3_shape                   1 0:00:00.013206 0:00:00.013206
+0:00:00.041858 grand total                                                                                                                                      2 0:00:00.020929 0:00:00.028652
+=================================================================================== test setup duration top ===================================================================================
+total          name                                                                                                                                           num med            max           
+0:00:00.000125 grand total                                                                                                                                      2 0:00:00.000063 0:00:00.000100
+================================================================================= test teardown duration top ==================================================================================
+total          name                                                                                                                                           num med            max           
+0:00:00.000070 grand total                                                                                                                                      2 0:00:00.000035 0:00:00.000036
+2 passed in 3.81s

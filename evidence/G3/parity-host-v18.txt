@@ -1,0 +1,60 @@
+........................................................................ [ 13%]
+........................................................................ [ 26%]
+........................................................................ [ 39%]
+........................................................................ [ 52%]
+........................................................................ [ 65%]
+........................................................................ [ 78%]
+........................................................................ [ 92%]
+......s..................s.................                              [100%]
+=============================== warnings summary ===============================
+testing/python/transform/test_tilelang_z3_schedule_units.py::test_public_frontend_emits_exact_marker_shapes
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_per_role_frontend_emits_only_recursive_marker
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================================================================================= fixture duration top ==========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.012617 grand total                                                                                                                                              576 0:00:00.000017 0:00:00.000983
+======================================================================================== test call duration top =========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:02.108543 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                    1 0:00:02.108543 0:00:02.108543
+0:00:01.161965 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers                        3 0:00:00.051924 0:00:01.059430
+0:00:00.565619 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization                          1 0:00:00.565619 0:00:00.565619
+0:00:00.445667 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                                  18 0:00:00.017241 0:00:00.127156
+0:00:00.307566 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_accepts_role_uniform_loop_bounds                        2 0:00:00.153783 0:00:00.154233
+0:00:00.114538 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                              1 0:00:00.114538 0:00:00.114538
+0:00:00.112296 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                               10 0:00:00.011244 0:00:00.012178
+0:00:00.103038 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_stages_bind_with_dependent_copy                              1 0:00:00.103038 0:00:00.103038
+0:00:00.101758 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_counter_group_guard_equivalence_and_independent_depths                               4 0:00:00.024297 0:00:00.030980
+0:00:00.094853 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_late_guard_definition_uses_lexical_auto_and_rejects_explicit_counter                 1 0:00:00.094853 0:00:00.094853
+0:00:00.092742 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                           2 0:00:00.046371 0:00:00.046513
+0:00:00.084431 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                               2 0:00:00.042215 0:00:00.043650
+0:00:00.059213 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata   2 0:00:00.029607 0:00:00.030533
+0:00:00.052845 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer             2 0:00:00.026423 0:00:00.027055
+0:00:00.051917 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering            12 0:00:00.003621 0:00:00.008662
+0:00:00.046927 testing/python/transform/test_tilelang_z3_task_analysis.py::test_aliased_views_keep_clone_raw_war_constraints_and_versions                                 2 0:00:00.023464 0:00:00.025162
+0:00:00.046770 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_compatible_storages_intern_one_counter_domain_and_ids_are_deterministic              1 0:00:00.046770 0:00:00.046770
+0:00:00.043048 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_full_commit_wait_placement                   2 0:00:00.021524 0:00:00.025490
+0:00:00.036214 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds                          4 0:00:00.009259 0:00:00.010363
+0:00:00.035253 testing/python/transform/test_tilelang_transform_unroll_loop.py::test_unroll_decl_buffer_defs_are_fresh                                                    1 0:00:00.035253 0:00:00.035253
+0:00:00.033488 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_role_uniform_owner_loop_bounds_remain_supported                                         2 0:00:00.016744 0:00:00.016829
+0:00:00.031923 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_versions_reshape_and_view_aliases_by_storage                             1 0:00:00.031923 0:00:00.031923
+0:00:00.028704 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                              1 0:00:00.028704 0:00:00.028704
+0:00:00.027680 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                          2 0:00:00.013840 0:00:00.014546
+0:00:00.027007 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                        3 0:00:00.008998 0:00:00.009195
+0:00:00.026542 testing/python/transform/test_tilelang_cuda_z3_nested_task_analysis.py::test_manual_ring_checks_beyond_distance_one                                        1 0:00:00.026542 0:00:00.026542
+0:00:00.025020 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum               1 0:00:00.025020 0:00:00.025020
+0:00:00.024886 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_cycle_imbalance_rejected                                                 1 0:00:00.024886 0:00:00.024886
+0:00:00.024571 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides              1 0:00:00.024571 0:00:00.024571
+0:00:00.024514 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_three_sibling_owners_share_one_continuous_counter_plan                               1 0:00:00.024514 0:00:00.024514
+0:00:07.863585 grand total                                                                                                                                              545 0:00:00.002503 0:00:02.108543
+======================================================================================== test setup duration top ========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.052523 grand total                                                                                                                                              547 0:00:00.000043 0:00:00.001168
+====================================================================================== test teardown duration top =======================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.029938 grand total                                                                                                                                              547 0:00:00.000047 0:00:00.000309
+545 passed, 2 skipped, 3 deselected, 4 warnings in 9.18s

@@ -1,0 +1,200 @@
+F
+=================================== FAILURES ===================================
+______ test_recursive_mainline_compile_only_order_and_before_after_audit _______
+
+    def test_recursive_mainline_compile_only_order_and_before_after_audit():
+        _require_recursive_library()
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_120a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+        audit = _RecursiveAudit()
+        with target, tvm.transform.PassContext(config={_CONFIG: True}, instruments=[audit]):
+>           artifact = tilelang.lower(
+                _nested_fixed_stage_kernel(),
+                target=target,
+                enable_device_compile=False,
+            )
+
+testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tilelang/engine/lower.py:238: in lower
+    return lower_with_context(
+tilelang/engine/lower.py:165: in lower_with_context
+    return _lower_with_context_impl(
+tilelang/engine/lower.py:184: in _lower_with_context_impl
+    host_mod, device_mod, params, target, target_host = lower_to_host_device_ir(
+tilelang/engine/lower.py:136: in lower_to_host_device_ir
+    mod = context.lower(mod)
+          ^^^^^^^^^^^^^^^^^^
+tilelang/backend/module.py:214: in lower
+    return self.module.lower(mod, self.target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/backend/module.py:115: in lower
+    return self.get_pipeline(target).lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/backend/pass_pipeline/pipeline.py:31: in lower
+    return self._lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/cuda/pipeline.py:316: in CUDAPassPipelineBody
+    mod = CUDAPassPipelineBodyPrologue(mod, target)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/cuda/pipeline.py:266: in CUDAPassPipelineBodyPrologue
+    mod = tilelang.cuda.transform.BuildZ3WSSchedule(target)(mod)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tirx::transform::__TVMFFIStaticInitFunc17()::{lambda(tvm::ffi::TypedFunction<tvm::tirx::PrimFunc (tvm::ffi::RValueRef<tvm::tirx::PrimFunc, void>, tvm::IRModule, tvm::transform::PassContext)>, tvm::transform::PassInfo)#1}::operator()(tvm::ffi::TypedFunction<tvm::tirx::PrimFunc (tvm::ffi::RValueRef<tvm::tirx::PrimFunc, void>, tvm::IRModule, tvm::transform::PassContext)>, tvm::transform::PassInfo) const::{lambda(tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tirx::transform::__TVMFFIStaticInitFunc17()::{lambda(tvm::ffi::TypedFunction<tvm::tirx::PrimFunc (tvm::ffi::RValueRef<tvm::tirx::PrimFunc, void>, tvm::IRModule, tvm::transform::PassContext)>, tvm::transform::PassInfo)#1}::operator()(tvm::ffi::TypedFunction<tvm::tirx::PrimFunc (tvm::ffi::RValueRef<tvm::tirx::PrimFunc, void>, tvm::IRModule, tvm::transform::PassContext)>, tvm::transform::PassInfo) const::{lambda(tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext) const
+    ???
+<unknown>:0: in TVMFFIPyCallback(void*, TVMFFIAny const*, int, TVMFFIAny*)
+    ???
+<unknown>:0: in TVMFFIPyCallManager::ForwardPyErrorToFFI()
+    ???
+<unknown>:0: in TVMFFICyErrorSetRaisedFromPyError(_object*)
+    ???
+tilelang/cuda/transform/__init__.py:48: in pass_fn
+    body = ir_transform(func.body, None, rewrite_root, ["tirx.SBlock"])
+3rdparty/tvm/python/tvm/tirx/stmt_functor.py:47: in ir_transform
+    return _ffi_api.IRTransform(stmt, preorder, postorder, only_enable)  # type: ignore
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tirx::IRTransform(tvm::tirx::Stmt, tvm::ffi::Function const&, tvm::ffi::Function const&, tvm::ffi::Optional<tvm::ffi::Array<tvm::ffi::String, void>, void>)
+    ???
+<unknown>:0: in tvm::tirx::Stmt tvm::tirx::IRTransformer::MutateInternal<tvm::tirx::Stmt, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1}>(tvm::tirx::Stmt const&, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::tirx::Stmt tvm::tirx::IRTransformer::MutateInternal<tvm::tirx::Stmt, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1}>(tvm::tirx::Stmt const&, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::tirx::Stmt tvm::tirx::IRTransformer::MutateInternal<tvm::tirx::Stmt, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1}>(tvm::tirx::Stmt const&, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::tirx::Stmt tvm::tirx::IRTransformer::MutateInternal<tvm::tirx::Stmt, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1}>(tvm::tirx::Stmt const&, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::tirx::Stmt tvm::tirx::IRTransformer::MutateInternal<tvm::tirx::Stmt, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1}>(tvm::tirx::Stmt const&, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::tirx::Stmt tvm::tirx::IRTransformer::MutateInternal<tvm::tirx::Stmt, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1}>(tvm::tirx::Stmt const&, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::tirx::Stmt tvm::tirx::IRTransformer::MutateInternal<tvm::tirx::Stmt, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1}>(tvm::tirx::Stmt const&, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::tirx::Stmt tvm::tirx::IRTransformer::MutateInternal<tvm::tirx::Stmt, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1}>(tvm::tirx::Stmt const&, tvm::tirx::IRTransformer::VisitStmt(tvm::tirx::Stmt const&)::{lambda(tvm::tirx::Stmt const&)#1})
+    ???
+<unknown>:0: in TVMFFIPyCallback(void*, TVMFFIAny const*, int, TVMFFIAny*)
+    ???
+<unknown>:0: in TVMFFIPyCallManager::ForwardPyErrorToFFI()
+    ???
+<unknown>:0: in TVMFFICyErrorSetRaisedFromPyError(_object*)
+    ???
+tilelang/cuda/transform/__init__.py:46: in rewrite_root
+    return rewrite(stmt) if found else None
+tilelang/cuda/transform/__init__.py:79: in build
+    built = _ffi_api.Z3BuildWSSchedule(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::BuildWSScheduleInspection(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String, long, bool)
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::BuildZ3WSSchedule(tvm::tl::cuda::z3::ScheduledTIR*, tvm::tl::cuda::z3::MultiBufferPlan const&, tvm::tl::cuda::z3::CudaRoleTable const&, int, bool)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(constant != nullptr && constant->value > 0)
+E   tvm.error.InternalError: Check failed: (constant != nullptr && constant->value > 0) is false: Lifetime adapter requires a static lexical period for shared
+
+src/cuda/transform/z3_ws_schedule_builder.cc:813: InternalError
+================================================================================ fixture duration top =================================================================================
+total          name                                                                                                                                   num med            max           
+0:00:00.000806 grand total                                                                                                                              4 0:00:00.000026 0:00:00.000739
+=============================================================================== test call duration top ================================================================================
+total          name                                                                                                                                   num med            max           
+0:00:01.016524 testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py::test_recursive_mainline_compile_only_order_and_before_after_audit   1 0:00:01.016524 0:00:01.016524
+0:00:01.016524 grand total                                                                                                                              1 0:00:01.016524 0:00:01.016524
+=============================================================================== test setup duration top ===============================================================================
+total          name                                                                                                                                   num med            max           
+0:00:00.000986 grand total                                                                                                                              1 0:00:00.000986 0:00:00.000986
+============================================================================= test teardown duration top ==============================================================================
+total          name                                                                                                                                   num med            max           
+0:00:00.000130 grand total                                                                                                                              1 0:00:00.000130 0:00:00.000130
+=========================== short test summary info ============================
+FAILED testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py::test_recursive_mainline_compile_only_order_and_before_after_audit
+1 failed in 1.80s

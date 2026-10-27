@@ -1,0 +1,184 @@
+Using pip 26.2.2 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Obtaining file:///home/zhaosiying/codebase/tilelang-cuda-z3
+  Checking if build backend supports build_editable: started
+  Running command Checking if build backend supports build_editable
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Running command Preparing editable metadata (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 18:01:20,928 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (metadata_editable)
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: tilelang
+  Building editable for tilelang (pyproject.toml): started
+  Running command Building editable for tilelang (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 18:01:21,109 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (editable)
+  *** Configuring CMake...
+  loading initial cache file build/CMakeInit.txt
+  -- Using ccache: /usr/bin/ccache with base_dir=/home/zhaosiying/codebase/tilelang-cuda-z3
+  -- Using TVM source: /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm
+  -- CUDA Backend is enabled
+  -- Ascend Backend is enabled
+  -- CANN aprof_pub.h was not found; building Ascend without native profiling. Set ASCEND_HOME_PATH to the CANN SDK root and reconfigure to enable CANN Node reporting.
+  -- Find Z3 in path: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3
+  -- Found Z3 include dir: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/include
+  -- Found Z3 library: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/lib/libz3.so
+  -- Forbidding undefined symbols in shared library, using -Wl,--no-undefined on platform Linux
+  -- Build with RPC support...
+  -- Build Alloc alignment set to 64
+  -- CMAKE_C_COMPILER_LAUNCHER already defined.  Not using ccache.
+  -- Custom CUDA_PATH=/usr/local/cuda-13.3
+  -- Found CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-13.3
+  -- Found CUDA_CUDA_LIBRARY=/usr/local/cuda-13.3/targets/x86_64-linux/lib/stubs/libcuda.so
+  -- Found CUDA_CUDART_LIBRARY=cudart_stub
+  -- Found CUDA_CUDNN_INCLUDE_DIRS=
+  -- Found CUDA_CUDNN_LIBRARY=
+  -- Found CUDA_CUBLAS_LIBRARY=/usr/local/cuda-13.3/lib64/libcublas.so
+  -- Found CUDA_CURAND_LIBRARY=/usr/local/cuda-13.3/lib64/libcurand.so
+  -- Found CUDA_CUBLASLT_LIBRARY=/usr/local/cuda-13.3/lib64/libcublasLt.so
+  -- Found CUDA_NVTX_LIBRARY=/usr/local/cuda-13.3/lib64/libnvtx3interop.so
+  -- Found CUDA_nvToolsExt_LIBRARY=
+  -- Build with CUDA  support
+  -- Build with contrib.random
+  -- Build with contrib.sort
+  -- Git found: /usr/bin/git
+  -- Found TVM_GIT_COMMIT_HASH=4211874e9e4b8770fd20ad0d98ab80afd1df5028
+  -- Found TVM_GIT_COMMIT_TIME=2026-09-28 19:01:43 +0800
+  -- Detected target triple: x86_64-linux-gnu
+  -- Setting C++ macro TVM_FFI_USE_LIBBACKTRACE - 1
+  -- Setting C++ macro TVM_FFI_BACKTRACE_ON_SEGFAULT - 1
+  -- Build with thread support...
+  -- Added "-fuse-ld=mold" to linker flags
+  -- Configuring done (7.3s)
+  -- Generating done (0.1s)
+  -- Build files have been written to: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+  *** Building project with Ninja...
+  [0/2] Re-checking globbed directories...
+  [1/5] Linking CXX shared library lib/libtvm_runtime.so
+  [2/5] Linking CXX shared library lib/libtvm_compiler.so
+  [3/5] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o
+  FAILED: [code=1] CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o
+  /usr/bin/ccache /usr/bin/g++ -DCUDA_MAJOR_VERSION=13 -DDMLC_USE_LOGGING_LIBRARY="<tvm/runtime/logging.h>" -DTVM_LOG_CUSTOMIZE=1 -I/home/zhaosiying/codebase/tilelang-cuda-z3/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/dlpack/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl -O3 -DNDEBUG -fPIC -MD -MT CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o -MF CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o.d -o CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o -c /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:28,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/any.h:27,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:29,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:14:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc: In function ‘tvm::tirx::PrimFunc tvm::tl::{anonymous}::ValidateAndConsume(tvm::tirx::PrimFunc)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:255:27: error: no match for ‘operator==’ (operand types are ‘tvm::tirx::SBlock’ and ‘std::nullptr_t’)
+    255 |     ICHECK(schedule_block == nullptr)
+        |            ~~~~~~~~~~~~~~~^~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:459:9: note: in definition of macro ‘TVM_FFI_CHECK’
+    459 |   if (!(cond)) TVM_FFI_THROW(ErrorKind) << "Check failed: (" #cond << ") is false: "
+        |         ^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:15:19: note: in expansion of macro ‘TVM_FFI_ICHECK’
+     15 | #define ICHECK(x) TVM_FFI_ICHECK(x)
+        |                   ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:255:5: note: in expansion of macro ‘ICHECK’
+    255 |     ICHECK(schedule_block == nullptr)
+        |     ^~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:255:27: note: there are 10 candidates
+    255 |     ICHECK(schedule_block == nullptr)
+        |            ~~~~~~~~~~~~~~~^~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:459:9: note: in definition of macro ‘TVM_FFI_CHECK’
+    459 |   if (!(cond)) TVM_FFI_THROW(ErrorKind) << "Check failed: (" #cond << ") is false: "
+        |         ^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:15:19: note: in expansion of macro ‘TVM_FFI_ICHECK’
+     15 | #define ICHECK(x) TVM_FFI_ICHECK(x)
+        |                   ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:255:5: note: in expansion of macro ‘ICHECK’
+    255 |     ICHECK(schedule_block == nullptr)
+        |     ^~~~~~
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/memory.h:26,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:29:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/object.h:789:8: note: candidate 1: ‘bool tvm::ffi::ObjectRef::operator==(const tvm::ffi::ObjectRef&) const’
+    789 |   bool operator==(const ObjectRef& other) const { return data_ == other.data_; }
+        |        ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/object.h:789:36: note: no known conversion for argument 1 from ‘std::nullptr_t’ to ‘const tvm::ffi::ObjectRef&’
+    789 |   bool operator==(const ObjectRef& other) const { return data_ == other.data_; }
+        |                   ~~~~~~~~~~~~~~~~~^~~~~
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/tirx/expr.h:32,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:19:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:324:18: note: candidate 2: ‘tvm::PrimExpr tvm::operator==(PrimExpr, PrimExpr)’
+    324 | TVM_DLL PrimExpr operator==(PrimExpr a, PrimExpr b);
+        |                  ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:324:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘tvm::PrimExpr’
+    324 | TVM_DLL PrimExpr operator==(PrimExpr a, PrimExpr b);
+        |                             ~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:587:13: note: candidate 3: ‘bool tvm::operator==(const Bool&, bool)’
+    587 | inline bool operator==(const Bool& a, bool b) { return a.operator bool() == b; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:587:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::Bool&’
+    587 | inline bool operator==(const Bool& a, bool b) { return a.operator bool() == b; }
+        |                        ~~~~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:588:13: note: candidate 4: ‘bool tvm::operator==(bool, const Bool&)’
+    588 | inline bool operator==(bool a, const Bool& b) { return a == b.operator bool(); }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:588:29: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘bool’
+    588 | inline bool operator==(bool a, const Bool& b) { return a == b.operator bool(); }
+        |                        ~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:589:13: note: candidate 5: ‘bool tvm::operator==(const Bool&, const Bool&)’
+    589 | inline bool operator==(const Bool& a, const Bool& b) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:589:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::Bool&’
+    589 | inline bool operator==(const Bool& a, const Bool& b) {
+        |                        ~~~~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1298:13: note: candidate 6: ‘bool tvm::ffi::operator==(const String&, const std::string&)’
+   1298 | inline bool operator==(const String& lhs, const std::string& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1298:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1298 | inline bool operator==(const String& lhs, const std::string& rhs) {
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1302:13: note: candidate 7: ‘bool tvm::ffi::operator==(const std::string&, const String&)’
+   1302 | inline bool operator==(const std::string& lhs, const String& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1302:43: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’}
+   1302 | inline bool operator==(const std::string& lhs, const String& rhs) {
+        |                        ~~~~~~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1306:13: note: candidate 8: ‘bool tvm::ffi::operator==(const String&, const String&)’
+   1306 | inline bool operator==(const String& lhs, const String& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1306:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1306 | inline bool operator==(const String& lhs, const String& rhs) {
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1310:13: note: candidate 9: ‘bool tvm::ffi::operator==(const String&, const char*)’
+   1310 | inline bool operator==(const String& lhs, const char* rhs) { return lhs.compare(rhs) == 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1310:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1310 | inline bool operator==(const String& lhs, const char* rhs) { return lhs.compare(rhs) == 0; }
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1312:13: note: candidate 10: ‘bool tvm::ffi::operator==(const char*, const String&)’
+   1312 | inline bool operator==(const char* lhs, const String& rhs) { return rhs.compare(lhs) == 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1312:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const char*’
+   1312 | inline bool operator==(const char* lhs, const String& rhs) { return rhs.compare(lhs) == 0; }
+        |                        ~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h: In instantiation of ‘tvm::ffi::Array< <template-parameter-1-1>, <template-parameter-1-2> >::Array(IterType, IterType) [with IterType = tvm::ffi::details::IterAdapter<tvm::ffi::Array<long int>::ValueConverter, const tvm::ffi::Any*>; T = tvm::IntImm; <template-parameter-1-2> = void]’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:206:9:   required from here
+    206 |         starts_(starts.begin(), starts.end()) {
+        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:307:19: error: static assertion failed: IterType cannot be inserted into a tvm::Array<T>
+    307 |     static_assert(is_valid_iterator_v<T, IterType>,
+        |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:307:19: note: ‘tvm::ffi::is_valid_iterator_v<tvm::IntImm, tvm::ffi::details::IterAdapter<tvm::ffi::Array<long int>::ValueConverter, const tvm::ffi::Any*> >’ evaluates to false
+  ninja: build stopped: subcommand failed.
+
+  *** CMake build failed
+  error: subprocess-exited-with-error
+  
+  × Building editable for tilelang (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> No available output.
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  full command: /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py build_editable /tmp/tmp67dmybht
+  cwd: /home/zhaosiying/codebase/tilelang-cuda-z3
+  Building editable for tilelang (pyproject.toml): finished with status 'error'
+  ERROR: Failed building editable for tilelang
+Failed to build tilelang
+error: failed-wheel-build-for-install
+
+× Failed to build installable wheels for some pyproject.toml based projects
+╰─> tilelang

@@ -1,0 +1,436 @@
+.F.F.................................................................... [ 26%]
+........F............................................................... [ 53%]
+..........................................F............................. [ 80%]
+...................................................F                     [100%]
+=================================== FAILURES ===================================
+___________ test_two_owners_one_ring_and_continuous_depth2_counters ____________
+
+    def test_two_owners_one_ring_and_continuous_depth2_counters():
+        func = _materialize(_owner_ring_kernel(depth=2, extents=(3, 5)))
+        ring = _buffer(func, "pipeline_buffer")
+        full = _barrier(func, "ring_full", [32, 32])
+        empty = _barrier(func, "ring_empty", [128, 128])
+        assert len(_buffers(func, "ring_full")) == 1
+        assert len(_buffers(func, "ring_empty")) == 1
+        assert [int(dim) for dim in ring.shape] == [2, 4]
+    
+        for first_thread, producer, barrier in ((0, True, empty), (128, False, full)):
+            role = _role_body(func, first_thread)
+            counter = _buffer(role, "ring_phase")
+            assert counter.scope() == "local"
+            _assert_persistent_counter(role, counter, 2, producer, barrier)
+            loops = _owner_loops(role)
+            assert [int(loop.extent) for loop in loops] == [3, 5]
+            for loop in loops:
+                accesses = [load for load in collect_nodes(loop.body, tirx.BufferLoad) if load.buffer.data.same_as(ring.data)]
+                assert accesses
+                for load in accesses:
+                    assert len(load.indices) == 2
+                    tvm.ir.assert_structural_equal(load.indices[0], tirx.BufferLoad(counter, [0]) % 2)
+            # No full-CTA barrier is inserted into a role-exclusive path.
+>           assert all(call.op.name != "tirx.ptx_barrier" for call in collect_calls(role))
+                                                                      ^^^^^^^^^^^^^^^^^^^
+E           TypeError: collect_calls() missing 1 required keyword-only argument: 'op'
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:284: TypeError
+_________________ test_arrival_counts_and_allocation_lifetime __________________
+
+    def test_arrival_counts_and_allocation_lifetime():
+        func = _materialize(_owner_ring_kernel(depth=2))
+        for name in ("ring", "ring_full", "ring_empty"):
+>           buffer = _buffer(func, name)
+                     ^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:308: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = # from tvm.script import tirx as T
+
+@T.prim_func
+def main(A_handle: T.handle, B_handle: T.handle):
+    T.func_attr({"t...  ring_phase[0] = ring_phase[0] + 1
+                    T.copy(T.region(frag[0], 1, 4), T.region(B[(3 + j) * 4], 2, 4))
+name = 'ring'
+
+    def _buffer(root, name):
+        matches = _buffers(root, name)
+>       assert len(matches) == 1, f"expected one buffer {name}, got {len(matches)}"
+E       AssertionError: expected one buffer ring, got 0
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:54: AssertionError
+______________ test_main_cuda_pipeline_infers_before_z3_planning _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-111/test_main_cuda_pipeline_infers0')
+
+    def test_main_cuda_pipeline_infers_before_z3_planning(tmp_path):
+        hardware, calibration = _write_specs(tmp_path)
+        annotations = {
+            "tl_z3_pipeline": True,
+            "tl_z3_pipeline_hardware": str(hardware),
+            "tl_z3_pipeline_calibration": str(calibration),
+            "tl_z3_pipeline_manual_schedule": True,
+            "tl_z3_pipeline_manual_stages": _imms([0, 1]),
+            "tl_z3_pipeline_enable_offset": True,
+        }
+    
+        @T.prim_func
+        def main(A: T.Tensor((64,), "float32"), B: T.Tensor((64,), "float32")):
+            with T.Kernel(1, threads=128):
+                a_shared = T.alloc_shared((16,), "float32")
+                for k in T.Pipelined(4, num_stages=2, annotations=annotations):
+                    T.copy(A[k * 16 : (k + 1) * 16], a_shared, coalesced_width=16)
+                    for i in T.Parallel(16):
+                        B[k * 16 + i] = a_shared[i] + 1.0
+    
+        from tilelang.cuda.pipeline import CUDAPassPipelineBodyPrologue
+    
+        events = []
+        estimator = tvm_ffi.get_global_func(_ESTIMATOR)
+        solver = tvm_ffi.get_global_func(_SOLVER)
+    
+        def tracked_estimator(*args):
+            events.append("estimate")
+            return estimator(*args)
+    
+        def tracked_solver(*args):
+            events.append("solve")
+            return solver(*args)
+    
+        tvm_ffi.register_global_func(_ESTIMATOR, f=tracked_estimator, override=True)
+        tvm_ffi.register_global_func(_SOLVER, f=tracked_solver, override=True)
+        config = {_CONFIG: True, _Z3_CONFIG: True}
+        with _SM80, tvm.transform.PassContext(config=config):
+>           lowered = CUDAPassPipelineBodyPrologue(_bound_module(main), _SM80)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:675: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mod = # from tvm.script import ir as I
+# from tvm.script import tirx as T
+
+@I.ir_module
+class Module:
+    @T.prim_func
+    d...ced_width=16)
+                for i in T.parallel(16):
+                    B[k * 16 + i] = a_shared[i] + T.float32(1.0)
+target = {"kind":"cuda","tag":"","keys":["cuda","gpu"],"max_num_threads":1024,"thread_warp_size":32,"arch":"sm_80"}
+
+    def CUDAPassPipelineBodyPrologue(mod: IRModule, target: Target) -> IRModule:
+        pass_ctx = tilelang.transform.get_pass_context()
+        z3_pipeline_enabled = pass_ctx.config.get(_Z3_PIPELINE_CONFIG, False)
+        z3_task_analysis_enabled = pass_ctx.config.get(_Z3_TASK_ANALYSIS_CONFIG, False)
+        has_z3_annotations = (z3_pipeline_enabled or z3_task_analysis_enabled) and _module_has_z3_pipeline_annotations(mod)
+        z3_pipeline_module = bool(z3_pipeline_enabled) and has_z3_annotations
+        if z3_task_analysis_enabled and has_z3_annotations and not z3_pipeline_enabled:
+            raise ValueError(
+                "CUDA Z3 task analysis requires tl.enable_z3_pipeline_planning in the main CUDA pipeline. "
+                "For offline annotation inspection, call InferZ3PipelineProblem directly without stock planning."
+            )
+        if (
+            z3_pipeline_module
+            and _module_has_existing_warp_specialization(mod)
+            and not _module_has_z3_owner_ring_annotations(mod)
+        ):
+            raise ValueError("CUDA Z3 pipeline planning cannot overwrite an existing warp-specialization schedule")
+        if z3_pipeline_module and pass_ctx.config.get(_AUTO_WS_CONFIG) is not None:
+            raise ValueError(
+                "CUDA Z3 pipeline planning and automatic warp specialization cannot "
+                "schedule the same annotated module. Disable "
+                "tl.enable_auto_warp_specialization or tl.enable_z3_pipeline_planning."
+            )
+    
+        mod = tirx.transform.BindTarget(target)(mod)
+        mod = tilelang.transform.MaterializeKernelLaunch(lower_thread_binding=True, default_threads=128)(mod)
+        # Record body-bound global bases before optional let inlining obscures
+        # their provenance. CopyAnalysis consumes this marker for every lowering
+        # path, independently of whether warp specialization is enabled.
+        mod = tilelang.cuda.transform.AnnotateDeviceBoundTmaCopies()(mod)
+        if should_force_let_inline():
+            # Force-let inline whenever the pass config requests it.
+            mod = tilelang.transform.LetInline()(mod)
+        # Add wrapper for single buf store
+        mod = tilelang.transform.AddWrapperForSingleBufStore()(mod)
+        # Normalize negative indices to canonical non-negative form
+        mod = tilelang.transform.LegalizeNegativeIndex()(mod)
+        # Verify parallel loop correctness
+        if should_enable_race_check():
+            mod = tilelang.transform.VerifyParallelLoop()(mod)
+        # Inject assumes to speedup tvm prover
+        mod = tilelang.transform.InjectAssumes()(mod)
+        # Simplify the IR expressions
+        mod = tilelang.transform.Simplify()(mod)
+        # Verify reducer v2 epoch lifecycle and access rules (early, so
+        # diagnostics point at user-written code)
+        mod = tilelang.transform.CanonicalizeLegacyReducer()(mod)
+        mod = tilelang.transform.VerifyReducerEpoch()(mod)
+        # Warn on buffers that are read before anything writes them.
+        # Runs after the reducer passes above, so legacy reducers have been
+        # canonicalized, and before PipelinePlanning and LowerTileOp, while
+        # loop bodies are still in source order and tile ops still declare
+        # their access regions.
+        mod = tilelang.transform.VerifyBufferInit()(mod)
+    
+        # @CUDA-specific
+        # Tile-level warp specialization: runs before layout inference so that
+        # producer/consumer split happens at the high-level tile-op IR.
+        # AutoWarpSpecialization: derive a WSSchedule for kernels without one, using the scheduler named by tl.enable_auto_warp_specialization (opt-in; no-op when unset).
+        # MaterializeWSSchedule: Materialize a user-provided warp-specialization schedule (T.annotate_ws_schedule).
+        # ProducerConsumerWarpSpecialized: The pass classifies copy ops as TMA/cp.async/sync inline. Shared buffers are multi-versioned internally only for functions where the WS transformation actually applies.
+        # G3 owns annotated modules before this legacy/automatic WS rewrite point.
+        # In particular, ProducerConsumerWarpSpecialized can consume num_stages even
+        # when no auto-scheduler is named, so it must not rewrite a G3 loop first.
+        if allow_warp_specialized(target=target) and not z3_pipeline_module:
+            mod = tilelang.cuda.transform.AutoWarpSpecialization()(mod)
+            mod = tilelang.cuda.transform.MaterializeWSSchedule()(mod)
+            mod = tilelang.cuda.transform.ProducerConsumerWarpSpecialized()(mod)
+    
+        # @CUDA / Blackwell specific
+        # Lower 2SM TCGEN5MMA and related on Blackwell target (must run before
+        # LayoutInference so that the use_2cta annotation is visible to infer_layout)
+        mod = tilelang.cuda.transform.LowerBlackwell2SM()(mod)
+    
+        # Normalize if-without-else wrappers before pipeline planning. This keeps
+        # pipeline body extraction focused on canonical SeqStmt bodies.
+        mod = tilelang.transform.IfStmtBinding()(mod)
+    
+        # Expand only explicitly requested unroll loops before pipeline planning
+        # and fold the constants exposed by substitution. This makes their
+        # copy/compute statements individual scheduling units.
+        mod = tilelang.transform.UnrollLoop()(mod)
+        # Simplify the unrolled loop bodies.
+        mod = tilelang.transform.Simplify()(mod)
+    
+        # Infer after unroll/Simplify so analysis and planning see the same tasks.
+        # Both passes are opt-in; the stock CUDA pass sequence is unchanged by default.
+        if z3_task_analysis_enabled and has_z3_annotations:
+            mod = tilelang.transform.InferZ3PipelineProblem()(mod)
+        if z3_pipeline_enabled:
+>           mod = tilelang.transform.Z3OwnerRingPlanning()(mod)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'tilelang.transform' has no attribute 'Z3OwnerRingPlanning'. Did you mean: 'Z3PipelinePlanning'?
+
+tilelang/cuda/pipeline.py:225: AttributeError
+__________ test_pipeline_planning_keeps_bind_that_reads_atomic_target __________
+
+    def test_pipeline_planning_keeps_bind_that_reads_atomic_target():
+        @T.prim_func
+        def before(
+            counter: T.Tensor((1,), T.int32),
+            out: T.Tensor((8,), T.int32),
+        ):
+            for i in T.Pipelined(
+                4,
+                order=[0, 1, 2, 3],
+                stage=[0, 0, 1, 1],
+            ):
+                snapshot: T.int32 = counter[0]
+                pos: T.int32 = T.atomic_add(counter[0], 1, return_prev=True)
+                out[i * 2] = snapshot
+                out[i * 2 + 1] = pos
+    
+        mod = _run_pipeline_planning(before, sm80_target)
+        annos = _collect_pipeline_loop_annotations(mod["main"])
+        assert annos, "Expected at least one loop annotated by PipelinePlanning"
+        anno = annos[0]
+        stages = [int(v) for v in anno["software_pipeline_stage"]]
+        orders = [int(v) for v in anno["software_pipeline_order"]]
+    
+        assert stages == [0, 0, 1, 1]
+        assert orders == [0, 1, 2, 3]
+>       assert "software_pipeline_replayable_scalar_binds" not in anno
+E       assert 'software_pipeline_replayable_scalar_binds' not in {"software_pipeline_async_stages": (0,), "software_pipeline_order": (0, 1, 2, 3), "software_pipeline_stage": (0, 0, 1, 1), "software_pipeline_replayable_scalar_binds": (0, 0, 0, 0)}
+
+testing/python/transform/test_tilelang_transform_pipeline_planning.py:1091: AssertionError
+___________ test_function_level_owner_validation_and_materialization ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-111/test_function_level_owner_vali0')
+
+    def test_function_level_owner_validation_and_materialization(tmp_path):
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_100a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+>       func = _owner_kernel(2, str(tmp_path)).with_attr("global_symbol", "main")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:36: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1788: in impl
+    raise e
+tilelang/language/eager/builder.py:1781: in impl
+    ir_gen.gen(builder)(**annot)
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:70: in kernel
+    annotations = z3_pipeline_annotations(
+tilelang/language/annotations.py:361: in z3_pipeline_annotations
+    check_task(right, f"owner_exclusion_deps[{index}].right")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+index = 1, name = 'owner_exclusion_deps[0].right'
+
+    def check_task(index, name):
+        if not 0 <= index < num_tasks:
+>           raise ValueError(f"{name} task index {index} is outside [0, {num_tasks})")
+E           ValueError: owner_exclusion_deps[0].right task index 1 is outside [0, 1)
+
+tilelang/language/annotations.py:338: ValueError
+----------------------------- Captured stdout call -----------------------------
+2026-10-27 17:46:50  [TileLang:tilelang.language.eager.builder:CRITICAL] (builder.py:1787): Failed to build prim_func from kernel
+args={'A': A, 'B': B}
+source=def make_closure(debug_dir, depth, extents, owner_bodies):
+
+    def kernel(__tb):
+        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py'
+        __tb_fn = 'kernel'
+        __tb.set_fileline(__tb_fl, 37, __tb_fn)
+
+        def kernel(A, B, **__kwargs):
+            __tb.set_fileline(__tb_fl, 37, __tb_fn)
+            A = __tb.arg('A', A)
+            __tb.set_fileline(__tb_fl, 37, __tb_fn)
+            B = __tb.arg('B', B)
+            __tb.set_fileline(__tb_fl, 38, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 38, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 38, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(1, threads=128)):
+                __tb.set_fileline(__tb_fl, 39, __tb_fn)
+                ring = __tb.bind('ring', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((4,), __tb.rval('T', T).float32, scope='shared'))
+                __tb.set_fileline(__tb_fl, 40, __tb_fn)
+                frag = __tb.bind('frag', __tb.resolve_call(__tb.rval('T', T).alloc_fragment)((4,), __tb.rval('T', T).float32))
+                __tb.set_fileline(__tb_fl, 41, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_ws_schedule)(__tb.resolve_call(__tb.rval('T', T).WSSchedule)(num_warps=8, roles=[__tb.resolve_call(__tb.rval('T', T).WSRole)('Producer', warps_lo=0, warps_hi=1), __tb.resolve_call(__tb.rval('T', T).WSRole)('Consumer', warps_lo=4, warps_hi=8)], pipelines=[__tb.resolve_call(__tb.rval('T', T).WSPipeline)('ring', [__tb.rval('ring', ring)], depth=__tb.rval('depth', depth), owner_scopes=('owner0', 'owner1'))], scopes=[__tb.resolve_call(__tb.rval('T', T).WSScope)('owner0', __tb.resolve_call(__tb.rval('owner_bodies', owner_bodies))(0)), __tb.resolve_call(__tb.rval('T', T).WSScope)('owner1', __tb.resolve_call(__tb.rval('owner_bodies', owner_bodies))(1)), __tb.resolve_call(__tb.rval('T', T).WSScope)(__tb.rval('T', T).WSScope.ROOT, {'Producer': ['owner0', 'owner1'], 'Consumer': ['owner0', 'owner1']})])))
+                __tb.set_fileline(__tb_fl, 69, __tb_fn)
+                for __1 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('enumerate', enumerate)), __tb.rval('extents', extents))):
+                    __tb.set_fileline(__tb_fl, 69, __tb_fn)
+                    __2, __3 = __tb.unwrap_value(__1)
+                    __tb.set_fileline(__tb_fl, 69, __tb_fn)
+                    __2, __3 = (__tb.bind('_', __2), __tb.bind('_', __3))
+                    __tb.set_fileline(__tb_fl, 69, __tb_fn)
+                    owner, extent = (__tb.bind('owner', __2, loop_target=True), __tb.bind('extent', __3, loop_target=True))
+                    __tb.set_fileline(__tb_fl, 70, __tb_fn)
+                    annotations = __tb.bind('annotations', __tb.resolve_call(__tb.rval('z3_pipeline_annotations', z3_pipeline_annotations))(latencies=[4], iis=[1], resource_flags=[1], owner_exclusion_deps=[(0, 1, 1, 2)], enable_offset=False, verbose=True, debug_dir=__tb.rval('debug_dir', debug_dir), owner_ring=__tb.rval('owner', owner)))
+                    __tb.set_fileline(__tb_fl, 80, __tb_fn)
+                    for __0 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).Pipelined), __tb.rval('extent', extent), num_stages=__tb.rval('depth', depth), annotations={**__tb.rval('annotations', annotations), 'tl.ws_op_id': f"owner{__tb.rval('owner', owner)}"})):
+                        __tb.set_fileline(__tb_fl, 80, __tb_fn)
+                        i = __tb.bind('i', __0, loop_target=True)
+                        __tb.set_fileline(__tb_fl, 85, __tb_fn)
+                        __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: f"produce{__tb.rval('owner', owner)}"}))
+                        __tb.set_fileline(__tb_fl, 86, __tb_fn)
+                        __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: f"consume{__tb.rval('owner', owner)}"}))
+                        __tb.set_fileline(__tb_fl, 87, __tb_fn)
+                        __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: f"output{__tb.rval('owner', owner)}"}))
+        return kernel
+    return kernel
+------------------------------ Captured log call -------------------------------
+CRITICAL tilelang.language.eager.builder:builder.py:1787 Failed to build prim_func from kernel
+args={'A': A, 'B': B}
+source=def make_closure(debug_dir, depth, extents, owner_bodies):
+
+    def kernel(__tb):
+        __tb_fl = '/home/zhaosiying/codebase/tilelang-cuda-z3/testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py'
+        __tb_fn = 'kernel'
+        __tb.set_fileline(__tb_fl, 37, __tb_fn)
+
+        def kernel(A, B, **__kwargs):
+            __tb.set_fileline(__tb_fl, 37, __tb_fn)
+            A = __tb.arg('A', A)
+            __tb.set_fileline(__tb_fl, 37, __tb_fn)
+            B = __tb.arg('B', B)
+            __tb.set_fileline(__tb_fl, 38, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 38, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 38, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(1, threads=128)):
+                __tb.set_fileline(__tb_fl, 39, __tb_fn)
+                ring = __tb.bind('ring', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((4,), __tb.rval('T', T).float32, scope='shared'))
+                __tb.set_fileline(__tb_fl, 40, __tb_fn)
+                frag = __tb.bind('frag', __tb.resolve_call(__tb.rval('T', T).alloc_fragment)((4,), __tb.rval('T', T).float32))
+                __tb.set_fileline(__tb_fl, 41, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_ws_schedule)(__tb.resolve_call(__tb.rval('T', T).WSSchedule)(num_warps=8, roles=[__tb.resolve_call(__tb.rval('T', T).WSRole)('Producer', warps_lo=0, warps_hi=1), __tb.resolve_call(__tb.rval('T', T).WSRole)('Consumer', warps_lo=4, warps_hi=8)], pipelines=[__tb.resolve_call(__tb.rval('T', T).WSPipeline)('ring', [__tb.rval('ring', ring)], depth=__tb.rval('depth', depth), owner_scopes=('owner0', 'owner1'))], scopes=[__tb.resolve_call(__tb.rval('T', T).WSScope)('owner0', __tb.resolve_call(__tb.rval('owner_bodies', owner_bodies))(0)), __tb.resolve_call(__tb.rval('T', T).WSScope)('owner1', __tb.resolve_call(__tb.rval('owner_bodies', owner_bodies))(1)), __tb.resolve_call(__tb.rval('T', T).WSScope)(__tb.rval('T', T).WSScope.ROOT, {'Producer': ['owner0', 'owner1'], 'Consumer': ['owner0', 'owner1']})])))
+                __tb.set_fileline(__tb_fl, 69, __tb_fn)
+                for __1 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('enumerate', enumerate)), __tb.rval('extents', extents))):
+                    __tb.set_fileline(__tb_fl, 69, __tb_fn)
+                    __2, __3 = __tb.unwrap_value(__1)
+                    __tb.set_fileline(__tb_fl, 69, __tb_fn)
+                    __2, __3 = (__tb.bind('_', __2), __tb.bind('_', __3))
+                    __tb.set_fileline(__tb_fl, 69, __tb_fn)
+                    owner, extent = (__tb.bind('owner', __2, loop_target=True), __tb.bind('extent', __3, loop_target=True))
+                    __tb.set_fileline(__tb_fl, 70, __tb_fn)
+                    annotations = __tb.bind('annotations', __tb.resolve_call(__tb.rval('z3_pipeline_annotations', z3_pipeline_annotations))(latencies=[4], iis=[1], resource_flags=[1], owner_exclusion_deps=[(0, 1, 1, 2)], enable_offset=False, verbose=True, debug_dir=__tb.rval('debug_dir', debug_dir), owner_ring=__tb.rval('owner', owner)))
+                    __tb.set_fileline(__tb_fl, 80, __tb_fn)
+                    for __0 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).Pipelined), __tb.rval('extent', extent), num_stages=__tb.rval('depth', depth), annotations={**__tb.rval('annotations', annotations), 'tl.ws_op_id': f"owner{__tb.rval('owner', owner)}"})):
+                        __tb.set_fileline(__tb_fl, 80, __tb_fn)
+                        i = __tb.bind('i', __0, loop_target=True)
+                        __tb.set_fileline(__tb_fl, 85, __tb_fn)
+                        __tb.eval(__tb.resolve_call(__tb.rval('T', T).fill)(__tb.rval('ring', ring), __tb.rval('i', i), annotations={__tb.rval('T', T).WSID: f"produce{__tb.rval('owner', owner)}"}))
+                        __tb.set_fileline(__tb_fl, 86, __tb_fn)
+                        __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('ring', ring), __tb.rval('frag', frag), annotations={__tb.rval('T', T).WSID: f"consume{__tb.rval('owner', owner)}"}))
+                        __tb.set_fileline(__tb_fl, 87, __tb_fn)
+                        __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('frag', frag), __tb.rval('B', B)[__tb.rval('i', i) * 4], annotations={__tb.rval('T', T).WSID: f"output{__tb.rval('owner', owner)}"}))
+        return kernel
+    return kernel
+======================================================================================== fixture duration top ========================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.007914 grand total                                                                                                                                           320 0:00:00.000014 0:00:00.003056
+======================================================================================= test call duration top =======================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:01.817775 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                 1 0:00:01.817775 0:00:01.817775
+0:00:01.051987 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_all_allocations_and_barriers                         1 0:00:01.051987 0:00:01.051987
+0:00:00.218274 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                               14 0:00:00.013976 0:00:00.037658
+0:00:00.149469 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                            10 0:00:00.009542 0:00:00.062824
+0:00:00.072820 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                            2 0:00:00.036410 0:00:00.039297
+0:00:00.068229 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                        2 0:00:00.034115 0:00:00.036176
+0:00:00.039111 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering         12 0:00:00.003024 0:00:00.005768
+0:00:00.021926 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_basic_two_role_transform                                              1 0:00:00.021926 0:00:00.021926
+0:00:00.019587 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters                                   1 0:00:00.019587 0:00:00.019587
+0:00:00.019471 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_copy_gemm_num_stages_plan                    1 0:00:00.019471 0:00:00.019471
+0:00:00.018512 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                           1 0:00:00.018512 0:00:00.018512
+0:00:00.017938 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                       2 0:00:00.008969 0:00:00.009667
+0:00:00.017810 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_var_use_requires_defining_op_in_role                                  1 0:00:00.017810 0:00:00.017810
+0:00:00.017649 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_counter_phases                                            1 0:00:00.017649 0:00:00.017649
+0:00:00.017504 testing/python/transform/test_tilelang_z3_task_analysis.py::test_copy_gemm_parallel_vector_and_scalar_features_and_resources                            1 0:00:00.017504 0:00:00.017504
+0:00:00.017440 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum            1 0:00:00.017440 0:00:00.017440
+0:00:00.016136 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                       2 0:00:00.008068 0:00:00.008148
+0:00:00.015713 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline       1 0:00:00.015713 0:00:00.015713
+0:00:00.015397 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_versions_reshape_and_view_aliases_by_storage                          1 0:00:00.015397 0:00:00.015397
+0:00:00.015160 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_depth1_parity_and_single_version_dimension                                           1 0:00:00.015160 0:00:00.015160
+0:00:00.015032 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_stage_offset_prologue_epilogue                            1 0:00:00.015032 0:00:00.015032
+0:00:00.014938 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                     3 0:00:00.005156 0:00:00.005175
+0:00:00.014793 testing/python/transform/test_tilelang_z3_task_analysis.py::test_inferred_scalar_and_buffer_dependencies_support_clone_augmented_scheduling             1 0:00:00.014793 0:00:00.014793
+0:00:00.014420 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_arrival_counts_and_allocation_lifetime                                               1 0:00:00.014420 0:00:00.014420
+0:00:00.012768 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer          1 0:00:00.012768 0:00:00.012768
+0:00:00.012737 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer   2 0:00:00.006369 0:00:00.006469
+0:00:00.012695 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_preserves_four_task_z3_shape                          1 0:00:00.012695 0:00:00.012695
+0:00:00.012121 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_source_guard_follows_shifted_iteration                                1 0:00:00.012121 0:00:00.012121
+0:00:00.012029 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_runtime_phase_counter_for_multi_cycle_body                            1 0:00:00.012029 0:00:00.012029
+0:00:00.011850 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_short_static_loop_folds_to_prologue_epilogue                          1 0:00:00.011850 0:00:00.011850
+0:00:04.561200 grand total                                                                                                                                           268 0:00:00.006387 0:00:01.817775
+====================================================================================== test setup duration top =======================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.025307 grand total                                                                                                                                           268 0:00:00.000038 0:00:00.003220
+===================================================================================== test teardown duration top =====================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.012781 grand total                                                                                                                                           268 0:00:00.000041 0:00:00.000191
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_arrival_counts_and_allocation_lifetime
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning
+FAILED testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_bind_that_reads_atomic_target
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization
+5 failed, 263 passed, 3 deselected in 8.84s

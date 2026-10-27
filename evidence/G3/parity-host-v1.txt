@@ -1,0 +1,28 @@
+
+==================================== ERRORS ====================================
+_ ERROR collecting testing/python/transform/test_tilelang_transform_pipeline_planning.py _
+testing/python/transform/test_tilelang_transform_pipeline_planning.py:10: in <module>
+    auto_target = tvm.target.Target(determine_target("auto"))
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/backend/target.py:163: in determine_target
+    return_var = current_target if current_target is not None else auto_detect_target()
+                                                                   ^^^^^^^^^^^^^^^^^^^^
+tilelang/backend/target.py:111: in auto_detect_target
+    raise ValueError(f"No registered target detector found an available target.{details}")
+E   ValueError: No registered target detector found an available target.
+============================= fixture duration top =============================
+total   name        num med     max    
+0:00:00 grand total   0 0:00:00 0:00:00
+============================ test call duration top ============================
+total   name        num med     max    
+0:00:00 grand total   0 0:00:00 0:00:00
+=========================== test setup duration top ============================
+total   name        num med     max    
+0:00:00 grand total   0 0:00:00 0:00:00
+========================== test teardown duration top ==========================
+total   name        num med     max    
+0:00:00 grand total   0 0:00:00 0:00:00
+=========================== short test summary info ============================
+ERROR testing/python/transform/test_tilelang_transform_pipeline_planning.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+3 deselected, 1 error in 2.42s

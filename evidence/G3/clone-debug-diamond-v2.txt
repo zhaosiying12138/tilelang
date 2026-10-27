@@ -1,0 +1,44 @@
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=2 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=3 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=4 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=4 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=4 use=5 def_stage=0 use_stage=1 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=2 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=3 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=4 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=6 def_stage=0 use_stage=1 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=4 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=6 def_stage=0 use_stage=1 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=4 use=5 def_stage=0 use_stage=1 existing=0
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=2 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=3 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=7 def_stage=0 use_stage=1 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=8 def_stage=0 use_stage=1 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=4 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=6 def_stage=0 use_stage=1 existing=1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=4 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=6 def_stage=0 use_stage=1 existing=2
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=4 use=5 def_stage=0 use_stage=1 existing=0
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=2 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=3 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=7 def_stage=0 use_stage=1 existing=3
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=8 def_stage=0 use_stage=1 existing=3
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=4 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=6 def_stage=0 use_stage=1 existing=1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=4 def_stage=0 use_stage=0 existing=-1
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=6 def_stage=0 use_stage=1 existing=2
+[17:36:51] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=4 use=5 def_stage=0 use_stage=1 existing=0
+.
+============================= fixture duration top =============================
+total          name        num med            max           
+0:00:00.000027 grand total   1 0:00:00.000027 0:00:00.000027
+============================ test call duration top ============================
+total          name        num med            max           
+0:00:00.001774 grand total   1 0:00:00.001774 0:00:00.001774
+=========================== test setup duration top ============================
+total          name        num med            max           
+0:00:00.000101 grand total   1 0:00:00.000101 0:00:00.000101
+========================== test teardown duration top ==========================
+total          name        num med            max           
+0:00:00.000061 grand total   1 0:00:00.000061 0:00:00.000061
+1 passed in 3.93s

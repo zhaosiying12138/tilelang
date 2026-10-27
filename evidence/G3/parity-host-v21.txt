@@ -1,0 +1,285 @@
+........................................................................ [ 12%]
+........................................................................ [ 25%]
+........................................................................ [ 38%]
+........................................................................ [ 51%]
+........................................................................ [ 63%]
+........................................................................ [ 76%]
+........................................................................ [ 89%]
+.............s..................s...................F.....F              [100%]
+=================================== FAILURES ===================================
+________ test_recursive_builder_emits_one_guarded_shared_ring_protocol _________
+
+    def test_recursive_builder_emits_one_guarded_shared_ring_protocol():
+        build = _ffi("tl.cuda.transform.Z3BuildWSSchedule")
+        _ffi("tl.WSSyncWithGuard")
+        shared = tirx.decl_buffer((4,), "float32", name="ring", scope="shared")
+        source = tirx.decl_buffer((4,), "float32", name="source", scope="global")
+        output = tirx.decl_buffer((4,), "float32", name="output", scope="global")
+        enabled = tirx.Var("enabled", "bool")
+        active = tirx.Var("active", "bool")
+    
+        def region(buffer, mask):
+            indices = [0] * len(buffer.shape)
+            return tirx.Call(
+                "handle",
+                tvm.ir.Op.get("tl.region"),
+                [buffer[tuple(indices)], mask, *buffer.shape],
+            )
+    
+        def copy(src, dst):
+            return tirx.Evaluate(
+                tirx.Call(
+                    "handle",
+                    tvm.ir.Op.get("tl.tileop.copy"),
+                    [region(src, 1), region(dst, 2)],
+                )
+            )
+    
+        def unit(body, source_id, op_id, *, guard=None):
+            stmt = tirx.AttrStmt({"ws_op_id": op_id}, "tl.cuda_task", 1, body)
+            if guard is not None:
+                stmt = tirx.IfThenElse(guard, stmt, None)
+            return tirx.AttrStmt(
+                {"stage": 0, "source_id": source_id}, "tl.schedule_unit", 1, stmt
+            )
+    
+        def owner(index, extent):
+            iv = tirx.Var(f"i{index}", "int32")
+            children = [
+                unit(copy(source, shared), 10 + index * 10, f"load{index}", guard=active),
+                unit(copy(shared, output), 11 + index * 10, f"store{index}", guard=active),
+            ]
+            loop = tirx.For(
+                iv,
+                0,
+                extent,
+                tirx.ForKind.SERIAL,
+                tirx.SeqStmt(children),
+                annotations={"tl.ws_op_id": f"owner{index}"},
+            )
+            return tirx.AttrStmt(
+                {"stage": 0, "source_id": 20 + index * 10}, "tl.schedule_unit", 1, loop
+            )
+    
+        bind = unit(tirx.Bind(active, enabled), 1, "bind_active")
+        root = tirx.SBlock(
+            [],
+            [],
+            [],
+            "tilelang_root",
+            tirx.SeqStmt([bind, owner(0, 2), owner(1, 3)]),
+            alloc_buffers=[shared, source, output],
+            annotations={
+                "tl.buffer_versions_map": {shared.data: 2},
+                "tl.buffer_version_mode": {shared.data: "auto"},
+            },
+        )
+        roles = [
+            T.WSRole("Load", warps_lo=0, warps_hi=1),
+            T.WSRole("Store", warps_lo=1, warps_hi=2),
+        ]
+        built = build(root, roles, 0, '{"kind":"cuda","arch":"sm_90"}', 0, False)
+        schedule = built.annotations["tl.ws_schedule"]
+        assert schedule.num_warps == 4
+        assert [str(role.name) for role in schedule.roles] == ["Load", "Store"]
+>       assert len(schedule.pipelines) == 1
+E       assert 0 == 1
+E        +  where 0 = len(())
+E        +    where () = tl.WSSchedule(num_warps=4, roles=(tl.WSRole(name="Load", warp_lo=0, warp_hi=1, max_nreg=0), tl.WSRole(name="Store", warp_lo=1, warp_hi=2, max_nreg=0)), pipelines=(), scopes=(tl.WSScope(id="owner0", bodies={"Load": (tl.WSOpRef(id="load0"),), "Store": (tl.WSOpRef(id="store0"),)}), tl.WSScope(id="owner1", bodies={"Load": (tl.WSOpRef(id="load1"),), "Store": (tl.WSOpRef(id="store1"),)}), tl.WSScope(id="tl.ws_scope_root", bodies={"Load": (tl.WSOpRef(id="bind_active"), tl.WSOpRef(id="owner0"), tl.WSOpRef(id="owner1")), "Store": (tl.WSOpRef(id="bind_active"), tl.WSOpRef(id="owner0"), tl.WSOpRef(id="owner1"))}))).pipelines
+
+testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py:344: AssertionError
+______ test_recursive_mainline_compile_only_order_and_before_after_audit _______
+
+    def test_recursive_mainline_compile_only_order_and_before_after_audit():
+        _require_recursive_library()
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_120a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+        audit = _RecursiveAudit()
+        with target, tvm.transform.PassContext(config={_CONFIG: True}, instruments=[audit]):
+>           artifact = tilelang.lower(
+                _nested_fixed_stage_kernel(),
+                target=target,
+                enable_device_compile=False,
+            )
+
+testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tilelang/engine/lower.py:238: in lower
+    return lower_with_context(
+tilelang/engine/lower.py:165: in lower_with_context
+    return _lower_with_context_impl(
+tilelang/engine/lower.py:184: in _lower_with_context_impl
+    host_mod, device_mod, params, target, target_host = lower_to_host_device_ir(
+tilelang/engine/lower.py:136: in lower_to_host_device_ir
+    mod = context.lower(mod)
+          ^^^^^^^^^^^^^^^^^^
+tilelang/backend/module.py:214: in lower
+    return self.module.lower(mod, self.target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/backend/module.py:115: in lower
+    return self.get_pipeline(target).lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/backend/pass_pipeline/pipeline.py:31: in lower
+    return self._lower(mod, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/cuda/pipeline.py:317: in CUDAPassPipelineBody
+    mod = CUDAPassPipelineBodyPrologue(mod, target)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/cuda/pipeline.py:264: in CUDAPassPipelineBodyPrologue
+    mod = tilelang.transform.Z3PipelinePlanning()(mod)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveKernelPlannerRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveKernelPlannerRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::ScheduleList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RecursiveZ3Planner::InitializeList(std::vector<std::shared_ptr<tvm::tl::cuda::z3::IRStructure>, std::allocator<std::shared_ptr<tvm::tl::cuda::z3::IRStructure> > >&, tvm::tl::cuda::z3::ControlNode*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(imm != nullptr) << "Z3PipelinePlanning: " << key
+E   tvm.error.InternalError: Check failed: (imm != nullptr) is false: Z3PipelinePlanning: num_stages must be an integer annotation
+
+src/transform/z3_pipeline_planning.cc:170: InternalError
+=============================== warnings summary ===============================
+testing/python/transform/test_tilelang_z3_schedule_units.py::test_public_frontend_emits_exact_marker_shapes
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_per_role_frontend_emits_only_recursive_marker
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================================================================================== fixture duration top ==============================================================================================
+total          name                                                                                                                                                              num med            max           
+0:00:00.012527 grand total                                                                                                                                                       586 0:00:00.000017 0:00:00.001292
+============================================================================================= test call duration top =============================================================================================
+total          name                                                                                                                                                              num med            max           
+0:00:01.993510 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                             1 0:00:01.993510 0:00:01.993510
+0:00:01.295142 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers                                 3 0:00:00.052638 0:00:01.193831
+0:00:00.711805 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization                                   1 0:00:00.711805 0:00:00.711805
+0:00:00.334382 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                                           18 0:00:00.017668 0:00:00.040952
+0:00:00.274873 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_accepts_role_uniform_loop_bounds                                 2 0:00:00.137437 0:00:00.137661
+0:00:00.098269 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                                        10 0:00:00.009788 0:00:00.011058
+0:00:00.094856 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                                        2 0:00:00.047428 0:00:00.049307
+0:00:00.088718 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                                       1 0:00:00.088718 0:00:00.088718
+0:00:00.077452 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                                    2 0:00:00.038726 0:00:00.041649
+0:00:00.071339 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_async_only_consumer_without_sync_activation   1 0:00:00.071339 0:00:00.071339
+0:00:00.068668 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_late_guard_definition_uses_lexical_auto_and_rejects_explicit_counter                          1 0:00:00.068668 0:00:00.068668
+0:00:00.065860 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_counter_group_guard_equivalence_and_independent_depths                                        4 0:00:00.016110 0:00:00.017689
+0:00:00.047103 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata            2 0:00:00.023551 0:00:00.024153
+0:00:00.044324 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer                      2 0:00:00.022162 0:00:00.022879
+0:00:00.043313 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering                     12 0:00:00.003283 0:00:00.006133
+0:00:00.041739 testing/python/transform/test_tilelang_cuda_z3_pipeline_projection.py::test_nested_fixed_stage_projection_uses_prepared_affine_clock                                1 0:00:00.041739 0:00:00.041739
+0:00:00.040556 testing/python/transform/test_tilelang_cuda_z3_recursive_planning.py::test_nested_fixed_stage_ring_projects_to_stock_pipeline                                       1 0:00:00.040556 0:00:00.040556
+0:00:00.040026 testing/python/transform/test_tilelang_z3_task_analysis.py::test_aliased_views_keep_clone_raw_war_constraints_and_versions                                          2 0:00:00.020013 0:00:00.021637
+0:00:00.039648 testing/python/transform/test_tilelang_transform_unroll_loop.py::test_unroll_decl_buffer_defs_are_fresh                                                             1 0:00:00.039648 0:00:00.039648
+0:00:00.034810 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_full_commit_wait_placement                            2 0:00:00.017405 0:00:00.019449
+0:00:00.033105 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_role_uniform_owner_loop_bounds_remain_supported                                                  2 0:00:00.016552 0:00:00.017106
+0:00:00.030656 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_compatible_storages_intern_one_counter_domain_and_ids_are_deterministic                       1 0:00:00.030656 0:00:00.030656
+0:00:00.028377 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds                                   4 0:00:00.006412 0:00:00.009593
+0:00:00.023116 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_basic_two_role_transform                                                          1 0:00:00.023116 0:00:00.023116
+0:00:00.022546 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_var_use_requires_defining_op_in_role                                              1 0:00:00.022546 0:00:00.022546
+0:00:00.020891 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides                       1 0:00:00.020891 0:00:00.020891
+0:00:00.020800 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                                       1 0:00:00.020800 0:00:00.020800
+0:00:00.019774 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_counter_phases                                                        1 0:00:00.019774 0:00:00.019774
+0:00:00.019463 testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_three_sibling_owners_share_one_continuous_counter_plan                                        1 0:00:00.019463 0:00:00.019463
+0:00:00.019333 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters                                               1 0:00:00.019333 0:00:00.019333
+0:00:07.408445 grand total                                                                                                                                                       561 0:00:00.001955 0:00:01.993510
+============================================================================================ test setup duration top =============================================================================================
+total          name                                                                                                                                                              num med            max           
+0:00:00.048829 grand total                                                                                                                                                       563 0:00:00.000039 0:00:00.001483
+=========================================================================================== test teardown duration top ===========================================================================================
+total          name                                                                                                                                                              num med            max           
+0:00:00.025849 grand total                                                                                                                                                       563 0:00:00.000041 0:00:00.000182
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_ws_recursive.py::test_recursive_builder_emits_one_guarded_shared_ring_protocol
+FAILED testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py::test_recursive_mainline_compile_only_order_and_before_after_audit
+2 failed, 559 passed, 2 skipped, 4 deselected, 4 warnings in 8.88s

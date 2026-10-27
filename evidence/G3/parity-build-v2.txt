@@ -1,0 +1,360 @@
+Using pip 26.2.2 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Obtaining file:///home/zhaosiying/codebase/tilelang-cuda-z3
+  Checking if build backend supports build_editable: started
+  Running command Checking if build backend supports build_editable
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Running command Preparing editable metadata (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 16:35:29,432 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (metadata_editable)
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: tilelang
+  Building editable for tilelang (pyproject.toml): started
+  Running command Building editable for tilelang (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 16:35:29,608 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (editable)
+  *** Configuring CMake...
+  loading initial cache file build/CMakeInit.txt
+  -- Using ccache: /usr/bin/ccache with base_dir=/home/zhaosiying/codebase/tilelang-cuda-z3
+  -- Using TVM source: /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm
+  -- CUDA Backend is enabled
+  -- Ascend Backend is enabled
+  -- CANN aprof_pub.h was not found; building Ascend without native profiling. Set ASCEND_HOME_PATH to the CANN SDK root and reconfigure to enable CANN Node reporting.
+  -- Find Z3 in path: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3
+  -- Found Z3 include dir: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/include
+  -- Found Z3 library: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/lib/libz3.so
+  -- Forbidding undefined symbols in shared library, using -Wl,--no-undefined on platform Linux
+  -- Build with RPC support...
+  -- Build Alloc alignment set to 64
+  -- CMAKE_C_COMPILER_LAUNCHER already defined.  Not using ccache.
+  -- Custom CUDA_PATH=/usr/local/cuda-13.3
+  -- Found CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-13.3
+  -- Found CUDA_CUDA_LIBRARY=/usr/local/cuda-13.3/targets/x86_64-linux/lib/stubs/libcuda.so
+  -- Found CUDA_CUDART_LIBRARY=cudart_stub
+  -- Found CUDA_CUDNN_INCLUDE_DIRS=
+  -- Found CUDA_CUDNN_LIBRARY=
+  -- Found CUDA_CUBLAS_LIBRARY=/usr/local/cuda-13.3/lib64/libcublas.so
+  -- Found CUDA_CURAND_LIBRARY=/usr/local/cuda-13.3/lib64/libcurand.so
+  -- Found CUDA_CUBLASLT_LIBRARY=/usr/local/cuda-13.3/lib64/libcublasLt.so
+  -- Found CUDA_NVTX_LIBRARY=/usr/local/cuda-13.3/lib64/libnvtx3interop.so
+  -- Found CUDA_nvToolsExt_LIBRARY=
+  -- Build with CUDA  support
+  -- Build with contrib.random
+  -- Build with contrib.sort
+  -- Git found: /usr/bin/git
+  -- Found TVM_GIT_COMMIT_HASH=4211874e9e4b8770fd20ad0d98ab80afd1df5028
+  -- Found TVM_GIT_COMMIT_TIME=2026-09-28 19:01:43 +0800
+  -- Detected target triple: x86_64-linux-gnu
+  -- Setting C++ macro TVM_FFI_USE_LIBBACKTRACE - 1
+  -- Setting C++ macro TVM_FFI_BACKTRACE_ON_SEGFAULT - 1
+  -- Build with thread support...
+  -- Added "-fuse-ld=mold" to linker flags
+  -- Configuring done (7.6s)
+  -- Generating done (0.1s)
+  -- Build files have been written to: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+  *** Building project with Ninja...
+  [0/2] Re-checking globbed directories...
+  [1/12] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/if_stmt_binding.cc.o
+  [2/12] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/pipeline_planning.cc.o
+  [3/12] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o
+  [4/12] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o
+  FAILED: [code=1] CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o
+  /usr/bin/ccache /usr/bin/g++ -DCUDA_MAJOR_VERSION=13 -DDMLC_USE_LOGGING_LIBRARY="<tvm/runtime/logging.h>" -DTVM_LOG_CUSTOMIZE=1 -I/home/zhaosiying/codebase/tilelang-cuda-z3/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/dlpack/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl -O3 -DNDEBUG -fPIC -MD -MT CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o -MF CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o.d -o CMakeFiles/tilelang_objs.dir/src/transform/z3_owner_ring_planning.cc.o -c /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc: In function ‘bool tvm::tl::{anonymous}::GetBool(const tvm::ffi::Map<tvm::ffi::String, tvm::ffi::Any>&, const char*, bool)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:83:40: error: ‘class tvm::Bool’ has no member named ‘value’
+     83 |   return Downcast<Bool>(value.value()).value();
+        |                                        ^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc: In function ‘void tvm::tl::{anonymous}::CleanupOwnerLoop(const tvm::tirx::For&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:197:19: error: passing ‘const tvm::tirx::For’ as ‘this’ argument discards qualifiers [-fpermissive]
+    197 |   loop.CopyOnWrite()->annotations = std::move(retained);
+        |   ~~~~~~~~~~~~~~~~^~
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/tirx/expr.h:31,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:18:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/cow.h:58:15: note:   in call to ‘tvm::tirx::ForNode* tvm::tirx::For::CopyOnWrite()’
+     58 |   ObjectName* CopyOnWrite() {                                              \
+        |               ^~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/tirx/stmt.h:652:3: note: in expansion of macro ‘TVM_DEFINE_OBJECT_REF_COW_METHOD’
+    652 |   TVM_DEFINE_OBJECT_REF_COW_METHOD(ForNode);
+        |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:28,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/any.h:27,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/container/array.h:29,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:13:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc: In lambda function:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:209:31: error: no match for ‘operator==’ (operand types are ‘tvm::tirx::SBlock’ and ‘std::nullptr_t’)
+    209 |         ICHECK(schedule_block == nullptr)
+        |                ~~~~~~~~~~~~~~~^~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:459:9: note: in definition of macro ‘TVM_FFI_CHECK’
+    459 |   if (!(cond)) TVM_FFI_THROW(ErrorKind) << "Check failed: (" #cond << ") is false: "
+        |         ^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:15:19: note: in expansion of macro ‘TVM_FFI_ICHECK’
+     15 | #define ICHECK(x) TVM_FFI_ICHECK(x)
+        |                   ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:209:9: note: in expansion of macro ‘ICHECK’
+    209 |         ICHECK(schedule_block == nullptr)
+        |         ^~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:209:31: note: there are 10 candidates
+    209 |         ICHECK(schedule_block == nullptr)
+        |                ~~~~~~~~~~~~~~~^~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:459:9: note: in definition of macro ‘TVM_FFI_CHECK’
+    459 |   if (!(cond)) TVM_FFI_THROW(ErrorKind) << "Check failed: (" #cond << ") is false: "
+        |         ^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:15:19: note: in expansion of macro ‘TVM_FFI_ICHECK’
+     15 | #define ICHECK(x) TVM_FFI_ICHECK(x)
+        |                   ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:209:9: note: in expansion of macro ‘ICHECK’
+    209 |         ICHECK(schedule_block == nullptr)
+        |         ^~~~~~
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/memory.h:26,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:29:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/object.h:789:8: note: candidate 1: ‘bool tvm::ffi::ObjectRef::operator==(const tvm::ffi::ObjectRef&) const’
+    789 |   bool operator==(const ObjectRef& other) const { return data_ == other.data_; }
+        |        ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/object.h:789:36: note: no known conversion for argument 1 from ‘std::nullptr_t’ to ‘const tvm::ffi::ObjectRef&’
+    789 |   bool operator==(const ObjectRef& other) const { return data_ == other.data_; }
+        |                   ~~~~~~~~~~~~~~~~~^~~~~
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/tirx/expr.h:32:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:324:18: note: candidate 2: ‘tvm::PrimExpr tvm::operator==(PrimExpr, PrimExpr)’
+    324 | TVM_DLL PrimExpr operator==(PrimExpr a, PrimExpr b);
+        |                  ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:324:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘tvm::PrimExpr’
+    324 | TVM_DLL PrimExpr operator==(PrimExpr a, PrimExpr b);
+        |                             ~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:587:13: note: candidate 3: ‘bool tvm::operator==(const Bool&, bool)’
+    587 | inline bool operator==(const Bool& a, bool b) { return a.operator bool() == b; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:587:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::Bool&’
+    587 | inline bool operator==(const Bool& a, bool b) { return a.operator bool() == b; }
+        |                        ~~~~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:588:13: note: candidate 4: ‘bool tvm::operator==(bool, const Bool&)’
+    588 | inline bool operator==(bool a, const Bool& b) { return a == b.operator bool(); }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:588:29: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘bool’
+    588 | inline bool operator==(bool a, const Bool& b) { return a == b.operator bool(); }
+        |                        ~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:589:13: note: candidate 5: ‘bool tvm::operator==(const Bool&, const Bool&)’
+    589 | inline bool operator==(const Bool& a, const Bool& b) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:589:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::Bool&’
+    589 | inline bool operator==(const Bool& a, const Bool& b) {
+        |                        ~~~~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1298:13: note: candidate 6: ‘bool tvm::ffi::operator==(const String&, const std::string&)’
+   1298 | inline bool operator==(const String& lhs, const std::string& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1298:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1298 | inline bool operator==(const String& lhs, const std::string& rhs) {
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1302:13: note: candidate 7: ‘bool tvm::ffi::operator==(const std::string&, const String&)’
+   1302 | inline bool operator==(const std::string& lhs, const String& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1302:43: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’}
+   1302 | inline bool operator==(const std::string& lhs, const String& rhs) {
+        |                        ~~~~~~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1306:13: note: candidate 8: ‘bool tvm::ffi::operator==(const String&, const String&)’
+   1306 | inline bool operator==(const String& lhs, const String& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1306:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1306 | inline bool operator==(const String& lhs, const String& rhs) {
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1310:13: note: candidate 9: ‘bool tvm::ffi::operator==(const String&, const char*)’
+   1310 | inline bool operator==(const String& lhs, const char* rhs) { return lhs.compare(rhs) == 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1310:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1310 | inline bool operator==(const String& lhs, const char* rhs) { return lhs.compare(rhs) == 0; }
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1312:13: note: candidate 10: ‘bool tvm::ffi::operator==(const char*, const String&)’
+   1312 | inline bool operator==(const char* lhs, const String& rhs) { return rhs.compare(lhs) == 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1312:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const char*’
+   1312 | inline bool operator==(const char* lhs, const String& rhs) { return rhs.compare(lhs) == 0; }
+        |                        ~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc: In function ‘void tvm::tl::{anonymous}::ValidateAndConsume(const tvm::tirx::PrimFunc&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:217:27: error: no match for ‘operator==’ (operand types are ‘tvm::tirx::SBlock’ and ‘std::nullptr_t’)
+    217 |     ICHECK(schedule_block == nullptr)
+        |            ~~~~~~~~~~~~~~~^~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:459:9: note: in definition of macro ‘TVM_FFI_CHECK’
+    459 |   if (!(cond)) TVM_FFI_THROW(ErrorKind) << "Check failed: (" #cond << ") is false: "
+        |         ^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:15:19: note: in expansion of macro ‘TVM_FFI_ICHECK’
+     15 | #define ICHECK(x) TVM_FFI_ICHECK(x)
+        |                   ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:217:5: note: in expansion of macro ‘ICHECK’
+    217 |     ICHECK(schedule_block == nullptr)
+        |     ^~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:217:27: note: there are 10 candidates
+    217 |     ICHECK(schedule_block == nullptr)
+        |            ~~~~~~~~~~~~~~~^~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:459:9: note: in definition of macro ‘TVM_FFI_CHECK’
+    459 |   if (!(cond)) TVM_FFI_THROW(ErrorKind) << "Check failed: (" #cond << ") is false: "
+        |         ^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:15:19: note: in expansion of macro ‘TVM_FFI_ICHECK’
+     15 | #define ICHECK(x) TVM_FFI_ICHECK(x)
+        |                   ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:217:5: note: in expansion of macro ‘ICHECK’
+    217 |     ICHECK(schedule_block == nullptr)
+        |     ^~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/object.h:789:8: note: candidate 1: ‘bool tvm::ffi::ObjectRef::operator==(const tvm::ffi::ObjectRef&) const’
+    789 |   bool operator==(const ObjectRef& other) const { return data_ == other.data_; }
+        |        ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/object.h:789:36: note: no known conversion for argument 1 from ‘std::nullptr_t’ to ‘const tvm::ffi::ObjectRef&’
+    789 |   bool operator==(const ObjectRef& other) const { return data_ == other.data_; }
+        |                   ~~~~~~~~~~~~~~~~~^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:324:18: note: candidate 2: ‘tvm::PrimExpr tvm::operator==(PrimExpr, PrimExpr)’
+    324 | TVM_DLL PrimExpr operator==(PrimExpr a, PrimExpr b);
+        |                  ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:324:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘tvm::PrimExpr’
+    324 | TVM_DLL PrimExpr operator==(PrimExpr a, PrimExpr b);
+        |                             ~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:587:13: note: candidate 3: ‘bool tvm::operator==(const Bool&, bool)’
+    587 | inline bool operator==(const Bool& a, bool b) { return a.operator bool() == b; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:587:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::Bool&’
+    587 | inline bool operator==(const Bool& a, bool b) { return a.operator bool() == b; }
+        |                        ~~~~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:588:13: note: candidate 4: ‘bool tvm::operator==(bool, const Bool&)’
+    588 | inline bool operator==(bool a, const Bool& b) { return a == b.operator bool(); }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:588:29: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘bool’
+    588 | inline bool operator==(bool a, const Bool& b) { return a == b.operator bool(); }
+        |                        ~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:589:13: note: candidate 5: ‘bool tvm::operator==(const Bool&, const Bool&)’
+    589 | inline bool operator==(const Bool& a, const Bool& b) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:589:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::Bool&’
+    589 | inline bool operator==(const Bool& a, const Bool& b) {
+        |                        ~~~~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1298:13: note: candidate 6: ‘bool tvm::ffi::operator==(const String&, const std::string&)’
+   1298 | inline bool operator==(const String& lhs, const std::string& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1298:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1298 | inline bool operator==(const String& lhs, const std::string& rhs) {
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1302:13: note: candidate 7: ‘bool tvm::ffi::operator==(const std::string&, const String&)’
+   1302 | inline bool operator==(const std::string& lhs, const String& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1302:43: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’}
+   1302 | inline bool operator==(const std::string& lhs, const String& rhs) {
+        |                        ~~~~~~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1306:13: note: candidate 8: ‘bool tvm::ffi::operator==(const String&, const String&)’
+   1306 | inline bool operator==(const String& lhs, const String& rhs) {
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1306:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1306 | inline bool operator==(const String& lhs, const String& rhs) {
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1310:13: note: candidate 9: ‘bool tvm::ffi::operator==(const String&, const char*)’
+   1310 | inline bool operator==(const String& lhs, const char* rhs) { return lhs.compare(rhs) == 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1310:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1310 | inline bool operator==(const String& lhs, const char* rhs) { return lhs.compare(rhs) == 0; }
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1312:13: note: candidate 10: ‘bool tvm::ffi::operator==(const char*, const String&)’
+   1312 | inline bool operator==(const char* lhs, const String& rhs) { return rhs.compare(lhs) == 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1312:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const char*’
+   1312 | inline bool operator==(const char* lhs, const String& rhs) { return rhs.compare(lhs) == 0; }
+        |                        ~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:223:25: error: no match for ‘operator!=’ (operand types are ‘tvm::tirx::SBlock’ and ‘std::nullptr_t’)
+    223 |   ICHECK(schedule_block != nullptr)
+        |          ~~~~~~~~~~~~~~~^~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:459:9: note: in definition of macro ‘TVM_FFI_CHECK’
+    459 |   if (!(cond)) TVM_FFI_THROW(ErrorKind) << "Check failed: (" #cond << ") is false: "
+        |         ^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:15:19: note: in expansion of macro ‘TVM_FFI_ICHECK’
+     15 | #define ICHECK(x) TVM_FFI_ICHECK(x)
+        |                   ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:223:3: note: in expansion of macro ‘ICHECK’
+    223 |   ICHECK(schedule_block != nullptr)
+        |   ^~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:223:25: note: there are 7 candidates
+    223 |   ICHECK(schedule_block != nullptr)
+        |          ~~~~~~~~~~~~~~~^~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/error.h:459:9: note: in definition of macro ‘TVM_FFI_CHECK’
+    459 |   if (!(cond)) TVM_FFI_THROW(ErrorKind) << "Check failed: (" #cond << ") is false: "
+        |         ^~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:15:19: note: in expansion of macro ‘TVM_FFI_ICHECK’
+     15 | #define ICHECK(x) TVM_FFI_ICHECK(x)
+        |                   ^~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:223:3: note: in expansion of macro ‘ICHECK’
+    223 |   ICHECK(schedule_block != nullptr)
+        |   ^~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/object.h:795:8: note: candidate 1: ‘bool tvm::ffi::ObjectRef::operator!=(const tvm::ffi::ObjectRef&) const’
+    795 |   bool operator!=(const ObjectRef& other) const { return data_ != other.data_; }
+        |        ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/object.h:795:36: note: no known conversion for argument 1 from ‘std::nullptr_t’ to ‘const tvm::ffi::ObjectRef&’
+    795 |   bool operator!=(const ObjectRef& other) const { return data_ != other.data_; }
+        |                   ~~~~~~~~~~~~~~~~~^~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:335:18: note: candidate 2: ‘tvm::PrimExpr tvm::operator!=(PrimExpr, PrimExpr)’
+    335 | TVM_DLL PrimExpr operator!=(PrimExpr a, PrimExpr b);
+        |                  ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:335:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘tvm::PrimExpr’
+    335 | TVM_DLL PrimExpr operator!=(PrimExpr a, PrimExpr b);
+        |                             ~~~~~~~~~^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1318:13: note: candidate 3: ‘bool tvm::ffi::operator!=(const String&, const std::string&)’
+   1318 | inline bool operator!=(const String& lhs, const std::string& rhs) { return lhs.compare(rhs) != 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1318:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1318 | inline bool operator!=(const String& lhs, const std::string& rhs) { return lhs.compare(rhs) != 0; }
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1320:13: note: candidate 4: ‘bool tvm::ffi::operator!=(const std::string&, const String&)’
+   1320 | inline bool operator!=(const std::string& lhs, const String& rhs) { return rhs.compare(lhs) != 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1320:43: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’}
+   1320 | inline bool operator!=(const std::string& lhs, const String& rhs) { return rhs.compare(lhs) != 0; }
+        |                        ~~~~~~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1322:13: note: candidate 5: ‘bool tvm::ffi::operator!=(const String&, const String&)’
+   1322 | inline bool operator!=(const String& lhs, const String& rhs) { return lhs.compare(rhs) != 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1322:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1322 | inline bool operator!=(const String& lhs, const String& rhs) { return lhs.compare(rhs) != 0; }
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1324:13: note: candidate 6: ‘bool tvm::ffi::operator!=(const String&, const char*)’
+   1324 | inline bool operator!=(const String& lhs, const char* rhs) { return lhs.compare(rhs) != 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1324:38: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const tvm::ffi::String&’
+   1324 | inline bool operator!=(const String& lhs, const char* rhs) { return lhs.compare(rhs) != 0; }
+        |                        ~~~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1326:13: note: candidate 7: ‘bool tvm::ffi::operator!=(const char*, const String&)’
+   1326 | inline bool operator!=(const char* lhs, const String& rhs) { return rhs.compare(lhs) != 0; }
+        |             ^~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/string.h:1326:36: note: no known conversion for argument 1 from ‘tvm::tirx::SBlock’ to ‘const char*’
+   1326 | inline bool operator!=(const char* lhs, const String& rhs) { return rhs.compare(lhs) != 0; }
+        |                        ~~~~~~~~~~~~^~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:265:46: error: conversion from ‘tvm::ffi::Array<long int>’ to non-scalar type ‘std::vector<long int>’ requested
+    265 |   std::vector<int64_t> starts = result.get<0>();
+        |                                 ~~~~~~~~~~~~~^~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:266:48: error: conversion from ‘tvm::ffi::Array<long int>’ to non-scalar type ‘std::vector<long int>’ requested
+    266 |   std::vector<int64_t> versions = result.get<1>();
+        |                                   ~~~~~~~~~~~~~^~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc: In function ‘void tvm::tl::__TVMFFIStaticInitFunc0()’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:326:3: error: ‘refl’ has not been declared
+    326 |   refl::GlobalDef().def("tl.transform.Z3OwnerRingPlanning", Z3OwnerRingPlanning);
+        |   ^~~~
+  [5/12] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/z3_pipeline_planning.cc.o
+  FAILED: [code=1] CMakeFiles/tilelang_objs.dir/src/transform/z3_pipeline_planning.cc.o
+  /usr/bin/ccache /usr/bin/g++ -DCUDA_MAJOR_VERSION=13 -DDMLC_USE_LOGGING_LIBRARY="<tvm/runtime/logging.h>" -DTVM_LOG_CUSTOMIZE=1 -I/home/zhaosiying/codebase/tilelang-cuda-z3/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/dlpack/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl -O3 -DNDEBUG -fPIC -MD -MT CMakeFiles/tilelang_objs.dir/src/transform/z3_pipeline_planning.cc.o -MF CMakeFiles/tilelang_objs.dir/src/transform/z3_pipeline_planning.cc.o.d -o CMakeFiles/tilelang_objs.dir/src/transform/z3_pipeline_planning.cc.o -c /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc: In member function ‘tvm::tl::{anonymous}::Z3ValidatedSchedule tvm::tl::{anonymous}::Z3PipelinePlanner::ValidateSchedule(const tvm::tl::{anonymous}::Z3AugmentedProblem&, const tvm::ffi::Array<tvm::Integer>&, const tvm::ffi::Array<tvm::ffi::Array<tvm::Integer> >&, bool, tvm::ffi::Array<long int>, tvm::ffi::Array<long int>, int64_t, bool) const’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:907:26: error: lvalue required as left operand of assignment
+    907 |         result.versions[i] =
+        |         ~~~~~~~~~~~~~~~~~^
+  ninja: build stopped: subcommand failed.
+
+  *** CMake build failed
+  error: subprocess-exited-with-error
+  
+  × Building editable for tilelang (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> No available output.
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  full command: /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py build_editable /tmp/tmp4qj_vizm
+  cwd: /home/zhaosiying/codebase/tilelang-cuda-z3
+  Building editable for tilelang (pyproject.toml): finished with status 'error'
+  ERROR: Failed building editable for tilelang
+Failed to build tilelang
+error: failed-wheel-build-for-install
+
+× Failed to build installable wheels for some pyproject.toml based projects
+╰─> tilelang

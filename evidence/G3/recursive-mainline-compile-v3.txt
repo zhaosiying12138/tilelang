@@ -1,0 +1,81 @@
+F
+=================================== FAILURES ===================================
+______ test_recursive_mainline_compile_only_order_and_before_after_audit _______
+
+    def test_recursive_mainline_compile_only_order_and_before_after_audit():
+        _require_recursive_library()
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_120a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+        audit = _RecursiveAudit()
+        with target, tvm.transform.PassContext(config={_CONFIG: True}, instruments=[audit]):
+            artifact = tilelang.lower(
+                _nested_fixed_stage_kernel(),
+                target=target,
+                enable_device_compile=False,
+            )
+        assert artifact.kernel_source
+    
+        _assert_subsequence(
+            audit.events,
+            [
+                "tl.UnrollLoopSkipZ3Atomic",
+                "tl.cuda.NormalizeZ3ControlFlow",
+                "tl.cuda.MaterializeZ3ScheduleUnits",
+                "tl.Z3PipelinePlanning",
+                "tl.cuda.BuildZ3WSSchedule",
+                "tl.cuda.LowerZ3ScheduleUnits",
+                "tl.PipelinePlanning",
+                "tl.InjectSoftwarePipeline",
+                "tl.RestoreWhileLoops",
+            ],
+        )
+        assert "tl.NormalizeZ3ScheduleUnits" not in audit.events
+        assert "tl.NormalizeZ3BufferVersions" not in audit.events
+        assert "tl.Z3OwnerRingPlanning" not in audit.events
+        assert "tl.MaterializeWSSchedule" not in audit.events
+    
+        planned = audit.after["tl.Z3PipelinePlanning"]
+        _outer_planned, inner_planned = sorted(_loops(planned), key=lambda loop: int(loop.extent))
+        assert int(inner_planned.annotations["tl_z3_pipeline_audit_ii"]) == 2
+        assert _ints(inner_planned.annotations["tl_z3_pipeline_audit_child_starts"]) == [0, 3]
+        assert _ints(inner_planned.annotations["tl_z3_pipeline_audit_child_stages"]) == [0, 1]
+    
+        # Immediately before stock planning, Slice E has restored physical
+        # consumer/producer order and published its exact prepared-loop contract.
+        lowered = audit.before["tl.PipelinePlanning"]
+        outer_lowered, inner_lowered = sorted(_loops(lowered), key=lambda loop: int(loop.extent))
+        assert _ints(inner_lowered.annotations["tl_pipeline_order"]) == [0, 1]
+>       assert _ints(inner_lowered.annotations["tl_pipeline_stage"]) == [1, 0]
+E       assert [0, 1] == [1, 0]
+E         
+E         At index 0 diff: 0 != 1
+E         
+E         Full diff:
+E           [
+E         +     0,
+E               1,
+E         -     0,
+E           ]
+
+testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py:160: AssertionError
+================================================================================ fixture duration top =================================================================================
+total          name                                                                                                                                   num med            max           
+0:00:00.000924 grand total                                                                                                                              4 0:00:00.000030 0:00:00.000847
+=============================================================================== test call duration top ================================================================================
+total          name                                                                                                                                   num med            max           
+0:00:00.090378 testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py::test_recursive_mainline_compile_only_order_and_before_after_audit   1 0:00:00.090378 0:00:00.090378
+0:00:00.090378 grand total                                                                                                                              1 0:00:00.090378 0:00:00.090378
+=============================================================================== test setup duration top ===============================================================================
+total          name                                                                                                                                   num med            max           
+0:00:00.001119 grand total                                                                                                                              1 0:00:00.001119 0:00:00.001119
+============================================================================= test teardown duration top ==============================================================================
+total          name                                                                                                                                   num med            max           
+0:00:00.000087 grand total                                                                                                                              1 0:00:00.000087 0:00:00.000087
+=========================== short test summary info ============================
+FAILED testing/python/language/test_tilelang_cuda_z3_recursive_pipeline.py::test_recursive_mainline_compile_only_order_and_before_after_audit
+1 failed in 0.68s

@@ -1,0 +1,31 @@
+2026-10-27 19:24:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[2]`
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: [(0, 2, 0, 4), (1, 2, 0, 4), (2, 3, 0, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: [(0, 1)]
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=7
+[CUDA Python Z3 Loop] Testing II=4
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Testing II=1
+[CUDA Python Z3 Loop] Result II=2, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=1, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=2, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 2: start=6, latency=2, II=1, resource=0b0010000
+[CUDA Python Z3 Loop] Task 3: start=8, latency=2, II=1, resource=0b0000010
+2026-10-27 19:24:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.
+===================================================================== fixture duration top ======================================================================
+total          name                                                                                                             num med            max           
+0:00:00.001800 grand total                                                                                                        3 0:00:00.000035 0:00:00.001742
+==================================================================== test call duration top =====================================================================
+total          name                                                                                                             num med            max           
+0:00:03.573463 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_sm120_multi_async_stage_real_solver_and_numerics   1 0:00:03.573463 0:00:03.573463
+0:00:03.573463 grand total                                                                                                        1 0:00:03.573463 0:00:03.573463
+==================================================================== test setup duration top ====================================================================
+total          name                                                                                                             num med            max           
+0:00:00.002021 grand total                                                                                                        1 0:00:00.002021 0:00:00.002021
+================================================================== test teardown duration top ===================================================================
+total          name                                                                                                             num med            max           
+0:00:00.000219 grand total                                                                                                        1 0:00:00.000219 0:00:00.000219
+1 passed in 4.54s

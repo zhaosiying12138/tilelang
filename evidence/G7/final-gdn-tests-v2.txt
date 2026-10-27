@@ -1,0 +1,2687 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn
+configfile: pytest.ini
+plugins: xdist-3.8.0, platformdirs-4.13.5, durations-1.10.0, timeout-2.4.0
+collected 160 items
+
+benchmark/z3_cost_model/gdn/tests/test_analysis.py ........              [  5%]
+benchmark/z3_cost_model/gdn/tests/test_analyze_confirmation.py ...       [  6%]
+benchmark/z3_cost_model/gdn/tests/test_audit_cold.py ....                [  9%]
+benchmark/z3_cost_model/gdn/tests/test_autotune.py .........             [ 15%]
+benchmark/z3_cost_model/gdn/tests/test_config.py ......................  [ 28%]
+benchmark/z3_cost_model/gdn/tests/test_confirmation.py ........          [ 33%]
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py FFFFFFFFFFFFFFFFFFFFF [ 46%]
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF            [ 85%]
+benchmark/z3_cost_model/gdn/tests/test_resource_search.py ......         [ 88%]
+benchmark/z3_cost_model/gdn/tests/test_runner_core.py F.....F......FFFF. [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_fwd[no_h0-kv-dense-H4] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:08:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-28 02:08:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-28 02:08:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-28 02:08:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-28 02:08:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_get_warmup_chunks_kernel` with `out_idx=None`
+2026-10-28 02:08:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_get_warmup_chunks_kernel`
+2026-10-28 02:08:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:08:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:08:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:08:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+2026-10-28 02:08:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:08:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:convert_frame.py:304 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:meta_utils.py:298 
+DEBUG    torch.__trace:meta_utils.py:537 
+DEBUG    torch.__trace:meta_utils.py:537 
+DEBUG    torch.__trace:meta_utils.py:2385 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:symbolic_shapes.py:5971 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:symbolic_shapes.py:8465 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:output_graph.py:2942 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:aot_autograd_result.py:415 
+DEBUG    torch.__trace:aot_autograd_result.py:435 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:codecache.py:2148 
+DEBUG    torch.__trace:codecache.py:2156 
+DEBUG    torch.__trace:codecache.py:2160 
+DEBUG    torch.__trace:codecache.py:2168 
+DEBUG    torch.__trace:codecache.py:2176 
+DEBUG    torch.__trace:aot_autograd_result.py:217 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:codegen.py:200 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:structured.py:28 
+DEBUG    torch.__trace:symbolic_shapes.py:8465 
+DEBUG    torch.__trace:symbolic_shapes.py:8465 
+DEBUG    torch.__trace:utils.py:2402 
+DEBUG    torch.__trace:autograd_cache.py:1200 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:guards.py:4769 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2363 
+DEBUG    torch.__trace:utils.py:2022 
+DEBUG    torch.__trace:utils.py:2363 
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_get_warmup_chunks_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_get_warmup_chunks_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_______________________ test_fwd[no_h0-kv-dense-Hk2Hv8] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:08:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-28 02:08:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-28 02:08:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-28 02:08:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-28 02:08:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_get_warmup_chunks_kernel` with `out_idx=None`
+2026-10-28 02:08:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_get_warmup_chunks_kernel`
+2026-10-28 02:08:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:09:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:09:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:09:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+2026-10-28 02:09:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:09:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_get_warmup_chunks_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_get_warmup_chunks_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_______________________ test_fwd[no_h0-kv-dense-Hk4Hv16] _______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:09:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-28 02:09:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-28 02:09:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-28 02:09:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-28 02:09:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_get_warmup_chunks_kernel` with `out_idx=None`
+2026-10-28 02:09:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_get_warmup_chunks_kernel`
+2026-10-28 02:09:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:09:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:09:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:09:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+2026-10-28 02:09:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:09:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_get_warmup_chunks_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_get_warmup_chunks_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+________________________ test_fwd[no_h0-kv-vl-subchunk] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________________ test_fwd[no_h0-kv-vl-disparate] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_fwd[no_h0-kv-vl-gqa] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:09:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-28 02:09:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-28 02:09:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-28 02:09:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-28 02:09:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:09:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_________________________ test_fwd[no_h0-kv-vl-padded] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_fwd[no_h0-kv-vl-long] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:09:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:09:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+________________________ test_fwd[no_h0-kv-dense-long] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:09:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-28 02:09:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-28 02:09:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:10:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:10:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:10:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_________________________ test_fwd[no_h0-vk-dense-H4] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:10:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:10:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:10:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:10:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+2026-10-28 02:10:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:10:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_______________________ test_fwd[no_h0-vk-dense-Hk2Hv8] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:10:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:10:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:10:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:10:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+2026-10-28 02:10:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:10:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_______________________ test_fwd[no_h0-vk-dense-Hk4Hv16] _______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:10:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:10:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:10:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:10:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+2026-10-28 02:10:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:10:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+________________________ test_fwd[no_h0-vk-vl-subchunk] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________________ test_fwd[no_h0-vk-vl-disparate] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_fwd[no_h0-vk-vl-gqa] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:10:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:10:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_________________________ test_fwd[no_h0-vk-vl-padded] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_fwd[no_h0-vk-vl-long] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:11:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+________________________ test_fwd[no_h0-vk-dense-long] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:08  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:11:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:11:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:11:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+___________________________ test_fwd[h0-kv-dense-H4] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:11:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+_________________________ test_fwd[h0-kv-dense-Hk2Hv8] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:11:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+________________________ test_fwd[h0-kv-dense-Hk4Hv16] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:11:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+_________________________ test_fwd[h0-kv-vl-subchunk] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_fwd[h0-kv-vl-disparate] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+____________________________ test_fwd[h0-kv-vl-gqa] ____________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:11:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+__________________________ test_fwd[h0-kv-vl-padded] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+___________________________ test_fwd[h0-kv-vl-long] ____________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_fwd[h0-kv-dense-long] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+___________________________ test_fwd[h0-vk-dense-H4] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:11:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+_________________________ test_fwd[h0-vk-dense-Hk2Hv8] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:37  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:11:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+________________________ test_fwd[h0-vk-dense-Hk4Hv16] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:11:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+_________________________ test_fwd[h0-vk-vl-subchunk] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_fwd[h0-vk-vl-disparate] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+____________________________ test_fwd[h0-vk-vl-gqa] ____________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:11:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+__________________________ test_fwd[h0-vk-vl-padded] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+___________________________ test_fwd[h0-vk-vl-long] ____________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_fwd[h0-vk-dense-long] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:140: in test_fwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_bwd[no_h0-kv-dense-H4] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________________ test_bwd[no_h0-kv-dense-Hk2Hv8] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:11:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_______________________ test_bwd[no_h0-kv-dense-Hk4Hv16] _______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:11:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:12:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+________________________ test_bwd[no_h0-kv-vl-subchunk] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________________ test_bwd[no_h0-kv-vl-disparate] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_bwd[no_h0-kv-vl-gqa] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:12:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:12:10  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_________________________ test_bwd[no_h0-kv-vl-padded] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_bwd[no_h0-kv-vl-long] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+________________________ test_bwd[no_h0-kv-dense-long] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_bwd[no_h0-vk-dense-H4] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________________ test_bwd[no_h0-vk-dense-Hk2Hv8] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:12:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:12:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_______________________ test_bwd[no_h0-vk-dense-Hk4Hv16] _______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:12:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:12:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+________________________ test_bwd[no_h0-vk-vl-subchunk] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________________ test_bwd[no_h0-vk-vl-disparate] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_bwd[no_h0-vk-vl-gqa] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:12:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:12:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_________________________ test_bwd[no_h0-vk-vl-padded] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_bwd[no_h0-vk-vl-long] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+________________________ test_bwd[no_h0-vk-dense-long] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+___________________________ test_bwd[h0-kv-dense-H4] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_bwd[h0-kv-dense-Hk2Hv8] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+________________________ test_bwd[h0-kv-dense-Hk4Hv16] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_bwd[h0-kv-vl-subchunk] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_bwd[h0-kv-vl-disparate] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+____________________________ test_bwd[h0-kv-vl-gqa] ____________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:12:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:12:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+__________________________ test_bwd[h0-kv-vl-padded] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+___________________________ test_bwd[h0-kv-vl-long] ____________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_bwd[h0-kv-dense-long] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+___________________________ test_bwd[h0-vk-dense-H4] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_bwd[h0-vk-dense-Hk2Hv8] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+________________________ test_bwd[h0-vk-dense-Hk4Hv16] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_bwd[h0-vk-vl-subchunk] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_________________________ test_bwd[h0-vk-vl-disparate] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+____________________________ test_bwd[h0-vk-vl-gqa] ____________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:12:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:12:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+__________________________ test_bwd[h0-vk-vl-padded] ___________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+___________________________ test_bwd[h0-vk-vl-long] ____________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_bwd[h0-vk-dense-long] __________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:179: in test_bwd
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+________________________ test_cp_cache[kv-cache-dense] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:259: in test_cp_cache
+    g_qla, A_qla, o_qla, _, s_qla, cp_cache = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:12:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_get_warmup_chunks_bidi_kernel` with `out_idx=None`
+2026-10-28 02:12:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_get_warmup_chunks_bidi_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_get_warmup_chunks_bidi_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_get_warmup_chunks_bidi_kernel`
+________________________ test_cp_cache[kv-cache-varlen] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:259: in test_cp_cache
+    g_qla, A_qla, o_qla, _, s_qla, cp_cache = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+________________________ test_cp_cache[vk-cache-dense] _________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:259: in test_cp_cache
+    g_qla, A_qla, o_qla, _, s_qla, cp_cache = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+________________________ test_cp_cache[vk-cache-varlen] ________________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:259: in test_cp_cache
+    g_qla, A_qla, o_qla, _, s_qla, cp_cache = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+______________________ test_fwd_deterministic[fixed-H8G2] ______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:318: in test_fwd_deterministic
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+______________________ test_fwd_deterministic[varlen-H4] _______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:318: in test_fwd_deterministic
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:12:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-28 02:12:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-28 02:12:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-28 02:12:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-28 02:12:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_get_warmup_chunks_kernel` with `out_idx=None`
+2026-10-28 02:12:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_get_warmup_chunks_kernel`
+2026-10-28 02:12:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:13:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 02:13:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+2026-10-28 02:13:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+2026-10-28 02:13:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:13:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_get_warmup_chunks_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_get_warmup_chunks_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_correct_h0_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_correct_h0_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_____________________ test_fwd_deterministic[varlen-H4G2] ______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:318: in test_fwd_deterministic
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:13:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-28 02:13:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-28 02:13:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+2026-10-28 02:13:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+2026-10-28 02:13:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:13:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_kkt_solve_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_kkt_solve_kernel`
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+______________________ test_bwd_deterministic[fixed-H8G2] ______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:352: in test_bwd_deterministic
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+______________________ test_bwd_deterministic[varlen-H4] _______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:352: in test_bwd_deterministic
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_____________________ test_bwd_deterministic[varlen-H4G2] ______________________
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:352: in test_bwd_deterministic
+    ) = _run_fwd(q, k, v, g, beta, scale, h0_ref, h0_qla, cu_seqlens,
+benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py:65: in _run_fwd
+    g_qla, A_qla, o_qla, h_qla, s_qla, _ = chunk_gated_delta_rule_fwd_qla(
+benchmark/z3_cost_model/gdn/tests/gdr_common.py:57: in chunk_gated_delta_rule_fwd_qla
+    return _chunk_gdr_fwd_impl(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________________ test_core_final_state_without_h0 _______________________
+benchmark/z3_cost_model/gdn/tests/test_runner_core.py:46: in test_core_final_state_without_h0
+    check_forward(runner, batch)
+benchmark/z3_cost_model/gdn/correctness.py:148: in check_forward
+    actual = runner.forward(batch, output_h=output_h)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmark/z3_cost_model/gdn/runner.py:232: in forward
+    g, A, o, h, final_state, cp_cache = self.api.chunk_gated_delta_rule_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:13:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:13:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+__________________ test_core_raw_forward_config[block_DV-128] __________________
+benchmark/z3_cost_model/gdn/tests/test_runner_core.py:77: in test_core_raw_forward_config
+    check_forward(runner, batch, output_h=False)
+benchmark/z3_cost_model/gdn/correctness.py:148: in check_forward
+    actual = runner.forward(batch, output_h=output_h)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmark/z3_cost_model/gdn/runner.py:232: in forward
+    g, A, o, h, final_state, cp_cache = self.api.chunk_gated_delta_rule_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:15:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 02:15:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+_______________ test_core_raw_backward_config[stages-3_group-8] ________________
+benchmark/z3_cost_model/gdn/tests/test_runner_core.py:89: in test_core_raw_backward_config
+    check_backward(runner, batch)
+benchmark/z3_cost_model/gdn/correctness.py:157: in check_backward
+    actual = runner.backward(batch, actual_forward)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmark/z3_cost_model/gdn/runner.py:266: in backward
+    gradients = self.api.chunk_gated_delta_rule_bwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:178: in chunk_gated_delta_rule_bwd
+    h, _, _ = fused_gdr_h(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/prepare_h.py:665: in fused_gdr_h
+    tilelang_prepare_h_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+----------------------------- Captured stdout call -----------------------------
+2026-10-28 02:15:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 02:15:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+------------------------------ Captured log call -------------------------------
+INFO     tilelang.jit.kernel:kernel.py:137 TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+INFO     tilelang.jit.kernel:kernel.py:145 TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+_______________ test_core_raw_backward_config[stages-3_group-16] _______________
+benchmark/z3_cost_model/gdn/tests/test_runner_core.py:89: in test_core_raw_backward_config
+    check_backward(runner, batch)
+benchmark/z3_cost_model/gdn/correctness.py:157: in check_backward
+    actual = runner.backward(batch, actual_forward)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmark/z3_cost_model/gdn/runner.py:266: in backward
+    gradients = self.api.chunk_gated_delta_rule_bwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:178: in chunk_gated_delta_rule_bwd
+    h, _, _ = fused_gdr_h(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/prepare_h.py:665: in fused_gdr_h
+    tilelang_prepare_h_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+_______________ test_core_raw_backward_config[stages-3_group-32] _______________
+benchmark/z3_cost_model/gdn/tests/test_runner_core.py:89: in test_core_raw_backward_config
+    check_backward(runner, batch)
+benchmark/z3_cost_model/gdn/correctness.py:157: in check_backward
+    actual = runner.backward(batch, actual_forward)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmark/z3_cost_model/gdn/runner.py:266: in backward
+    gradients = self.api.chunk_gated_delta_rule_bwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:178: in chunk_gated_delta_rule_bwd
+    h, _, _ = fused_gdr_h(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/prepare_h.py:665: in fused_gdr_h
+    tilelang_prepare_h_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+__________________________ test_core_determinism[fwd] __________________________
+benchmark/z3_cost_model/gdn/tests/test_runner_core.py:97: in test_core_determinism
+    check_determinism(
+benchmark/z3_cost_model/gdn/correctness.py:177: in check_determinism
+    actual = runner.forward(batch, output_h=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmark/z3_cost_model/gdn/runner.py:232: in forward
+    g, A, o, h, final_state, cp_cache = self.api.chunk_gated_delta_rule_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/__init__.py:113: in chunk_gated_delta_rule_fwd
+    o, h, final_state = fused_gdr_fwd(
+benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_fwd.py:761: in fused_gdr_fwd
+    tilelang_fused_chunk_gdr_fwd_kernel(
+tilelang/jit/kernel.py:228: in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tilelang/jit/adapter/tvm_ffi.py:348: in func
+    executable(*tensor_list)
+3rdparty/tvm/python/tvm/runtime/executable.py:46: in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+3rdparty/tvm/src/runtime/cuda/cuda_module.cc:271: in void tvm::runtime::CUDAWrappedFunc::operator()(tvm::ffi::PackedArgs, tvm::ffi::Any*, void**) const
+    TVM_FFI_THROW(InternalError)
+E   tvm.error.InternalError: Failed to set the allowed dynamic shared memory size to 112640
+=============================== warnings summary ===============================
+tests/test_gdr_unit.py: 78 warnings
+  /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/utils/index.py:69: RuntimeWarning: AUTOCP_MODEL is disabled; falling back to the heuristic intra-CP rule instead of the calibrated autocp model. Enable AUTOCP_MODEL for accurate CP decisions.
+    result = fn(*args, **kwargs)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=================================================================== fixture duration top ===================================================================
+total          name                                                                                                        num med            max           
+0:00:00.010696 grand total                                                                                                 735 0:00:00.000027 0:00:00.000116
+================================================================== test call duration top ==================================================================
+total          name                                                                                                        num med            max           
+0:03:20.906786 tests/test_gdr_unit.py::test_fwd                                                                             36 0:00:01.959804 0:00:23.281234
+0:01:01.274160 tests/test_gdr_unit.py::test_bwd                                                                             36 0:00:00.123133 0:00:07.453625
+0:00:45.830974 tests/test_runner_core.py::test_core_padded_outputs_and_gradients_are_zero                                    1 0:00:45.830974 0:00:45.830974
+0:00:36.189839 tests/test_runner_core.py::test_core_h0_without_dht                                                           1 0:00:36.189839 0:00:36.189839
+0:00:32.739870 tests/test_gdr_unit.py::test_fwd_deterministic                                                                3 0:00:11.749799 0:00:20.965761
+0:00:20.127182 tests/test_runner_core.py::test_core_raw_forward_config                                                       4 0:00:06.411856 0:00:07.296489
+0:00:14.513023 tests/test_runner_core.py::test_core_raw_backward_config                                                      9 0:00:00.014201 0:00:07.076490
+0:00:07.181329 tests/test_runner_core.py::test_core_final_state_without_h0                                                   1 0:00:07.181329 0:00:07.181329
+0:00:02.152622 tests/test_gdr_unit.py::test_cp_cache                                                                         4 0:00:00.120111 0:00:01.817442
+0:00:01.559841 tests/test_runner_core.py::test_core_determinism                                                              2 0:00:00.779921 0:00:01.554418
+0:00:00.262703 tests/test_gdr_unit.py::test_bwd_deterministic                                                                3 0:00:00.073999 0:00:00.178561
+0:00:00.036642 tests/test_autotune.py::GDNAutotuneCPUTest::test_five_arm_denominators_and_strict_run_json                    1 0:00:00.036642 0:00:00.036642
+0:00:00.012705 tests/test_config.py::ConfigSpaceTest::test_fused_bwd_has_no_block_DV_parameter                               1 0:00:00.012705 0:00:00.012705
+0:00:00.007446 tests/test_autotune.py::GDNAutotuneCPUTest::test_failures_are_logged_and_reraised                             1 0:00:00.007446 0:00:00.007446
+0:00:00.005327 tests/test_audit_cold.py::ColdAuditTest::test_t8192_audit_checks_protocol_and_run_shapes                      1 0:00:00.005327 0:00:00.005327
+0:00:00.005246 tests/test_autotune.py::GDNAutotuneCPUTest::test_warm_track_uses_fresh_tuner_and_preserves_prewarm_evidence   1 0:00:00.005246 0:00:00.005246
+0:07:02.853088 grand total                                                                                                 160 0:00:00.000701 0:00:45.830974
+================================================================= test setup duration top ==================================================================
+total          name                                                                                                        num med            max           
+0:00:00.013418 tests/test_gdr_unit.py::test_fwd                                                                             36 0:00:00.000361 0:00:00.000546
+0:00:00.013028 tests/test_gdr_unit.py::test_bwd                                                                             36 0:00:00.000354 0:00:00.000579
+0:00:00.038194 grand total                                                                                                 160 0:00:00.000066 0:00:00.002064
+================================================================ test teardown duration top ================================================================
+total          name                                                                                                        num med            max           
+0:00:00.013812 grand total                                                                                                 160 0:00:00.000030 0:00:00.000278
+=========================== short test summary info ============================
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-dense-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-dense-Hk2Hv8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-dense-Hk4Hv16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-vl-subchunk]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-vl-disparate]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-vl-gqa]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-vl-padded]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-vl-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-kv-dense-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-dense-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-dense-Hk2Hv8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-dense-Hk4Hv16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-vl-subchunk]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-vl-disparate]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-vl-gqa]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-vl-padded]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-vl-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[no_h0-vk-dense-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-dense-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-dense-Hk2Hv8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-dense-Hk4Hv16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-vl-subchunk]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-vl-disparate]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-vl-gqa]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-vl-padded]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-vl-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-kv-dense-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-dense-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-dense-Hk2Hv8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-dense-Hk4Hv16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-vl-subchunk]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-vl-disparate]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-vl-gqa]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-vl-padded]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-vl-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd[h0-vk-dense-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-dense-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-dense-Hk2Hv8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-dense-Hk4Hv16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-vl-subchunk]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-vl-disparate]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-vl-gqa]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-vl-padded]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-vl-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-kv-dense-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-dense-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-dense-Hk2Hv8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-dense-Hk4Hv16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-vl-subchunk]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-vl-disparate]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-vl-gqa]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-vl-padded]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-vl-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[no_h0-vk-dense-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-dense-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-dense-Hk2Hv8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-dense-Hk4Hv16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-vl-subchunk]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-vl-disparate]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-vl-gqa]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-vl-padded]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-vl-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-kv-dense-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-dense-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-dense-Hk2Hv8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-dense-Hk4Hv16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-vl-subchunk]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-vl-disparate]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-vl-gqa]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-vl-padded]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-vl-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd[h0-vk-dense-long]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_cp_cache[kv-cache-dense]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_cp_cache[kv-cache-varlen]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_cp_cache[vk-cache-dense]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_cp_cache[vk-cache-varlen]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd_deterministic[fixed-H8G2]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd_deterministic[varlen-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_fwd_deterministic[varlen-H4G2]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd_deterministic[fixed-H8G2]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd_deterministic[varlen-H4]
+FAILED benchmark/z3_cost_model/gdn/tests/test_gdr_unit.py::test_bwd_deterministic[varlen-H4G2]
+FAILED benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_final_state_without_h0
+FAILED benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_raw_forward_config[block_DV-128]
+FAILED benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_raw_backward_config[stages-3_group-8]
+FAILED benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_raw_backward_config[stages-3_group-16]
+FAILED benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_raw_backward_config[stages-3_group-32]
+FAILED benchmark/z3_cost_model/gdn/tests/test_runner_core.py::test_core_determinism[fwd]
+============ 88 failed, 72 passed, 78 warnings in 427.99s (0:07:07) ============

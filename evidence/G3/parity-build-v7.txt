@@ -1,0 +1,112 @@
+Using pip 26.2.2 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Obtaining file:///home/zhaosiying/codebase/tilelang-cuda-z3
+  Checking if build backend supports build_editable: started
+  Running command Checking if build backend supports build_editable
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Running command Preparing editable metadata (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 17:20:46,323 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (metadata_editable)
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: tilelang
+  Building editable for tilelang (pyproject.toml): started
+  Running command Building editable for tilelang (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 17:20:46,512 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (editable)
+  *** Configuring CMake...
+  loading initial cache file build/CMakeInit.txt
+  -- Using ccache: /usr/bin/ccache with base_dir=/home/zhaosiying/codebase/tilelang-cuda-z3
+  -- Using TVM source: /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm
+  -- CUDA Backend is enabled
+  -- Ascend Backend is enabled
+  -- CANN aprof_pub.h was not found; building Ascend without native profiling. Set ASCEND_HOME_PATH to the CANN SDK root and reconfigure to enable CANN Node reporting.
+  -- Find Z3 in path: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3
+  -- Found Z3 include dir: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/include
+  -- Found Z3 library: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/lib/libz3.so
+  -- Forbidding undefined symbols in shared library, using -Wl,--no-undefined on platform Linux
+  -- Build with RPC support...
+  -- Build Alloc alignment set to 64
+  -- CMAKE_C_COMPILER_LAUNCHER already defined.  Not using ccache.
+  -- Custom CUDA_PATH=/usr/local/cuda-13.3
+  -- Found CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-13.3
+  -- Found CUDA_CUDA_LIBRARY=/usr/local/cuda-13.3/targets/x86_64-linux/lib/stubs/libcuda.so
+  -- Found CUDA_CUDART_LIBRARY=cudart_stub
+  -- Found CUDA_CUDNN_INCLUDE_DIRS=
+  -- Found CUDA_CUDNN_LIBRARY=
+  -- Found CUDA_CUBLAS_LIBRARY=/usr/local/cuda-13.3/lib64/libcublas.so
+  -- Found CUDA_CURAND_LIBRARY=/usr/local/cuda-13.3/lib64/libcurand.so
+  -- Found CUDA_CUBLASLT_LIBRARY=/usr/local/cuda-13.3/lib64/libcublasLt.so
+  -- Found CUDA_NVTX_LIBRARY=/usr/local/cuda-13.3/lib64/libnvtx3interop.so
+  -- Found CUDA_nvToolsExt_LIBRARY=
+  -- Build with CUDA  support
+  -- Build with contrib.random
+  -- Build with contrib.sort
+  -- Git found: /usr/bin/git
+  -- Found TVM_GIT_COMMIT_HASH=4211874e9e4b8770fd20ad0d98ab80afd1df5028
+  -- Found TVM_GIT_COMMIT_TIME=2026-09-28 19:01:43 +0800
+  -- Detected target triple: x86_64-linux-gnu
+  -- Setting C++ macro TVM_FFI_USE_LIBBACKTRACE - 1
+  -- Setting C++ macro TVM_FFI_BACKTRACE_ON_SEGFAULT - 1
+  -- Build with thread support...
+  -- Added "-fuse-ld=mold" to linker flags
+  -- Configuring done (8.3s)
+  -- Generating done (0.1s)
+  -- Build files have been written to: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+  *** Building project with Ninja...
+  [0/2] Re-checking globbed directories...
+  [1/5] Linking CXX shared library lib/libtvm_runtime.so
+  [2/5] Linking CXX shared library lib/libtvm_compiler.so
+  [3/5] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o
+  [4/5] Linking CXX shared library lib/libtilelang.so
+  *** Installing project into wheel...
+  -- Install configuration: "Release"
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/tilelang_deepgemm_heuristics.abi3.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/tilelang_deepgemm_heuristics.abi3.so" to ""
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/tilelang_cython_wrapper.abi3.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/tilelang_cython_wrapper.abi3.so" to ""
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/tilelang_pto_wrapper.abi3.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/tilelang_pto_wrapper.abi3.so" to ""
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/tilelang_ascend_npu_exchange.abi3.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/tilelang_ascend_npu_exchange.abi3.so" to ""
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libtilelang.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libtvm_runtime.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libtvm_compiler.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libstub_cuda.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libstub_cudart.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libstub_nvrtc.so
+  -- patchelf: removed dependencies from /home/zhaosiying/codebase/tilelang-cuda-z3/build/lib/libstub_ascendcl.so
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/libtilelang.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/libtilelang.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/libtvm_runtime.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/libtvm_runtime.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/libtvm_compiler.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/libtvm_compiler.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/libstub_cuda.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/libstub_cuda.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/libstub_cudart.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/libstub_cudart.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/libstub_nvrtc.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/libstub_nvrtc.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  -- Installing: /tmp/tmpree905zj/wheel/platlib/tilelang/lib/libstub_ascendcl.so
+  -- Set non-toolchain portion of runtime path of "/tmp/tmpree905zj/wheel/platlib/tilelang/lib/libstub_ascendcl.so" to "$ORIGIN:$ORIGIN/../../tvm_ffi/lib:$ORIGIN/../../z3/lib:$ORIGIN/../../nvidia/cu13/lib"
+  *** Making editable...
+  *** Created tilelang-0.1.15+cuda.gitbb50d865-cp39-abi3-linux_x86_64.whl
+  Building editable for tilelang (pyproject.toml): finished with status 'done'
+  Created wheel for tilelang: filename=tilelang-0.1.15+cuda.gitbb50d865-cp39-abi3-linux_x86_64.whl size=41449873 sha256=43e1ba14dd2d68906b3a54cabe6b3ed29344a5892f6d6f5268c255871e21f116
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ocps40g_/wheels/03/5c/04/3508ade3e027b4fc751207ca74b5c49a494d2856cda16bbb64
+Successfully built tilelang
+Installing collected packages: tilelang
+  Attempting uninstall: tilelang
+    Found existing installation: tilelang 0.1.15+cuda.gitbb50d865
+    Uninstalling tilelang-0.1.15+cuda.gitbb50d865:
+      Removing file or directory /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/__pycache__/_editable_skbc_tilelang.cpython-312.pyc
+      Removing file or directory /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/_editable_skbc_tilelang.pth
+      Removing file or directory /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/_editable_skbc_tilelang.py
+      Removing file or directory /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/tilelang-0.1.15+cuda.gitbb50d865.dist-info/
+      Removing file or directory /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/tilelang/lib/
+      Successfully uninstalled tilelang-0.1.15+cuda.gitbb50d865
+Successfully installed tilelang-0.1.15+cuda.gitbb50d865
+No broken requirements found.

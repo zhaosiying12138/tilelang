@@ -1,0 +1,90 @@
+........................................................................ [ 26%]
+........................................................................ [ 53%]
+........................................................................ [ 80%]
+...................................................F                     [100%]
+=================================== FAILURES ===================================
+___________ test_function_level_owner_validation_and_materialization ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-113/test_function_level_owner_vali0')
+
+    def test_function_level_owner_validation_and_materialization(tmp_path):
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_100a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+        func = _owner_kernel(2, str(tmp_path)).with_attr("global_symbol", "main")
+        mod = tvm.IRModule.from_expr(func)
+        mod = tvm.tirx.transform.BindTarget(target)(mod)
+        mod = tilelang.transform.MaterializeKernelLaunch()(mod)
+        mod = _function_pass(mod, config_key)
+        validated = [
+            block
+            for block in collect_nodes(mod["main"], tvm.tirx.SBlock)
+            if "tl_z3_owner_ring_validated" in block.annotations
+        ]
+>       assert len(validated) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:116: AssertionError
+----------------------------- Captured stdout call -----------------------------
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 1: start=1, latency=4, II=1, resource=0b0000001
+======================================================================================== fixture duration top ========================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.006297 grand total                                                                                                                                           320 0:00:00.000015 0:00:00.000785
+======================================================================================= test call duration top =======================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:01.782349 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                 1 0:00:01.782349 0:00:01.782349
+0:00:01.020256 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_all_allocations_and_barriers                         1 0:00:01.020256 0:00:01.020256
+0:00:00.579088 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization                       1 0:00:00.579088 0:00:00.579088
+0:00:00.276254 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                               14 0:00:00.014246 0:00:00.070304
+0:00:00.097758 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                            10 0:00:00.009756 0:00:00.011224
+0:00:00.082178 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                            2 0:00:00.041089 0:00:00.044864
+0:00:00.080844 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                           1 0:00:00.080844 0:00:00.080844
+0:00:00.070448 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                        2 0:00:00.035224 0:00:00.036974
+0:00:00.041143 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering         12 0:00:00.002959 0:00:00.005854
+0:00:00.021673 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_basic_two_role_transform                                              1 0:00:00.021673 0:00:00.021673
+0:00:00.020483 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                           1 0:00:00.020483 0:00:00.020483
+0:00:00.018940 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                       2 0:00:00.009470 0:00:00.009904
+0:00:00.018159 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum            1 0:00:00.018159 0:00:00.018159
+0:00:00.017994 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_source_guard_follows_shifted_iteration                                1 0:00:00.017994 0:00:00.017994
+0:00:00.017980 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters                                   1 0:00:00.017980 0:00:00.017980
+0:00:00.017630 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_var_use_requires_defining_op_in_role                                  1 0:00:00.017630 0:00:00.017630
+0:00:00.017161 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline       1 0:00:00.017161 0:00:00.017161
+0:00:00.017128 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_counter_phases                                            1 0:00:00.017128 0:00:00.017128
+0:00:00.016542 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_versions_reshape_and_view_aliases_by_storage                          1 0:00:00.016542 0:00:00.016542
+0:00:00.015556 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                     3 0:00:00.005169 0:00:00.005581
+0:00:00.015514 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_arrival_counts_and_allocation_lifetime                                               1 0:00:00.015514 0:00:00.015514
+0:00:00.015422 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                       2 0:00:00.007711 0:00:00.008246
+0:00:00.015394 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_depth1_parity_and_single_version_dimension                                           1 0:00:00.015394 0:00:00.015394
+0:00:00.015087 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_stage_offset_prologue_epilogue                            1 0:00:00.015087 0:00:00.015087
+0:00:00.013380 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer          1 0:00:00.013380 0:00:00.013380
+0:00:00.013126 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_runtime_phase_counter_for_multi_cycle_body                            1 0:00:00.013126 0:00:00.013126
+0:00:00.012821 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer   2 0:00:00.006411 0:00:00.006530
+0:00:00.012189 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_preserves_four_task_z3_shape                          1 0:00:00.012189 0:00:00.012189
+0:00:00.011787 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_bind_under_stage_shift_freshens_per_slice                             1 0:00:00.011787 0:00:00.011787
+0:00:00.011595 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_stage_offset_unrolls_prologue_epilogue                                1 0:00:00.011595 0:00:00.011595
+0:00:05.152856 grand total                                                                                                                                           268 0:00:00.006330 0:00:01.782349
+====================================================================================== test setup duration top =======================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.024277 grand total                                                                                                                                           268 0:00:00.000037 0:00:00.000959
+===================================================================================== test teardown duration top =====================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.012502 grand total                                                                                                                                           268 0:00:00.000039 0:00:00.000450
+=========================== short test summary info ============================
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization
+1 failed, 267 passed, 3 deselected in 9.37s

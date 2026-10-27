@@ -1,0 +1,113 @@
+[17:21:24] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3832: Warning: CLONE DEBUG: substitutions=1 changed=1 original=bind_B = T.Buffer((8,), "int32")
+scheduled_value = T.int32()
+k = T.int32()
+bind_B[k] = scheduled_value replaced=bind_B = T.Buffer((8,), "int32")
+scheduled_value = T.int32()
+k = T.int32()
+bind_B[k] = scheduled_value
+[17:21:24] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3836: Warning: CLONE DEBUG: remaining var bind_B matches original=0
+[17:21:24] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3836: Warning: CLONE DEBUG: remaining var scheduled_value matches original=0
+[17:21:24] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3836: Warning: CLONE DEBUG: remaining var k matches original=0
+[17:21:24] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3849: Warning: CLONE DEBUG: rewritten consumer body=bind_A = T.Buffer((8,), "int32")
+k = T.int32()
+scheduled_value: T.int32 = bind_A[k] + 1
+bind_B = T.Buffer((8,), "int32")
+bind_B[k] = scheduled_value
+[17:21:24] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3876: Warning: CLONE DEBUG: validate var=scheduled_value producer=bind_A = T.Buffer((8,), "int32")
+k = T.int32()
+scheduled_value: T.int32 = bind_A[k] + 1 consumer=bind_B = T.Buffer((8,), "int32")
+scheduled_value = T.int32()
+k = T.int32()
+bind_B[k] = scheduled_value
+F
+=================================== FAILURES ===================================
+_____________ test_stage_order_materializes_scheduled_bind_clones ______________
+
+    def test_stage_order_materializes_scheduled_bind_clones():
+        tir = tvm.tirx
+        a = tir.decl_buffer((8,), "int32", name="bind_A")
+        b = tir.decl_buffer((8,), "int32", name="bind_B")
+        k = tir.Var("k", "int32")
+        value = tir.Var("scheduled_value", "int32")
+        statements = [
+            tir.BufferStore(a, 1, [k]),
+            tir.Bind(value, tir.BufferLoad(a, [k]) + 1),
+            tir.BufferStore(b, value, [k]),
+        ]
+        annotations = _annotations(latencies=[1, 1, 1], iis=[1, 1, 1], resource_flags=[0, 0, 0], stage_order_deps=[(1, 2)])
+        annotations["num_stages"] = tir.IntImm("int32", 2)
+        loop = tir.For(k, 0, 4, tir.ForKind.SERIAL, tir.SeqStmt(statements), annotations=annotations)
+        func = tir.PrimFunc([a.data, b.data], loop, buffer_map={a.data: a, b.data: b}).with_attr("global_symbol", "main")
+        def solver_result(call):
+            starts_by_tasks = {3: [1, 2, 5], 4: [1, 2, 5, 4]}
+            return starts_by_tasks[len(call["latencies"])], [], 4
+    
+        calls = _install_solver(solver_result)
+        planned = _run_z3(func)
+        loop = _find_loop(planned["main"])
+        assert len(calls) == 2
+        plan = _clone_plan(loop)
+        assert len(plan) == 1
+        assert int(plan[0]["definition_task"]) == 1
+        assert int(plan[0]["consumer_task"]) == 2
+        assert _ints(loop.annotations["tl_z3_pipeline_audit_starts"]) == [1, 2, 5]
+    
+        # Planner support is complete, but fresh Vars and consumer rewriting still
+        # have to be materialized by InjectSoftwarePipeline. Keep that integration
+        # contract visible rather than silently treating metadata as cloned IR.
+        with tvm.transform.PassContext(config={_CONFIG: True}):
+            stock = tl.transform.PipelinePlanning()(planned)
+            stock_loop = _find_loop(stock["main"])
+            assert _ints(stock_loop.annotations["software_pipeline_replayable_scalar_binds"]) == [0, 0, 0]
+>           injected = tl.transform.InjectSoftwarePipeline()(stock)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py:453: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::InjectSoftwarePipeline()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext const&)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::InjectPipeline(tvm::tirx::PrimFunc const&)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineInjector::Inject(tvm::tirx::PrimFunc const&)
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in tvm::tl::software_pipeline::PipelineInjector::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK_EQ(producer_info.stage, consumer_info.stage)
+E   tvm.error.InternalError: Check failed: producer_info.stage == consumer_info.stage (0 vs. 1) : ValueError: scheduled scalar Bind 'scheduled_value' is used from a different pipeline stage. Scalar Bind statements that cannot be replayed must be scheduled in the same stage as their consumers.
+
+src/transform/inject_pipeline.cc:3879: InternalError
+============================================================================ fixture duration top ============================================================================
+total          name                                                                                                                          num med            max           
+0:00:00.000026 grand total                                                                                                                     1 0:00:00.000026 0:00:00.000026
+=========================================================================== test call duration top ===========================================================================
+total          name                                                                                                                          num med            max           
+0:00:00.988368 testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_stage_order_materializes_scheduled_bind_clones   1 0:00:00.988368 0:00:00.988368
+0:00:00.988368 grand total                                                                                                                     1 0:00:00.988368 0:00:00.988368
+========================================================================== test setup duration top ===========================================================================
+total          name                                                                                                                          num med            max           
+0:00:00.000099 grand total                                                                                                                     1 0:00:00.000099 0:00:00.000099
+========================================================================= test teardown duration top =========================================================================
+total          name                                                                                                                          num med            max           
+0:00:00.000089 grand total                                                                                                                     1 0:00:00.000089 0:00:00.000089
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_stage_order_materializes_scheduled_bind_clones
+1 failed in 4.99s

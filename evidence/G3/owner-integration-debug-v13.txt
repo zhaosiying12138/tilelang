@@ -1,0 +1,101 @@
+[18:39:52] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_owner_ring_planning.cc:220: Warning: OWNER DEBUG: before cleanup
+!!!!!!! Segfault encountered !!!!!!!
+  File "./signal/../sysdeps/unix/sysv/linux/x86_64/libc_sigaction.c", line 0, in 0x000071e173645caf
+  File "<unknown>", line 0, in tvm::tl::(anonymous namespace)::OwnerRingRewriter::VisitStmt_(tvm::tirx::ForNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+  File "<unknown>", line 0, in tvm::tl::(anonymous namespace)::OwnerRingRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
+  File "<unknown>", line 0, in tvm::tl::(anonymous namespace)::OwnerRingRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockRealizeNode const*)
+  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#13}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+  File "<unknown>", line 0, in tvm::tl::(anonymous namespace)::ValidateAndConsume(tvm::tirx::PrimFunc)
+  File "<unknown>", line 0, in tvm::tl::Z3OwnerRingPlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+  File "<unknown>", line 0, in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::Z3OwnerRingPlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+  File "<unknown>", line 0, in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+  File "<unknown>", line 0, in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+  File "<unknown>", line 0, in tvm::transform::Pass::operator()(tvm::IRModule) const
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 240, in _PyObject_MakeTpCall
+  File "Python/bytecodes.c", line 2715, in _PyEval_EvalFrameDefault
+  File "/usr/local/src/conda/python-split-3.12.16/Include/internal/pycore_ceval.h", line 89, in _PyEval_EvalFrame
+  File "/usr/local/src/conda/python-split-3.12.16/Python/ceval.c", line 1685, in _PyEval_Vector
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 419, in _PyFunction_Vectorcall
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 133, in _PyObject_FastCallDictTstate
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 508, in _PyObject_Call_Prepend
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/typeobject.c", line 8791, in slot_tp_call
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 240, in _PyObject_MakeTpCall
+  File "Python/bytecodes.c", line 2715, in _PyEval_EvalFrameDefault
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 144, in _PyObject_FastCallDictTstate
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 508, in _PyObject_Call_Prepend
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/typeobject.c", line 8791, in slot_tp_call
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 240, in _PyObject_MakeTpCall
+  File "Python/bytecodes.c", line 2715, in _PyEval_EvalFrameDefault
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 144, in _PyObject_FastCallDictTstate
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 508, in _PyObject_Call_Prepend
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/typeobject.c", line 8791, in slot_tp_call
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 367, in _PyObject_Call
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 387, in PyCFunction_Call
+  File "Python/bytecodes.c", line 3263, in _PyEval_EvalFrameDefault
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 144, in _PyObject_FastCallDictTstate
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 508, in _PyObject_Call_Prepend
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/typeobject.c", line 8791, in slot_tp_call
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 240, in _PyObject_MakeTpCall
+  File "Python/bytecodes.c", line 2715, in _PyEval_EvalFrameDefault
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 144, in _PyObject_FastCallDictTstate
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 508, in _PyObject_Call_Prepend
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/typeobject.c", line 8791, in slot_tp_call
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 240, in _PyObject_MakeTpCall
+  File "Python/bytecodes.c", line 2715, in _PyEval_EvalFrameDefault
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 144, in _PyObject_FastCallDictTstate
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 508, in _PyObject_Call_Prepend
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/typeobject.c", line 8791, in slot_tp_call
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 240, in _PyObject_MakeTpCall
+  File "Python/bytecodes.c", line 2715, in _PyEval_EvalFrameDefault
+  File "/usr/local/src/conda/python-split-3.12.16/Python/ceval.c", line 580, in PyEval_EvalCode
+  File "/usr/local/src/conda/python-split-3.12.16/Python/bltinmodule.c", line 1093, in builtin_exec_impl
+  File "/usr/local/src/conda/python-split-3.12.16/Python/clinic/bltinmodule.c.h", line 543, in builtin_exec
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/methodobject.c", line 438, in cfunction_vectorcall_FASTCALL_KEYWORDS
+  File "/usr/local/src/conda/python-split-3.12.16/Include/internal/pycore_call.h", line 92, in _PyObject_VectorcallTstate
+  File "/usr/local/src/conda/python-split-3.12.16/Objects/call.c", line 325, in PyObject_Vectorcall
+  File "Python/bytecodes.c", line 2715, in _PyEval_EvalFrameDefault
+  File "/usr/local/src/conda/python-split-3.12.16/Modules/main.c", line 300, in pymain_run_module
+  File "/usr/local/src/conda/python-split-3.12.16/Modules/main.c", line 628, in pymain_run_python
+  File "/usr/local/src/conda/python-split-3.12.16/Modules/main.c", line 714, in Py_RunMain
+  File "/usr/local/src/conda/python-split-3.12.16/Modules/main.c", line 768, in Py_BytesMain
+  File "<unknown>", line 0, in 0xffffffffffffffff
+

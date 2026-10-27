@@ -1,0 +1,1994 @@
+.FFFFFFFFFFFFFFFFFFFFFFFFFFFF........................................... [ 18%]
+.................F..F.....................FF....F......F................ [ 36%]
+........................................F............................... [ 54%]
+........................................................................ [ 73%]
+............FFFFFFFFF........................F.......................... [ 91%]
+..................FFF............F                                       [100%]
+=================================== FAILURES ===================================
+___________ test_two_owners_one_ring_and_continuous_depth2_counters ____________
+
+    def test_two_owners_one_ring_and_continuous_depth2_counters():
+>       func = _materialize(_owner_ring_kernel(depth=2, extents=(3, 5)))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:310: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_______________ test_depth1_parity_and_single_version_dimension ________________
+
+    def test_depth1_parity_and_single_version_dimension():
+>       func = _materialize(_owner_ring_kernel(depth=1))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:336: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_________________ test_arrival_counts_and_allocation_lifetime __________________
+
+    def test_arrival_counts_and_allocation_lifetime():
+>       func = _materialize(_owner_ring_kernel(depth=2))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:354: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_ test_global_shared_capacity_includes_aligned_allocations_and_barriers[1-48] __
+
+depth = 1, required_bytes = 48
+
+    @pytest.mark.parametrize(("depth", "required_bytes"), [(1, 48), (2, 64), (3, 112)])
+    def test_global_shared_capacity_includes_aligned_allocations_and_barriers(depth, required_bytes):
+        # CUDA codegen aligns every static shared allocation to 16 bytes.
+>       _materialize(_owner_ring_kernel(depth=depth), shared_capacity=required_bytes)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:376: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_ test_global_shared_capacity_includes_aligned_allocations_and_barriers[2-64] __
+
+depth = 2, required_bytes = 64
+
+    @pytest.mark.parametrize(("depth", "required_bytes"), [(1, 48), (2, 64), (3, 112)])
+    def test_global_shared_capacity_includes_aligned_allocations_and_barriers(depth, required_bytes):
+        # CUDA codegen aligns every static shared allocation to 16 bytes.
+>       _materialize(_owner_ring_kernel(depth=depth), shared_capacity=required_bytes)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:376: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_ test_global_shared_capacity_includes_aligned_allocations_and_barriers[3-112] _
+
+depth = 3, required_bytes = 112
+
+    @pytest.mark.parametrize(("depth", "required_bytes"), [(1, 48), (2, 64), (3, 112)])
+    def test_global_shared_capacity_includes_aligned_allocations_and_barriers(depth, required_bytes):
+        # CUDA codegen aligns every static shared allocation to 16 bytes.
+>       _materialize(_owner_ring_kernel(depth=depth), shared_capacity=required_bytes)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:376: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+____ test_role_uniform_owner_loop_bounds_remain_supported[constant_bounds] _____
+
+variant = 'constant_bounds'
+
+    @pytest.mark.parametrize("variant", ["constant_bounds", "symbolic_bounds"])
+    def test_role_uniform_owner_loop_bounds_remain_supported(variant):
+>       func = _materialize(_owner_ring_kernel(variant=variant))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:386: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+____ test_role_uniform_owner_loop_bounds_remain_supported[symbolic_bounds] _____
+
+variant = 'symbolic_bounds'
+
+    @pytest.mark.parametrize("variant", ["constant_bounds", "symbolic_bounds"])
+    def test_role_uniform_owner_loop_bounds_remain_supported(variant):
+>       func = _materialize(_owner_ring_kernel(variant=variant))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:386: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+________________ test_thread_dependent_owner_loop_step_rejected ________________
+
+    def test_thread_dependent_owner_loop_step_rejected():
+>       func = _owner_ring_kernel()
+               ^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:400: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_________________ test_nonunit_owner_loop_step_still_rejected __________________
+
+    def test_nonunit_owner_loop_step_still_rejected():
+>       stepped = _stamp_owner_step(_owner_ring_kernel(), tirx.IntImm("int32", 2))
+                                    ^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:407: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:181: in _owner_ring_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_ test_unsupported_owner_ring_cases_rejected[legacy_two_scopes-owner_scopes0-synchronizes exactly one scope] _
+
+variant = 'legacy_two_scopes', owner_scopes = ()
+message = 'synchronizes exactly one scope'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'synchronizes exactly one scope'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[three_owners-owner_scopes1-exactly two ordered owner scopes] _
+
+variant = 'three_owners', owner_scopes = ('owner0', 'owner1', 'owner2')
+message = 'exactly two ordered owner scopes'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'exactly two ordered owner scopes'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[different_order-owner_scopes2-declared order] _
+
+variant = 'different_order', owner_scopes = ('owner0', 'owner1')
+message = 'declared order'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'declared order'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[external-owner_scopes3-outside both declared owners] _
+
+variant = 'external', owner_scopes = ('owner0', 'owner1')
+message = 'outside both declared owners'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'outside both declared owners'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[guarded-owner_scopes4-guarded owner-ring epochs] _
+
+variant = 'guarded', owner_scopes = ('owner0', 'owner1')
+message = 'guarded owner-ring epochs'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'guarded owner-ring epochs'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[read_first-owner_scopes5-read-first owner-ring epoch] _
+
+variant = 'read_first', owner_scopes = ('owner0', 'owner1')
+message = 'read-first owner-ring epoch'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'read-first owner-ring epoch'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[stage_offsets-owner_scopes6-stage-zero epochs] _
+
+variant = 'stage_offsets', owner_scopes = ('owner0', 'owner1')
+message = 'stage-zero epochs'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'stage-zero epochs'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[mismatched_arrivals-owner_scopes7-mismatched arrival signature] _
+
+variant = 'mismatched_arrivals', owner_scopes = ('owner0', 'owner1')
+message = 'mismatched arrival signature'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'mismatched arrival signature'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[private-owner_scopes8-CTA-local shared storage] _
+
+variant = 'private', owner_scopes = ('owner0', 'owner1')
+message = 'CTA-local shared storage'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'CTA-local shared storage'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[global-owner_scopes9-CTA-local shared storage] _
+
+variant = 'global', owner_scopes = ('owner0', 'owner1')
+message = 'CTA-local shared storage'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'CTA-local shared storage'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[cross_cta-owner_scopes10-CTA-local shared storage] _
+
+variant = 'cross_cta', owner_scopes = ('owner0', 'owner1')
+message = 'CTA-local shared storage'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'CTA-local shared storage'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[nested-owner_scopes11-ordered siblings] _
+
+variant = 'nested', owner_scopes = ('owner0', 'owner1')
+message = 'ordered siblings'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'ordered siblings'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[async-owner_scopes12-asynchronous atom] _
+
+variant = 'async', owner_scopes = ('owner0', 'owner1')
+message = 'asynchronous atom'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'asynchronous atom'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[three_roles-owner_scopes13-exactly two fixed nonoverlapping warp roles] _
+
+variant = 'three_roles', owner_scopes = ('owner0', 'owner1')
+message = 'exactly two fixed nonoverlapping warp roles'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'exactly two fixed nonoverlapping warp roles'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[thread_min-owner_scopes14-role-uniform] _
+
+variant = 'thread_min', owner_scopes = ('owner0', 'owner1')
+message = 'role-uniform'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'role-uniform'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[thread_extent-owner_scopes15-role-uniform] _
+
+variant = 'thread_extent', owner_scopes = ('owner0', 'owner1')
+message = 'role-uniform'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'role-uniform'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[private_min-owner_scopes16-role-uniform] _
+
+variant = 'private_min', owner_scopes = ('owner0', 'owner1')
+message = 'role-uniform'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'role-uniform'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_ test_unsupported_owner_ring_cases_rejected[private_extent-owner_scopes17-role-uniform] _
+
+variant = 'private_extent', owner_scopes = ('owner0', 'owner1')
+message = 'role-uniform'
+
+    @pytest.mark.parametrize(
+        ("variant", "owner_scopes", "message"),
+        [
+            ("legacy_two_scopes", (), "synchronizes exactly one scope"),
+            ("three_owners", ("owner0", "owner1", "owner2"), "exactly two ordered owner scopes"),
+            ("different_order", ("owner0", "owner1"), "declared order"),
+            ("external", ("owner0", "owner1"), "outside both declared owners"),
+            ("guarded", ("owner0", "owner1"), "guarded owner-ring epochs"),
+            ("read_first", ("owner0", "owner1"), "read-first owner-ring epoch"),
+            ("stage_offsets", ("owner0", "owner1"), "stage-zero epochs"),
+            ("mismatched_arrivals", ("owner0", "owner1"), "mismatched arrival signature"),
+            ("private", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("global", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("cross_cta", ("owner0", "owner1"), "CTA-local shared storage"),
+            ("nested", ("owner0", "owner1"), "ordered siblings"),
+            ("async", ("owner0", "owner1"), "asynchronous atom"),
+            ("three_roles", ("owner0", "owner1"), "exactly two fixed nonoverlapping warp roles"),
+            ("thread_min", ("owner0", "owner1"), "role-uniform"),
+            ("thread_extent", ("owner0", "owner1"), "role-uniform"),
+            ("private_min", ("owner0", "owner1"), "role-uniform"),
+            ("private_extent", ("owner0", "owner1"), "role-uniform"),
+        ],
+    )
+    def test_unsupported_owner_ring_cases_rejected(variant, owner_scopes, message):
+        owners = () if variant == "legacy_two_scopes" else owner_scopes
+>       with pytest.raises(Exception, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'role-uniform'
+E         Actual message: "name 'a_shape' is not defined"
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:437: AssertionError
+_____ test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable ______
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_task_cost_ffi_is_strict_j0')
+
+    def test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable(tmp_path):
+        hardware, calibration = _write_specs(tmp_path)
+        features = {
+            "copies": [
+                {
+                    "src_scope": "global",
+                    "dst_scope": "shared",
+                    "bytes": 64,
+                    "geometry": "coalesced",
+                    "width": 0,
+                }
+            ]
+        }
+        ffi = tvm_ffi.get_global_func(_ESTIMATOR)
+        result = ffi(features, str(hardware), str(calibration), False)
+        assert set(result) == {"latency", "ii", "terms", "resource_flags", "reliability", "fallback_used"}
+        assert (result["latency"], result["ii"], result["resource_flags"]) == (7, 5, 1)
+>       assert result["reliability"] == "measured"
+E       AssertionError: assert 'unknown' == 'measured'
+E         
+E         - measured
+E         + unknown
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:531: AssertionError
+_____ test_aliased_views_keep_clone_raw_war_constraints_and_versions[True] _____
+
+alias_storage = True
+
+    @pytest.mark.parametrize("alias_storage", [True, False])
+    def test_aliased_views_keep_clone_raw_war_constraints_and_versions(alias_storage):
+        """Cross-iteration view aliases must not disappear from inference or clones."""
+        tir = tvm.tirx
+        written = tir.decl_buffer((8,), "int32", name="dependency_written_view", scope="shared")
+        write = written
+        if alias_storage:
+            read = tir.decl_buffer(
+                (8,), "int32", name="dependency_aliased_view", data=written.data, scope="shared"
+            )
+            write = tir.decl_buffer(
+                (8,), "int32", name="dependency_aliased_write_view", data=written.data, scope="shared"
+            )
+        else:
+            read = tir.decl_buffer((8,), "int32", name="dependency_disjoint_view")
+        out = tir.decl_buffer((8,), "int32", name="dependency_view_out")
+        k = tir.Var("k", "int32")
+        value = tir.Var("dependency_view_value", "int32")
+        statements = [
+            tir.BufferStore(write, 1, [k]),
+            # Reading the canonical written Buffer keeps this Bind scheduled in both
+            # cases. Without alias storage, its W[k] accesses are disjoint across
+            # iterations, so only the additional views can introduce cross-iteration
+            # RAW/WAR here.
+            tir.Bind(value, tir.BufferLoad(read, [k]) + tir.BufferLoad(written, [k])),
+            tir.BufferStore(out, value, [k]),
+        ]
+        annotations = _complete_annotations([2, 3, 4])
+        annotations.pop("tl_z3_pipeline_data_deps")
+        annotations.pop("tl_z3_pipeline_buffer_sizes")
+        annotations.pop("tl_z3_pipeline_buffer_vars")
+        annotations.update(
+            {
+                "tl_z3_pipeline_manual_schedule": True,
+                "tl_z3_pipeline_manual_stages": _imms([0, 0, 1]),
+                "tl_z3_pipeline_enable_offset": True,
+            }
+        )
+        buffers = [written, out] if alias_storage else [written, read, out]
+        inferred = _run_infer(_make_store_func(statements, buffers, annotations, loop_var=k))
+        inferred_loop = _find_pipeline_loop(inferred["main"])
+        assert len(inferred_loop.annotations["tl_z3_pipeline_buffer_vars"]) == 1
+        assert inferred_loop.annotations["tl_z3_pipeline_buffer_vars"][0].same_as(written.data)
+        dependencies = _nested_ints(inferred_loop.annotations["tl_z3_pipeline_data_deps"])
+        original_raw_war = ([0, 1, -1, 2], [1, 0, -1, 3])
+        for dependency in original_raw_war:
+            assert (list(dependency) in dependencies) == alias_storage
+    
+        solver = tvm_ffi.get_global_func(_SOLVER)
+        calls = []
+    
+        def tracked_solver(*args):
+            calls.append(args)
+            return solver(*args)
+    
+        tvm_ffi.register_global_func(_SOLVER, f=tracked_solver, override=True)
+        with tvm.transform.PassContext(config={_Z3_CONFIG: True}):
+            planned = tl.transform.Z3PipelinePlanning()(inferred)
+        loop = _find_pipeline_loop(planned["main"])
+        assert len(calls) == 2
+        assert _ints(calls[-1][12]) == [0, 0, 1, 1]
+        augmented_dependencies = _nested_ints(calls[-1][4])
+        clone_raw_war = ([0, 3, -1, 2], [3, 0, -1, 3])
+        for dependency in (*original_raw_war, *clone_raw_war):
+            assert (list(dependency) in augmented_dependencies) == alias_storage
+    
+        plan = list(loop.annotations["tl_pipeline_scalar_clone_plan"])
+        assert len(plan) == 1
+        assert int(plan[0]["definition_task"]) == 1
+        assert int(plan[0]["consumer_task"]) == 2
+        versions = int(loop.annotations["tl_pipeline_buffer_versions"][written.data])
+        if alias_storage:
+            assert versions >= 2
+        else:
+            assert versions == 1
+    
+        if alias_storage:
+            injected = tl.transform.InjectSoftwarePipeline()(planned)
+            alias_names = {str(read.name), str(write.name)}
+            alias_loads = []
+            alias_stores = []
+            alias_regions = []
+    
+            def collect_rewritten_aliases(node):
+                if isinstance(node, tir.BufferLoad) and str(node.buffer.name) in alias_names:
+                    alias_loads.append(node)
+                elif isinstance(node, tir.BufferStore) and str(node.buffer.name) in alias_names:
+                    alias_stores.append(node)
+                elif isinstance(node, tir.SBlock):
+                    alias_regions.extend(
+                        region
+                        for region in [*node.reads, *node.writes]
+                        if str(region.buffer.name) in alias_names
+                    )
+    
+            post_order_visit(injected["main"].body, collect_rewritten_aliases)
+>           assert alias_loads and alias_stores and alias_regions
+E           assert ([dependency_aliased_view[k]] and [dependency_aliased_write_view = T.Buffer((8,), "int32", scope="shared")\nk = T.int32()\ndependency_aliased_write_view[k] = 1] and [])
+
+testing/python/transform/test_tilelang_z3_task_analysis.py:699: AssertionError
+_ test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer[canonical] __
+
+alias_first_consumer = False
+
+    @pytest.mark.parametrize(
+        "alias_first_consumer", [False, True], ids=["canonical", "alias-first-consumer"]
+    )
+    def test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer(alias_first_consumer):
+        before = _make_multi_async_stage_two_consumer_pipeline(
+            alias_first_consumer=alias_first_consumer
+        )
+        mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+        mod = tl.transform.InjectSoftwarePipeline()(mod)
+        mod = tl.transform.Simplify()(mod)
+    
+        func = mod["main"]
+        loop = _find_pipelined_loop(func)
+        assert _collect_wait_args(loop.body) == [0, 2]
+        _, calls = _count_attrs_and_calls(loop.body)
+        assert calls.get("tirx.ptx_wait_group", 0) == 2
+    
+        statements = list(loop.body.seq)
+        for name, expected_wait in (("consume_first", 0), ("consume_second", 2)):
+            positions = [
+                index
+                for index, stmt in enumerate(statements)
+                if any(str(block.name_hint) == name for block in collect_nodes(stmt, tvm.tirx.SBlock))
+            ]
+            assert len(positions) == 1
+            assert _collect_wait_args(statements[positions[0] - 1]) == [expected_wait]
+    
+>       a_shared = _find_pipeline_allocation(func, "a_shared")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py:404: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+func = # from tvm.script import tirx as T
+
+@T.prim_func
+def main(A_handle: T.handle, B_handle: T.handle, C_handle: T.handle, ...0])
+                    T.writes(D[tx, 11])
+                    D[tx, 11] = a_consumed[3, tx, 0] - b_consumed[2, tx, 0]
+data_or_name = 'a_shared'
+
+    def _find_pipeline_allocation(func, data_or_name):
+        allocations = [node.buffer for node in collect_nodes(func, tvm.tirx.AllocBuffer)]
+        allocations.extend(buffer for block in collect_nodes(func, tvm.tirx.SBlock) for buffer in block.alloc_buffers)
+        if isinstance(data_or_name, str):
+            buffers = [buffer for buffer in allocations if str(buffer.name) == data_or_name]
+        else:
+            buffers = [buffer for buffer in allocations if buffer.data.same_as(data_or_name)]
+>       assert len(buffers) == 1, f"Expected exactly one pipeline allocation for {data_or_name}, got {len(buffers)}"
+E       AssertionError: Expected exactly one pipeline allocation for a_shared, got 0
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py:114: AssertionError
+_ test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer[alias-first-consumer] _
+
+alias_first_consumer = True
+
+    @pytest.mark.parametrize(
+        "alias_first_consumer", [False, True], ids=["canonical", "alias-first-consumer"]
+    )
+    def test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer(alias_first_consumer):
+        before = _make_multi_async_stage_two_consumer_pipeline(
+            alias_first_consumer=alias_first_consumer
+        )
+        mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+        mod = tl.transform.InjectSoftwarePipeline()(mod)
+        mod = tl.transform.Simplify()(mod)
+    
+        func = mod["main"]
+        loop = _find_pipelined_loop(func)
+        assert _collect_wait_args(loop.body) == [0, 2]
+        _, calls = _count_attrs_and_calls(loop.body)
+        assert calls.get("tirx.ptx_wait_group", 0) == 2
+    
+        statements = list(loop.body.seq)
+        for name, expected_wait in (("consume_first", 0), ("consume_second", 2)):
+            positions = [
+                index
+                for index, stmt in enumerate(statements)
+                if any(str(block.name_hint) == name for block in collect_nodes(stmt, tvm.tirx.SBlock))
+            ]
+            assert len(positions) == 1
+            assert _collect_wait_args(statements[positions[0] - 1]) == [expected_wait]
+    
+>       a_shared = _find_pipeline_allocation(func, "a_shared")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py:404: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+func = # from tvm.script import tirx as T
+
+@T.prim_func
+def main(A_handle: T.handle, B_handle: T.handle, C_handle: T.handle, ...0])
+                    T.writes(D[tx, 11])
+                    D[tx, 11] = a_consumed[3, tx, 0] - b_consumed[2, tx, 0]
+data_or_name = 'a_shared'
+
+    def _find_pipeline_allocation(func, data_or_name):
+        allocations = [node.buffer for node in collect_nodes(func, tvm.tirx.AllocBuffer)]
+        allocations.extend(buffer for block in collect_nodes(func, tvm.tirx.SBlock) for buffer in block.alloc_buffers)
+        if isinstance(data_or_name, str):
+            buffers = [buffer for buffer in allocations if str(buffer.name) == data_or_name]
+        else:
+            buffers = [buffer for buffer in allocations if buffer.data.same_as(data_or_name)]
+>       assert len(buffers) == 1, f"Expected exactly one pipeline allocation for {data_or_name}, got {len(buffers)}"
+E       AssertionError: Expected exactly one pipeline allocation for a_shared, got 0
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py:114: AssertionError
+__ test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata __
+
+    def test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata():
+        before = _make_multi_async_stage_two_consumer_pipeline(self_read_copy=True)
+        mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+        mod = tl.transform.InjectSoftwarePipeline()(mod)
+        mod = tl.transform.Simplify()(mod)
+    
+        func = mod["main"]
+        assert _collect_wait_args(_find_pipelined_loop(func).body) == [0, 2]
+>       a_shared = _find_pipeline_allocation(func, "a_shared")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py:496: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+func = # from tvm.script import tirx as T
+
+@T.prim_func
+def main(A_handle: T.handle, B_handle: T.handle, C_handle: T.handle, ...0])
+                    T.writes(D[tx, 11])
+                    D[tx, 11] = a_consumed[3, tx, 0] - b_consumed[2, tx, 0]
+data_or_name = 'a_shared'
+
+    def _find_pipeline_allocation(func, data_or_name):
+        allocations = [node.buffer for node in collect_nodes(func, tvm.tirx.AllocBuffer)]
+        allocations.extend(buffer for block in collect_nodes(func, tvm.tirx.SBlock) for buffer in block.alloc_buffers)
+        if isinstance(data_or_name, str):
+            buffers = [buffer for buffer in allocations if str(buffer.name) == data_or_name]
+        else:
+            buffers = [buffer for buffer in allocations if buffer.data.same_as(data_or_name)]
+>       assert len(buffers) == 1, f"Expected exactly one pipeline allocation for {data_or_name}, got {len(buffers)}"
+E       AssertionError: Expected exactly one pipeline allocation for a_shared, got 0
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py:114: AssertionError
+_______ test_async_pipeline_multi_stage_accepts_exact_version_overrides ________
+
+    def test_async_pipeline_multi_stage_accepts_exact_version_overrides():
+        before = _make_multi_async_stage_two_consumer_pipeline(buffer_versions=(4, 3))
+        mod = tvm.IRModule.from_expr(before.with_attr("global_symbol", "main"))
+        mod = tl.transform.InjectSoftwarePipeline()(mod)
+        mod = tl.transform.Simplify()(mod)
+    
+        func = mod["main"]
+        assert _collect_wait_args(_find_pipelined_loop(func).body) == [0, 2]
+>       a_shared = _find_pipeline_allocation(func, "a_shared")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py:598: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+func = # from tvm.script import tirx as T
+
+@T.prim_func
+def main(A_handle: T.handle, B_handle: T.handle, C_handle: T.handle, ...0])
+                    T.writes(D[tx, 11])
+                    D[tx, 11] = a_consumed[3, tx, 0] - b_consumed[2, tx, 0]
+data_or_name = 'a_shared'
+
+    def _find_pipeline_allocation(func, data_or_name):
+        allocations = [node.buffer for node in collect_nodes(func, tvm.tirx.AllocBuffer)]
+        allocations.extend(buffer for block in collect_nodes(func, tvm.tirx.SBlock) for buffer in block.alloc_buffers)
+        if isinstance(data_or_name, str):
+            buffers = [buffer for buffer in allocations if str(buffer.name) == data_or_name]
+        else:
+            buffers = [buffer for buffer in allocations if buffer.data.same_as(data_or_name)]
+>       assert len(buffers) == 1, f"Expected exactly one pipeline allocation for {data_or_name}, got {len(buffers)}"
+E       AssertionError: Expected exactly one pipeline allocation for a_shared, got 0
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py:114: AssertionError
+______________ test_ambiguous_current_buffer_mapping_is_rejected _______________
+
+    def test_ambiguous_current_buffer_mapping_is_rejected():
+        tir = tvm.tirx
+        source = tir.decl_buffer((8, 4), "float32", name="source")
+        dest = tir.decl_buffer((8, 4), "float32", name="dest")
+        data = tir.Var("shared_target_data", tvm.ir.PointerType(tvm.ir.PrimType("float32")))
+        first = tir.decl_buffer((4,), "float32", name="first", data=data, scope="shared")
+        second = tir.decl_buffer((4,), "float32", name="second", data=data, scope="shared")
+        k = tir.Var("k", "int32")
+        loop = tir.For(
+            k,
+            0,
+            8,
+            tir.ForKind.SERIAL,
+            tir.SeqStmt(
+                [
+                    tir.BufferStore(first, tir.BufferLoad(source, [k, 0]), [0]),
+                    tir.BufferStore(dest, tir.BufferLoad(second, [0]), [k, 0]),
+                ]
+            ),
+            annotations={
+                "software_pipeline_stage": [0, 1],
+                "software_pipeline_order": [0, 1],
+                _BUFFER_VERSIONS: {data: tir.IntImm("int32", 2)},
+            },
+        )
+        func = tir.PrimFunc(
+            [source.data, dest.data],
+            tir.SeqStmt([tir.AllocBuffer(first), tir.AllocBuffer(second), loop]),
+            buffer_map={source.data: source, dest.data: dest},
+        ).with_attr("global_symbol", "main")
+    
+>       with pytest.raises(tvm.TVMError, match="duplicate or ambiguous buffer mappings"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Exception
+
+testing/python/transform/test_tilelang_transform_pipeline_buffer_versions.py:290: Failed
+___________ test_function_level_owner_validation_and_materialization ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_vali0')
+
+    def test_function_level_owner_validation_and_materialization(tmp_path):
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_100a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+>       func = _owner_kernel(2, str(tmp_path)).with_attr("global_symbol", "main")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:170: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_____ test_function_level_owner_rejects_nonuniform_loop_bounds[thread_min] _____
+
+variant = 'thread_min'
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_reje0')
+
+    @pytest.mark.parametrize("variant", ["thread_min", "thread_extent", "private_min", "private_extent"])
+    def test_function_level_owner_rejects_nonuniform_loop_bounds(variant, tmp_path):
+>       func = _owner_kernel(2, str(tmp_path), variant=variant)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:199: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+___ test_function_level_owner_rejects_nonuniform_loop_bounds[thread_extent] ____
+
+variant = 'thread_extent'
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_reje1')
+
+    @pytest.mark.parametrize("variant", ["thread_min", "thread_extent", "private_min", "private_extent"])
+    def test_function_level_owner_rejects_nonuniform_loop_bounds(variant, tmp_path):
+>       func = _owner_kernel(2, str(tmp_path), variant=variant)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:199: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+____ test_function_level_owner_rejects_nonuniform_loop_bounds[private_min] _____
+
+variant = 'private_min'
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_reje2')
+
+    @pytest.mark.parametrize("variant", ["thread_min", "thread_extent", "private_min", "private_extent"])
+    def test_function_level_owner_rejects_nonuniform_loop_bounds(variant, tmp_path):
+>       func = _owner_kernel(2, str(tmp_path), variant=variant)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:199: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+___ test_function_level_owner_rejects_nonuniform_loop_bounds[private_extent] ___
+
+variant = 'private_extent'
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_reje3')
+
+    @pytest.mark.parametrize("variant", ["thread_min", "thread_extent", "private_min", "private_extent"])
+    def test_function_level_owner_rejects_nonuniform_loop_bounds(variant, tmp_path):
+>       func = _owner_kernel(2, str(tmp_path), variant=variant)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:199: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+___________ test_function_level_owner_rejects_thread_dependent_step ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_reje4')
+
+    def test_function_level_owner_rejects_thread_dependent_step(tmp_path):
+>       func = _owner_kernel(2, str(tmp_path))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:206: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_____________ test_function_level_owner_still_rejects_nonunit_step _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_stil0')
+
+    def test_function_level_owner_still_rejects_nonunit_step(tmp_path):
+>       stepped = _stamp_owner_step(_owner_kernel(2, str(tmp_path)), tvm.tirx.IntImm("int32", 2))
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_ test_function_level_owner_accepts_role_uniform_loop_bounds[constant_bounds] __
+
+variant = 'constant_bounds'
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_acce0')
+
+    @pytest.mark.parametrize("variant", ["constant_bounds", "symbolic_bounds"])
+    def test_function_level_owner_accepts_role_uniform_loop_bounds(variant, tmp_path):
+>       mod = _run_host_function_pass(_owner_kernel(2, str(tmp_path), variant=variant))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:222: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+_ test_function_level_owner_accepts_role_uniform_loop_bounds[symbolic_bounds] __
+
+variant = 'symbolic_bounds'
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-140/test_function_level_owner_acce1')
+
+    @pytest.mark.parametrize("variant", ["constant_bounds", "symbolic_bounds"])
+    def test_function_level_owner_accepts_role_uniform_loop_bounds(variant, tmp_path):
+>       mod = _run_host_function_pass(_owner_kernel(2, str(tmp_path), variant=variant))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:222: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:38: in _owner_kernel
+    @T.prim_func
+     ^^^^^^^^^^^
+tilelang/language/eager/builder.py:1790: in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+tilelang/language/eager/builder.py:1754: in impl
+    func_annot = get_type_hints(func)
+                 ^^^^^^^^^^^^^^^^^^^^
+tilelang/language/eager/builder.py:1171: in get_type_hints
+    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:415: in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniforge3/envs/tilelang-cu133/lib/python3.12/typing.py:947: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NameError: name 'a_shape' is not defined
+
+<string>:1: NameError
+___________ test_stage_containing_only_a_replayable_bind_is_rejected ___________
+
+    def test_stage_containing_only_a_replayable_bind_is_rejected():
+        value = tvm.tirx.Var("only_replayed", "int32")
+        mod = _make_module(
+            _annotations(1),
+            lambda k, out: _stage(0, tvm.tirx.Bind(value, k + 1)),
+        )
+>       with pytest.raises(Exception, match="complete scheduled task"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'complete scheduled task'
+E         Actual message: 'Check failed: (!scheduled_indices.empty()) is false: NormalizeZ3ScheduleUnits: markers do not contain a scheduled task'
+
+testing/python/transform/test_tilelang_z3_schedule_units.py:272: AssertionError
+___________ test_codec_round_trip_preserves_nested_tree_and_metadata ___________
+
+    def test_codec_round_trip_preserves_nested_tree_and_metadata():
+        root = _nested_root()
+        after = _ffi("tl.cuda.transform.Z3ScheduleIRRoundTrip")(root)
+>       tvm.ir.assert_structural_equal(after, root)
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_ir.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+3rdparty/tvm/python/tvm/ir/base.py:267: in assert_structural_equal
+    _ffi_node_api.StructuralEqual(lhs, rhs, True, map_free_vars)  # type: ignore # pylint: disable=no-member
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError) << oss.str();
+E   ValueError: StructuralEqual check failed, caused by lhs at <root>.body.seq[0].node["stage"]:
+E   with T.sblock("tilelang_root", no_realize=True):
+E       T.reads()
+E       T.writes()
+E       storage = T.handle("int32", "shared.dyn")
+E       T.sblock_attr({"tl.buffer_alias_map": {}, "tl.buffer_version_mode": {storage: "auto"}, "tl.buffer_versions_map": {storage: 2}, "tl.cuda_z3_selected_buffer_versions": {storage: 2}})
+E       storage_1 = T.sblock_alloc_buffer((8,), "int32", data=storage, scope="shared.dyn")
+E       local = T.sblock_alloc_buffer((2,), "int32", scope="local.var")
+E       with T.attr({"source_id": 10, "stage": 0}, "tl.schedule_unit", 1):
+E                                              ^
+E           T.attr({"candidate_roles_hi": T.int64(2147483648), "candidate_roles_lo": T.int64(4), "ii": T.int64(2), "latency": T.int64(4), "resolved_roles_hi": T.int64(2147483648), "resolved_roles_lo": T.int64(0), "solver_eligible": 0, "ws_op_id": "bind"}, "tl.cuda_task", 1)
+E           old: T.int32 = 7
+E       old = T.int32()
+E       T.attr({"source_id": 16, "stage": 0}, "tl.schedule_unit", 1)
+E       for i in T.serial(3, annotations={"tl.ws_op_id": "outer"}):
+E           with T.attr({"source_id": 11, "stage": -1}, "tl.schedule_unit", 1):
+E               T.attr({"declaration": 1, "solver_eligible": 0}, "tl.cuda_task", 1)
+E               local = T.decl_buffer((2,), "int32", data=local.data, scope="local.var")
+E           with T.attr({"source_id": 14, "stage": -1}, "tl.schedule_unit", 1):
+E               for j in T.serial(2, annotations={"tl.ws_op_id": "inner"}):
+E                   with T.attr({"source_id": 12, "stage": -1}, "tl.schedule_unit", 1):
+E                       if old > 0:
+E                           T.attr(old >= 0, "tl.assume", 1)
+E                           T.attr({"ws_op_id": "guarded_store"}, "tl.cuda_task", 1)
+E                           storage_1[i] = old + j
+E                   T.attr({"source_id": 13, "stage": -1}, "tl.schedule_unit", 1)
+E                   T.attr({"ws_op_id": "local_store"}, "tl.cuda_task", 1)
+E                   local[j] = storage_1[i]
+E           T.attr({"source_id": 15, "stage": -1}, "tl.schedule_unit", 1)
+E           T.attr({"ws_op_id": "tail"}, "tl.cuda_task", 1)
+E           storage_1[0] = i
+E   and rhs at <root>.body.seq[0].node["stage"]:
+E   with T.sblock("tilelang_root", no_realize=True):
+E       T.reads()
+E       T.writes()
+E       storage = T.handle("int32", "shared.dyn")
+E       T.sblock_attr({"tl.buffer_alias_map": {}, "tl.buffer_version_mode": {storage: "auto"}, "tl.buffer_versions_map": {storage: 2}, "tl.cuda_z3_selected_buffer_versions": {storage: 2}})
+E       storage_1 = T.sblock_alloc_buffer((8,), "int32", data=storage, scope="shared.dyn")
+E       local = T.sblock_alloc_buffer((2,), "int32", scope="local.var")
+E       with T.attr({"source_id": 10, "stage": 0}, "tl.schedule_unit", 1):
+E                                              ^
+E           T.attr({"candidate_roles_hi": T.int64(2147483648), "candidate_roles_lo": T.int64(4), "ii": T.int64(2), "latency": T.int64(4), "resolved_roles_hi": T.int64(2147483648), "resolved_roles_lo": T.int64(0), "solver_eligible": 0, "ws_op_id": "bind"}, "tl.cuda_task", 1)
+E           old: T.int32 = 7
+E       old = T.int32()
+E       T.attr({"source_id": 16, "stage": 0}, "tl.schedule_unit", 1)
+E       for i in T.serial(3, annotations={"tl.ws_op_id": "outer"}):
+E           with T.attr({"source_id": 11, "stage": -1}, "tl.schedule_unit", 1):
+E               T.attr({"declaration": 1, "solver_eligible": 0}, "tl.cuda_task", 1)
+E               local = T.decl_buffer((2,), "int32", data=local.data, scope="local.var")
+E           with T.attr({"source_id": 14, "stage": -1}, "tl.schedule_unit", 1):
+E               for j in T.serial(2, annotations={"tl.ws_op_id": "inner"}):
+E                   with T.attr({"source_id": 12, "stage": -1}, "tl.schedule_unit", 1):
+E                       if old > 0:
+E                           T.attr(old >= 0, "tl.assume", 1)
+E                           T.attr({"ws_op_id": "guarded_store"}, "tl.cuda_task", 1)
+E                           storage_1[i] = old + j
+E                   T.attr({"source_id": 13, "stage": -1}, "tl.schedule_unit", 1)
+E                   T.attr({"ws_op_id": "local_store"}, "tl.cuda_task", 1)
+E                   local[j] = storage_1[i]
+E           T.attr({"source_id": 15, "stage": -1}, "tl.schedule_unit", 1)
+E           T.attr({"ws_op_id": "tail"}, "tl.cuda_task", 1)
+E           storage_1[0] = i
+
+3rdparty/tvm/src/ir/structural_equal.cc:68: ValueError
+_________ test_clone_is_deep_and_substitution_leaves_source_unchanged __________
+
+    def test_clone_is_deep_and_substitution_leaves_source_unchanged():
+        root = _nested_root()
+        cloned = _ffi("tl.cuda.transform.Z3ScheduleIRCloneRoundTrip")(root)
+>       tvm.ir.assert_structural_equal(cloned, root)
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_ir.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+3rdparty/tvm/python/tvm/ir/base.py:267: in assert_structural_equal
+    _ffi_node_api.StructuralEqual(lhs, rhs, True, map_free_vars)  # type: ignore # pylint: disable=no-member
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError) << oss.str();
+E   ValueError: StructuralEqual check failed, caused by lhs at <root>.body.seq[0].node["stage"]:
+E   with T.sblock("tilelang_root", no_realize=True):
+E       T.reads()
+E       T.writes()
+E       storage = T.handle("int32", "shared.dyn")
+E       T.sblock_attr({"tl.buffer_alias_map": {}, "tl.buffer_version_mode": {storage: "auto"}, "tl.buffer_versions_map": {storage: 2}, "tl.cuda_z3_selected_buffer_versions": {storage: 2}})
+E       storage_1 = T.sblock_alloc_buffer((8,), "int32", data=storage, scope="shared.dyn")
+E       local = T.sblock_alloc_buffer((2,), "int32", scope="local.var")
+E       with T.attr({"source_id": 10, "stage": 0}, "tl.schedule_unit", 1):
+E                                              ^
+E           T.attr({"candidate_roles_hi": T.int64(2147483648), "candidate_roles_lo": T.int64(4), "ii": T.int64(2), "latency": T.int64(4), "resolved_roles_hi": T.int64(2147483648), "resolved_roles_lo": T.int64(0), "solver_eligible": 0, "ws_op_id": "bind"}, "tl.cuda_task", 1)
+E           old: T.int32 = 7
+E       old = T.int32()
+E       T.attr({"source_id": 16, "stage": 0}, "tl.schedule_unit", 1)
+E       for i in T.serial(3, annotations={"tl.ws_op_id": "outer"}):
+E           with T.attr({"source_id": 11, "stage": -1}, "tl.schedule_unit", 1):
+E               T.attr({"declaration": 1, "solver_eligible": 0}, "tl.cuda_task", 1)
+E               local = T.decl_buffer((2,), "int32", data=local.data, scope="local.var")
+E           with T.attr({"source_id": 14, "stage": -1}, "tl.schedule_unit", 1):
+E               for j in T.serial(2, annotations={"tl.ws_op_id": "inner"}):
+E                   with T.attr({"source_id": 12, "stage": -1}, "tl.schedule_unit", 1):
+E                       if old > 0:
+E                           T.attr(old >= 0, "tl.assume", 1)
+E                           T.attr({"ws_op_id": "guarded_store"}, "tl.cuda_task", 1)
+E                           storage_1[i] = old + j
+E                   T.attr({"source_id": 13, "stage": -1}, "tl.schedule_unit", 1)
+E                   T.attr({"ws_op_id": "local_store"}, "tl.cuda_task", 1)
+E                   local[j] = storage_1[i]
+E           T.attr({"source_id": 15, "stage": -1}, "tl.schedule_unit", 1)
+E           T.attr({"ws_op_id": "tail"}, "tl.cuda_task", 1)
+E           storage_1[0] = i
+E   and rhs at <root>.body.seq[0].node["stage"]:
+E   with T.sblock("tilelang_root", no_realize=True):
+E       T.reads()
+E       T.writes()
+E       storage = T.handle("int32", "shared.dyn")
+E       T.sblock_attr({"tl.buffer_alias_map": {}, "tl.buffer_version_mode": {storage: "auto"}, "tl.buffer_versions_map": {storage: 2}, "tl.cuda_z3_selected_buffer_versions": {storage: 2}})
+E       storage_1 = T.sblock_alloc_buffer((8,), "int32", data=storage, scope="shared.dyn")
+E       local = T.sblock_alloc_buffer((2,), "int32", scope="local.var")
+E       with T.attr({"source_id": 10, "stage": 0}, "tl.schedule_unit", 1):
+E                                              ^
+E           T.attr({"candidate_roles_hi": T.int64(2147483648), "candidate_roles_lo": T.int64(4), "ii": T.int64(2), "latency": T.int64(4), "resolved_roles_hi": T.int64(2147483648), "resolved_roles_lo": T.int64(0), "solver_eligible": 0, "ws_op_id": "bind"}, "tl.cuda_task", 1)
+E           old: T.int32 = 7
+E       old = T.int32()
+E       T.attr({"source_id": 16, "stage": 0}, "tl.schedule_unit", 1)
+E       for i in T.serial(3, annotations={"tl.ws_op_id": "outer"}):
+E           with T.attr({"source_id": 11, "stage": -1}, "tl.schedule_unit", 1):
+E               T.attr({"declaration": 1, "solver_eligible": 0}, "tl.cuda_task", 1)
+E               local = T.decl_buffer((2,), "int32", data=local.data, scope="local.var")
+E           with T.attr({"source_id": 14, "stage": -1}, "tl.schedule_unit", 1):
+E               for j in T.serial(2, annotations={"tl.ws_op_id": "inner"}):
+E                   with T.attr({"source_id": 12, "stage": -1}, "tl.schedule_unit", 1):
+E                       if old > 0:
+E                           T.attr(old >= 0, "tl.assume", 1)
+E                           T.attr({"ws_op_id": "guarded_store"}, "tl.cuda_task", 1)
+E                           storage_1[i] = old + j
+E                   T.attr({"source_id": 13, "stage": -1}, "tl.schedule_unit", 1)
+E                   T.attr({"ws_op_id": "local_store"}, "tl.cuda_task", 1)
+E                   local[j] = storage_1[i]
+E           T.attr({"source_id": 15, "stage": -1}, "tl.schedule_unit", 1)
+E           T.attr({"ws_op_id": "tail"}, "tl.cuda_task", 1)
+E           storage_1[0] = i
+
+3rdparty/tvm/src/ir/structural_equal.cc:68: ValueError
+____________ test_paths_lca_comparison_and_symbolic_iteration_count ____________
+
+    def test_paths_lca_comparison_and_symbolic_iteration_count():
+        summary = _ffi("tl.cuda.transform.Z3ScheduleIRInspect")(_nested_root())
+>       assert summary["task_count"] == 4
+E       assert 5 == 4
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_ir.py:209: AssertionError
+____________ test_iteration_order_requires_a_strong_completion_edge ____________
+
+    def test_iteration_order_requires_a_strong_completion_edge():
+        minimum = _ffi("tl.cuda.transform.Z3MinimumIterationDistance")
+        # weak 0->1, strong 1->2, weak 0->2, strong 2->3.
+        arguments = (4, [0, 1, 0, 2], [1, 2, 2, 3], [1, 2, 0, 1], [0, 1, 0, 1])
+        assert minimum(*arguments, 0, 1) is None
+>       assert minimum(*arguments, 0, 2) == 2  # The direct weak edge is not a proof.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert 3 == 2
+E        +  where 3 = ffi.Function(*(4, [0, 1, 0, 2], [1, 2, 2, 3], [1, 2, 0, 1], [0, 1, 0, 1]), 0, 2)
+
+testing/python/transform/test_tilelang_cuda_z3_schedule_ir.py:308: AssertionError
+=============================== warnings summary ===============================
+testing/python/transform/test_tilelang_z3_schedule_units.py::test_public_frontend_emits_exact_marker_shapes
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================================================================================= fixture duration top ==========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.009570 grand total                                                                                                                                              463 0:00:00.000017 0:00:00.000908
+======================================================================================== test call duration top =========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:01.514713 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                    1 0:00:01.514713 0:00:01.514713
+0:00:00.991475 testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_flat_non_identity_schedule_rejects_buffer_dependencies                      1 0:00:00.991475 0:00:00.991475
+0:00:00.342682 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                                  18 0:00:00.015540 0:00:00.078646
+0:00:00.102813 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                              1 0:00:00.102813 0:00:00.102813
+0:00:00.099850 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                               10 0:00:00.009874 0:00:00.011014
+0:00:00.088056 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_shared_writer_across_async_stages    1 0:00:00.088056 0:00:00.088056
+0:00:00.086135 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                               2 0:00:00.043067 0:00:00.045675
+0:00:00.071649 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                           2 0:00:00.035824 0:00:00.037978
+0:00:00.049551 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers                        3 0:00:00.016496 0:00:00.017128
+0:00:00.047520 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering            12 0:00:00.003369 0:00:00.007787
+0:00:00.045297 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer             2 0:00:00.022649 0:00:00.022996
+0:00:00.038439 testing/python/transform/test_tilelang_z3_task_analysis.py::test_aliased_views_keep_clone_raw_war_constraints_and_versions                                 2 0:00:00.019220 0:00:00.020208
+0:00:00.033880 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_full_commit_wait_placement                   2 0:00:00.016940 0:00:00.019274
+0:00:00.032446 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_role_uniform_owner_loop_bounds_remain_supported                                         2 0:00:00.016223 0:00:00.016417
+0:00:00.030368 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds                          4 0:00:00.007513 0:00:00.008128
+0:00:00.022323 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides              1 0:00:00.022323 0:00:00.022323
+0:00:00.021721 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                          2 0:00:00.010860 0:00:00.011129
+0:00:00.021228 testing/python/transform/test_tilelang_z3_task_analysis.py::test_inferred_scalar_and_buffer_dependencies_support_clone_augmented_scheduling                1 0:00:00.021228 0:00:00.021228
+0:00:00.021144 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata   1 0:00:00.021144 0:00:00.021144
+0:00:00.019768 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum               1 0:00:00.019768 0:00:00.019768
+0:00:00.019068 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                              1 0:00:00.019068 0:00:00.019068
+0:00:00.018664 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_counter_phases                                               1 0:00:00.018664 0:00:00.018664
+0:00:00.018127 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_var_use_requires_defining_op_in_role                                     1 0:00:00.018127 0:00:00.018127
+0:00:00.018079 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                          2 0:00:00.009039 0:00:00.009523
+0:00:00.016924 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline          1 0:00:00.016924 0:00:00.016924
+0:00:00.016863 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_rejects_conditional_async_producer           1 0:00:00.016863 0:00:00.016863
+0:00:00.016804 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_depth1_parity_and_single_version_dimension                                              1 0:00:00.016804 0:00:00.016804
+0:00:00.016723 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_nonunit_owner_loop_step_still_rejected                                                  1 0:00:00.016723 0:00:00.016723
+0:00:00.016609 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                        3 0:00:00.005801 0:00:00.005989
+0:00:00.016302 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_arrival_counts_and_allocation_lifetime                                                  1 0:00:00.016302 0:00:00.016302
+0:00:05.025196 grand total                                                                                                                                              394 0:00:00.004971 0:00:01.514713
+======================================================================================== test setup duration top ========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.035679 grand total                                                                                                                                              394 0:00:00.000039 0:00:00.001074
+====================================================================================== test teardown duration top =======================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.019715 grand total                                                                                                                                              394 0:00:00.000040 0:00:00.000275
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_depth1_parity_and_single_version_dimension
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_arrival_counts_and_allocation_lifetime
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers[1-48]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers[2-64]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers[3-112]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_role_uniform_owner_loop_bounds_remain_supported[constant_bounds]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_role_uniform_owner_loop_bounds_remain_supported[symbolic_bounds]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_thread_dependent_owner_loop_step_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_nonunit_owner_loop_step_still_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[legacy_two_scopes-owner_scopes0-synchronizes exactly one scope]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[three_owners-owner_scopes1-exactly two ordered owner scopes]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[different_order-owner_scopes2-declared order]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[external-owner_scopes3-outside both declared owners]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[guarded-owner_scopes4-guarded owner-ring epochs]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[read_first-owner_scopes5-read-first owner-ring epoch]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[stage_offsets-owner_scopes6-stage-zero epochs]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[mismatched_arrivals-owner_scopes7-mismatched arrival signature]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[private-owner_scopes8-CTA-local shared storage]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[global-owner_scopes9-CTA-local shared storage]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[cross_cta-owner_scopes10-CTA-local shared storage]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[nested-owner_scopes11-ordered siblings]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[async-owner_scopes12-asynchronous atom]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[three_roles-owner_scopes13-exactly two fixed nonoverlapping warp roles]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[thread_min-owner_scopes14-role-uniform]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[thread_extent-owner_scopes15-role-uniform]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[private_min-owner_scopes16-role-uniform]
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected[private_extent-owner_scopes17-role-uniform]
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_task_cost_ffi_is_strict_json_and_measured_only_is_controllable
+FAILED testing/python/transform/test_tilelang_z3_task_analysis.py::test_aliased_views_keep_clone_raw_war_constraints_and_versions[True]
+FAILED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer[canonical]
+FAILED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer[alias-first-consumer]
+FAILED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata
+FAILED testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides
+FAILED testing/python/transform/test_tilelang_transform_pipeline_buffer_versions.py::test_ambiguous_current_buffer_mapping_is_rejected
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds[thread_min]
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds[thread_extent]
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds[private_min]
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds[private_extent]
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_thread_dependent_step
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_still_rejects_nonunit_step
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_accepts_role_uniform_loop_bounds[constant_bounds]
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_accepts_role_uniform_loop_bounds[symbolic_bounds]
+FAILED testing/python/transform/test_tilelang_z3_schedule_units.py::test_stage_containing_only_a_replayable_bind_is_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_ir.py::test_codec_round_trip_preserves_nested_tree_and_metadata
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_ir.py::test_clone_is_deep_and_substitution_leaves_source_unchanged
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_ir.py::test_paths_lca_comparison_and_symbolic_iteration_count
+FAILED testing/python/transform/test_tilelang_cuda_z3_schedule_ir.py::test_iteration_order_requires_a_strong_completion_edge
+49 failed, 345 passed, 3 deselected, 1 warning in 7.53s

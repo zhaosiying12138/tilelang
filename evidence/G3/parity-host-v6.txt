@@ -1,0 +1,189 @@
+.F...................................................................... [ 26%]
+........................................................................ [ 53%]
+..........................................F............................. [ 80%]
+...................................................F                     [100%]
+=================================== FAILURES ===================================
+___________ test_two_owners_one_ring_and_continuous_depth2_counters ____________
+
+    def test_two_owners_one_ring_and_continuous_depth2_counters():
+        func = _materialize(_owner_ring_kernel(depth=2, extents=(3, 5)))
+        ring = _buffer(func, "pipeline_buffer")
+        full = _barrier(func, "ring_full", [32, 32])
+        empty = _barrier(func, "ring_empty", [128, 128])
+        assert len(_buffers(func, "ring_full")) == 1
+        assert len(_buffers(func, "ring_empty")) == 1
+        assert [int(dim) for dim in ring.shape] == [2, 4]
+    
+        for first_thread, producer, barrier in ((0, True, empty), (128, False, full)):
+            role = _role_body(func, first_thread)
+            counter = _buffer(role, "ring_phase")
+            assert counter.scope() == "local"
+            _assert_persistent_counter(role, counter, 2, producer, barrier)
+            loops = _owner_loops(role)
+            assert [int(loop.extent) for loop in loops] == [3, 5]
+            for loop in loops:
+                accesses = [load for load in collect_nodes(loop.body, tirx.BufferLoad) if load.buffer.data.same_as(ring.data)]
+                assert accesses
+                for load in accesses:
+                    assert len(load.indices) == 2
+                    tvm.ir.assert_structural_equal(load.indices[0], tirx.BufferLoad(counter, [0]) % 2)
+            # No full-CTA barrier is inserted into a role-exclusive path.
+>           assert all(call.op.name != "tirx.ptx_barrier" for call in collect_calls(role, op="tirx.ptx_barrier"))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_owner_ring.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tilelang/testing/ir.py:95: in collect_calls
+    target = _resolve_op(op)
+             ^^^^^^^^^^^^^^^
+tilelang/testing/ir.py:55: in _resolve_op
+    return tvm.ir.Op.get(op)
+           ^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/op.py:47: in get
+    return _ffi_api.GetOp(op_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_CHECK(reg != nullptr, AttributeError) << "Operator " << name << " is not registered";
+E   AttributeError: Check failed: (reg != nullptr) is false: Operator tirx.ptx_barrier is not registered
+
+3rdparty/tvm/src/ir/op.cc:48: AttributeError
+__________ test_pipeline_planning_keeps_bind_that_reads_atomic_target __________
+
+    def test_pipeline_planning_keeps_bind_that_reads_atomic_target():
+        @T.prim_func
+        def before(
+            counter: T.Tensor((1,), T.int32),
+            out: T.Tensor((8,), T.int32),
+        ):
+            for i in T.Pipelined(
+                4,
+                order=[0, 1, 2, 3],
+                stage=[0, 0, 1, 1],
+            ):
+                snapshot: T.int32 = counter[0]
+                pos: T.int32 = T.atomic_add(counter[0], 1, return_prev=True)
+                out[i * 2] = snapshot
+                out[i * 2 + 1] = pos
+    
+        mod = _run_pipeline_planning(before, sm80_target)
+        annos = _collect_pipeline_loop_annotations(mod["main"])
+        assert annos, "Expected at least one loop annotated by PipelinePlanning"
+        anno = annos[0]
+        stages = [int(v) for v in anno["software_pipeline_stage"]]
+        orders = [int(v) for v in anno["software_pipeline_order"]]
+    
+        assert stages == [0, 0, 1, 1]
+        assert orders == [0, 1, 2, 3]
+>       assert _ints(anno["software_pipeline_replayable_scalar_binds"]) == [0, 0, 0, 0]
+               ^^^^^
+E       NameError: name '_ints' is not defined
+
+testing/python/transform/test_tilelang_transform_pipeline_planning.py:1091: NameError
+___________ test_function_level_owner_validation_and_materialization ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-112/test_function_level_owner_vali0')
+
+    def test_function_level_owner_validation_and_materialization(tmp_path):
+        config_key = tilelang.PassConfigKey.TL_ENABLE_Z3_PIPELINE_PLANNING
+        target = tvm.target.Target(
+            {
+                "kind": "cuda",
+                "arch": "sm_100a",
+                "max_shared_memory_per_block": 1 << 20,
+            }
+        )
+        func = _owner_kernel(2, str(tmp_path)).with_attr("global_symbol", "main")
+        mod = tvm.IRModule.from_expr(func)
+        mod = tvm.tirx.transform.BindTarget(target)(mod)
+        mod = tilelang.transform.MaterializeKernelLaunch()(mod)
+>       mod = _function_pass(mod, config_key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py:94: in _function_pass
+    return tilelang.transform.Z3OwnerRingPlanning()(mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::Z3OwnerRingPlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::Z3OwnerRingPlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(right_residue - left_residue >= latency_lr &&
+E   tvm.error.InternalError: Check failed: (right_residue - left_residue >= latency_lr && left_residue - right_residue + ii >= latency_rl) is false: Z3OwnerRingPlanning: declared owner order 0 -> 1 does not satisfy forward and reverse hand-off constraints; refusing to reorder
+
+src/transform/z3_owner_ring_planning.cc:277: InternalError
+----------------------------- Captured stdout call -----------------------------
+[CUDA Python Z3 Loop] Scheduling 2 tasks, num_stages=2
+[CUDA Python Z3 Loop] Data dependencies: []
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: [(0, 1, 1, 2)]
+[CUDA Python Z3 Loop] Buffer sizes/groups: [] / []
+[CUDA Python Z3 Loop] Testing II=5
+[CUDA Python Z3 Loop] Testing II=3
+[CUDA Python Z3 Loop] Testing II=2
+[CUDA Python Z3 Loop] Result II=3, serial_fallback=False
+[CUDA Python Z3 Loop] Task 1: start=0, latency=4, II=1, resource=0b0000001
+[CUDA Python Z3 Loop] Task 0: start=2, latency=4, II=1, resource=0b0000001
+======================================================================================== fixture duration top ========================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.006660 grand total                                                                                                                                           320 0:00:00.000015 0:00:00.001599
+======================================================================================= test call duration top =======================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:01.815060 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                 1 0:00:01.815060 0:00:01.815060
+0:00:01.025741 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters                                   1 0:00:01.025741 0:00:01.025741
+0:00:00.614140 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization                       1 0:00:00.614140 0:00:00.614140
+0:00:00.223569 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                               14 0:00:00.014306 0:00:00.037465
+0:00:00.098795 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_all_allocations_and_barriers                         1 0:00:00.098795 0:00:00.098795
+0:00:00.097202 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                            10 0:00:00.009663 0:00:00.011146
+0:00:00.077816 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                           1 0:00:00.077816 0:00:00.077816
+0:00:00.073720 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                            2 0:00:00.036860 0:00:00.040107
+0:00:00.068351 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                        2 0:00:00.034176 0:00:00.036280
+0:00:00.039429 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering         12 0:00:00.002837 0:00:00.005869
+0:00:00.019341 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                           1 0:00:00.019341 0:00:00.019341
+0:00:00.018107 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_counter_phases                                            1 0:00:00.018107 0:00:00.018107
+0:00:00.018013 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_var_use_requires_defining_op_in_role                                  1 0:00:00.018013 0:00:00.018013
+0:00:00.017731 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum            1 0:00:00.017731 0:00:00.017731
+0:00:00.017716 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                       2 0:00:00.008858 0:00:00.009362
+0:00:00.017050 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_depth1_parity_and_single_version_dimension                                           1 0:00:00.017050 0:00:00.017050
+0:00:00.016021 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_stage_offset_prologue_epilogue                            1 0:00:00.016021 0:00:00.016021
+0:00:00.015773 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline       1 0:00:00.015773 0:00:00.015773
+0:00:00.015420 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                     3 0:00:00.005078 0:00:00.005811
+0:00:00.014997 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                       2 0:00:00.007499 0:00:00.007630
+0:00:00.014991 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_arrival_counts_and_allocation_lifetime                                               1 0:00:00.014991 0:00:00.014991
+0:00:00.014498 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_versions_reshape_and_view_aliases_by_storage                          1 0:00:00.014498 0:00:00.014498
+0:00:00.013772 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer          1 0:00:00.013772 0:00:00.013772
+0:00:00.013530 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_runtime_phase_counter_for_multi_cycle_body                            1 0:00:00.013530 0:00:00.013530
+0:00:00.013505 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_schedules_bind_that_reads_pipeline_buffer   2 0:00:00.006753 0:00:00.007018
+0:00:00.013063 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_short_static_loop_folds_to_prologue_epilogue                          1 0:00:00.013063 0:00:00.013063
+0:00:00.012643 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_preserves_four_task_z3_shape                          1 0:00:00.012643 0:00:00.012643
+0:00:00.012233 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_reaches_mixed_dependency_fixed_point                      1 0:00:00.012233 0:00:00.012233
+0:00:00.011614 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_basic_two_role_transform                                              1 0:00:00.011614 0:00:00.011614
+0:00:00.011324 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_role_both_producer_and_consumer_rejected                              1 0:00:00.011324 0:00:00.011324
+0:00:05.227389 grand total                                                                                                                                           268 0:00:00.006349 0:00:01.815060
+====================================================================================== test setup duration top =======================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.023877 grand total                                                                                                                                           268 0:00:00.000038 0:00:00.001753
+===================================================================================== test teardown duration top =====================================================================================
+total          name                                                                                                                                                  num med            max           
+0:00:00.012347 grand total                                                                                                                                           268 0:00:00.000040 0:00:00.000219
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters
+FAILED testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_bind_that_reads_atomic_target
+FAILED testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization
+3 failed, 265 passed, 3 deselected in 9.48s

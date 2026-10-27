@@ -1,0 +1,1109 @@
+........................................................................ [ 13%]
+........................................................................ [ 26%]
+........................................................................ [ 39%]
+........................................................................ [ 52%]
+........................................................................ [ 65%]
+........................................................................ [ 78%]
+..............................F.....F......FFFFFFFFFFFFFFFFFFFFFFF...... [ 92%]
+......s..................s..........FFF.FFF                              [100%]
+=================================== FAILURES ===================================
+__ test_write_first_lattice_controls_automatic_claim[read-modify-write-False] __
+
+case = 'read-modify-write', expected = False
+
+    @pytest.mark.parametrize(
+        "case,expected",
+        [
+            ("write-first", True),
+            ("read-first", False),
+            ("read-modify-write", False),
+            ("same-guard", True),
+            ("disjoint-guards", False),
+            ("exhaustive-writes", True),
+            ("manual-stage-order", True),
+        ],
+    )
+    def test_write_first_lattice_controls_automatic_claim(case, expected):
+        shared, out = _buffers()
+        enabled = tirx.Var("enabled", "bool")
+        iv = tirx.Var("i", "int32")
+        if case == "read-first":
+            body = [
+                _unit(_read_into(shared, out), 1, "read"),
+                _unit(_write(shared, iv), 2, "write"),
+            ]
+        elif case == "read-modify-write":
+            body = [_unit(_write(shared, shared[0] + 1), 1, "rmw")]
+        elif case == "same-guard":
+            body = _ring_body(shared, out, iv, write_guard=enabled, read_guard=enabled)
+        elif case == "disjoint-guards":
+            body = _ring_body(
+                shared, out, iv, write_guard=enabled, read_guard=tirx.Not(enabled)
+            )
+        elif case == "exhaustive-writes":
+            body = [
+                _unit(_write(shared, iv), 1, "write_true", guard=enabled),
+                _unit(_write(shared, iv + 1), 2, "write_false", guard=tirx.Not(enabled)),
+                _unit(_read_into(shared, out), 3, "read"),
+            ]
+        elif case == "manual-stage-order":
+            body = _ring_body(shared, out, iv, stages=(0, 1))
+            body.reverse()
+            body[0] = _unit(_read_into(shared, out), 1, "read", stage=1)
+            body[1] = _unit(_write(shared, iv), 2, "write", stage=0)
+        else:
+            body = _ring_body(shared, out, iv)
+>       root = _root(_control(iv, 4, body, 20, "owner"), [shared, out])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:44: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 1, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "rmw"}, "tl.cuda_task", 1)
+E       shared = T.Buffer((8,), "int32", scope="shared")
+E       shared[0] = shared[0] + 1directly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+_________ test_aliases_and_row_write_whole_read_promote_to_outer_owner _________
+
+    def test_aliases_and_row_write_whole_read_promote_to_outer_owner():
+        base = tirx.decl_buffer((4, 4), "int32", name="base", scope="shared")
+        alias = tirx.decl_buffer((16,), "int32", name="alias", data=base.data)
+        out = tirx.decl_buffer((16,), "int32", name="out", scope="global")
+        outer = tirx.Var("outer", "int32")
+        row = tirx.Var("row", "int32")
+>       inner = _control(
+            row,
+            4,
+            [_unit(_write(base, row, [outer, row]), 1, "row_write")],
+            2,
+            "rows",
+        )
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:172: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:44: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 1, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "row_write"}, "tl.cuda_task", 1)
+E       base = T.Buffer((4, 4), "int32", scope="shared")
+E       row = T.int32()
+E       outer = T.int32()
+E       base[outer, row] = rowdirectly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+___________ test_nested_explicit_owners_fail_with_storage_diagnostic ___________
+
+    def test_nested_explicit_owners_fail_with_storage_diagnostic():
+        shared, out = _buffers()
+        outer = tirx.Var("outer", "int32")
+        inner = tirx.Var("inner", "int32")
+>       child = _control(
+            inner,
+            2,
+            [_unit(_write(shared, inner), 1, "write")],
+            2,
+            "inner",
+            claims=[shared.data],
+        )
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:242: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:44: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 1, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "write"}, "tl.cuda_task", 1)
+E       shared = T.Buffer((8,), "int32", scope="shared")
+E       inner = T.int32()
+E       shared[0] = innerdirectly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+________________ test_owner_external_ordinary_read_is_rejected _________________
+
+    def test_owner_external_ordinary_read_is_rejected():
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+>       owner = _control(
+            iv,
+            2,
+            [_unit(_write(shared, iv), 1, "write")],
+            2,
+            "owner",
+            claims=[shared.data],
+        )
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:44: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 1, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "write"}, "tl.cuda_task", 1)
+E       shared = T.Buffer((8,), "int32", scope="shared")
+E       i = T.int32()
+E       shared[0] = idirectly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+_____________ test_unnormalized_buffer_dependent_bound_is_rejected _____________
+
+    def test_unnormalized_buffer_dependent_bound_is_rejected():
+        shared, out = _buffers()
+        outer = tirx.Var("outer", "int32")
+        inner = tirx.Var("inner", "int32")
+>       child = _control(
+            inner,
+            shared[0],
+            [_unit(_read_into(shared, out), 1, "read")],
+            2,
+            "child",
+        )
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:275: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:44: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 1, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "read"}, "tl.cuda_task", 1)
+E       out = T.Buffer((8,), "int32")
+E       shared = T.Buffer((8,), "int32", scope="shared")
+E       out[0] = shared[0]directly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+___________ test_owner_external_fill_is_recognized_for_every_version ___________
+
+    def test_owner_external_fill_is_recognized_for_every_version():
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+        fill = _unit(_fill(shared, 0), 1, "fill")
+>       owner = _control(
+            iv,
+            2,
+            [_unit(_write(shared, iv), 2, "write")],
+            3,
+            "owner",
+            claims=[shared.data],
+        )
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:44: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 2, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "write"}, "tl.cuda_task", 1)
+E       shared = T.Buffer((8,), "int32", scope="shared")
+E       i = T.int32()
+E       shared[0] = idirectly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+_________ test_self_reading_external_fill_is_not_a_broadcast_exception _________
+
+    def test_self_reading_external_fill_is_not_a_broadcast_exception():
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+        fill = _unit(_fill(shared, 0, self_read=True), 1, "bad_fill")
+>       owner = _control(
+            iv,
+            2,
+            [_unit(_write(shared, iv), 2, "write")],
+            3,
+            "owner",
+            claims=[shared.data],
+        )
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:337: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py:44: in _control
+    tirx.SeqStmt(children),
+    ^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/tirx/stmt.py:396: in __init__
+    self.__init_handle_by_constructor__(_ffi_api.SeqStmt, seq, span)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/object.pxi:355: in tvm_ffi.core.Object.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/object.pxi:183: in tvm_ffi.core.CObject.__init_handle_by_constructor__
+    ???
+python/tvm_ffi/cython/function.pxi:126: in tvm_ffi.core.ConstructorCall
+    ???
+python/tvm_ffi/cython/error.pxi:193: in tvm_ffi.core.CHECK_CALL
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_ICHECK_NE(seq.size(), 1) << "A SeqStmt of length 1 is prohibited.  "
+E   tvm.error.InternalError: Check failed: seq.size() != 1 (1 vs. 1) : A SeqStmt of length 1 is prohibited.  Use the node with T.attr({"source_id": 2, "stage": -1}, "tl.schedule_unit", 1):
+E       T.attr({"ws_op_id": "write"}, "tl.cuda_task", 1)
+E       shared = T.Buffer((8,), "int32", scope="shared")
+E       i = T.int32()
+E       shared[0] = idirectly, or for dynamic usage, normalize using SeqStmt::Flatten()
+
+3rdparty/tvm/src/tirx/ir/stmt.cc:291: InternalError
+_ test_affine_single_owner_uses_iteration_and_retains_owner_semantics[single-version] _
+
+versions = 1
+
+    @pytest.mark.parametrize("versions", [1, 3], ids=["single-version", "ring"])
+    def test_affine_single_owner_uses_iteration_and_retains_owner_semantics(versions):
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+        owner = _control(iv, 4, _ring_tasks(shared, out, iv), 10, "owner")
+>       plan = _plan(_root(owner, [shared, out], {shared.data: versions}))["shared"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+__ test_affine_single_owner_uses_iteration_and_retains_owner_semantics[ring] ___
+
+versions = 3
+
+    @pytest.mark.parametrize("versions", [1, 3], ids=["single-version", "ring"])
+    def test_affine_single_owner_uses_iteration_and_retains_owner_semantics(versions):
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+        owner = _control(iv, 4, _ring_tasks(shared, out, iv), 10, "owner")
+>       plan = _plan(_root(owner, [shared, out], {shared.data: versions}))["shared"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+_____ test_guarded_single_owner_uses_counter_for_any_depth[single-version] _____
+
+versions = 1
+
+    @pytest.mark.parametrize("versions", [1, 3], ids=["single-version", "ring"])
+    def test_guarded_single_owner_uses_counter_for_any_depth(versions):
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+        guard = iv % 2 == 0
+        owner = _control(iv, 4, _ring_tasks(shared, out, iv, guard=guard), 10, "owner")
+>       plan = _plan(_root(owner, [shared, out], {shared.data: versions}))["shared"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+__________ test_guarded_single_owner_uses_counter_for_any_depth[ring] __________
+
+versions = 3
+
+    @pytest.mark.parametrize("versions", [1, 3], ids=["single-version", "ring"])
+    def test_guarded_single_owner_uses_counter_for_any_depth(versions):
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+        guard = iv % 2 == 0
+        owner = _control(iv, 4, _ring_tasks(shared, out, iv, guard=guard), 10, "owner")
+>       plan = _plan(_root(owner, [shared, out], {shared.data: versions}))["shared"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+__________ test_explicit_counter_is_not_silently_changed_to_iteration __________
+
+    def test_explicit_counter_is_not_silently_changed_to_iteration():
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+        owner = _control(iv, 4, _ring_tasks(shared, out, iv), 10, "owner")
+        root = _root(
+            owner,
+            [shared, out],
+            {shared.data: 2},
+            {shared.data: "counter"},
+        )
+>       assert _plan(root)["shared"]["clock"] == "counter"
+               ^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+__________ test_explicit_iteration_rejects_guarded_or_multiple_owners __________
+
+    def test_explicit_iteration_rejects_guarded_or_multiple_owners():
+        for owners, guarded in [(1, True), (2, False)]:
+            shared, out = _buffers()
+            controls = []
+            for index in range(owners):
+                iv = tirx.Var(f"i{index}", "int32")
+                guard = iv % 2 == 0 if guarded else None
+                controls.append(
+                    _control(
+                        iv,
+                        4,
+                        _ring_tasks(
+                            shared, out, iv, guard=guard, prefix=100 + index * 10
+                        ),
+                        10 + index,
+                        f"owner{index}",
+                    )
+                )
+            body = controls[0] if owners == 1 else tirx.SeqStmt(controls)
+            root = _root(
+                body,
+                [shared, out],
+                {shared.data: 2},
+                {shared.data: "iteration"},
+            )
+>           with pytest.raises(Exception, match="iteration|exactly one owner|unconditional"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: Regex pattern did not match.
+E             Expected regex: 'iteration|exactly one owner|unconditional'
+E             Actual message: 'Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90'
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:176: AssertionError
+_________ test_three_sibling_owners_share_one_continuous_counter_plan __________
+
+    def test_three_sibling_owners_share_one_continuous_counter_plan():
+        shared, out = _buffers()
+        predicate = tirx.Var("predicate", "bool")
+        controls = []
+        for index in range(3):
+            iv = tirx.Var(f"i{index}", "int32")
+            controls.append(
+                _control(
+                    iv,
+                    4,
+                    _ring_tasks(shared, out, iv, guard=predicate, prefix=100 + index * 10),
+                    10 + index,
+                    f"owner{index}",
+                )
+            )
+        root = _root(tirx.SeqStmt(controls), [shared, out], {shared.data: 2})
+>       plan = _plan(root)["shared"]
+               ^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+_________________ test_non_affine_loop_break_requires_counter __________________
+
+    def test_non_affine_loop_break_requires_counter():
+        shared, out = _buffers()
+        iv = tirx.Var("i", "int32")
+        body = _ring_tasks(shared, out, iv)
+        body.append(_unit(tirx.Evaluate(T.loop_break()), 20, "break"))
+        owner = _control(iv, 4, body, 10, "owner")
+>       plan = _plan(_root(owner, [shared, out], {shared.data: 2}))["shared"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+____ test_cross_stage_auto_falls_back_to_lexical_but_explicit_counter_fails ____
+
+    def test_cross_stage_auto_falls_back_to_lexical_but_explicit_counter_fails():
+        for mode in ("auto", "counter"):
+            shared, out = _buffers()
+            iv = tirx.Var("i", "int32")
+            guard = iv % 2 == 0
+            owner = _control(
+                iv,
+                4,
+                _ring_tasks(shared, out, iv, guard=guard, stages=(0, 1)),
+                10,
+                "owner",
+            )
+            modes = {shared.data: mode}
+            root = _root(owner, [shared, out], {shared.data: 2}, modes)
+            if mode == "auto":
+>               plan = _plan(root)["shared"]
+                       ^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:234: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+________ test_cross_stage_multiple_owners_cannot_fall_back_to_iteration ________
+
+    def test_cross_stage_multiple_owners_cannot_fall_back_to_iteration():
+        shared, out = _buffers()
+        controls = []
+        for index in range(2):
+            iv = tirx.Var(f"i{index}", "int32")
+            controls.append(
+                _control(
+                    iv,
+                    4,
+                    _ring_tasks(
+                        shared, out, iv, stages=(0, 1), prefix=100 + index * 10
+                    ),
+                    10 + index,
+                    f"owner{index}",
+                )
+            )
+>       with pytest.raises(Exception, match="cross-stage|counter|common stage"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'cross-stage|counter|common stage'
+E         Actual message: 'Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90'
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:258: AssertionError
+__ test_late_guard_definition_uses_lexical_auto_and_rejects_explicit_counter ___
+
+    def test_late_guard_definition_uses_lexical_auto_and_rejects_explicit_counter():
+        for mode in ("auto", "counter"):
+            shared, out = _buffers()
+            iv = tirx.Var("i", "int32")
+            p = tirx.Var("p", "bool")
+            q = tirx.Var("q", "bool")
+            late = tirx.Var("late", "bool")
+            body = _ring_tasks(shared, out, iv, guard=p, second_guard=late)
+            body.insert(1, _unit(tirx.Bind(late, q), 30, "late_definition"))
+            owner = _control(iv, 4, body, 10, "owner")
+            root = _root(owner, [shared, out], {shared.data: 2}, {shared.data: mode})
+            if mode == "auto":
+>               plan = _plan(root)["shared"]
+                       ^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:274: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+____ test_counter_group_guard_equivalence_and_independent_depths[same-True] ____
+
+relation = 'same', shared_group = True
+
+    @pytest.mark.parametrize(
+        "relation,shared_group",
+        [("same", True), ("equivalent", True), ("different", False), ("mutated-memory", False)],
+    )
+    def test_counter_group_guard_equivalence_and_independent_depths(relation, shared_group):
+>       plan = _plan(_grouping_fixture(relation))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:323: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+_ test_counter_group_guard_equivalence_and_independent_depths[equivalent-True] _
+
+relation = 'equivalent', shared_group = True
+
+    @pytest.mark.parametrize(
+        "relation,shared_group",
+        [("same", True), ("equivalent", True), ("different", False), ("mutated-memory", False)],
+    )
+    def test_counter_group_guard_equivalence_and_independent_depths(relation, shared_group):
+>       plan = _plan(_grouping_fixture(relation))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:323: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+_ test_counter_group_guard_equivalence_and_independent_depths[different-False] _
+
+relation = 'different', shared_group = False
+
+    @pytest.mark.parametrize(
+        "relation,shared_group",
+        [("same", True), ("equivalent", True), ("different", False), ("mutated-memory", False)],
+    )
+    def test_counter_group_guard_equivalence_and_independent_depths(relation, shared_group):
+>       plan = _plan(_grouping_fixture(relation))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:323: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+_ test_counter_group_guard_equivalence_and_independent_depths[mutated-memory-False] _
+
+relation = 'mutated-memory', shared_group = False
+
+    @pytest.mark.parametrize(
+        "relation,shared_group",
+        [("same", True), ("equivalent", True), ("different", False), ("mutated-memory", False)],
+    )
+    def test_counter_group_guard_equivalence_and_independent_depths(relation, shared_group):
+>       plan = _plan(_grouping_fixture(relation))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:323: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:99: in _plan
+    summary = _ffi("tl.cuda.transform.Z3BufferEpochs")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochs(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+_______ test_epoch_registry_projects_guards_but_never_counter_to_lexical _______
+
+    def test_epoch_registry_projects_guards_but_never_counter_to_lexical():
+>       summary = _registry(_projection_fixture())
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:354: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:106: in _registry
+    return _ffi("tl.cuda.transform.Z3EpochDomains")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochDomainsImpl(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+_ test_compatible_storages_intern_one_counter_domain_and_ids_are_deterministic _
+
+    def test_compatible_storages_intern_one_counter_domain_and_ids_are_deterministic():
+        root = _grouping_fixture("equivalent")
+>       first = _registry(root)
+                ^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:379: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:106: in _registry
+    return _ffi("tl.cuda.transform.Z3EpochDomains")(
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::tl::cuda::z3::(anonymous namespace)::InspectEpochDomainsImpl(tvm::tirx::SBlock const&, tvm::ffi::Array<tvm::tl::WSRole, void>, long, tvm::ffi::String)
+    ???
+<unknown>:0: in tvm::Target::Target(tvm::ffi::String const&)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   TVM_FFI_THROW(ValueError)
+E   ValueError: Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90
+
+3rdparty/tvm/src/target/target.cc:266: ValueError
+______ test_role_private_or_unavailable_guard_is_rejected_conservatively _______
+
+    def test_role_private_or_unavailable_guard_is_rejected_conservatively():
+        shared, out = _buffers()
+        src = tirx.decl_buffer((8,), "int32", name="src", scope="global")
+        private = tirx.decl_buffer((1,), "int32", name="private", scope="local")
+        iv = tirx.Var("i", "int32")
+        guard = private[0] > 0
+        body = [
+            _unit(tirx.Evaluate(T.copy(src, shared)), 1, "load", guard=guard),
+            _unit(tirx.Evaluate(T.copy(shared, out)), 2, "store", guard=guard),
+        ]
+        owner = _control(iv, 4, body, 10, "owner")
+        root = _root(
+            owner,
+            [src, shared, out, private],
+            {shared.data: 2},
+            {shared.data: "counter"},
+        )
+        roles = [
+            T.WSRole("Worker", warps_lo=0, warps_hi=4),
+            T.WSRole("Load", warps_lo=4, warps_hi=5),
+            T.WSRole("Store", warps_lo=5, warps_hi=6),
+        ]
+>       with pytest.raises(Exception, match="guard|available|role|uniform"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'guard|available|role|uniform'
+E         Actual message: 'Cannot parse target string "cuda -arch=sm_90". CLI target string form (e.g. "llvm -mcpu=xxx") is no longer supported. Please use JSON dict form (e.g. {"kind": "llvm", "mcpu": "xxx"}) instead.. Target creation from string failed: cuda -arch=sm_90'
+
+testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py:415: AssertionError
+______________ test_fixed_count_is_exact_and_excluded_from_solver ______________
+
+    def test_fixed_count_is_exact_and_excluded_from_solver():
+        func, target = _make_problem(lambda _source, _dest, buffer: ({buffer.data: 2}, None))
+        calls = _install_solver(([0, 1], [], 1))
+>       planned = _plan(_normalize(func))
+                        ^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:112: in _normalize
+    return tl.transform._ffi_api.NormalizeZ3BufferVersions()(mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::NormalizeZ3BufferVersions()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tirx::PostOrderVisit(tvm::ffi::ObjectRef const&, std::function<void (tvm::ffi::ObjectRef const&)>)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RequestNormalizer::Collect(tvm::tirx::PrimFunc const&)::{lambda(tvm::ffi::ObjectRef const&)#1}::operator()(tvm::ffi::ObjectRef const&) const
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(count.has_value())
+E   tvm.error.InternalError: Check failed: (count.has_value()) is false: NormalizeZ3BufferVersions: buffer version for version_target must be an IntImm
+
+src/transform/common/z3_buffer_versions.h:58: InternalError
+____________ test_fixed_request_is_normalized_before_task_inference ____________
+
+    def test_fixed_request_is_normalized_before_task_inference():
+        func, target = _make_problem(
+            lambda _source, _dest, buffer: ({buffer.data: 2}, None), infer=True
+        )
+        calls = _install_solver(([0, 1], [], 1))
+>       normalized = _normalize(func)
+                     ^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:234: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:112: in _normalize
+    return tl.transform._ffi_api.NormalizeZ3BufferVersions()(mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::NormalizeZ3BufferVersions()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tirx::PostOrderVisit(tvm::ffi::ObjectRef const&, std::function<void (tvm::ffi::ObjectRef const&)>)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RequestNormalizer::Collect(tvm::tirx::PrimFunc const&)::{lambda(tvm::ffi::ObjectRef const&)#1}::operator()(tvm::ffi::ObjectRef const&) const
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(count.has_value())
+E   tvm.error.InternalError: Check failed: (count.has_value()) is false: NormalizeZ3BufferVersions: buffer version for version_target must be an IntImm
+
+src/transform/common/z3_buffer_versions.h:58: InternalError
+_____________ test_bare_one_opts_out_but_eligible_one_is_selected ______________
+
+    def test_bare_one_opts_out_but_eligible_one_is_selected():
+        func, target = _make_problem(lambda _source, _dest, buffer: ({buffer.data: 1}, None))
+        calls = _install_solver(([0, 1], [], 1))
+>       planned = _plan(_normalize(func))
+                        ^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:112: in _normalize
+    return tl.transform._ffi_api.NormalizeZ3BufferVersions()(mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::NormalizeZ3BufferVersions()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tirx::PostOrderVisit(tvm::ffi::ObjectRef const&, std::function<void (tvm::ffi::ObjectRef const&)>)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RequestNormalizer::Collect(tvm::tirx::PrimFunc const&)::{lambda(tvm::ffi::ObjectRef const&)#1}::operator()(tvm::ffi::ObjectRef const&) const
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(count.has_value())
+E   tvm.error.InternalError: Check failed: (count.has_value()) is false: NormalizeZ3BufferVersions: buffer version for version_target must be an IntImm
+
+src/transform/common/z3_buffer_versions.h:58: InternalError
+_____________ test_fixed_under_version_is_rejected_after_schedule ______________
+
+    def test_fixed_under_version_is_rejected_after_schedule():
+        func, target = _make_problem(lambda _source, _dest, buffer: ({buffer.data: 2}, None))
+        _install_solver(([2, 0], [], 1))
+>       with pytest.raises(Exception, match="fixed buffer version request.*under-versioned"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'fixed buffer version request.*under-versioned'
+E         Actual message: 'Check failed: (count.has_value()) is false: NormalizeZ3BufferVersions: buffer version for version_target must be an IntImm'
+
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:286: AssertionError
+_____________ test_unknown_and_out_of_scope_requests_are_rejected ______________
+
+    def test_unknown_and_out_of_scope_requests_are_rejected():
+        tir = tvm.tirx
+        unknown = tir.decl_buffer((4,), "int32", name="unknown", scope="shared")
+        func, _ = _make_problem(lambda _source, _dest, _buffer: ({unknown.data: 2}, None))
+>       with pytest.raises(Exception, match="unknown Buffer.data Var"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'unknown Buffer.data Var'
+E         Actual message: 'Check failed: (count.has_value()) is false: NormalizeZ3BufferVersions: buffer version for unknown must be an IntImm'
+
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:294: AssertionError
+_________ test_request_selected_internal_cleanup_and_second_pass_noop __________
+
+    def test_request_selected_internal_cleanup_and_second_pass_noop():
+        func, target = _make_problem(lambda _source, _dest, buffer: ({buffer.data: 2}, None))
+        _install_solver(([0, 1], [], 1))
+>       planned = _plan(_normalize(func))
+                        ^^^^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:305: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_z3_buffer_version_annotations.py:112: in _normalize
+    return tl.transform._ffi_api.NormalizeZ3BufferVersions()(mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::NormalizeZ3BufferVersions()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tirx::PostOrderVisit(tvm::ffi::ObjectRef const&, std::function<void (tvm::ffi::ObjectRef const&)>)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::RequestNormalizer::Collect(tvm::tirx::PrimFunc const&)::{lambda(tvm::ffi::ObjectRef const&)#1}::operator()(tvm::ffi::ObjectRef const&) const
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK(count.has_value())
+E   tvm.error.InternalError: Check failed: (count.has_value()) is false: NormalizeZ3BufferVersions: buffer version for version_target must be an IntImm
+
+src/transform/common/z3_buffer_versions.h:58: InternalError
+=============================== warnings summary ===============================
+testing/python/transform/test_tilelang_z3_schedule_units.py::test_public_frontend_emits_exact_marker_shapes
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_schema_selection_is_explicit_and_flat_remains_default
+testing/python/transform/test_tilelang_cuda_z3_schedule_units.py::test_per_role_frontend_emits_only_recursive_marker
+  /home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================================================================================= fixture duration top ==========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.013154 grand total                                                                                                                                              576 0:00:00.000017 0:00:00.000935
+======================================================================================== test call duration top =========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:01.751847 testing/python/transform/test_tilelang_z3_task_analysis.py::test_regular_package_import_registers_task_cost_ffi_without_explicit_import                    1 0:00:01.751847 0:00:01.751847
+0:00:01.249417 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_global_shared_capacity_includes_aligned_allocations_and_barriers                        3 0:00:00.133950 0:00:01.065766
+0:00:00.667398 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_validation_and_materialization                          1 0:00:00.667398 0:00:00.667398
+0:00:00.323372 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_unsupported_owner_ring_cases_rejected                                                  18 0:00:00.016541 0:00:00.042505
+0:00:00.290320 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_accepts_role_uniform_loop_bounds                        2 0:00:00.145160 0:00:00.145666
+0:00:00.200931 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_sibling_buffers                               10 0:00:00.010786 0:00:00.103800
+0:00:00.094608 testing/python/transform/test_tilelang_z3_task_analysis.py::test_main_cuda_pipeline_infers_before_z3_planning                                              1 0:00:00.094608 0:00:00.094608
+0:00:00.089622 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_keeps_disjoint_thread_copy_regions                           2 0:00:00.044811 0:00:00.045336
+0:00:00.082341 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_tcgen05_async_arrive_count                                               2 0:00:00.041170 0:00:00.042690
+0:00:00.055629 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_checks_cross_thread_raw_reordering            12 0:00:00.003443 0:00:00.015582
+0:00:00.052616 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_allows_copy_destination_self_read_metadata   2 0:00:00.026308 0:00:00.027526
+0:00:00.050202 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_coalesces_multi_stage_waits_at_each_consumer             2 0:00:00.025101 0:00:00.026426
+0:00:00.040675 testing/python/transform/test_tilelang_z3_task_analysis.py::test_aliased_views_keep_clone_raw_war_constraints_and_versions                                 2 0:00:00.020338 0:00:00.021755
+0:00:00.040612 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_full_commit_wait_placement                   2 0:00:00.020306 0:00:00.023269
+0:00:00.035889 testing/python/transform/test_tilelang_transform_unroll_loop.py::test_unroll_decl_buffer_defs_are_fresh                                                    1 0:00:00.035889 0:00:00.035889
+0:00:00.034267 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_role_uniform_owner_loop_bounds_remain_supported                                         2 0:00:00.017133 0:00:00.017419
+0:00:00.031833 testing/python/language/test_tilelang_cuda_z3_owner_ring_integration.py::test_function_level_owner_rejects_nonuniform_loop_bounds                          4 0:00:00.007529 0:00:00.009952
+0:00:00.027353 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_tracks_cross_thread_index_producers                          2 0:00:00.013677 0:00:00.015896
+0:00:00.026385 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_sequential_scope_loop_kinds                                              1 0:00:00.026385 0:00:00.026385
+0:00:00.025176 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_basic_two_role_transform                                                 1 0:00:00.025176 0:00:00.025176
+0:00:00.024398 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_resolves_each_multi_root_anchor_before_minimum               1 0:00:00.024398 0:00:00.024398
+0:00:00.024101 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_schedules_guarded_body_after_replayable_bind_inline          1 0:00:00.024101 0:00:00.024101
+0:00:00.023983 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_async_pipeline_multi_stage_accepts_exact_version_overrides              1 0:00:00.023983 0:00:00.023983
+0:00:00.023960 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_var_use_requires_defining_op_in_role                                     1 0:00:00.023960 0:00:00.023960
+0:00:00.023374 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_inject_software_pipeline_versions_thread_regions                        3 0:00:00.007783 0:00:00.008864
+0:00:00.022678 testing/python/transform/test_tilelang_transform_pipeline_planning.py::test_pipeline_planning_before_after_copy_gemm_num_stages_plan                       1 0:00:00.022678 0:00:00.022678
+0:00:00.022557 testing/python/transform/test_tilelang_cuda_z3_owner_ring.py::test_two_owners_one_ring_and_continuous_depth2_counters                                      1 0:00:00.022557 0:00:00.022557
+0:00:00.022142 testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py::test_write_first_lattice_controls_automatic_claim                                      7 0:00:00.000537 0:00:00.008552
+0:00:00.022106 testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py::test_pipeline_explicit_gemm_mbar_uses_logical_epoch                          2 0:00:00.011053 0:00:00.011770
+0:00:00.021979 testing/python/transform/test_tilelang_transform_materialize_ws_schedule.py::test_while_scope_counter_phases                                               1 0:00:00.021979 0:00:00.021979
+0:00:06.991971 grand total                                                                                                                                              545 0:00:00.001147 0:00:01.751847
+======================================================================================== test setup duration top ========================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.050736 grand total                                                                                                                                              547 0:00:00.000042 0:00:00.001148
+====================================================================================== test teardown duration top =======================================================================================
+total          name                                                                                                                                                     num med            max           
+0:00:00.028329 grand total                                                                                                                                              547 0:00:00.000047 0:00:00.000203
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py::test_write_first_lattice_controls_automatic_claim[read-modify-write-False]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py::test_aliases_and_row_write_whole_read_promote_to_outer_owner
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py::test_nested_explicit_owners_fail_with_storage_diagnostic
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py::test_owner_external_ordinary_read_is_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py::test_unnormalized_buffer_dependent_bound_is_rejected
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py::test_owner_external_fill_is_recognized_for_every_version
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_ownership.py::test_self_reading_external_fill_is_not_a_broadcast_exception
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_affine_single_owner_uses_iteration_and_retains_owner_semantics[single-version]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_affine_single_owner_uses_iteration_and_retains_owner_semantics[ring]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_guarded_single_owner_uses_counter_for_any_depth[single-version]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_guarded_single_owner_uses_counter_for_any_depth[ring]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_explicit_counter_is_not_silently_changed_to_iteration
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_explicit_iteration_rejects_guarded_or_multiple_owners
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_three_sibling_owners_share_one_continuous_counter_plan
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_non_affine_loop_break_requires_counter
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_cross_stage_auto_falls_back_to_lexical_but_explicit_counter_fails
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_cross_stage_multiple_owners_cannot_fall_back_to_iteration
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_late_guard_definition_uses_lexical_auto_and_rejects_explicit_counter
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_counter_group_guard_equivalence_and_independent_depths[same-True]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_counter_group_guard_equivalence_and_independent_depths[equivalent-True]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_counter_group_guard_equivalence_and_independent_depths[different-False]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_counter_group_guard_equivalence_and_independent_depths[mutated-memory-False]
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_epoch_registry_projects_guards_but_never_counter_to_lexical
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_compatible_storages_intern_one_counter_domain_and_ids_are_deterministic
+FAILED testing/python/transform/test_tilelang_cuda_z3_buffer_epochs.py::test_role_private_or_unavailable_guard_is_rejected_conservatively
+FAILED testing/python/transform/test_tilelang_z3_buffer_version_annotations.py::test_fixed_count_is_exact_and_excluded_from_solver
+FAILED testing/python/transform/test_tilelang_z3_buffer_version_annotations.py::test_fixed_request_is_normalized_before_task_inference
+FAILED testing/python/transform/test_tilelang_z3_buffer_version_annotations.py::test_bare_one_opts_out_but_eligible_one_is_selected
+FAILED testing/python/transform/test_tilelang_z3_buffer_version_annotations.py::test_fixed_under_version_is_rejected_after_schedule
+FAILED testing/python/transform/test_tilelang_z3_buffer_version_annotations.py::test_unknown_and_out_of_scope_requests_are_rejected
+FAILED testing/python/transform/test_tilelang_z3_buffer_version_annotations.py::test_request_selected_internal_cleanup_and_second_pass_noop
+31 failed, 514 passed, 2 skipped, 3 deselected, 4 warnings in 8.52s

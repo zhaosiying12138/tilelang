@@ -1,0 +1,181 @@
+Using pip 26.2.2 from /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Obtaining file:///home/zhaosiying/codebase/tilelang-cuda-z3
+  Checking if build backend supports build_editable: started
+  Running command Checking if build backend supports build_editable
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Running command Preparing editable metadata (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 16:24:10,376 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (metadata_editable)
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: tilelang
+  Building editable for tilelang (pyproject.toml): started
+  Running command Building editable for tilelang (pyproject.toml)
+  WARNING: tool.scikit-build.metadata is deprecated; use the standard top-level [[tool.dynamic-metadata]] instead
+  2026-10-27 16:24:10,558 - scikit_build_core - WARNING - ninja should not be in build-system.requires - scikit-build-core will inject it as needed
+  *** scikit-build-core 1.1.1 using CMake 4.4.4 (editable)
+  *** Configuring CMake...
+  loading initial cache file build/CMakeInit.txt
+  -- Using ccache: /usr/bin/ccache with base_dir=/home/zhaosiying/codebase/tilelang-cuda-z3
+  -- Using TVM source: /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm
+  -- CUDA Backend is enabled
+  -- Ascend Backend is enabled
+  -- CANN aprof_pub.h was not found; building Ascend without native profiling. Set ASCEND_HOME_PATH to the CANN SDK root and reconfigure to enable CANN Node reporting.
+  -- Find Z3 in path: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3
+  -- Found Z3 include dir: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/include
+  -- Found Z3 library: /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/z3/lib/libz3.so
+  -- Forbidding undefined symbols in shared library, using -Wl,--no-undefined on platform Linux
+  -- Build with RPC support...
+  -- Build Alloc alignment set to 64
+  -- CMAKE_C_COMPILER_LAUNCHER already defined.  Not using ccache.
+  -- Custom CUDA_PATH=/usr/local/cuda-13.3
+  -- Found CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-13.3
+  -- Found CUDA_CUDA_LIBRARY=/usr/local/cuda-13.3/targets/x86_64-linux/lib/stubs/libcuda.so
+  -- Found CUDA_CUDART_LIBRARY=cudart_stub
+  -- Found CUDA_CUDNN_INCLUDE_DIRS=
+  -- Found CUDA_CUDNN_LIBRARY=
+  -- Found CUDA_CUBLAS_LIBRARY=/usr/local/cuda-13.3/lib64/libcublas.so
+  -- Found CUDA_CURAND_LIBRARY=/usr/local/cuda-13.3/lib64/libcurand.so
+  -- Found CUDA_CUBLASLT_LIBRARY=/usr/local/cuda-13.3/lib64/libcublasLt.so
+  -- Found CUDA_NVTX_LIBRARY=/usr/local/cuda-13.3/lib64/libnvtx3interop.so
+  -- Found CUDA_nvToolsExt_LIBRARY=
+  -- Build with CUDA  support
+  -- Build with contrib.random
+  -- Build with contrib.sort
+  -- Git found: /usr/bin/git
+  -- Found TVM_GIT_COMMIT_HASH=4211874e9e4b8770fd20ad0d98ab80afd1df5028
+  -- Found TVM_GIT_COMMIT_TIME=2026-09-28 19:01:43 +0800
+  -- Detected target triple: x86_64-linux-gnu
+  -- Setting C++ macro TVM_FFI_USE_LIBBACKTRACE - 1
+  -- Setting C++ macro TVM_FFI_BACKTRACE_ON_SEGFAULT - 1
+  -- Build with thread support...
+  -- Added "-fuse-ld=mold" to linker flags
+  -- Configuring done (7.1s)
+  -- Generating done (0.1s)
+  -- Build files have been written to: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+  *** Building project with Ninja...
+  [0/2] Re-checking globbed directories...
+  [1/13] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/if_stmt_binding.cc.o
+  [2/13] Building CXX object CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o
+  FAILED: [code=1] CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o
+  /usr/bin/ccache /usr/bin/g++ -DCUDA_MAJOR_VERSION=13 -DDMLC_USE_LOGGING_LIBRARY="<tvm/runtime/logging.h>" -DTVM_LOG_CUSTOMIZE=1 -I/home/zhaosiying/codebase/tilelang-cuda-z3/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/src -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/dlpack/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include -I/home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include -I/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl -O3 -DNDEBUG -fPIC -MD -MT CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o -MF CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o.d -o CMakeFiles/tilelang_objs.dir/src/transform/inject_pipeline.cc.o -c /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:32:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In function ‘bool tvm::tl::IsProvenDuplicatableScalarValue(const tvm::PrimExpr&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:87:35: error: ‘ObjectRef’ does not name a type
+     87 |   PostOrderVisit(value, [&](const ObjectRef &node) {
+        |                                   ^~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In lambda function:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:118:5: error: expected ‘{’ before ‘;’ token
+    118 |   });
+        |     ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In function ‘bool tvm::tl::IsProvenDuplicatableScalarValue(const tvm::PrimExpr&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:118:5: error: expected ‘)’ before ‘;’ token
+    118 |   });
+        |     ^
+        |     )
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:87:17: note: to match this ‘(’
+     87 |   PostOrderVisit(value, [&](const ObjectRef &node) {
+        |                 ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In function ‘bool tvm::tl::PipelineExprOnlyUsesVar(const tvm::PrimExpr&, const tvm::tirx::Var&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:152:34: error: ‘ObjectRef’ does not name a type
+    152 |   PostOrderVisit(expr, [&](const ObjectRef &node) {
+        |                                  ^~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In lambda function:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:156:5: error: expected ‘{’ before ‘;’ token
+    156 |   });
+        |     ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In function ‘bool tvm::tl::PipelineExprOnlyUsesVar(const tvm::PrimExpr&, const tvm::tirx::Var&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:156:5: error: expected ‘)’ before ‘;’ token
+    156 |   });
+        |     ^
+        |     )
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:152:17: note: to match this ‘(’
+    152 |   PostOrderVisit(expr, [&](const ObjectRef &node) {
+        |                 ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In function ‘bool tvm::tl::PipelineDistinctIterationsDisjoint(const tvm::tirx::BufferRegion&, const tvm::tirx::BufferRegion&, const tvm::tirx::ForNode*)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:197:41: error: ‘ObjectRef’ does not name a type
+    197 |     PostOrderVisit(unshifted, [&](const ObjectRef &node) {
+        |                                         ^~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In lambda function:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:202:7: error: expected ‘{’ before ‘;’ token
+    202 |     });
+        |       ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In function ‘bool tvm::tl::PipelineDistinctIterationsDisjoint(const tvm::tirx::BufferRegion&, const tvm::tirx::BufferRegion&, const tvm::tirx::ForNode*)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:202:7: error: expected ‘)’ before ‘;’ token
+    202 |     });
+        |       ^
+        |       )
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:197:19: note: to match this ‘(’
+    197 |     PostOrderVisit(unshifted, [&](const ObjectRef &node) {
+        |                   ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h: In member function ‘virtual void tvm::tl::ScalarUseDefCollector::VisitExpr_(const tvm::tirx::VarNode*)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:304:25: error: ‘GetRef’ was not declared in this scope; did you mean ‘tvm::ffi::GetRef’?
+    304 |     scalar_uses_.insert(GetRef<Var>(op));
+        |                         ^~~~~~
+        |                         tvm::ffi::GetRef
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/tvm_ffi.h:33,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/src/support/check.h:4,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:6:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/3rdparty/tvm-ffi/include/tvm/ffi/cast.h:46:16: note: ‘tvm::ffi::GetRef’ declared here
+     46 | inline RefType GetRef(const ObjectType* ptr) {
+        |                ^~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/common/bind_utils.h:304:35: error: expected primary-expression before ‘>’ token
+    304 |     scalar_uses_.insert(GetRef<Var>(op));
+        |                                   ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc: In member function ‘tvm::tirx::Stmt tvm::tl::software_pipeline::PipelineRewriter::EmitImpl(const tvm::PrimExpr&, const tvm::PrimExpr&, bool, bool)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3325:29: error: ‘IsFlatScalarBindChain’ was not declared in this scope
+   3325 |       bool scheduled_bind = IsFlatScalarBindChain(new_block->body);
+        |                             ^~~~~~~~~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc: In static member function ‘static bool tvm::tl::software_pipeline::PipelineInjector::IsFlatScalarBindChain(const tvm::tirx::Stmt&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3706:30: error: ‘FlattenTopLevelSeq’ was not declared in this scope
+   3706 |     Array<Stmt> statements = FlattenTopLevelSeq(body);
+        |                              ^~~~~~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc: In static member function ‘static const tvm::tirx::BindNode* tvm::tl::software_pipeline::PipelineInjector::TrailingFlatScalarBind(const tvm::tirx::Stmt&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3722:12: error: ‘FlattenTopLevelSeq’ was not declared in this scope
+   3722 |     return FlattenTopLevelSeq(body).back().as<BindNode>();
+        |            ^~~~~~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3722:55: error: expected primary-expression before ‘>’ token
+   3722 |     return FlattenTopLevelSeq(body).back().as<BindNode>();
+        |                                                       ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3722:57: error: expected primary-expression before ‘)’ token
+   3722 |     return FlattenTopLevelSeq(body).back().as<BindNode>();
+        |                                                         ^
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc: In member function ‘void tvm::tl::software_pipeline::PipelineInjector::MaterializeScheduledBindClones(const tvm::tirx::ForNode*, const tvm::ffi::Array<tvm::tirx::SBlock>&, const tvm::ffi::Array<tvm::tirx::SBlock>&, const tvm::tl::software_pipeline::PipelineInfo&)’:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3856:31: error: ‘FlattenTopLevelSeq’ was not declared in this scope
+   3856 |       for (const Stmt &stmt : FlattenTopLevelSeq(body)) {
+        |                               ^~~~~~~~~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:3859:27: error: passing ‘const tvm::tirx::SBlock’ as ‘this’ argument discards qualifiers [-fpermissive]
+   3859 |       consumer.CopyOnWrite()->body = MakePipelineBody(flattened);
+        |       ~~~~~~~~~~~~~~~~~~~~^~
+  In file included from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/expr.h:30,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/arith/int_set.h:27,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/arith/analyzer.h:27,
+                   from /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/inject_pipeline.cc:7:
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/ir/cow.h:58:15: note:   in call to ‘tvm::tirx::SBlockNode* tvm::tirx::SBlock::CopyOnWrite()’
+     58 |   ObjectName* CopyOnWrite() {                                              \
+        |               ^~~~~~~~~~~
+  /home/zhaosiying/codebase/tilelang-cuda-z3/3rdparty/tvm/include/tvm/tirx/stmt.h:863:3: note: in expansion of macro ‘TVM_DEFINE_OBJECT_REF_COW_METHOD’
+    863 |   TVM_DEFINE_OBJECT_REF_COW_METHOD(SBlockNode);
+        |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  [3/13] Building CXX object CMakeFiles/tilelang_objs.dir/src/ir.cc.o
+  ninja: build stopped: subcommand failed.
+
+  *** CMake build failed
+  error: subprocess-exited-with-error
+  
+  × Building editable for tilelang (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> No available output.
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  full command: /home/zhaosiying/miniforge3/envs/tilelang-cu133/bin/python /home/zhaosiying/miniforge3/envs/tilelang-cu133/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py build_editable /tmp/tmp9ezuk3ex
+  cwd: /home/zhaosiying/codebase/tilelang-cuda-z3
+  Building editable for tilelang (pyproject.toml): finished with status 'error'
+  ERROR: Failed building editable for tilelang
+Failed to build tilelang
+error: failed-wheel-build-for-install
+
+× Failed to build installable wheels for some pyproject.toml based projects
+╰─> tilelang

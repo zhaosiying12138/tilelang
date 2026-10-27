@@ -1,0 +1,46 @@
+2026-10-27 19:39:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=[1]`
+[CUDA Python Z3 Loop] Scheduling 3 tasks, num_stages=3
+[CUDA Python Z3 Loop] Data dependencies: [(0, 1, 0, 30), (1, 0, -1, 2), (1, 2, 0, 2), (2, 1, 1, 1)]
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [512] / [[1024, 0]]
+[CUDA Python Z3 Loop] Testing II=17
+[CUDA Python Z3 Loop] Testing II=26
+[CUDA Python Z3 Loop] Testing II=30
+[CUDA Python Z3 Loop] Testing II=32
+[CUDA Python Z3 Loop] Testing II=31
+[CUDA Python Z3 Loop] Result II=31, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=30, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 1: start=30, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 2: start=32, latency=1, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Scheduling 4 tasks, num_stages=3
+[CUDA Python Z3 Loop] Data dependencies: [(0, 1, 0, 30), (1, 0, -1, 2), (3, 2, 0, 2), (2, 3, 1, 1), (0, 3, 0, 30), (0, 3, -1, 30), (3, 0, -1, 2)]
+[CUDA Python Z3 Loop] Resource dependencies: []
+[CUDA Python Z3 Loop] Owner exclusions: []
+[CUDA Python Z3 Loop] Buffer sizes/groups: [512] / [[1024, 0]]
+[CUDA Python Z3 Loop] Testing II=18
+[CUDA Python Z3 Loop] Testing II=27
+[CUDA Python Z3 Loop] Testing II=32
+[CUDA Python Z3 Loop] Testing II=30
+[CUDA Python Z3 Loop] Testing II=31
+[CUDA Python Z3 Loop] Result II=31, serial_fallback=False
+[CUDA Python Z3 Loop] Task 0: start=0, latency=30, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 1: start=30, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 3: start=31, latency=2, II=1, resource=0b0000000
+[CUDA Python Z3 Loop] Task 2: start=33, latency=1, II=1, resource=0b0000000
+2026-10-27 19:39:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+.
+============================================================================== fixture duration top ===============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.001017 grand total                                                                                                                          3 0:00:00.000054 0:00:00.000949
+============================================================================= test call duration top ==============================================================================
+total          name                                                                                                                               num med            max           
+0:00:02.754673 testing/python/language/test_tilelang_cuda_z3_pipeline.py::test_sm120_bind_clone_next_iteration_overwrite_real_solver_and_numerics   1 0:00:02.754673 0:00:02.754673
+0:00:02.754673 grand total                                                                                                                          1 0:00:02.754673 0:00:02.754673
+============================================================================= test setup duration top =============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.001230 grand total                                                                                                                          1 0:00:00.001230 0:00:00.001230
+=========================================================================== test teardown duration top ============================================================================
+total          name                                                                                                                               num med            max           
+0:00:00.000096 grand total                                                                                                                          1 0:00:00.000096 0:00:00.000096
+1 passed in 3.45s

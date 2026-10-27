@@ -1,0 +1,101 @@
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=2 def_stage=0 use_stage=0 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=3 def_stage=0 use_stage=0 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=4 def_stage=0 use_stage=0 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=4 def_stage=0 use_stage=0 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=4 use=5 def_stage=0 use_stage=1 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=2 def_stage=0 use_stage=0 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=1 use=3 def_stage=0 use_stage=0 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=4 def_stage=0 use_stage=0 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=2 use=6 def_stage=0 use_stage=1 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=4 def_stage=0 use_stage=0 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=3 use=6 def_stage=0 use_stage=1 existing=-1
+[17:34:13] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/z3_pipeline_planning.cc:812: Warning: CLONE DEBUG: def=4 use=5 def_stage=0 use_stage=1 existing=0
+F
+=================================== FAILURES ===================================
+_____________ test_diamond_lets_share_one_clone_per_consumer_chain _____________
+
+    def test_diamond_lets_share_one_clone_per_consumer_chain():
+        tir = tvm.tirx
+        a = tir.decl_buffer((8,), "int32", name="diamond_A")
+        b = tir.decl_buffer((8,), "int32", name="diamond_B")
+        k = tir.Var("k", "int32")
+        x = tir.Var("diamond_x", "int32")
+        y = tir.Var("diamond_y", "int32")
+        z = tir.Var("diamond_z", "int32")
+        w = tir.Var("diamond_w", "int32")
+        statements = [
+            tir.BufferStore(a, 1, [k]),
+            tir.Bind(x, tir.BufferLoad(a, [k]) + 1),
+            tir.Bind(y, x + 1),
+            tir.Bind(z, x + 2),
+            tir.Bind(w, y + z),
+            tir.BufferStore(b, w, [k]),
+        ]
+        annotations = _annotations(latencies=[1] * 6, iis=[1] * 6, resource_flags=[0] * 6)
+        func = _make_statement_func(statements, [a, b], annotations, k)
+    
+        def solver_result(call):
+            starts = {
+                6: [1, 4, 8, 12, 16, 65],
+                7: [1, 4, 8, 12, 16, 65, 64],
+                8: [1, 4, 8, 12, 16, 66, 65, 64, 64],
+                9: [1, 4, 8, 12, 16, 67, 66, 65, 65, 64],
+            }
+            return starts[len(call["latencies"])], [], 64
+    
+        calls = _install_solver(solver_result)
+>       loop = _find_loop(_run_z3(func)["main"])
+                          ^^^^^^^^^^^^^
+
+testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py:576: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py:186: in _run_z3
+    return tl.transform.Z3PipelinePlanning()(mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3rdparty/tvm/python/tvm/ir/transform.py:171: in __call__
+    return _ffi_transform_api.RunPass(self, mod)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+python/tvm_ffi/cython/function.pxi:968: in tvm_ffi.core.Function.__call__
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule) const
+    ???
+<unknown>:0: in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+    ???
+<unknown>:0: in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
+    ???
+<unknown>:0: in tvm::tl::Z3PipelinePlanning()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext)#1}::operator()(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext) const [clone .isra.0]
+    ???
+<unknown>:0: in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
+    ???
+<unknown>:0: in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
+    ???
+<unknown>:0: in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
+    ???
+<unknown>:0: in non-virtual thunk to tvm::tl::(anonymous namespace)::Z3PipelinePlanner::VisitStmt_(tvm::tirx::ForNode const*)
+    ???
+<unknown>:0: in tvm::tl::(anonymous namespace)::Z3PipelinePlanner::PlanLoop(tvm::tirx::ForNode const*)
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ICHECK_EQ(starts.size(), n)
+E   tvm.error.InternalError: Check failed: starts.size() == n (10 vs. 9) : Z3PipelinePlanning: solver returned 10 start times for 9 augmented tasks (6 original + 3 clones)
+
+src/transform/z3_pipeline_planning.cc:843: InternalError
+============================================================================ fixture duration top =============================================================================
+total          name                                                                                                                           num med            max           
+0:00:00.000026 grand total                                                                                                                      1 0:00:00.000026 0:00:00.000026
+=========================================================================== test call duration top ============================================================================
+total          name                                                                                                                           num med            max           
+0:00:00.984948 testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_diamond_lets_share_one_clone_per_consumer_chain   1 0:00:00.984948 0:00:00.984948
+0:00:00.984948 grand total                                                                                                                      1 0:00:00.984948 0:00:00.984948
+=========================================================================== test setup duration top ===========================================================================
+total          name                                                                                                                           num med            max           
+0:00:00.000098 grand total                                                                                                                      1 0:00:00.000098 0:00:00.000098
+========================================================================= test teardown duration top ==========================================================================
+total          name                                                                                                                           num med            max           
+0:00:00.000088 grand total                                                                                                                      1 0:00:00.000088 0:00:00.000088
+=========================== short test summary info ============================
+FAILED testing/python/transform/test_tilelang_transform_z3_pipeline_planning.py::test_diamond_lets_share_one_clone_per_consumer_chain
+1 failed in 4.71s
