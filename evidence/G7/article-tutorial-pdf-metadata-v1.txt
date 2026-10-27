@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin1/.zcode/cli/plugins/cache/zcode-plugins-official/pdf/0.1.7/skills/pdf/scripts/pdf.py", line 3075, in <module>
+    main()
+    ~~~~^^
+  File "/mnt/c/Users/Admin1/.zcode/cli/plugins/cache/zcode-plugins-official/pdf/0.1.7/skills/pdf/scripts/pdf.py", line 3050, in main
+    handler(tokens)
+    ~~~~~~~^^^^^^^^
+  File "/mnt/c/Users/Admin1/.zcode/cli/plugins/cache/zcode-plugins-official/pdf/0.1.7/skills/pdf/scripts/pdf.py", line 948, in meta_set
+    import pikepdf
+ModuleNotFoundError: No module named 'pikepdf'

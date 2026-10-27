@@ -1,0 +1,303 @@
+{
+  "pass": false,
+  "source": "article/_build/tilelang-cuda-z3-mainline-v1.html",
+  "check_type": "html",
+  "errors": [
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_AMS' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Caligraphic' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Caligraphic' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Fraktur' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Fraktur' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Main' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Main' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Main' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Main' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Math' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Math' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_SansSerif' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_SansSerif' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_SansSerif' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Script' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size1' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size2' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size3' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size4' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Typewriter' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Main' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_SansSerif' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Typewriter' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Math' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Main' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Main' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Math' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_AMS' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Caligraphic' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Fraktur' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Fraktur' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Typewriter' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Script' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_SansSerif' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_SansSerif' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_SansSerif' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Main' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size1' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size2' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size3' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size4' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size1' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size4' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size1' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    },
+    {
+      "code": "FONT_NO_FALLBACK",
+      "message": "font-family 'KaTeX_Size2' has no generic fallback. Add 'sans-serif' at the end.",
+      "severity": "error",
+      "line": 255
+    }
+  ],
+  "warnings": [
+    {
+      "code": "TINY_FONT",
+      "message": "font-size: 1px (1px) may be unreadable in PDF output.",
+      "severity": "warning",
+      "line": 255
+    },
+    {
+      "code": "COLOR_CONTRAST",
+      "message": "Text color rgb(255, 255, 204) on background rgb(255, 255, 204) has contrast ratio 1.0:1 (< 3:1 minimum). May be hard to read.",
+      "severity": "warning",
+      "line": 184
+    },
+    {
+      "code": "OVERFLOW_DECORATION",
+      "message": "CSS position '-50%' may push decorative elements outside body width, causing black edges in PDF. Keep absolute-positioned elements within [0, body_width].",
+      "severity": "warning"
+    }
+  ],
+  "info": [
+    {
+      "code": "MISSING_PRINT_BG_NOTE",
+      "message": "Remember to set print_background=True when calling page.pdf() in Playwright, otherwise CSS backgrounds won't render.",
+      "severity": "info"
+    }
+  ]
+}
