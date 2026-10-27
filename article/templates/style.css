@@ -132,10 +132,37 @@ li > ul, li > ol { margin: .25rem 0; }
   body { font-size: 16px; }
 }
 @media print {
+  @page { size: A4; margin: 10mm 8mm; }
   body { background: white; color: black; font-size: 11pt; }
   .page-layout { display: block; max-width: none; padding: 0; }
   .sidebar, .skip-link { display: none; }
   .main-content { border: 0; box-shadow: none; padding: 0; }
-  pre, blockquote, table, img { break-inside: avoid; }
+  .article-body h1, .article-body h2, .article-body h3, .article-body h4, .article-body h5, .article-body h6 {
+    break-inside: avoid;
+    break-after: avoid;
+    page-break-inside: avoid;
+    page-break-after: avoid;
+  }
+  pre, blockquote, img { break-inside: avoid; }
+  table {
+    display: table;
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+    overflow: visible;
+    break-inside: auto;
+    font-size: 8pt;
+    line-height: 1.35;
+  }
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+  tr { break-inside: avoid; }
+  th, td {
+    padding: 3pt 4pt;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+  }
+  th code, td code { white-space: normal; overflow-wrap: anywhere; word-break: break-all; }
   a { color: inherit; }
 }

@@ -1,0 +1,17 @@
+..........                                                           [100%]
+======================================================================== fixture duration top ========================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.000035 grand total                                                                                                             1 0:00:00.000035 0:00:00.000035
+======================================================================= test call duration top =======================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.120595 article/tests/test_build_html.py::SyntheticArticleTests::test_check_only_cli_writes_nothing_and_missing_chapter_fails   1 0:00:00.120595 0:00:00.120595
+0:00:00.062951 article/tests/test_build_html.py::SyntheticArticleTests::test_full_cli_writes_html_zhihu_formula_log_manifest_and_zip   1 0:00:00.062951 0:00:00.062951
+0:00:00.018719 article/tests/test_build_html.py::SyntheticArticleTests::test_html_zhihu_math_images_manifest_and_zip                   1 0:00:00.018719 0:00:00.018719
+0:00:00.207741 grand total                                                                                                            10 0:00:00.000821 0:00:00.120595
+====================================================================== test setup duration top =======================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.000733 grand total                                                                                                            10 0:00:00.000064 0:00:00.000113
+===================================================================== test teardown duration top =====================================================================
+total          name                                                                                                                  num med            max           
+0:00:00.000360 grand total                                                                                                            10 0:00:00.000030 0:00:00.000056
+10 passed, 4 subtests passed in 0.25s

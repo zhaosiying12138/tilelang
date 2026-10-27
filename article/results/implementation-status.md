@@ -24,9 +24,9 @@
 |---|---:|---|
 | CUDA Z3 solver | 49 passed | 直线/循环约束、II、版本、unknown 与确定性 |
 | task latency/II | 28 passed | memory/compute/composed/per-core 公式 |
-| whole-kernel cost model | 31 passed | 解析排序、容量与 model card |
+| whole-kernel cost model | 33 passed | 解析排序、容量与 model card |
 | capacity/guided | 85 passed | UNKNOWN 保留、top-k 与预算控制 |
-| stock+guided AutoTuner | 91 passed，2 skipped | 真实 tuner 路径、错误与缓存合同 |
+| stock+guided AutoTuner | 96 passed，2 skipped | 真实 tuner 路径、错误与缓存合同 |
 | task/pipeline 联合 host | 148 passed | 自动分析、主链、stage-order 子集、buffer versions |
 | 冻结 host 编译矩阵 | 77/77 rows，130 cases passed | host/frontend/IR 的执行覆盖，不含设备数值 |
 | SM120 pipeline A+B | 1 passed | 显式 annotation 的 default-off/opt-in 与逐元素精确输出 |
