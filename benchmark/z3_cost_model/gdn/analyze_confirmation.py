@@ -137,6 +137,8 @@ def write_analysis(cold_analysis_path, confirmation_root, output_dir):
         "paired_round_differences_ms", "requirements", "passed",
     ))
     viz.plot_gdn_acceptance(rows, output / "gdn-confirmation")
+    if any(not comparison["identical"] for comparison in comparisons):
+        viz.plot_gdn_confirmation_differences(comparisons, output / "gdn-paired-differences")
     return payload
 
 

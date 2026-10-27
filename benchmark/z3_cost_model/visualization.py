@@ -18,6 +18,7 @@ import operator
 import os
 from pathlib import Path
 import re
+import statistics
 from typing import Any
 import warnings
 
@@ -25,6 +26,7 @@ import warnings
 __all__ = [
     "kendall_tau_b",
     "plot_gdn_acceptance",
+    "plot_gdn_confirmation_differences",
     "plot_prediction_rank",
     "plot_pruning_funnel",
     "plot_quality_search_pareto",
@@ -1280,5 +1282,101 @@ def plot_gdn_acceptance(records: Any, output: str | os.PathLike[str]) -> dict[st
             fig.tight_layout(rect=(0, 0, 1, 0.82))
             fields = ("panel", "direction", "suite", "method", "best_latency", "latency_unit", "latency_scope", "compile_count", "profile_count")
             return _emit(fig, plt, output, rows, fields, {"plot": "gdn_acceptance", **metadata})
+        finally:
+            plt.close(fig)
+
+
+def plot_gdn_confirmation_differences(comparisons: Any, output: str | os.PathLike[str]) -> dict[str, str]:
+    """Plot per-round guided-minus-alternative differences for non-identical pairs."""
+
+    _output_base(output)
+    records = _record_list(comparisons, "comparisons")
+    pairs = []
+    for record in records:
+        if record.get("identical") is True:
+            continue
+        direction = _text(record.get("direction"), "comparison direction")
+        alternatives = record.get("alternative_arms")
+        if isinstance(alternatives, (str, bytes)) or not isinstance(alternatives, Sequence) or not alternatives:
+            raise ValueError("a non-identical comparison requires alternative_arms")
+        alternative = "/".join(_identifier(value, "alternative arm") for value in alternatives)
+        config = record.get("config")
+        if not isinstance(config, Mapping):
+            raise ValueError("a non-identical comparison requires a config object")
+        config_id = json.dumps(config, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        values = record.get("paired_round_differences_ms")
+        if isinstance(values, (str, bytes)) or not isinstance(values, Sequence) or not values:
+            raise ValueError(f"{direction}/{alternative} requires paired_round_differences_ms")
+        differences = [_number(value, f"{direction}/{alternative} difference") for value in values]
+        ratio = _number(record.get("quality_ratio_guided_over_alternative"), "quality ratio", positive=True)
+        scope = _text(record.get("latency_scope", "confirmed"), "latency scope")
+        pairs.append({
+            "direction": direction,
+            "alternative": alternative,
+            "config_id": config_id,
+            "differences": differences,
+            "median": statistics.median(differences),
+            "minimum": min(differences),
+            "maximum": max(differences),
+            "ratio": ratio,
+            "scope": scope,
+        })
+    if not pairs:
+        raise ValueError("at least one non-identical comparison with paired differences is required")
+
+    rows = []
+    for pair_index, pair in enumerate(pairs):
+        for round_index, difference in enumerate(pair["differences"]):
+            rows.append({
+                "pair_index": pair_index,
+                "direction": pair["direction"],
+                "alternative": pair["alternative"],
+                "config_id": pair["config_id"],
+                "round": round_index,
+                "difference_ms": difference,
+                "median_ms": pair["median"],
+                "min_ms": pair["minimum"],
+                "max_ms": pair["maximum"],
+                "quality_ratio": pair["ratio"],
+                "latency_scope": pair["scope"],
+            })
+
+    plt = _pyplot()
+    with _rc_context(plt):
+        fig, axes = plt.subplots(1, len(pairs), figsize=(7.2 * len(pairs), 5.8), sharey=False)
+        if len(pairs) == 1:
+            axes = [axes]
+        try:
+            colors = ("#2563EB", "#EA580C", "#059669", "#7C3AED")
+            for pair_index, (ax, pair) in enumerate(zip(axes, pairs, strict=True)):
+                differences = pair["differences"]
+                positions = list(range(len(differences)))
+                color = colors[pair_index % len(colors)]
+                ax.plot(positions, differences, color=color, marker="o", linewidth=1.5, markersize=6, label="ABBA round difference")
+                ax.axhline(pair["median"], color=color, linestyle="--", linewidth=1.3, label=f"pair median = {pair['median']:.6g} ms")
+                if pair["minimum"] <= 0 <= pair["maximum"]:
+                    ax.axhline(0, color="#111827", linewidth=0.9, alpha=0.7)
+                span = pair["maximum"] - pair["minimum"]
+                padding = max(span * 0.22, abs(pair["median"]) * 0.02, 1e-6)
+                ax.set_ylim(pair["minimum"] - padding, pair["maximum"] + padding)
+                ax.set_xticks(positions, [str(index) for index in positions])
+                ax.set_xlabel("ABBA round index")
+                ax.set_ylabel("guided - alternative (ms)")
+                ax.set_title(f"{pair['direction']}: guided vs {pair['alternative']}\nratio = {pair['ratio']:.6g}")
+                ax.grid(axis="y", alpha=0.22)
+                ax.set_axisbelow(True)
+                ax.legend(loc="best", fontsize=8, frameon=False)
+            fig.suptitle("GDN independent confirmation: negative = guided faster; each point is one paired round median", y=0.995)
+            fig.tight_layout(rect=(0, 0, 1, 0.91))
+            fields = (
+                "pair_index", "direction", "alternative", "config_id", "round", "difference_ms",
+                "median_ms", "min_ms", "max_ms", "quality_ratio", "latency_scope",
+            )
+            return _emit(fig, plt, output, rows, fields, {
+                "plot": "gdn_confirmation_paired_differences",
+                "latency_unit": "ms",
+                "pair_count": len(pairs),
+                "difference_definition": "guided latency minus alternative latency from the same ABBA round",
+            })
         finally:
             plt.close(fig)

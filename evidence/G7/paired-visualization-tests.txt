@@ -1,0 +1,62 @@
+..............F.........                                                 [100%]
+=================================== FAILURES ===================================
+___ test_gdn_confirmation_differences_preserve_rounds_ranges_and_pair_scopes ___
+
+tmp_path = PosixPath('/tmp/pytest-of-zhaosiying/pytest-97/test_gdn_confirmation_differen0')
+
+    def test_gdn_confirmation_differences_preserve_rounds_ranges_and_pair_scopes(tmp_path):
+        comparisons = [
+            {
+                "direction": "bwd",
+                "alternative_arms": ["budget-raw"],
+                "identical": False,
+                "config": {"prepare_h_num_stages": 1, "group_reduce_block_size": 8},
+                "paired_round_differences_ms": [-0.2, -0.1, -0.15],
+                "quality_ratio_guided_over_alternative": 0.96,
+                "latency_scope": "confirmed",
+            },
+            {
+                "direction": "bwd",
+                "alternative_arms": ["budget-random"],
+                "identical": False,
+                "config": {"prepare_h_num_stages": 2, "group_reduce_block_size": 32},
+                "paired_round_differences_ms": [-0.001, 0.002],
+                "quality_ratio_guided_over_alternative": 0.999,
+                "latency_scope": "confirmed",
+            },
+            {"identical": True},
+        ]
+        output = tmp_path / "paired.json"
+        payload, rows = _assert_artifacts(vis.plot_gdn_confirmation_differences(comparisons, output), output)
+        assert payload["plot"] == "gdn_confirmation_paired_differences"
+        assert payload["pair_count"] == 2
+        assert len(rows) == 5
+>       assert rows[0]["median_ms"] == -0.15
+E       AssertionError: assert '-0.15' == -0.15
+
+testing/python/cuda/test_result_visualization.py:329: AssertionError
+========================================================================== fixture duration top ===========================================================================
+total          name                                                                                                                       num med            max           
+0:00:00.003087 grand total                                                                                                                 17 0:00:00.000138 0:00:00.000860
+========================================================================= test call duration top ==========================================================================
+total          name                                                                                                                       num med            max           
+0:00:00.365166 testing/python/cuda/test_result_visualization.py::test_prediction_rank_displays_suite_metrics_and_joins_candidate_keys       1 0:00:00.365166 0:00:00.365166
+0:00:00.332878 testing/python/cuda/test_result_visualization.py::test_gdn_search_observed_scope_is_explicit                                 1 0:00:00.332878 0:00:00.332878
+0:00:00.325111 testing/python/cuda/test_result_visualization.py::test_gdn_acceptance_has_two_panels_and_exact_input_values                  1 0:00:00.325111 0:00:00.325111
+0:00:00.242461 testing/python/cuda/test_result_visualization.py::test_native_loop_schedule_json_generates_all_artifacts                     1 0:00:00.242461 0:00:00.242461
+0:00:00.236335 testing/python/cuda/test_result_visualization.py::test_gdn_confirmation_differences_preserve_rounds_ranges_and_pair_scopes   1 0:00:00.236335 0:00:00.236335
+0:00:00.225563 testing/python/cuda/test_result_visualization.py::test_pruning_funnel_preserves_unknown_and_dedup_accounting                 1 0:00:00.225563 0:00:00.225563
+0:00:00.178436 testing/python/cuda/test_result_visualization.py::test_quality_search_pareto_marks_frontier_and_same_space_oracle            1 0:00:00.178436 0:00:00.178436
+0:00:00.157596 testing/python/cuda/test_result_visualization.py::test_parallel_cumulative_time_uses_independent_bars_and_warns              1 0:00:00.157596 0:00:00.157596
+0:00:00.149805 testing/python/cuda/test_result_visualization.py::test_additive_time_breakdown_derives_only_residual_other                   1 0:00:00.149805 0:00:00.149805
+0:00:00.109555 testing/python/cuda/test_result_visualization.py::test_native_straight_schedule_does_not_invent_minimum_ii_or_stage          1 0:00:00.109555 0:00:00.109555
+0:00:02.327420 grand total                                                                                                                 24 0:00:00.000309 0:00:00.365166
+========================================================================= test setup duration top =========================================================================
+total          name                                                                                                                       num med            max           
+0:00:00.007871 grand total                                                                                                                 24 0:00:00.000269 0:00:00.002090
+======================================================================= test teardown duration top ========================================================================
+total          name                                                                                                                       num med            max           
+0:00:00.001326 grand total                                                                                                                 24 0:00:00.000044 0:00:00.000134
+=========================== short test summary info ============================
+FAILED testing/python/cuda/test_result_visualization.py::test_gdn_confirmation_differences_preserve_rounds_ranges_and_pair_scopes
+1 failed, 23 passed in 2.55s

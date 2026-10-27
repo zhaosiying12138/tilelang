@@ -299,6 +299,41 @@ def test_gdn_search_observed_scope_is_explicit(tmp_path):
         vis.plot_gdn_acceptance(_gdn_records()[:2], tmp_path / "bad-gdn")
 
 
+def test_gdn_confirmation_differences_preserve_rounds_ranges_and_pair_scopes(tmp_path):
+    comparisons = [
+        {
+            "direction": "bwd",
+            "alternative_arms": ["budget-raw"],
+            "identical": False,
+            "config": {"prepare_h_num_stages": 1, "group_reduce_block_size": 8},
+            "paired_round_differences_ms": [-0.2, -0.1, -0.15],
+            "quality_ratio_guided_over_alternative": 0.96,
+            "latency_scope": "confirmed",
+        },
+        {
+            "direction": "bwd",
+            "alternative_arms": ["budget-random"],
+            "identical": False,
+            "config": {"prepare_h_num_stages": 2, "group_reduce_block_size": 32},
+            "paired_round_differences_ms": [-0.001, 0.002],
+            "quality_ratio_guided_over_alternative": 0.999,
+            "latency_scope": "confirmed",
+        },
+        {"identical": True},
+    ]
+    output = tmp_path / "paired.json"
+    payload, rows = _assert_artifacts(vis.plot_gdn_confirmation_differences(comparisons, output), output)
+    assert payload["plot"] == "gdn_confirmation_paired_differences"
+    assert payload["pair_count"] == 2
+    assert len(rows) == 5
+    assert float(rows[0]["median_ms"]) == pytest.approx(-0.15)
+    assert float(rows[0]["min_ms"]) == pytest.approx(-0.2)
+    assert float(rows[0]["max_ms"]) == pytest.approx(-0.1)
+    assert rows[0]["config_id"] == '{"group_reduce_block_size":8,"prepare_h_num_stages":1}'
+    assert float(rows[-1]["median_ms"]) == pytest.approx(0.0005)
+    assert {row["latency_scope"] for row in rows} == {"confirmed"}
+
+
 def test_empty_inputs_fail_instead_of_creating_placeholder_figures(tmp_path):
     empty_schedule = _loop_schedule()
     for key in ("start_times", "latencies", "iis", "resource_flags"):
@@ -319,3 +354,5 @@ def test_empty_inputs_fail_instead_of_creating_placeholder_figures(tmp_path):
         vis.plot_quality_search_pareto([], tmp_path / "empty-pareto")
     with pytest.raises(ValueError, match="must not be empty"):
         vis.plot_gdn_acceptance([], tmp_path / "empty-gdn")
+    with pytest.raises(ValueError, match="non-identical"):
+        vis.plot_gdn_confirmation_differences([{"identical": True}], tmp_path / "empty-paired")

@@ -1,0 +1,24 @@
+........................                                                 [100%]
+========================================================================== fixture duration top ===========================================================================
+total          name                                                                                                                       num med            max           
+0:00:00.002758 grand total                                                                                                                 17 0:00:00.000125 0:00:00.000840
+========================================================================= test call duration top ==========================================================================
+total          name                                                                                                                       num med            max           
+0:00:00.361373 testing/python/cuda/test_result_visualization.py::test_prediction_rank_displays_suite_metrics_and_joins_candidate_keys       1 0:00:00.361373 0:00:00.361373
+0:00:00.333819 testing/python/cuda/test_result_visualization.py::test_gdn_search_observed_scope_is_explicit                                 1 0:00:00.333819 0:00:00.333819
+0:00:00.331447 testing/python/cuda/test_result_visualization.py::test_gdn_acceptance_has_two_panels_and_exact_input_values                  1 0:00:00.331447 0:00:00.331447
+0:00:00.253136 testing/python/cuda/test_result_visualization.py::test_native_loop_schedule_json_generates_all_artifacts                     1 0:00:00.253136 0:00:00.253136
+0:00:00.248297 testing/python/cuda/test_result_visualization.py::test_gdn_confirmation_differences_preserve_rounds_ranges_and_pair_scopes   1 0:00:00.248297 0:00:00.248297
+0:00:00.239230 testing/python/cuda/test_result_visualization.py::test_pruning_funnel_preserves_unknown_and_dedup_accounting                 1 0:00:00.239230 0:00:00.239230
+0:00:00.185012 testing/python/cuda/test_result_visualization.py::test_quality_search_pareto_marks_frontier_and_same_space_oracle            1 0:00:00.185012 0:00:00.185012
+0:00:00.157732 testing/python/cuda/test_result_visualization.py::test_parallel_cumulative_time_uses_independent_bars_and_warns              1 0:00:00.157732 0:00:00.157732
+0:00:00.152649 testing/python/cuda/test_result_visualization.py::test_additive_time_breakdown_derives_only_residual_other                   1 0:00:00.152649 0:00:00.152649
+0:00:00.111439 testing/python/cuda/test_result_visualization.py::test_native_straight_schedule_does_not_invent_minimum_ii_or_stage          1 0:00:00.111439 0:00:00.111439
+0:00:02.378735 grand total                                                                                                                 24 0:00:00.000349 0:00:00.361373
+========================================================================= test setup duration top =========================================================================
+total          name                                                                                                                       num med            max           
+0:00:00.007668 grand total                                                                                                                 24 0:00:00.000226 0:00:00.002141
+======================================================================= test teardown duration top ========================================================================
+total          name                                                                                                                       num med            max           
+0:00:00.001198 grand total                                                                                                                 24 0:00:00.000051 0:00:00.000098
+24 passed in 2.56s

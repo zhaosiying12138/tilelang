@@ -39,8 +39,6 @@ bwd guided 的 compile/profile 次数分别减少 **66.7% / 50.0%**。等预算�
 
 搜索分项均计入 end-to-end。guided 的 solver/model 墙钟中位数在 fwd 为 0.00785/0.00089 s，在 bwd 为 0.00830/0.00195 s。阶段计时存在并行累计，不能把 compile、validation、profile 简单相加为总墙钟；正文只使用独立记录的 end-to-end 和各自分项。
 
-![T8192 cold 搜索内的最佳值与候选次数](../../evidence/G6/gdn-heldout-t8192-v1/analysis/gdn-acceptance.png)
-
 ![搜索各阶段墙钟；并行累计的分项不求和](../../evidence/G6/gdn-heldout-t8192-v1/analysis/search-time-breakdown.png)
 
 ## 3. 预测排序能否保留好候选
@@ -64,9 +62,9 @@ winner 选择使用 `candidate-median`：每个策略分别取各候选在三次
 | bwd | budget-raw | stage2/group8 | stage1/group8 | 0.962739 | 通过 |
 | bwd | budget-random | stage2/group8 | stage2/group32 | 0.999626 | 通过 |
 
-![独立确认后的配置 latency 与 cold 候选次数](../../evidence/G6/gdn-heldout-t8192-confirmation-v1/analysis/gdn-confirmation.png)
+![backward 不同配置对的七轮 paired latency differences；负值表示 guided 更快](../../evidence/G6/gdn-heldout-t8192-confirmation-v1/analysis/gdn-paired-differences.png)
 
-fwd 的 confirmed 中位数为 **0.308992 ms**，bwd guided/oracle 为 **4.230792 ms**。不同配置对中的 guided 会重新测量，因此逐对 summary 的中位数可略有不同；ratio 始终使用同一配置对的轮次计算，不跨对拼接最优值。
+fwd 的 confirmed 中位数为 **0.308992 ms**，bwd guided/oracle 为 **4.230792 ms**。不同配置对中的 guided 会重新测量，因此逐对 summary 的中位数可略有不同；ratio 始终使用同一配置对的轮次计算，不跨对拼接最优值。新图按配置对分面板展示七轮差值，逐轮数据、pair median 和范围见 [paired-differences.csv](../../evidence/G6/gdn-heldout-t8192-confirmation-v1/analysis/gdn-paired-differences.csv)。
 
 正确性覆盖 fwd 的 `o/final_state` 和 bwd 的 `dq/dk/dv/db/dg/dh0`。计时前后均检查公开 forward/backward，最大 relative-L2 分别为 **0.004271 / 0.005417**，均低于 0.02。原始逐轮样本见 [fwd samples](../../evidence/G6/gdn-heldout-t8192-confirmation-v1/fwd/samples.jsonl) 与 [bwd samples](../../evidence/G6/gdn-heldout-t8192-confirmation-v1/bwd/samples.jsonl)。
 
