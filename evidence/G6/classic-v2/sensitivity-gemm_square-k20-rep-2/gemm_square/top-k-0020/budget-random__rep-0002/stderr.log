@@ -1,0 +1,164 @@
+Compiling configurations:   0%|          | 0/20 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/20 [00:00<?, ?it/s][A                                                                
+                                                            [ACompiling configurations:   0%|          | 0/20 [00:00<?, ?it/s]
+Bench configurations:   0%|          | 0/20 [00:00<?, ?it/s][A                                                                
+                                                            [ACompiling configurations:   0%|          | 0/20 [00:01<?, ?it/s]
+Bench configurations:   0%|          | 0/20 [00:01<?, ?it/s][ACompiling configurations:   5%|▌         | 1/20 [00:01<00:27,  1.45s/it]                                                                        
+                                                            [ACompiling configurations:   5%|▌         | 1/20 [00:01<00:27,  1.45s/it]
+Bench configurations:   0%|          | 0/20 [00:01<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:   5%|▌         | 1/20 [00:02<00:27,  1.45s/it]
+Bench configurations:   0%|          | 0/20 [00:02<?, ?it/s][ACompiling configurations:  10%|█         | 2/20 [00:02<00:26,  1.49s/it]                                                                        
+                                                            [ACompiling configurations:  10%|█         | 2/20 [00:02<00:26,  1.49s/it]
+Bench configurations:   0%|          | 0/20 [00:02<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:  10%|█         | 2/20 [00:04<00:26,  1.49s/it]
+Bench configurations:   0%|          | 0/20 [00:04<?, ?it/s][ACompiling configurations:  15%|█▌        | 3/20 [00:04<00:26,  1.58s/it]                                                                        
+                                                            [ACompiling configurations:  15%|█▌        | 3/20 [00:04<00:26,  1.58s/it]
+Bench configurations:   0%|          | 0/20 [00:04<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:  15%|█▌        | 3/20 [00:06<00:26,  1.58s/it]
+Bench configurations:   0%|          | 0/20 [00:06<?, ?it/s][ACompiling configurations:  20%|██        | 4/20 [00:06<00:25,  1.60s/it]                                                                        
+                                                            [ACompiling configurations:  20%|██        | 4/20 [00:06<00:25,  1.60s/it]
+Bench configurations:   0%|          | 0/20 [00:06<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:  20%|██        | 4/20 [00:07<00:25,  1.60s/it]
+Bench configurations:   0%|          | 0/20 [00:07<?, ?it/s][ACompiling configurations:  25%|██▌       | 5/20 [00:07<00:23,  1.57s/it]                                                                        
+                                                            [ACompiling configurations:  25%|██▌       | 5/20 [00:07<00:23,  1.57s/it]
+Bench configurations:   0%|          | 0/20 [00:07<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:  25%|██▌       | 5/20 [00:09<00:23,  1.57s/it]
+Bench configurations:   0%|          | 0/20 [00:09<?, ?it/s][ACompiling configurations:  30%|███       | 6/20 [00:09<00:22,  1.58s/it]                                                                        
+                                                            [ACompiling configurations:  30%|███       | 6/20 [00:09<00:22,  1.58s/it]
+Bench configurations:   0%|          | 0/20 [00:09<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:  30%|███       | 6/20 [00:10<00:22,  1.58s/it]
+Bench configurations:   0%|          | 0/20 [00:10<?, ?it/s][ACompiling configurations:  35%|███▌      | 7/20 [00:10<00:20,  1.54s/it]                                                                        
+                                                            [ACompiling configurations:  35%|███▌      | 7/20 [00:10<00:20,  1.54s/it]
+Bench configurations:   0%|          | 0/20 [00:10<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:  35%|███▌      | 7/20 [00:12<00:20,  1.54s/it]
+Bench configurations:   0%|          | 0/20 [00:12<?, ?it/s][ACompiling configurations:  40%|████      | 8/20 [00:12<00:18,  1.57s/it]                                                                        
+                                                            [ACompiling configurations:  40%|████      | 8/20 [00:12<00:18,  1.57s/it]
+Bench configurations:   0%|          | 0/20 [00:12<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:  40%|████      | 8/20 [00:13<00:18,  1.57s/it]
+Bench configurations:   0%|          | 0/20 [00:13<?, ?it/s][ACompiling configurations:  45%|████▌     | 9/20 [00:14<00:17,  1.60s/it]                                                                        
+                                                            [ACompiling configurations:  45%|████▌     | 9/20 [00:14<00:17,  1.60s/it]
+Bench configurations:   0%|          | 0/20 [00:14<?, ?it/s][A                                                                        
+                                                            [ACompiling configurations:  45%|████▌     | 9/20 [00:15<00:17,  1.60s/it]
+Bench configurations:   0%|          | 0/20 [00:15<?, ?it/s][ACompiling configurations:  50%|█████     | 10/20 [00:15<00:16,  1.64s/it]                                                                         
+                                                            [ACompiling configurations:  50%|█████     | 10/20 [00:15<00:16,  1.64s/it]
+Bench configurations:   0%|          | 0/20 [00:15<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  50%|█████     | 10/20 [00:17<00:16,  1.64s/it]
+Bench configurations:   0%|          | 0/20 [00:17<?, ?it/s][ACompiling configurations:  55%|█████▌    | 11/20 [00:17<00:14,  1.59s/it]                                                                         
+                                                            [ACompiling configurations:  55%|█████▌    | 11/20 [00:17<00:14,  1.59s/it]
+Bench configurations:   0%|          | 0/20 [00:17<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  55%|█████▌    | 11/20 [00:18<00:14,  1.59s/it]
+Bench configurations:   0%|          | 0/20 [00:18<?, ?it/s][ACompiling configurations:  60%|██████    | 12/20 [00:18<00:12,  1.60s/it]                                                                         
+                                                            [ACompiling configurations:  60%|██████    | 12/20 [00:18<00:12,  1.60s/it]
+Bench configurations:   0%|          | 0/20 [00:18<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  60%|██████    | 12/20 [00:20<00:12,  1.60s/it]
+Bench configurations:   0%|          | 0/20 [00:20<?, ?it/s][ACompiling configurations:  65%|██████▌   | 13/20 [00:20<00:11,  1.65s/it]                                                                         
+                                                            [ACompiling configurations:  65%|██████▌   | 13/20 [00:20<00:11,  1.65s/it]
+Bench configurations:   0%|          | 0/20 [00:20<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  65%|██████▌   | 13/20 [00:22<00:11,  1.65s/it]
+Bench configurations:   0%|          | 0/20 [00:22<?, ?it/s][ACompiling configurations:  70%|███████   | 14/20 [00:22<00:09,  1.64s/it]                                                                         
+                                                            [ACompiling configurations:  70%|███████   | 14/20 [00:22<00:09,  1.64s/it]
+Bench configurations:   0%|          | 0/20 [00:22<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  70%|███████   | 14/20 [00:23<00:09,  1.64s/it]
+Bench configurations:   0%|          | 0/20 [00:23<?, ?it/s][ACompiling configurations:  75%|███████▌  | 15/20 [00:24<00:08,  1.64s/it]                                                                         
+                                                            [ACompiling configurations:  75%|███████▌  | 15/20 [00:24<00:08,  1.64s/it]
+Bench configurations:   0%|          | 0/20 [00:24<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  75%|███████▌  | 15/20 [00:25<00:08,  1.64s/it]
+Bench configurations:   0%|          | 0/20 [00:25<?, ?it/s][ACompiling configurations:  80%|████████  | 16/20 [00:25<00:06,  1.61s/it]                                                                         
+                                                            [ACompiling configurations:  80%|████████  | 16/20 [00:25<00:06,  1.61s/it]
+Bench configurations:   0%|          | 0/20 [00:25<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  80%|████████  | 16/20 [00:26<00:06,  1.61s/it]
+Bench configurations:   0%|          | 0/20 [00:26<?, ?it/s][ACompiling configurations:  85%|████████▌ | 17/20 [00:27<00:04,  1.62s/it]                                                                         
+                                                            [ACompiling configurations:  85%|████████▌ | 17/20 [00:27<00:04,  1.62s/it]
+Bench configurations:   0%|          | 0/20 [00:27<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  85%|████████▌ | 17/20 [00:28<00:04,  1.62s/it]
+Bench configurations:   0%|          | 0/20 [00:28<?, ?it/s][ACompiling configurations:  90%|█████████ | 18/20 [00:28<00:03,  1.59s/it]                                                                         
+                                                            [ACompiling configurations:  90%|█████████ | 18/20 [00:28<00:03,  1.59s/it]
+Bench configurations:   0%|          | 0/20 [00:28<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  90%|█████████ | 18/20 [00:30<00:03,  1.59s/it]
+Bench configurations:   0%|          | 0/20 [00:30<?, ?it/s][ACompiling configurations:  95%|█████████▌| 19/20 [00:30<00:01,  1.59s/it]                                                                         
+                                                            [ACompiling configurations:  95%|█████████▌| 19/20 [00:30<00:01,  1.59s/it]
+Bench configurations:   0%|          | 0/20 [00:30<?, ?it/s][A                                                                         
+                                                            [ACompiling configurations:  95%|█████████▌| 19/20 [00:31<00:01,  1.59s/it]
+Bench configurations:   0%|          | 0/20 [00:31<?, ?it/s][ACompiling configurations: 100%|██████████| 20/20 [00:31<00:00,  1.60s/it]
+Bench configurations:   5%|▌         | 1/20 [00:33<10:27, 33.02s/it][A
+Bench configurations:   5%|▌         | 1/20 [00:33<10:27, 33.02s/it, best_latency=1.77][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:33<00:00,  1.60s/it]
+Bench configurations:   5%|▌         | 1/20 [00:33<10:27, 33.02s/it, best_latency=1.77][A
+Bench configurations:  10%|█         | 2/20 [00:33<04:08, 13.79s/it, best_latency=1.77][A
+Bench configurations:  10%|█         | 2/20 [00:33<04:08, 13.79s/it, best_latency=1.65][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:33<00:00,  1.60s/it]
+Bench configurations:  10%|█         | 2/20 [00:33<04:08, 13.79s/it, best_latency=1.65][A
+Bench configurations:  15%|█▌        | 3/20 [00:33<02:09,  7.63s/it, best_latency=1.65][A
+Bench configurations:  15%|█▌        | 3/20 [00:33<02:09,  7.63s/it, best_latency=1.47][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:33<00:00,  1.60s/it]
+Bench configurations:  15%|█▌        | 3/20 [00:33<02:09,  7.63s/it, best_latency=1.47][A
+Bench configurations:  20%|██        | 4/20 [00:34<01:16,  4.81s/it, best_latency=1.47][A
+Bench configurations:  20%|██        | 4/20 [00:34<01:16,  4.81s/it, best_latency=1.47][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:34<00:00,  1.60s/it]
+Bench configurations:  20%|██        | 4/20 [00:34<01:16,  4.81s/it, best_latency=1.47][A
+Bench configurations:  25%|██▌       | 5/20 [00:34<00:47,  3.18s/it, best_latency=1.47][A
+Bench configurations:  25%|██▌       | 5/20 [00:34<00:47,  3.18s/it, best_latency=1.47][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:34<00:00,  1.60s/it]
+Bench configurations:  25%|██▌       | 5/20 [00:34<00:47,  3.18s/it, best_latency=1.47][A
+Bench configurations:  30%|███       | 6/20 [00:34<00:30,  2.20s/it, best_latency=1.47][A
+Bench configurations:  30%|███       | 6/20 [00:34<00:30,  2.20s/it, best_latency=1.47][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:34<00:00,  1.60s/it]
+Bench configurations:  30%|███       | 6/20 [00:34<00:30,  2.20s/it, best_latency=1.47][A
+Bench configurations:  35%|███▌      | 7/20 [00:35<00:20,  1.59s/it, best_latency=1.47][A
+Bench configurations:  35%|███▌      | 7/20 [00:35<00:20,  1.59s/it, best_latency=1.47][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:35<00:00,  1.60s/it]
+Bench configurations:  35%|███▌      | 7/20 [00:35<00:20,  1.59s/it, best_latency=1.47][A
+Bench configurations:  40%|████      | 8/20 [00:35<00:14,  1.18s/it, best_latency=1.47][A
+Bench configurations:  40%|████      | 8/20 [00:35<00:14,  1.18s/it, best_latency=1.47][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:35<00:00,  1.60s/it]
+Bench configurations:  40%|████      | 8/20 [00:35<00:14,  1.18s/it, best_latency=1.47][A
+Bench configurations:  45%|████▌     | 9/20 [00:35<00:09,  1.10it/s, best_latency=1.47][A
+Bench configurations:  45%|████▌     | 9/20 [00:35<00:09,  1.10it/s, best_latency=1.46][A                                                                         
+                                                                                       [ACompiling configurations: 100%|██████████| 20/20 [00:35<00:00,  1.60s/it]
+Bench configurations:  45%|████▌     | 9/20 [00:35<00:09,  1.10it/s, best_latency=1.46][A
+Bench configurations:  50%|█████     | 10/20 [00:36<00:07,  1.35it/s, best_latency=1.46][A
+Bench configurations:  50%|█████     | 10/20 [00:36<00:07,  1.35it/s, best_latency=1.46][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:36<00:00,  1.60s/it]
+Bench configurations:  50%|█████     | 10/20 [00:36<00:07,  1.35it/s, best_latency=1.46][A
+Bench configurations:  55%|█████▌    | 11/20 [00:36<00:05,  1.64it/s, best_latency=1.46][A
+Bench configurations:  55%|█████▌    | 11/20 [00:36<00:05,  1.64it/s, best_latency=1.46][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:36<00:00,  1.60s/it]
+Bench configurations:  55%|█████▌    | 11/20 [00:36<00:05,  1.64it/s, best_latency=1.46][A
+Bench configurations:  60%|██████    | 12/20 [00:36<00:04,  1.81it/s, best_latency=1.46][A
+Bench configurations:  60%|██████    | 12/20 [00:36<00:04,  1.81it/s, best_latency=1.46][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:36<00:00,  1.60s/it]
+Bench configurations:  60%|██████    | 12/20 [00:36<00:04,  1.81it/s, best_latency=1.46][A
+Bench configurations:  65%|██████▌   | 13/20 [00:37<00:03,  2.11it/s, best_latency=1.46][A
+Bench configurations:  65%|██████▌   | 13/20 [00:37<00:03,  2.11it/s, best_latency=1.46][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:37<00:00,  1.60s/it]
+Bench configurations:  65%|██████▌   | 13/20 [00:37<00:03,  2.11it/s, best_latency=1.46][A
+Bench configurations:  70%|███████   | 14/20 [00:37<00:02,  2.33it/s, best_latency=1.46][A
+Bench configurations:  70%|███████   | 14/20 [00:37<00:02,  2.33it/s, best_latency=1.42][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:37<00:00,  1.60s/it]
+Bench configurations:  70%|███████   | 14/20 [00:37<00:02,  2.33it/s, best_latency=1.42][A
+Bench configurations:  75%|███████▌  | 15/20 [00:37<00:01,  2.53it/s, best_latency=1.42][A
+Bench configurations:  75%|███████▌  | 15/20 [00:37<00:01,  2.53it/s, best_latency=1.42][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:37<00:00,  1.60s/it]
+Bench configurations:  75%|███████▌  | 15/20 [00:37<00:01,  2.53it/s, best_latency=1.42][A
+Bench configurations:  80%|████████  | 16/20 [00:38<00:01,  2.68it/s, best_latency=1.42][A
+Bench configurations:  80%|████████  | 16/20 [00:38<00:01,  2.68it/s, best_latency=1.42][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:38<00:00,  1.60s/it]
+Bench configurations:  80%|████████  | 16/20 [00:38<00:01,  2.68it/s, best_latency=1.42][A
+Bench configurations:  85%|████████▌ | 17/20 [00:38<00:01,  2.75it/s, best_latency=1.42][A
+Bench configurations:  85%|████████▌ | 17/20 [00:38<00:01,  2.75it/s, best_latency=1.42][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:38<00:00,  1.60s/it]
+Bench configurations:  85%|████████▌ | 17/20 [00:38<00:01,  2.75it/s, best_latency=1.42][A
+Bench configurations:  90%|█████████ | 18/20 [00:38<00:00,  2.88it/s, best_latency=1.42][A
+Bench configurations:  90%|█████████ | 18/20 [00:38<00:00,  2.88it/s, best_latency=1.42][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:38<00:00,  1.60s/it]
+Bench configurations:  90%|█████████ | 18/20 [00:38<00:00,  2.88it/s, best_latency=1.42][A
+Bench configurations:  95%|█████████▌| 19/20 [00:39<00:00,  2.35it/s, best_latency=1.42][A
+Bench configurations:  95%|█████████▌| 19/20 [00:39<00:00,  2.35it/s, best_latency=1.42][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:39<00:00,  1.60s/it]
+Bench configurations:  95%|█████████▌| 19/20 [00:39<00:00,  2.35it/s, best_latency=1.42][A
+Bench configurations: 100%|██████████| 20/20 [00:39<00:00,  2.59it/s, best_latency=1.42][A
+Bench configurations: 100%|██████████| 20/20 [00:39<00:00,  2.59it/s, best_latency=1.42][A                                                                         
+                                                                                        [ACompiling configurations: 100%|██████████| 20/20 [00:39<00:00,  1.60s/it]
+Bench configurations: 100%|██████████| 20/20 [00:39<00:00,  2.59it/s, best_latency=1.42][A
+Bench configurations: 100%|██████████| 20/20 [00:39<00:00,  2.59it/s, best_latency=1.42][ACompiling configurations: 100%|██████████| 20/20 [00:39<00:00,  1.98s/it]
+Bench configurations: 100%|██████████| 20/20 [00:39<00:00,  1.98s/it, best_latency=1.42]
