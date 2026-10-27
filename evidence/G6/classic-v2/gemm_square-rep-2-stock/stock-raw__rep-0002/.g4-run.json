@@ -1,0 +1,1 @@
+{"arm":"stock-raw","cache_mode":"enabled","experiment_id":"f2c208d6310b4f7ca3a6907492edd7af","kind":"run","metadata":{"utc_created":"2026-10-27T00:29:48.815894+00:00"},"repetition":2,"root":"/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/gemm_square-rep-2-stock","run_name":"stock-raw__rep-0002","schema":"tilelang.g4.search-experiment/v1"}
