@@ -1,0 +1,573 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+{
+  "R": 288,
+  "U": 240,
+  "arm": "z3-cm-topk",
+  "best": {
+    "config": {
+      "block_K": 64,
+      "block_M": 256,
+      "block_N": 128,
+      "enable_rasterization": true,
+      "num_stages": 2,
+      "threads": 256
+    },
+    "config_id": "06ef09d9fb4dcdb24255225a045b704e97740e6de89f998d6658bca8dc5feb28",
+    "latency_ms": 1.456840991973877,
+    "unavailable_reason": null
+  },
+  "best_config": {
+    "block_K": 64,
+    "block_M": 256,
+    "block_N": 128,
+    "enable_rasterization": true,
+    "num_stages": 2,
+    "threads": 256
+  },
+  "best_latency_ms": 1.456840991973877,
+  "cache": {
+    "directory": null,
+    "directory_scope": "directory/identity concern the AutoTuner result cache; pipeline_cache_directory is the isolated TileLang/CUDA/Torch cache root",
+    "enabled": false,
+    "hit": false,
+    "identity": null,
+    "key": null,
+    "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/z3-cm-topk__rep-0001/cache",
+    "requested_mode": "enabled",
+    "source": null,
+    "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)"
+  },
+  "cache_identity": null,
+  "candidate_count": 5,
+  "candidate_failures": {
+    "compile": 0,
+    "profile": 0,
+    "validation": 0
+  },
+  "compile": {
+    "attempts": 5,
+    "cumulative_seconds": 9.030856861907523,
+    "fail": 0,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 9.032288638001774
+  },
+  "compile_attempts": 5,
+  "compile_fail": 0,
+  "compile_success": 5,
+  "compile_wall_seconds": 9.032288638001774,
+  "duplicates": 0,
+  "end_to_end_wall_seconds": 11.852422354975715,
+  "errors": [],
+  "errors_omitted": 0,
+  "experiment": {
+    "after": "after.json",
+    "arm": "z3-cm-topk",
+    "before": "before.json",
+    "cache_mode": "enabled",
+    "events": "events.jsonl",
+    "repetition": 1,
+    "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/z3-cm-topk__rep-0001"
+  },
+  "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+  "fully_instrumented": true,
+  "has_recorded_candidate_failures": false,
+  "metadata": {
+    "arm": "z3-cm-topk",
+    "cache_mode": "enabled",
+    "cache_track": "cold",
+    "operator": "gemm",
+    "repetition": 1,
+    "seed": 20261026,
+    "shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096,
+      "dtype": "f16",
+      "output_dtype": "f16"
+    },
+    "suite": "gemm_square",
+    "top_k": 5,
+    "utc_started": "2026-10-27T01:55:03.365873+00:00"
+  },
+  "model": {
+    "attempts": 240,
+    "cumulative_seconds": 0.021411298483144492,
+    "fail": 0,
+    "predictions": 240,
+    "success": 240,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "unknown": 0,
+    "wall_seconds": 0.04968133202055469
+  },
+  "model_unknown": 0,
+  "model_wall_seconds": 0.04968133202055469,
+  "observer_errors": [],
+  "operator_run": {
+    "budget": 5,
+    "cache_track": "cold",
+    "model_operator": "gemm",
+    "model_shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096,
+      "dtype": "f16",
+      "output_dtype": "f16"
+    },
+    "operator": "gemm",
+    "raw_count": 288,
+    "reference": "frozen operator module independent FP32 reference",
+    "repeat": 50,
+    "seed": 20261026,
+    "shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096
+    },
+    "suite": "gemm_square",
+    "top_k": 5,
+    "validation": "real Profiler.manual_assert_close -> frozen module.validate; max_mismatched_ratio=0",
+    "warmup": 10
+  },
+  "profile": {
+    "attempts": 5,
+    "cumulative_seconds": 0.7789968959405087,
+    "fail": 0,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 1.9886638930183835
+  },
+  "profile_wall_seconds": 1.9886638930183835,
+  "pruner_unknown": 0,
+  "reference_latency_ms": 5.402165412902832,
+  "run_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/z3-cm-topk__rep-0001/cache",
+  "schema_version": 1,
+  "selected": 5,
+  "solver": {
+    "checks": 288,
+    "completed": true,
+    "cumulative_seconds": 0.0632810941315256,
+    "invoked": true,
+    "sat": 240,
+    "timeouts": 0,
+    "unavailable_reason": null,
+    "unknown": 0,
+    "unsat": 48,
+    "wall_seconds": 0.07554669101955369
+  },
+  "solver_wall_seconds": 0.07554669101955369,
+  "status": "ok",
+  "trials": {
+    "ok": 5
+  },
+  "unavailable": {},
+  "unknown": 0,
+  "unknown_sources": {
+    "model": 0,
+    "overlap": 0,
+    "pruner": 0,
+    "total": 0
+  },
+  "unknown_total": 0,
+  "validation": {
+    "attempts": 5,
+    "cumulative_seconds": 1.4496436840272509,
+    "fail": 0,
+    "failed": 0,
+    "not_run": 0,
+    "passed": 5,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 2.4906934040482156
+  },
+  "validation_wall_seconds": 2.4906934040482156
+}
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+{
+  "R": 288,
+  "U": 240,
+  "arm": "budget-raw",
+  "best": {
+    "config": {
+      "block_K": 32,
+      "block_M": 64,
+      "block_N": 64,
+      "enable_rasterization": true,
+      "num_stages": 0,
+      "threads": 128
+    },
+    "config_id": "2336c9e0fe6c365116452d93d079f9594a63039fc8a2d29ea2e16b82fffbdcb0",
+    "latency_ms": 1.6644973754882812,
+    "unavailable_reason": null
+  },
+  "best_config": {
+    "block_K": 32,
+    "block_M": 64,
+    "block_N": 64,
+    "enable_rasterization": true,
+    "num_stages": 0,
+    "threads": 128
+  },
+  "best_latency_ms": 1.6644973754882812,
+  "cache": {
+    "directory": null,
+    "directory_scope": "directory/identity concern the AutoTuner result cache; pipeline_cache_directory is the isolated TileLang/CUDA/Torch cache root",
+    "enabled": false,
+    "hit": false,
+    "identity": null,
+    "key": null,
+    "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/budget-raw__rep-0001/cache",
+    "requested_mode": "enabled",
+    "source": null,
+    "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)"
+  },
+  "cache_identity": null,
+  "candidate_count": 5,
+  "candidate_failures": {
+    "compile": 0,
+    "profile": 0,
+    "validation": 0
+  },
+  "compile": {
+    "attempts": 5,
+    "cumulative_seconds": 8.04367415199522,
+    "fail": 0,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 8.044895722996444
+  },
+  "compile_attempts": 5,
+  "compile_fail": 0,
+  "compile_success": 5,
+  "compile_wall_seconds": 8.044895722996444,
+  "duplicates": 0,
+  "end_to_end_wall_seconds": 10.69881821598392,
+  "errors": [],
+  "errors_omitted": 0,
+  "experiment": {
+    "after": "after.json",
+    "arm": "budget-raw",
+    "before": "before.json",
+    "cache_mode": "enabled",
+    "events": "events.jsonl",
+    "repetition": 1,
+    "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/budget-raw__rep-0001"
+  },
+  "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+  "fully_instrumented": true,
+  "has_recorded_candidate_failures": false,
+  "metadata": {
+    "arm": "budget-raw",
+    "cache_mode": "enabled",
+    "cache_track": "cold",
+    "operator": "gemm",
+    "repetition": 1,
+    "seed": 20261026,
+    "shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096,
+      "dtype": "f16",
+      "output_dtype": "f16"
+    },
+    "suite": "gemm_square",
+    "top_k": 5,
+    "utc_started": "2026-10-27T01:55:17.382362+00:00"
+  },
+  "model": {
+    "attempts": null,
+    "cumulative_seconds": null,
+    "fail": null,
+    "predictions": null,
+    "success": null,
+    "unavailable_reason": "this arm does not invoke the candidate cost model",
+    "unknown": null,
+    "wall_seconds": null
+  },
+  "model_unknown": null,
+  "model_wall_seconds": null,
+  "observer_errors": [],
+  "operator_run": {
+    "budget": 5,
+    "cache_track": "cold",
+    "model_operator": "gemm",
+    "model_shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096,
+      "dtype": "f16",
+      "output_dtype": "f16"
+    },
+    "operator": "gemm",
+    "raw_count": 288,
+    "reference": "frozen operator module independent FP32 reference",
+    "repeat": 50,
+    "seed": 20261026,
+    "shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096
+    },
+    "suite": "gemm_square",
+    "top_k": 5,
+    "validation": "real Profiler.manual_assert_close -> frozen module.validate; max_mismatched_ratio=0",
+    "warmup": 10
+  },
+  "profile": {
+    "attempts": 5,
+    "cumulative_seconds": 0.8923982509877533,
+    "fail": 0,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 2.01715826097643
+  },
+  "profile_wall_seconds": 2.01715826097643,
+  "pruner_unknown": 0,
+  "reference_latency_ms": 5.4305267333984375,
+  "run_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/budget-raw__rep-0001/cache",
+  "schema_version": 1,
+  "selected": 5,
+  "solver": {
+    "checks": 288,
+    "completed": true,
+    "cumulative_seconds": 0.0586621257243678,
+    "invoked": true,
+    "sat": 240,
+    "timeouts": 0,
+    "unavailable_reason": null,
+    "unknown": 0,
+    "unsat": 48,
+    "wall_seconds": 0.0708593349554576
+  },
+  "solver_wall_seconds": 0.0708593349554576,
+  "status": "ok",
+  "trials": {
+    "ok": 5
+  },
+  "unavailable": {
+    "model": "this arm does not invoke the candidate cost model",
+    "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+  },
+  "unknown": 0,
+  "unknown_sources": {
+    "model": null,
+    "overlap": null,
+    "pruner": 0,
+    "total": null
+  },
+  "unknown_total": null,
+  "validation": {
+    "attempts": 5,
+    "cumulative_seconds": 1.2695915779913776,
+    "fail": 0,
+    "failed": 0,
+    "not_run": 0,
+    "passed": 5,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 2.323081548034679
+  },
+  "validation_wall_seconds": 2.323081548034679
+}
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+{
+  "R": 288,
+  "U": 240,
+  "arm": "budget-random",
+  "best": {
+    "config": {
+      "block_K": 64,
+      "block_M": 64,
+      "block_N": 128,
+      "enable_rasterization": false,
+      "num_stages": 2,
+      "threads": 256
+    },
+    "config_id": "3ba79f5b6befbf0b41cbd0870dcf60bf921b9b397a6822861d333a5f767095e3",
+    "latency_ms": 1.4758316278457642,
+    "unavailable_reason": null
+  },
+  "best_config": {
+    "block_K": 64,
+    "block_M": 64,
+    "block_N": 128,
+    "enable_rasterization": false,
+    "num_stages": 2,
+    "threads": 256
+  },
+  "best_latency_ms": 1.4758316278457642,
+  "cache": {
+    "directory": null,
+    "directory_scope": "directory/identity concern the AutoTuner result cache; pipeline_cache_directory is the isolated TileLang/CUDA/Torch cache root",
+    "enabled": false,
+    "hit": false,
+    "identity": null,
+    "key": null,
+    "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/budget-random__rep-0001/cache",
+    "requested_mode": "enabled",
+    "source": null,
+    "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)"
+  },
+  "cache_identity": null,
+  "candidate_count": 5,
+  "candidate_failures": {
+    "compile": 0,
+    "profile": 0,
+    "validation": 0
+  },
+  "compile": {
+    "attempts": 5,
+    "cumulative_seconds": 8.281887463992462,
+    "fail": 0,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 8.28311899799155
+  },
+  "compile_attempts": 5,
+  "compile_fail": 0,
+  "compile_success": 5,
+  "compile_wall_seconds": 8.28311899799155,
+  "duplicates": 0,
+  "end_to_end_wall_seconds": 10.93177675199695,
+  "errors": [],
+  "errors_omitted": 0,
+  "experiment": {
+    "after": "after.json",
+    "arm": "budget-random",
+    "before": "before.json",
+    "cache_mode": "enabled",
+    "events": "events.jsonl",
+    "repetition": 1,
+    "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/budget-random__rep-0001"
+  },
+  "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+  "fully_instrumented": true,
+  "has_recorded_candidate_failures": false,
+  "metadata": {
+    "arm": "budget-random",
+    "cache_mode": "enabled",
+    "cache_track": "cold",
+    "operator": "gemm",
+    "repetition": 1,
+    "seed": 20261026,
+    "shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096,
+      "dtype": "f16",
+      "output_dtype": "f16"
+    },
+    "suite": "gemm_square",
+    "top_k": 5,
+    "utc_started": "2026-10-27T01:55:30.188203+00:00"
+  },
+  "model": {
+    "attempts": null,
+    "cumulative_seconds": null,
+    "fail": null,
+    "predictions": null,
+    "success": null,
+    "unavailable_reason": "this arm does not invoke the candidate cost model",
+    "unknown": null,
+    "wall_seconds": null
+  },
+  "model_unknown": null,
+  "model_wall_seconds": null,
+  "observer_errors": [],
+  "operator_run": {
+    "budget": 5,
+    "cache_track": "cold",
+    "model_operator": "gemm",
+    "model_shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096,
+      "dtype": "f16",
+      "output_dtype": "f16"
+    },
+    "operator": "gemm",
+    "raw_count": 288,
+    "reference": "frozen operator module independent FP32 reference",
+    "repeat": 50,
+    "seed": 20261026,
+    "shape": {
+      "K": 4096,
+      "M": 4096,
+      "N": 4096
+    },
+    "suite": "gemm_square",
+    "top_k": 5,
+    "validation": "real Profiler.manual_assert_close -> frozen module.validate; max_mismatched_ratio=0",
+    "warmup": 10
+  },
+  "profile": {
+    "attempts": 5,
+    "cumulative_seconds": 0.8562687639496289,
+    "fail": 0,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 2.0069008939899504
+  },
+  "profile_wall_seconds": 2.0069008939899504,
+  "pruner_unknown": 0,
+  "reference_latency_ms": 5.435571193695068,
+  "run_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/gemm_square/top-k-0005/budget-random__rep-0001/cache",
+  "schema_version": 1,
+  "selected": 5,
+  "solver": {
+    "checks": 288,
+    "completed": true,
+    "cumulative_seconds": 0.0631834632367827,
+    "invoked": true,
+    "sat": 240,
+    "timeouts": 0,
+    "unavailable_reason": null,
+    "unknown": 0,
+    "unsat": 48,
+    "wall_seconds": 0.07601899799192324
+  },
+  "solver_wall_seconds": 0.07601899799192324,
+  "status": "ok",
+  "trials": {
+    "ok": 5
+  },
+  "unavailable": {
+    "model": "this arm does not invoke the candidate cost model",
+    "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+  },
+  "unknown": 0,
+  "unknown_sources": {
+    "model": null,
+    "overlap": null,
+    "pruner": 0,
+    "total": null
+  },
+  "unknown_total": null,
+  "validation": {
+    "attempts": 5,
+    "cumulative_seconds": 1.297315244039055,
+    "fail": 0,
+    "failed": 0,
+    "not_run": 0,
+    "passed": 5,
+    "success": 5,
+    "unavailable_reason": null,
+    "unfinished": 0,
+    "wall_seconds": 2.404929043026641
+  },
+  "validation_wall_seconds": 2.404929043026641
+}
+{
+  "completed_jobs": 3,
+  "status": "ok",
+  "summary": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/classic-v2/sensitivity-gemm_square-k5-rep-1/scheduler-summary.json"
+}
