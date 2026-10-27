@@ -43,7 +43,7 @@ BUILD_JOBS=2 bash scripts/build_tilelang.sh
 常用测试入口：
 
 ```bash
-# 49 个 CUDA Z3 solver 测试。
+# 51 个 CUDA Z3 solver 测试。
 python -m pytest -q testing/python/transform/test_tilelang_cuda_z3_scheduler.py
 
 # latency/II 与整 kernel 成本公式。
