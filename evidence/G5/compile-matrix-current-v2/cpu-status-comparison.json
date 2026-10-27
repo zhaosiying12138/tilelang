@@ -1,0 +1,13 @@
+{
+  "schema": "tilelang.compile-matrix-status-comparison/v1",
+  "old_results": "evidence/G5/compile-matrix-full-cpu-files-v1/results.jsonl",
+  "new_results": "evidence/G5/compile-matrix-current-v2/cpu/results.jsonl",
+  "old_rows": 729,
+  "new_rows": 729,
+  "status_changed_rows": 0,
+  "old_failure_rows": 0,
+  "new_failure_rows": 0,
+  "new_failure_ids": [],
+  "category_counts": {},
+  "audit": []
+}

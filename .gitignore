@@ -103,6 +103,9 @@ tilelang/jit/adapter/cython/.cycache
 /.claude/*
 !/.claude/skills
 
+# Run-owned compile-matrix caches and raw shards; publish selected summaries only
+evidence/G5/compile-matrix-current-v*/
+
 # CMake
 cmake-build/
 cmake-build-*/

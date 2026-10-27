@@ -1,0 +1,598 @@
+{
+  "schema": "tilelang.cuda.compile-matrix-merge",
+  "created_at": "2026-10-27T19:03:05.909014+00:00",
+  "action": "run",
+  "tier": "full",
+  "mode": "default",
+  "manifest": "/home/zhaosiying/codebase/tilelang-cuda-z3/manifest/compile_matrix.json",
+  "manifest_sha256": "7cec85ee9b8e6eba793b21dd91b9570644fa1a70a5a263753f71bd8682882954",
+  "source_sha256": {
+    "testing/python/language/test_tilelang_language_copy.py": "97501a839c66df3af77fddd012dc196f7d14a62f5a0442aaecab99d7aaa760c4",
+    "testing/python/language/test_tilelang_language_reduce.py": "2cd42136934e00fb34733b95802b7006e572c936ab1aece37dc7180f866377b3",
+    "testing/python/language/test_tilelang_language_reducer_v2.py": "7cf4eda6e7de08f3ecd2682800dbb0992666eb5823cd3a8cc792eb6d2a80b72d",
+    "testing/python/language/test_tilelang_language_atomic.py": "627c045eaa591d6593c606484c231d7d6cc6e90101eb085938eb4d8d2ff5887e",
+    "testing/python/language/test_tilelang_language_pipeline.py": "ec2b0f31e5304c1db0ab3c94ab8144cba77945964d21b82380fcba13912c5e33",
+    "testing/python/language/test_tilelang_language_tma_copy.py": "b7a4949b659919893606f0038e251583751fe176d900e58078ea3da0285b32b7",
+    "testing/python/language/test_tilelang_language_tma_1d.py": "dac42f2ceb2b202cfc00869de299ce5d2781c2cdbe8027eee02a82ebddbb1c6b",
+    "testing/python/language/test_tilelang_language_tma_store.py": "88d75b3f43ed807e83f80774e8dd75822d2ad8b7ee4bc30b0cd7bd93699768c3",
+    "testing/python/language/test_tilelang_language_async_copy_gemm_sm80.py": "d744076e47238650fe095688d93201cd7a63193f536eeece068f9785e0830fef",
+    "testing/python/language/test_tilelang_language_gemm_blockscaled.py": "f8969d3d9f04ec502c3c9c3f0ac37ce72fa28f2bf0a102f1427721c9eddcdcd0",
+    "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py": "0f31d73ed8918ac9fbb1365608e5b364f935caad94e93007daec75195bf1dc6d",
+    "testing/python/language/test_tilelang_language_tcgen05_gemm.py": "5c286ec6740f34aa4a148c66fb9c36dc7d34eb359d9d13575f3eb3fcf3c1e1d3",
+    "testing/python/language/test_tilelang_language_wgmma_gemm.py": "7e7b765f9f11e98374b448d6a929d1ee433d5db1db77ad533de330964e06b513",
+    "testing/python/kernel/test_tilelang_kernel_gemm.py": "8095bab18ce6aaef256ad130581c596410b4f99cccd959736110fa3268233e56",
+    "testing/python/kernel/test_tilelang_kernel_gemm_batched.py": "2a6e2c9665b26bd308eee19dcdbd40246b47d0fc696e45bd4e30309a58068692",
+    "testing/python/kernel/test_tilelang_kernel_gemm_simt.py": "0f8d8bb31af1550d2f28fa00775273b6f4b2b720930dd68a6c103292fefab91f",
+    "testing/python/kernel/test_tilelang_kernel_gemm_with_stride.py": "f4cae2e36b197c3c2fac7c2cd3d38f5daa4c30f96fba6f31b6a90606d0130997",
+    "testing/python/kernel/test_tilelang_kernel_gemv_simt.py": "753d5652d2d913a19db372afba1c72f5c1cedd74a0370968b36dbd69dd63c81f",
+    "testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py": "431dbcb7554e40e1f8ba1f4b6f6b0ac81b43827f0d093cef7ef0549bb44632a7",
+    "testing/python/quantize/test_tilelang_quantize_fp8.py": "b7fdd05ed1f08d40991ebe1e0dd6afb82adaa5130b85c6f9c39e33e8efc1dd10",
+    "testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py": "ca7a1037b74816d25c4e3cd7da914cbbc43b1282332335e7d329ac9c5f27eb87",
+    "testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py": "e0e2a561a6bf214657cfef2fbed975c1a201fb5688dc4b62ed86e39938051acf",
+    "testing/python/issue/test_tilelang_issue_tma_no_ws.py": "906a405e43e4fac7756a27e7fc95f7a105e2dcc9e054c9a0ff1f1e8aac56f21d",
+    "testing/python/issue/test_tilelang_issue_ws_simt_copy_full_producer_extent.py": "f916b44a35d4d70bb8c40a011f14ba4db26c2666dc90703cead7163b29c74334",
+    "testing/python/issue/test_tilelang_issue_pipeline_transitive_copy_dependencies.py": "9685ec0c666146ee220c736fdf6f7d271f6c0a4d04cbc929e161287565754565",
+    "testing/python/cuda/test_tma_dsmem.py": "5ede6550e5dcf0ec86e6e070ece2fa8bba92c609b0723d6b9a24cf9e889de2c1",
+    "testing/python/cuda/test_tma_multicast_demo.py": "94057e6011cfb9d7bcd3990c9b7f610b18aa7aa0e69128eea09e1034e018f54e",
+    "testing/python/language/test_tilelang_language_copy_ldmatrix.py": "f27d6793a6564be6e26ba0a9d23791b909967adfdefc8d449f9345b0a9c28473",
+    "testing/python/language/test_tilelang_language_tma_gather_scatter.py": "50da9a2b529e9a80cbec125b83d79832c9ff89a72e98b524fd75ae5a7fd63671",
+    "testing/python/language/test_tilelang_language_tmem_copy.py": "158af11d69b8d4380373724109abc6fc5ec661cf83c1f2a82195a150f1d5436c",
+    "testing/python/language/test_tilelang_language_tcgen05_sliced_operands.py": "5eeb8c98c14e0c0a0072c3a8267ae1d38e5020446cd1b2e6f1330c998b2b7b15",
+    "testing/python/language/test_tilelang_language_vectorize.py": "ae6f644e1e667a45335f2e865d6236177d490d6737d2513b498667e56efc2a56",
+    "testing/python/language/test_tilelang_language_scan.py": "5ae28881c7949df1165faadccea62c352bc18308fdc156fbc0d1da01bba8c741",
+    "testing/python/language/test_tilelang_language_transpose.py": "7ae93aa797ea8841f7a2f08cc8ca2c2b7589f74de53a060641cb2523ed21392d",
+    "testing/python/jit/test_tilelang_jit_nvrtc.py": "ef098f7ce3dd6282f702fc6d9e454edd6d7adde4b4ec6a193deeb2bd5b71ee1b",
+    "testing/python/language/test_tilelang_language_strided_view.py": "7deb693be10d666a8fac5423066e3dde9b9fcc434820d19bbf50bfa3e139d19f",
+    "testing/python/language/test_tilelang_language_view.py": "6d2ceb0506dbd98e2b8bea99e3e8c97fe8292b0c5792c497c6351c669362081b",
+    "testing/python/language/test_tilelang_language_warp_reduce.py": "ea0e511fdbd50c808e28ff8f45307930dc08a3651c38ddaaebb2e274b6edc453",
+    "testing/python/language/test_tilelang_language_reduce_maxmin_nan.py": "3b5b9b867c229e0d43df78f25014a1ca0228611d99eb1cdebe4b30114efa212b",
+    "testing/python/language/test_tilelang_language_fp8.py": "fb0dd4c56af6e7f8574ab7007f832b678f937342b9cc53d6b0878ceb2ebe5d1d",
+    "testing/python/language/test_tilelang_language_float4_e2m1_unpacked_dtype.py": "6c0896affdd98898acbe66f25fac0cd6c664c220027a9529a1c696de3e02b98d",
+    "testing/python/language/test_tilelang_language_vectorized_cast.py": "8ddbc6d7f4b1c88820803a4b077dd3bf6d60531f253895930bfc87b514474453",
+    "testing/python/language/test_tilelang_language_symbolic_loop_layout.py": "14caa2b7eed8843336e991404242d4de949060b7142cf55e1796fe5352c6a80d",
+    "testing/python/language/test_tilelang_language_persistent.py": "fd5946966118baec9a68b46f415a5c09fba96a5e050b52c14a6281d0d1b37302",
+    "testing/python/language/test_tilelang_language_cluster.py": "c41221522fe32d81e019ffde4d39cbef7b5eade3c2354c707fa0f7b02760234d",
+    "testing/python/language/test_tilelang_language_pdl.py": "90fa798ec53241d2bf4b4c3a858ac2dd24111af3ec39475462a4d6f5e02ba1ac",
+    "testing/python/language/test_tilelang_language_ldg.py": "977b379af37b268c6a328cee74d20c6e75be92a2d289bcbc0f7c3af831b3da32",
+    "testing/python/language/test_tilelang_language_ldst.py": "fd9a35cc37079f0b834c89bb945d09f2f8a732ba6d86038d3c80385fba36ad4f",
+    "testing/python/language/test_tilelang_language_atom_mma.py": "3ac4ba4e752856641ab6bd6face4251d4aff33b047d2abb820a50bb153e3384c",
+    "testing/python/language/test_tilelang_language_clear.py": "f8fe177eb565b59a34bd21381c3f298152d5487cd9336f4d69802fee4c7c6560",
+    "testing/python/language/test_tilelang_language_fastmath.py": "ab78c765f86eed8c2fdb6c71b3d87b8fc953c78a9d4ac5a0ead4383f92e54ed0",
+    "testing/python/language/test_tilelang_language_rand.py": "f8e0d3691b0e1b34e54ff858e34bf45879f007588fcd6ab15b909be8b8e8177c",
+    "testing/python/language/test_tilelang_language_sync_threads.py": "7c7e93ebde5f3ff4054511fb85d409ebe5d35e4d6eaa95daa1683b9f67dd851d",
+    "testing/python/language/test_tilelang_language_warp_sync.py": "804dfbe7c283cddcc48c0d5de06bd22d84c2c21d2bab698db891c9020522dd51",
+    "testing/python/language/test_tilelang_language_warp_vote.py": "a970d74e7e2a757ad2c2f401cbc7097f34aafcec6e8f176b90f43ffa279a8fd2",
+    "testing/python/kernel/test_tilelang_kernel_gemm_sliced_operand.py": "0a1b504d2ad256b62b3c82bc8a73040803ddd136b411edf5dfa3bbc1035d7b7f",
+    "testing/python/kernel/test_tilelang_kernel_gemm_sm75.py": "00fc565f88fd2dae72df7608a133ba115e794168c2dd0b79aa0a74134f874e1b",
+    "testing/python/kernel/test_tilelang_kernel_sm70_fragment_copy.py": "04ff46d8d3bcb9650bae578bdfa018412d132bc358c0b41515efe3f3b5dcfbfe",
+    "testing/python/kernel/test_tilelang_kernel_sm70_gemm_fma.py": "3a2043963fdad7b6d5661154155ad23a8592605398674fe0dfd8447a35ebd570",
+    "testing/python/kernel/test_tilelang_kernel_sm75_gemm_fma.py": "bf4dfb504b7f1eb5b84f5c2ac4bde80dbc7100b6e7bba86bed2251086a78d018",
+    "testing/python/kernel/test_tilelang_kernel_bf16_gemm_tcgen5_ts.py": "3f4214b432a3d807df0cb8cee4730f711d6b838a75a53d8572b3cbc00802e326",
+    "testing/python/kernel/test_tilelang_kernel_int8_gemm_tcgen5.py": "840c541ca779c307b57ed3d2d0fcbf43ae97cbcc6a5049abd9d97ce73a7ddfc8",
+    "testing/python/profiler/test_tilelang_profiler_dynamic_symbolic.py": "8c7529659b5344c28fac3dda173a4b3a0bf8cd71188d65a7de49292770dbed7d",
+    "testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py": "55869467186d656d770c0dc2db83cabf28f54449ed50bac46a0a9034c9e36a35",
+    "testing/python/runtime/test_tilelang_runtime_tma_validation.py": "5de158d5f9a73920ec92861d86247ded6f55ef9e0b4db1d893f7cbced054a30c",
+    "testing/python/tilelibrary/test_tilelang_tilelibrary_gemm_sp.py": "59f06dded92ed362e72a7b606b075afd600e57da420f0a76b41033786c56ddef",
+    "testing/python/transform/test_tilelang_transform_im2col_fallback.py": "c4d3f019176da4f1341318f1fa7ee5b108d9876780d324124e4ffd85ed04f78a",
+    "testing/python/language/test_tilelang_language_parallel.py": "ba6e0f00d3922433a677ea73df4b5bb5f8600063a8d8c701eea9bb6bff9a2287",
+    "testing/python/language/test_tilelang_language_alloc.py": "8e4a6b7e1e96aedcb0e0a1858db4327faae70c66e52ad965f8d62a02dd3a959b",
+    "testing/python/jit/test_tilelang_jit_gemm.py": "f114bcfbbd5be3cc71f3af47406651f3d59c2d6ba50deab85dea315c739e0926",
+    "testing/python/jit/test_tilelang_jit_gemm_cython.py": "c6567eabe0b115492114dd74ba00cec099c63edd645363763478034be1f98159",
+    "examples/gdn/test_example_gdn_compilation.py": "6c89c5d27f0a9091e4997cafb7660e53e4735e23e521425987445d193ce2b7e8",
+    "examples/flash_attention/test_example_flash_attention.py": "d5dbe0760ec8ab4ea7b0b53e437d402b9b1cc884e4e37e27b3cd03531904e6d8",
+    "examples/blocksparse_attention/test_example_blocksparse_attention.py": "1083166b40d8951407650c0cbc0fee5207ab01334b44217c21ef0b8d7cebdb25",
+    "examples/linear_attention/test_linear_attn.py": "e3f15755523a25363a3f41b35fa80775060fa26e1a7515241fa853752fbf7c0f",
+    "examples/elementwise/test_example_elementwise.py": "37f27a647b6a90817a3906c7cf3c92bf61b7441623316c871d607bb660d4eb19",
+    "examples/norm/test_rms_norm.py": "d1bb05fdd7a8fc945272cd77f346ba7e58c538e1346aefcf8ab5e618ed0a928c",
+    "examples/convolution/test_example_convolution.py": "20322e90397890be2d6051bfc70f42a420e1b5afd4c161cb1252259bc9a1f027",
+    "examples/cast/test_example_cast.py": "697d9fb8ec7e30fecff1dbef76d0cbcbd24e050b4a181cc402b29b2223be4527",
+    "examples/gemm/test_example_gemm.py": "5b5d435a29cccaac5e2f3edfea45447b91308e9247a044b95116b22ec87c36fc",
+    "testing/python/transform/test_tilelang_cuda_z3_scheduler.py": "2c20a57537cf2793a480e03c041056553929b779e98302cbe3b79172d9ce7bcf",
+    "testing/python/cuda/test_cuda_latency_model.py": "52e96379479635bddd315226bb914e85f59d4fbaf7994e9b0e8026e9e4e585e8",
+    "testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py": "f6d76d0e490f6987cf56b7eebc5b2c9fc25fe1ad4ee437ab92268fed829d5e33",
+    "testing/python/analysis/test_tilelang_fragment_loop_checker.py": "8f6bab57f93cb43690395b291c772d558b0907a20eecfc34c8752f13e7014131",
+    "testing/python/cuda/test_compile_matrix_driver.py": "1d82851664349bd9739df8079fe41e227be1cd14fe9e614126502b32db53d6c4"
+  },
+  "shards": [
+    {
+      "run_id": "20261027T181839.683765Z",
+      "only": [
+        "examples/blocksparse_attention/test_example_blocksparse_attention.py",
+        "testing/python/jit/test_tilelang_jit_gemm_cython.py",
+        "testing/python/language/test_tilelang_language_atom_mma.py",
+        "testing/python/language/test_tilelang_language_reduce.py",
+        "testing/python/language/test_tilelang_language_view.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-0",
+      "started_at": "2026-10-27T18:18:39.683791+00:00",
+      "finished_at": "2026-10-27T18:24:07.335856+00:00"
+    },
+    {
+      "run_id": "20261027T182407.624913Z",
+      "only": [
+        "examples/cast/test_example_cast.py",
+        "testing/python/jit/test_tilelang_jit_nvrtc.py",
+        "testing/python/language/test_tilelang_language_atomic.py",
+        "testing/python/language/test_tilelang_language_reduce_maxmin_nan.py",
+        "testing/python/language/test_tilelang_language_warp_reduce.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-1",
+      "started_at": "2026-10-27T18:24:07.624941+00:00",
+      "finished_at": "2026-10-27T18:31:19.124566+00:00"
+    },
+    {
+      "run_id": "20261027T183119.426087Z",
+      "only": [
+        "examples/convolution/test_example_convolution.py",
+        "testing/python/kernel/test_tilelang_kernel_bf16_gemm_tcgen5_ts.py",
+        "testing/python/language/test_tilelang_language_clear.py",
+        "testing/python/language/test_tilelang_language_reducer_v2.py",
+        "testing/python/language/test_tilelang_language_warp_sync.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-2",
+      "started_at": "2026-10-27T18:31:19.426113+00:00",
+      "finished_at": "2026-10-27T18:35:58.576820+00:00"
+    },
+    {
+      "run_id": "20261027T183558.863421Z",
+      "only": [
+        "examples/elementwise/test_example_elementwise.py",
+        "testing/python/kernel/test_tilelang_kernel_gemm.py",
+        "testing/python/language/test_tilelang_language_cluster.py",
+        "testing/python/language/test_tilelang_language_scan.py",
+        "testing/python/language/test_tilelang_language_warp_vote.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-3",
+      "started_at": "2026-10-27T18:35:58.863447+00:00",
+      "finished_at": "2026-10-27T18:40:08.855784+00:00"
+    },
+    {
+      "run_id": "20261027T184009.163642Z",
+      "only": [
+        "examples/flash_attention/test_example_flash_attention.py",
+        "testing/python/kernel/test_tilelang_kernel_gemm_batched.py",
+        "testing/python/language/test_tilelang_language_copy.py",
+        "testing/python/language/test_tilelang_language_symbolic_loop_layout.py",
+        "testing/python/language/test_tilelang_language_wgmma_gemm.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-4",
+      "started_at": "2026-10-27T18:40:09.163670+00:00",
+      "finished_at": "2026-10-27T18:42:02.284516+00:00"
+    },
+    {
+      "run_id": "20261027T184202.563564Z",
+      "only": [
+        "examples/gdn/test_example_gdn_compilation.py",
+        "testing/python/kernel/test_tilelang_kernel_gemm_simt.py",
+        "testing/python/language/test_tilelang_language_copy_ldmatrix.py",
+        "testing/python/language/test_tilelang_language_sync_threads.py",
+        "testing/python/profiler/test_tilelang_profiler_dynamic_symbolic.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-5",
+      "started_at": "2026-10-27T18:42:02.563592+00:00",
+      "finished_at": "2026-10-27T18:44:23.446663+00:00"
+    },
+    {
+      "run_id": "20261027T184423.762181Z",
+      "only": [
+        "examples/gemm/test_example_gemm.py",
+        "testing/python/kernel/test_tilelang_kernel_gemm_sliced_operand.py",
+        "testing/python/language/test_tilelang_language_fastmath.py",
+        "testing/python/language/test_tilelang_language_tcgen05_gemm.py",
+        "testing/python/quantize/test_tilelang_quantize_fp8.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-6",
+      "started_at": "2026-10-27T18:44:23.762207+00:00",
+      "finished_at": "2026-10-27T18:45:59.671847+00:00"
+    },
+    {
+      "run_id": "20261027T184559.960486Z",
+      "only": [
+        "examples/linear_attention/test_linear_attn.py",
+        "testing/python/kernel/test_tilelang_kernel_gemm_sm75.py",
+        "testing/python/language/test_tilelang_language_float4_e2m1_unpacked_dtype.py",
+        "testing/python/language/test_tilelang_language_tcgen05_sliced_operands.py",
+        "testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-7",
+      "started_at": "2026-10-27T18:45:59.960513+00:00",
+      "finished_at": "2026-10-27T18:47:48.746898+00:00"
+    },
+    {
+      "run_id": "20261027T184749.038800Z",
+      "only": [
+        "examples/norm/test_rms_norm.py",
+        "testing/python/kernel/test_tilelang_kernel_gemm_with_stride.py",
+        "testing/python/language/test_tilelang_language_gemm_blockscaled.py",
+        "testing/python/language/test_tilelang_language_tma_1d.py",
+        "testing/python/runtime/test_tilelang_runtime_tma_validation.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-8",
+      "started_at": "2026-10-27T18:47:49.038829+00:00",
+      "finished_at": "2026-10-27T18:48:40.765685+00:00"
+    },
+    {
+      "run_id": "20261027T184841.077563Z",
+      "only": [
+        "testing/python/cuda/test_tma_dsmem.py",
+        "testing/python/kernel/test_tilelang_kernel_gemv_simt.py",
+        "testing/python/language/test_tilelang_language_ldg.py",
+        "testing/python/language/test_tilelang_language_tma_copy.py",
+        "testing/python/tilelibrary/test_tilelang_tilelibrary_gemm_sp.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-9",
+      "started_at": "2026-10-27T18:48:41.077589+00:00",
+      "finished_at": "2026-10-27T18:53:29.116423+00:00"
+    },
+    {
+      "run_id": "20261027T185329.401789Z",
+      "only": [
+        "testing/python/cuda/test_tma_multicast_demo.py",
+        "testing/python/kernel/test_tilelang_kernel_int8_gemm_tcgen5.py",
+        "testing/python/language/test_tilelang_language_ldst.py",
+        "testing/python/language/test_tilelang_language_tma_gather_scatter.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-10",
+      "started_at": "2026-10-27T18:53:29.401818+00:00",
+      "finished_at": "2026-10-27T18:54:26.167243+00:00"
+    },
+    {
+      "run_id": "20261027T185426.464672Z",
+      "only": [
+        "testing/python/issue/test_tilelang_issue_pipeline_transitive_copy_dependencies.py",
+        "testing/python/kernel/test_tilelang_kernel_sm70_fragment_copy.py",
+        "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py",
+        "testing/python/language/test_tilelang_language_tma_store.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-11",
+      "started_at": "2026-10-27T18:54:26.464697+00:00",
+      "finished_at": "2026-10-27T18:56:52.546602+00:00"
+    },
+    {
+      "run_id": "20261027T185652.843567Z",
+      "only": [
+        "testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py",
+        "testing/python/kernel/test_tilelang_kernel_sm70_gemm_fma.py",
+        "testing/python/language/test_tilelang_language_parallel.py",
+        "testing/python/language/test_tilelang_language_tmem_copy.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-12",
+      "started_at": "2026-10-27T18:56:52.843593+00:00",
+      "finished_at": "2026-10-27T18:57:38.225372+00:00"
+    },
+    {
+      "run_id": "20261027T185738.538704Z",
+      "only": [
+        "testing/python/issue/test_tilelang_issue_tma_no_ws.py",
+        "testing/python/kernel/test_tilelang_kernel_sm75_gemm_fma.py",
+        "testing/python/language/test_tilelang_language_pdl.py",
+        "testing/python/language/test_tilelang_language_transpose.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-13",
+      "started_at": "2026-10-27T18:57:38.538729+00:00",
+      "finished_at": "2026-10-27T18:58:47.689072+00:00"
+    },
+    {
+      "run_id": "20261027T185848.026127Z",
+      "only": [
+        "testing/python/issue/test_tilelang_issue_ws_simt_copy_full_producer_extent.py",
+        "testing/python/language/test_tilelang_language_alloc.py",
+        "testing/python/language/test_tilelang_language_pipeline.py",
+        "testing/python/language/test_tilelang_language_vectorize.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-14",
+      "started_at": "2026-10-27T18:58:48.026154+00:00",
+      "finished_at": "2026-10-27T19:00:47.786148+00:00"
+    },
+    {
+      "run_id": "20261027T190048.080141Z",
+      "only": [
+        "testing/python/jit/test_tilelang_jit_gemm.py",
+        "testing/python/language/test_tilelang_language_async_copy_gemm_sm80.py",
+        "testing/python/language/test_tilelang_language_rand.py",
+        "testing/python/language/test_tilelang_language_vectorized_cast.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-15",
+      "started_at": "2026-10-27T19:00:48.080172+00:00",
+      "finished_at": "2026-10-27T19:03:05.729070+00:00"
+    },
+    {
+      "run_id": "20261027T174921.065292Z",
+      "only": [
+        "testing/python/analysis/test_tilelang_fragment_loop_checker.py",
+        "testing/python/cuda/test_cuda_latency_model.py",
+        "testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py",
+        "testing/python/language/test_tilelang_language_fp8.py",
+        "testing/python/language/test_tilelang_language_persistent.py",
+        "testing/python/language/test_tilelang_language_strided_view.py",
+        "testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py",
+        "testing/python/transform/test_tilelang_cuda_z3_scheduler.py",
+        "testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py",
+        "testing/python/transform/test_tilelang_transform_im2col_fallback.py"
+      ],
+      "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v2/cpu",
+      "started_at": "2026-10-27T17:49:21.065309+00:00",
+      "finished_at": "2026-10-27T17:52:07.550461+00:00"
+    }
+  ],
+  "summary": {
+    "schema": "tilelang.cuda.compile-matrix-summary",
+    "denominator": 729,
+    "selected": 728,
+    "attempted": 698,
+    "not_selected": 1,
+    "selected_not_run": 0,
+    "status_counts": {
+      "COLLECTED": 0,
+      "PASS_COMPILE_ONLY": 339,
+      "PASS_NUMERIC": 272,
+      "G_SMOKE": 7,
+      "SKIP_ARCH": 74,
+      "SKIP_DEP": 5,
+      "SKIP_PERF": 3,
+      "FAIL_LOWER": 17,
+      "FAIL_DEVICE_COMPILE": 6,
+      "FAIL_LAUNCH": 3,
+      "FAIL_NUMERIC": 0,
+      "FAIL_ENV": 2,
+      "FAIL_INFRA": 0,
+      "NOT_RUN": 1
+    },
+    "passed": 611,
+    "compile_only_passed": 339,
+    "numeric_passed": 272,
+    "g_smoke_not_numeric": 7,
+    "successful_non_numeric": 346,
+    "collected_not_passed": 0,
+    "skipped_not_passed": 82,
+    "not_run_not_passed": 1,
+    "failed": 28,
+    "numeric_gate": {
+      "selected_eligible": 346,
+      "passed": 272,
+      "not_satisfied": 74
+    },
+    "pytest_case_totals": {
+      "collected": 0,
+      "passed": 1584,
+      "failed": 17891,
+      "skipped": 3,
+      "deselected": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "errors": 2,
+      "warnings": 1600
+    },
+    "accounting": "denominator=frozen manifest rows; COLLECTED/SKIP_*/NOT_RUN/G_SMOKE are not PASS_NUMERIC",
+    "action": "run",
+    "tier": "full",
+    "mode": "default",
+    "manifest_sha256": "7cec85ee9b8e6eba793b21dd91b9570644fa1a70a5a263753f71bd8682882954",
+    "results": "results.jsonl",
+    "merged": true,
+    "complete": true,
+    "shard_count": 17,
+    "shards": [
+      {
+        "run_id": "20261027T181839.683765Z",
+        "only": [
+          "examples/blocksparse_attention/test_example_blocksparse_attention.py",
+          "testing/python/jit/test_tilelang_jit_gemm_cython.py",
+          "testing/python/language/test_tilelang_language_atom_mma.py",
+          "testing/python/language/test_tilelang_language_reduce.py",
+          "testing/python/language/test_tilelang_language_view.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-0",
+        "started_at": "2026-10-27T18:18:39.683791+00:00",
+        "finished_at": "2026-10-27T18:24:07.335856+00:00"
+      },
+      {
+        "run_id": "20261027T182407.624913Z",
+        "only": [
+          "examples/cast/test_example_cast.py",
+          "testing/python/jit/test_tilelang_jit_nvrtc.py",
+          "testing/python/language/test_tilelang_language_atomic.py",
+          "testing/python/language/test_tilelang_language_reduce_maxmin_nan.py",
+          "testing/python/language/test_tilelang_language_warp_reduce.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-1",
+        "started_at": "2026-10-27T18:24:07.624941+00:00",
+        "finished_at": "2026-10-27T18:31:19.124566+00:00"
+      },
+      {
+        "run_id": "20261027T183119.426087Z",
+        "only": [
+          "examples/convolution/test_example_convolution.py",
+          "testing/python/kernel/test_tilelang_kernel_bf16_gemm_tcgen5_ts.py",
+          "testing/python/language/test_tilelang_language_clear.py",
+          "testing/python/language/test_tilelang_language_reducer_v2.py",
+          "testing/python/language/test_tilelang_language_warp_sync.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-2",
+        "started_at": "2026-10-27T18:31:19.426113+00:00",
+        "finished_at": "2026-10-27T18:35:58.576820+00:00"
+      },
+      {
+        "run_id": "20261027T183558.863421Z",
+        "only": [
+          "examples/elementwise/test_example_elementwise.py",
+          "testing/python/kernel/test_tilelang_kernel_gemm.py",
+          "testing/python/language/test_tilelang_language_cluster.py",
+          "testing/python/language/test_tilelang_language_scan.py",
+          "testing/python/language/test_tilelang_language_warp_vote.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-3",
+        "started_at": "2026-10-27T18:35:58.863447+00:00",
+        "finished_at": "2026-10-27T18:40:08.855784+00:00"
+      },
+      {
+        "run_id": "20261027T184009.163642Z",
+        "only": [
+          "examples/flash_attention/test_example_flash_attention.py",
+          "testing/python/kernel/test_tilelang_kernel_gemm_batched.py",
+          "testing/python/language/test_tilelang_language_copy.py",
+          "testing/python/language/test_tilelang_language_symbolic_loop_layout.py",
+          "testing/python/language/test_tilelang_language_wgmma_gemm.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-4",
+        "started_at": "2026-10-27T18:40:09.163670+00:00",
+        "finished_at": "2026-10-27T18:42:02.284516+00:00"
+      },
+      {
+        "run_id": "20261027T184202.563564Z",
+        "only": [
+          "examples/gdn/test_example_gdn_compilation.py",
+          "testing/python/kernel/test_tilelang_kernel_gemm_simt.py",
+          "testing/python/language/test_tilelang_language_copy_ldmatrix.py",
+          "testing/python/language/test_tilelang_language_sync_threads.py",
+          "testing/python/profiler/test_tilelang_profiler_dynamic_symbolic.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-5",
+        "started_at": "2026-10-27T18:42:02.563592+00:00",
+        "finished_at": "2026-10-27T18:44:23.446663+00:00"
+      },
+      {
+        "run_id": "20261027T184423.762181Z",
+        "only": [
+          "examples/gemm/test_example_gemm.py",
+          "testing/python/kernel/test_tilelang_kernel_gemm_sliced_operand.py",
+          "testing/python/language/test_tilelang_language_fastmath.py",
+          "testing/python/language/test_tilelang_language_tcgen05_gemm.py",
+          "testing/python/quantize/test_tilelang_quantize_fp8.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-6",
+        "started_at": "2026-10-27T18:44:23.762207+00:00",
+        "finished_at": "2026-10-27T18:45:59.671847+00:00"
+      },
+      {
+        "run_id": "20261027T184559.960486Z",
+        "only": [
+          "examples/linear_attention/test_linear_attn.py",
+          "testing/python/kernel/test_tilelang_kernel_gemm_sm75.py",
+          "testing/python/language/test_tilelang_language_float4_e2m1_unpacked_dtype.py",
+          "testing/python/language/test_tilelang_language_tcgen05_sliced_operands.py",
+          "testing/python/quantize/test_tilelang_quantize_nvfp4_scale_layout.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-7",
+        "started_at": "2026-10-27T18:45:59.960513+00:00",
+        "finished_at": "2026-10-27T18:47:48.746898+00:00"
+      },
+      {
+        "run_id": "20261027T184749.038800Z",
+        "only": [
+          "examples/norm/test_rms_norm.py",
+          "testing/python/kernel/test_tilelang_kernel_gemm_with_stride.py",
+          "testing/python/language/test_tilelang_language_gemm_blockscaled.py",
+          "testing/python/language/test_tilelang_language_tma_1d.py",
+          "testing/python/runtime/test_tilelang_runtime_tma_validation.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-8",
+        "started_at": "2026-10-27T18:47:49.038829+00:00",
+        "finished_at": "2026-10-27T18:48:40.765685+00:00"
+      },
+      {
+        "run_id": "20261027T184841.077563Z",
+        "only": [
+          "testing/python/cuda/test_tma_dsmem.py",
+          "testing/python/kernel/test_tilelang_kernel_gemv_simt.py",
+          "testing/python/language/test_tilelang_language_ldg.py",
+          "testing/python/language/test_tilelang_language_tma_copy.py",
+          "testing/python/tilelibrary/test_tilelang_tilelibrary_gemm_sp.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-9",
+        "started_at": "2026-10-27T18:48:41.077589+00:00",
+        "finished_at": "2026-10-27T18:53:29.116423+00:00"
+      },
+      {
+        "run_id": "20261027T185329.401789Z",
+        "only": [
+          "testing/python/cuda/test_tma_multicast_demo.py",
+          "testing/python/kernel/test_tilelang_kernel_int8_gemm_tcgen5.py",
+          "testing/python/language/test_tilelang_language_ldst.py",
+          "testing/python/language/test_tilelang_language_tma_gather_scatter.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-10",
+        "started_at": "2026-10-27T18:53:29.401818+00:00",
+        "finished_at": "2026-10-27T18:54:26.167243+00:00"
+      },
+      {
+        "run_id": "20261027T185426.464672Z",
+        "only": [
+          "testing/python/issue/test_tilelang_issue_pipeline_transitive_copy_dependencies.py",
+          "testing/python/kernel/test_tilelang_kernel_sm70_fragment_copy.py",
+          "testing/python/language/test_tilelang_language_nvf4_mma_block_scale.py",
+          "testing/python/language/test_tilelang_language_tma_store.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-11",
+        "started_at": "2026-10-27T18:54:26.464697+00:00",
+        "finished_at": "2026-10-27T18:56:52.546602+00:00"
+      },
+      {
+        "run_id": "20261027T185652.843567Z",
+        "only": [
+          "testing/python/issue/test_tilelang_issue_sm120_tma_smem_alignment.py",
+          "testing/python/kernel/test_tilelang_kernel_sm70_gemm_fma.py",
+          "testing/python/language/test_tilelang_language_parallel.py",
+          "testing/python/language/test_tilelang_language_tmem_copy.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-12",
+        "started_at": "2026-10-27T18:56:52.843593+00:00",
+        "finished_at": "2026-10-27T18:57:38.225372+00:00"
+      },
+      {
+        "run_id": "20261027T185738.538704Z",
+        "only": [
+          "testing/python/issue/test_tilelang_issue_tma_no_ws.py",
+          "testing/python/kernel/test_tilelang_kernel_sm75_gemm_fma.py",
+          "testing/python/language/test_tilelang_language_pdl.py",
+          "testing/python/language/test_tilelang_language_transpose.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-13",
+        "started_at": "2026-10-27T18:57:38.538729+00:00",
+        "finished_at": "2026-10-27T18:58:47.689072+00:00"
+      },
+      {
+        "run_id": "20261027T185848.026127Z",
+        "only": [
+          "testing/python/issue/test_tilelang_issue_ws_simt_copy_full_producer_extent.py",
+          "testing/python/language/test_tilelang_language_alloc.py",
+          "testing/python/language/test_tilelang_language_pipeline.py",
+          "testing/python/language/test_tilelang_language_vectorize.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-14",
+        "started_at": "2026-10-27T18:58:48.026154+00:00",
+        "finished_at": "2026-10-27T19:00:47.786148+00:00"
+      },
+      {
+        "run_id": "20261027T190048.080141Z",
+        "only": [
+          "testing/python/jit/test_tilelang_jit_gemm.py",
+          "testing/python/language/test_tilelang_language_async_copy_gemm_sm80.py",
+          "testing/python/language/test_tilelang_language_rand.py",
+          "testing/python/language/test_tilelang_language_vectorized_cast.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v3/batches/batch-15",
+        "started_at": "2026-10-27T19:00:48.080172+00:00",
+        "finished_at": "2026-10-27T19:03:05.729070+00:00"
+      },
+      {
+        "run_id": "20261027T174921.065292Z",
+        "only": [
+          "testing/python/analysis/test_tilelang_fragment_loop_checker.py",
+          "testing/python/cuda/test_cuda_latency_model.py",
+          "testing/python/kernel/test_tilelang_kernel_fp8_gemm_arch_gate.py",
+          "testing/python/language/test_tilelang_language_fp8.py",
+          "testing/python/language/test_tilelang_language_persistent.py",
+          "testing/python/language/test_tilelang_language_strided_view.py",
+          "testing/python/runtime/test_tilelang_runtime_dynamic_shared_memory.py",
+          "testing/python/transform/test_tilelang_cuda_z3_scheduler.py",
+          "testing/python/transform/test_tilelang_transform_Inject_software_pipeline.py",
+          "testing/python/transform/test_tilelang_transform_im2col_fallback.py"
+        ],
+        "output": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G5/compile-matrix-current-v2/cpu",
+        "started_at": "2026-10-27T17:49:21.065309+00:00",
+        "finished_at": "2026-10-27T17:52:07.550461+00:00"
+      }
+    ]
+  }
+}
