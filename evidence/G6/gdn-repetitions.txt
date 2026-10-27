@@ -1,0 +1,2 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+Completed 20 cold searches; summary: /home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/repetition-summary.json

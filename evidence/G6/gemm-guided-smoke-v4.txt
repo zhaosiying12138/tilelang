@@ -1,0 +1,34 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+Traceback (most recent call last):
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 136, in _score_config
+    prediction = self.model.predict(copy.deepcopy(config))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 109, in predict
+    prediction = self.delegate.predict(config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 1248, in predict
+    occupancy, waves, unknown_registers = self._occupancy(work)
+                                          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 1137, in _occupancy
+    raise CostModelError(
+tilelang.cuda.cost_model.CostModelError: gemm shared bytes 122880 exceed per-block opt-in 101376
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 18, in <module>
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 335, in run
+    self.configs = self._generate_candidates(events)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 245, in _generate_candidates
+    selected = search.top_k(self.top_k)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 174, in top_k
+    return [copy.deepcopy(record["config"]) for record in self.predictions()[:count]]
+                                                          ^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 153, in predictions
+    score, terms = self._score_config(config, index)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 139, in _score_config
+    raise CostModelError(f"Cost model failed for config {identity} at legal index {index}: {exc}") from exc
+tilelang.autotuner.guided.CostModelError: Cost model failed for config 787f24a0c5935dad1dcec373e2963cc7fe6860fbec868f30dd6489c9eff49923 at legal index 92: gemm shared bytes 122880 exceed per-block opt-in 101376

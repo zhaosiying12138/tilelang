@@ -1,0 +1,118 @@
+{
+  "root_index": 17,
+  "nodes": [
+    {
+      "type": "ffi.String",
+      "data": "dtype"
+    },
+    {
+      "type": "ffi.String",
+      "data": "bfloat16"
+    },
+    {
+      "type": "ffi.String",
+      "data": "shape"
+    },
+    {
+      "type": "None"
+    },
+    {
+      "type": "ffi.String",
+      "data": "batch_size"
+    },
+    {
+      "type": "ir.PrimType",
+      "data": {
+        "span": 3,
+        "dtype": "int32"
+      }
+    },
+    {
+      "type": "tirx.Var",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "name": 4,
+        "type_annotation": 5
+      }
+    },
+    {
+      "type": "ffi.String",
+      "data": "num_tokens"
+    },
+    {
+      "type": "ir.PrimType",
+      "data": {
+        "span": 3,
+        "dtype": "int32"
+      }
+    },
+    {
+      "type": "tirx.Var",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "name": 7,
+        "type_annotation": 8
+      }
+    },
+    {
+      "type": "int",
+      "data": 4
+    },
+    {
+      "type": "int",
+      "data": 128
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        12
+      ]
+    },
+    {
+      "type": "int",
+      "data": 2
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        14,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        15
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        13,
+        16
+      ]
+    }
+  ],
+  "metadata": {
+    "tvm_version": "0.25.dev0"
+  }
+}

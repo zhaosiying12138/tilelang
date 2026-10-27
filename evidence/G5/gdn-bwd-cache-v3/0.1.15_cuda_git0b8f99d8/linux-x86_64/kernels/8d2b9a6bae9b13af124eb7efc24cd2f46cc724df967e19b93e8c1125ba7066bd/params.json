@@ -1,0 +1,214 @@
+{
+  "root_index": 29,
+  "nodes": [
+    {
+      "type": "ffi.String",
+      "data": "dtype"
+    },
+    {
+      "type": "ffi.String",
+      "data": "int32"
+    },
+    {
+      "type": "ffi.String",
+      "data": "shape"
+    },
+    {
+      "type": "None"
+    },
+    {
+      "type": "ffi.String",
+      "data": "real_batch_size"
+    },
+    {
+      "type": "ir.PrimType",
+      "data": {
+        "span": 3,
+        "dtype": "int32"
+      }
+    },
+    {
+      "type": "tirx.Var",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "name": 4,
+        "type_annotation": 5
+      }
+    },
+    {
+      "type": "ir.IntImm",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "value": 1
+      }
+    },
+    {
+      "type": "tirx.Add",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "a": 6,
+        "b": 7
+      }
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        8
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        9
+      ]
+    },
+    {
+      "type": "ffi.String",
+      "data": "bfloat16"
+    },
+    {
+      "type": "int",
+      "data": 1
+    },
+    {
+      "type": "ffi.String",
+      "data": "num_tokens"
+    },
+    {
+      "type": "ir.PrimType",
+      "data": {
+        "span": 3,
+        "dtype": "int32"
+      }
+    },
+    {
+      "type": "tirx.Var",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "name": 13,
+        "type_annotation": 14
+      }
+    },
+    {
+      "type": "int",
+      "data": 4
+    },
+    {
+      "type": "int",
+      "data": 128
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        12,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        11,
+        2,
+        18
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        12,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        11,
+        2,
+        20
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        12,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        11,
+        2,
+        22
+      ]
+    },
+    {
+      "type": "ffi.String",
+      "data": "float32"
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        12,
+        15,
+        16
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        24,
+        2,
+        25
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        12,
+        15,
+        16
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        24,
+        2,
+        27
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        10,
+        19,
+        21,
+        23,
+        26,
+        28
+      ]
+    }
+  ],
+  "metadata": {
+    "tvm_version": "0.25.dev0"
+  }
+}

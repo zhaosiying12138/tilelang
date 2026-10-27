@@ -1,0 +1,36 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+Traceback (most recent call last):
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 136, in _score_config
+    prediction = self.model.predict(copy.deepcopy(config))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 109, in predict
+    prediction = self.delegate.predict(config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 1201, in predict
+    raw_work = self._plugin(copy.deepcopy(self._shape_config), copy.deepcopy(normalized))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 410, in _gemm_plugin
+    _check_config(config, _TILE_CONFIG_KEYS)
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 230, in _check_config
+    raise CostModelError(f"Unknown config fields for analytical model: {unknown}")
+tilelang.cuda.cost_model.CostModelError: Unknown config fields for analytical model: ['enable_rasterization']
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 16, in <module>
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 335, in run
+    self.configs = self._generate_candidates(events)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 245, in _generate_candidates
+    selected = search.top_k(self.top_k)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 174, in top_k
+    return [copy.deepcopy(record["config"]) for record in self.predictions()[:count]]
+                                                          ^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 153, in predictions
+    score, terms = self._score_config(config, index)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 139, in _score_config
+    raise CostModelError(f"Cost model failed for config {identity} at legal index {index}: {exc}") from exc
+tilelang.autotuner.guided.CostModelError: Cost model failed for config 9e10df1cdd0e959e9ec5969c240120744127e267a78043e94035c0e35669e8a0 at legal index 0: Unknown config fields for analytical model: ['enable_rasterization']

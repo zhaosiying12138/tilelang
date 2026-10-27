@@ -1,0 +1,21 @@
+{
+  "files": {
+    "device_kernel.cu": {
+      "sha256": "b35af9207d9cfa8c0d72b6e1d66158a059fa359ceecb446ad36b84d06fba2a3d",
+      "size": 7772
+    },
+    "executable.so": {
+      "sha256": "c63deabcf3417ccdc03d7f62c5e9a311cd0915a8248de06ab8c4ff406c1229aa",
+      "size": 44784
+    },
+    "host_kernel.cu": {
+      "sha256": "3db8e9de3bb4e7a468b1058def545ef5ba28116168270c8b1e6a2d6a450e96aa",
+      "size": 18806
+    },
+    "params.json": {
+      "sha256": "20a8e3809e0dc54f1ee07303d1ea287942d9468332e81da6273200cdfdfb9377",
+      "size": 1779
+    }
+  },
+  "version": 1
+}

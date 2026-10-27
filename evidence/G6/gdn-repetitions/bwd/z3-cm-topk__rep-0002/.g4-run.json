@@ -1,0 +1,1 @@
+{"arm":"z3-cm-topk","cache_mode":"enabled","experiment_id":"be8ed6ebc92e41849228c266c98890d9","kind":"run","metadata":{"utc_created":"2026-10-26T19:59:14.576954+00:00"},"repetition":2,"root":"/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd","run_name":"z3-cm-topk__rep-0002","schema":"tilelang.g4.search-experiment/v1"}

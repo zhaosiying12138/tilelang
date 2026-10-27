@@ -1,0 +1,46 @@
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+Traceback (most recent call last):
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 136, in _score_config
+    prediction = self.model.predict(copy.deepcopy(config))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 109, in predict
+    prediction = self.delegate.predict(config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 1205, in predict
+    raw_work = self._plugin(copy.deepcopy(self._shape_config), copy.deepcopy(normalized))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 417, in _gemm_plugin
+    return _gemm_like("gemm", shape, config, m, n, k)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 371, in _gemm_like
+    stages = _stages(config)
+             ^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 249, in _stages
+    return _config_int(config, "num_stages", "stages", "pipeline", default=default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 201, in _config_int
+    return _integer(value, f"config.{names[0]}", minimum)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/cuda/cost_model.py", line 142, in _integer
+    raise CostModelError(f"{name} must be >= {minimum}, got {result}")
+tilelang.cuda.cost_model.CostModelError: config.num_stages must be >= 1, got 0
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 16, in <module>
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 335, in run
+    self.configs = self._generate_candidates(events)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided_tuner.py", line 245, in _generate_candidates
+    selected = search.top_k(self.top_k)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 174, in top_k
+    return [copy.deepcopy(record["config"]) for record in self.predictions()[:count]]
+                                                          ^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 153, in predictions
+    score, terms = self._score_config(config, index)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhaosiying/codebase/tilelang-cuda-z3/tilelang/autotuner/guided.py", line 139, in _score_config
+    raise CostModelError(f"Cost model failed for config {identity} at legal index {index}: {exc}") from exc
+tilelang.autotuner.guided.CostModelError: Cost model failed for config 9e10df1cdd0e959e9ec5969c240120744127e267a78043e94035c0e35669e8a0 at legal index 0: config.num_stages must be >= 1, got 0

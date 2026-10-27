@@ -1,0 +1,1 @@
+{"arm":"budget-random","cache_mode":"enabled","experiment_id":"18a8c742b7c54e99bbe379facc954246","kind":"run","metadata":{"utc_created":"2026-10-26T19:52:03.123731+00:00"},"repetition":0,"root":"/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-bwd-budget-random","run_name":"budget-random__rep-0000","schema":"tilelang.g4.search-experiment/v1"}

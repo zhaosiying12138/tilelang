@@ -1,0 +1,4180 @@
+{
+  "status": "ok",
+  "warmup": 2,
+  "repeat": 5,
+  "seed": 42,
+  "records": [
+    {
+      "direction": "fwd",
+      "repetition": 1,
+      "arm": "stock-raw",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "stock-raw",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "stock-raw",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:57:50.889487+00:00"
+        },
+        "R": 4,
+        "U": null,
+        "unknown": null,
+        "duplicates": 0,
+        "selected": 4,
+        "candidate_count": 4,
+        "compile_attempts": 4,
+        "compile_success": 3,
+        "compile_fail": 1,
+        "compile": {
+          "attempts": 4,
+          "success": 3,
+          "fail": 1,
+          "unfinished": 0,
+          "wall_seconds": 30.59165616001701,
+          "cumulative_seconds": 30.590742133907042,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.7344614819739945,
+          "cumulative_seconds": 0.4726044700364582,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.31264074199134484,
+          "cumulative_seconds": 0.02404995501274243,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": false,
+          "completed": null,
+          "checks": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke solver pruning"
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": null,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 30.59165616001701,
+        "profile_wall_seconds": 0.31264074199134484,
+        "validation_wall_seconds": 0.7344614819739945,
+        "end_to_end_wall_seconds": 31.3396909449948,
+        "best": {
+          "config": {
+            "direction": "fwd",
+            "block_DV": 16,
+            "prepare_h_num_stages": 2,
+            "group_reduce_block_size": 16
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.15866240859031677,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "direction": "fwd",
+          "block_DV": 16,
+          "prepare_h_num_stages": 2,
+          "group_reduce_block_size": 16
+        },
+        "best_latency_ms": 0.15866240859031677,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/stock-raw__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "compile_error": 1,
+          "ok": 3
+        },
+        "errors": [
+          {
+            "kind": "compile",
+            "config_id": "c129a19e331b45f8fa6048ec2687e97846db9c85139e16e31b458f9a7f062d2d",
+            "index": 3,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "trial",
+            "config_id": "c129a19e331b45f8fa6048ec2687e97846db9c85139e16e31b458f9a7f062d2d",
+            "index": 3,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          }
+        ],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "U": "stock-raw does not construct the Z3 legal universe",
+          "model": "this arm does not invoke the candidate cost model",
+          "solver": "this arm does not invoke solver pruning",
+          "unknown": "unknown solver verdicts are only defined for a completed pruning pass",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": null,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": null,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.50592041015625,
+        "candidate_failures": {
+          "compile": 1,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": true,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "stock-raw",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/stock-raw__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 1,
+      "arm": "z3-legal-exhaustive",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "z3-legal-exhaustive",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "z3-legal-exhaustive",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:22.287502+00:00"
+        },
+        "R": 4,
+        "U": 3,
+        "unknown": 3,
+        "duplicates": 0,
+        "selected": 3,
+        "candidate_count": 3,
+        "compile_attempts": 3,
+        "compile_success": 3,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0023494470515288413,
+          "cumulative_seconds": 0.0020339000620879233,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.32597147300839424,
+          "cumulative_seconds": 0.06262887304183096,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.3162287420127541,
+          "cumulative_seconds": 0.024552993942052126,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 1,
+          "sat": 0,
+          "unsat": 1,
+          "unknown": 3,
+          "timeouts": 0,
+          "wall_seconds": 0.00878945697331801,
+          "cumulative_seconds": 0.0008921710541471839,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.00878945697331801,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.0023494470515288413,
+        "profile_wall_seconds": 0.3162287420127541,
+        "validation_wall_seconds": 0.32597147300839424,
+        "end_to_end_wall_seconds": 0.35675836500013247,
+        "best": {
+          "config": {
+            "block_DV": 16,
+            "direction": "fwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.15794560313224792,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 16,
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 0.15794560313224792,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/z3-legal-exhaustive__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 3
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 3,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 3,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 19.755558013916016,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "z3-legal-exhaustive",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/z3-legal-exhaustive__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 1,
+      "arm": "z3-cm-topk",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "z3-cm-topk",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "z3-cm-topk",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:22.700438+00:00"
+        },
+        "R": 4,
+        "U": 3,
+        "unknown": 3,
+        "duplicates": 0,
+        "selected": 2,
+        "candidate_count": 2,
+        "compile_attempts": 2,
+        "compile_success": 2,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0016079049673862755,
+          "cumulative_seconds": 0.001436512975487858,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.2899573019822128,
+          "cumulative_seconds": 0.04155005200300366,
+          "unavailable_reason": null,
+          "passed": 2,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.27537560800556093,
+          "cumulative_seconds": 0.01165310898795724,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 1,
+          "sat": 0,
+          "unsat": 1,
+          "unknown": 3,
+          "timeouts": 0,
+          "wall_seconds": 0.002105944964569062,
+          "cumulative_seconds": 0.000586114008910954,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0008139739511534572,
+          "cumulative_seconds": 0.0005436150240711868,
+          "unavailable_reason": null,
+          "predictions": 3,
+          "unknown": 0
+        },
+        "solver_wall_seconds": 0.002105944964569062,
+        "model_wall_seconds": 0.0008139739511534572,
+        "compile_wall_seconds": 0.0016079049673862755,
+        "profile_wall_seconds": 0.27537560800556093,
+        "validation_wall_seconds": 0.2899573019822128,
+        "end_to_end_wall_seconds": 0.3059218500275165,
+        "best": {
+          "config": {
+            "block_DV": 16,
+            "direction": "fwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.15827839076519012,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 16,
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 0.15827839076519012,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/z3-cm-topk__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 2
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {},
+        "pruner_unknown": 3,
+        "model_unknown": 0,
+        "unknown_total": 3,
+        "unknown_sources": {
+          "pruner": 3,
+          "model": 0,
+          "overlap": 0,
+          "total": 3
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.966625213623047,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "z3-cm-topk",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/z3-cm-topk__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 1,
+      "arm": "budget-raw",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "budget-raw",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "budget-raw",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:23.052382+00:00"
+        },
+        "R": 4,
+        "U": 3,
+        "unknown": 3,
+        "duplicates": 0,
+        "selected": 2,
+        "candidate_count": 2,
+        "compile_attempts": 2,
+        "compile_success": 2,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0015700779622420669,
+          "cumulative_seconds": 0.0014159279526211321,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.29342771100346,
+          "cumulative_seconds": 0.04434029996627942,
+          "unavailable_reason": null,
+          "passed": 2,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.27519800601294264,
+          "cumulative_seconds": 0.011835607001557946,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 1,
+          "sat": 0,
+          "unsat": 1,
+          "unknown": 3,
+          "timeouts": 0,
+          "wall_seconds": 0.0020351230050437152,
+          "cumulative_seconds": 0.0005866439314559102,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.0020351230050437152,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.0015700779622420669,
+        "profile_wall_seconds": 0.27519800601294264,
+        "validation_wall_seconds": 0.29342771100346,
+        "end_to_end_wall_seconds": 0.30734776600729674,
+        "best": {
+          "config": {
+            "block_DV": 16,
+            "direction": "fwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.15948161482810974,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 16,
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 0.15948161482810974,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/budget-raw__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 2
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 3,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 3,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.919660568237305,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "budget-raw",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/budget-raw__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 1,
+      "arm": "budget-random",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "budget-random",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "budget-random",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:23.406488+00:00"
+        },
+        "R": 4,
+        "U": 3,
+        "unknown": 3,
+        "duplicates": 0,
+        "selected": 2,
+        "candidate_count": 2,
+        "compile_attempts": 2,
+        "compile_success": 2,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0017205400508828461,
+          "cumulative_seconds": 0.0015398850082419813,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.2979888239642605,
+          "cumulative_seconds": 0.04420977598056197,
+          "unavailable_reason": null,
+          "passed": 2,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.282645870000124,
+          "cumulative_seconds": 0.012817128037568182,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 1,
+          "sat": 0,
+          "unsat": 1,
+          "unknown": 3,
+          "timeouts": 0,
+          "wall_seconds": 0.001963272981811315,
+          "cumulative_seconds": 0.0005159640568308532,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.001963272981811315,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.0017205400508828461,
+        "profile_wall_seconds": 0.282645870000124,
+        "validation_wall_seconds": 0.2979888239642605,
+        "end_to_end_wall_seconds": 0.3115956920082681,
+        "best": {
+          "config": {
+            "block_DV": 16,
+            "direction": "fwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.15875199437141418,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 16,
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 0.15875199437141418,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/budget-random__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 2
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 3,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 3,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.87102699279785,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "budget-random",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/budget-random__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 2,
+      "arm": "stock-raw",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "stock-raw",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "stock-raw",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:23.765443+00:00"
+        },
+        "R": 4,
+        "U": null,
+        "unknown": null,
+        "duplicates": 0,
+        "selected": 4,
+        "candidate_count": 4,
+        "compile_attempts": 4,
+        "compile_success": 3,
+        "compile_fail": 1,
+        "compile": {
+          "attempts": 4,
+          "success": 3,
+          "fail": 1,
+          "unfinished": 0,
+          "wall_seconds": 0.0028329839697107673,
+          "cumulative_seconds": 0.002421468961983919,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.3158762750099413,
+          "cumulative_seconds": 0.06347695691511035,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.3004871620214544,
+          "cumulative_seconds": 0.018845374055672437,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": false,
+          "completed": null,
+          "checks": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke solver pruning"
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": null,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.0028329839697107673,
+        "profile_wall_seconds": 0.3004871620214544,
+        "validation_wall_seconds": 0.3158762750099413,
+        "end_to_end_wall_seconds": 0.33003757102414966,
+        "best": {
+          "config": {
+            "direction": "fwd",
+            "block_DV": 16,
+            "prepare_h_num_stages": 2,
+            "group_reduce_block_size": 16
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.16121599078178406,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "direction": "fwd",
+          "block_DV": 16,
+          "prepare_h_num_stages": 2,
+          "group_reduce_block_size": 16
+        },
+        "best_latency_ms": 0.16121599078178406,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/stock-raw__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "compile_error": 1,
+          "ok": 3
+        },
+        "errors": [
+          {
+            "kind": "compile",
+            "config_id": "c129a19e331b45f8fa6048ec2687e97846db9c85139e16e31b458f9a7f062d2d",
+            "index": 3,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "trial",
+            "config_id": "c129a19e331b45f8fa6048ec2687e97846db9c85139e16e31b458f9a7f062d2d",
+            "index": 3,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          }
+        ],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "U": "stock-raw does not construct the Z3 legal universe",
+          "model": "this arm does not invoke the candidate cost model",
+          "solver": "this arm does not invoke solver pruning",
+          "unknown": "unknown solver verdicts are only defined for a completed pruning pass",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": null,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": null,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.442981719970703,
+        "candidate_failures": {
+          "compile": 1,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": true,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "stock-raw",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/stock-raw__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 2,
+      "arm": "z3-legal-exhaustive",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "z3-legal-exhaustive",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "z3-legal-exhaustive",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:24.149860+00:00"
+        },
+        "R": 4,
+        "U": 3,
+        "unknown": 3,
+        "duplicates": 0,
+        "selected": 3,
+        "candidate_count": 3,
+        "compile_attempts": 3,
+        "compile_success": 3,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0019910659757442772,
+          "cumulative_seconds": 0.0017313839634880424,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.3223837119876407,
+          "cumulative_seconds": 0.06345532700652257,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.30773829499958083,
+          "cumulative_seconds": 0.018838584946934134,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 1,
+          "sat": 0,
+          "unsat": 1,
+          "unknown": 3,
+          "timeouts": 0,
+          "wall_seconds": 0.002006674010772258,
+          "cumulative_seconds": 0.0005154220853000879,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.002006674010772258,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.0019910659757442772,
+        "profile_wall_seconds": 0.30773829499958083,
+        "validation_wall_seconds": 0.3223837119876407,
+        "end_to_end_wall_seconds": 0.33784793701488525,
+        "best": {
+          "config": {
+            "block_DV": 16,
+            "direction": "fwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.15959680080413818,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 16,
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 0.15959680080413818,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/z3-legal-exhaustive__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 3
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 3,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 3,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.800762176513672,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "z3-legal-exhaustive",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/z3-legal-exhaustive__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 2,
+      "arm": "z3-cm-topk",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "z3-cm-topk",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "z3-cm-topk",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:24.544700+00:00"
+        },
+        "R": 4,
+        "U": 3,
+        "unknown": 3,
+        "duplicates": 0,
+        "selected": 2,
+        "candidate_count": 2,
+        "compile_attempts": 2,
+        "compile_success": 2,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0019760170252993703,
+          "cumulative_seconds": 0.0017836939659900963,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.2965233050053939,
+          "cumulative_seconds": 0.044868386001326144,
+          "unavailable_reason": null,
+          "passed": 2,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.2784118570270948,
+          "cumulative_seconds": 0.011746336938813329,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 1,
+          "sat": 0,
+          "unsat": 1,
+          "unknown": 3,
+          "timeouts": 0,
+          "wall_seconds": 0.001986247021704912,
+          "cumulative_seconds": 0.0005016140057705343,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0007394499843940139,
+          "cumulative_seconds": 0.0004699520068243146,
+          "unavailable_reason": null,
+          "predictions": 3,
+          "unknown": 0
+        },
+        "solver_wall_seconds": 0.001986247021704912,
+        "model_wall_seconds": 0.0007394499843940139,
+        "compile_wall_seconds": 0.0019760170252993703,
+        "profile_wall_seconds": 0.2784118570270948,
+        "validation_wall_seconds": 0.2965233050053939,
+        "end_to_end_wall_seconds": 0.3124568790080957,
+        "best": {
+          "config": {
+            "block_DV": 16,
+            "direction": "fwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.16064640879631042,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 16,
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 0.16064640879631042,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/z3-cm-topk__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 2
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {},
+        "pruner_unknown": 3,
+        "model_unknown": 0,
+        "unknown_total": 3,
+        "unknown_sources": {
+          "pruner": 3,
+          "model": 0,
+          "overlap": 0,
+          "total": 3
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.774892807006836,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "z3-cm-topk",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/z3-cm-topk__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 2,
+      "arm": "budget-raw",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "budget-raw",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "budget-raw",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:24.911827+00:00"
+        },
+        "R": 4,
+        "U": 3,
+        "unknown": 3,
+        "duplicates": 0,
+        "selected": 2,
+        "candidate_count": 2,
+        "compile_attempts": 2,
+        "compile_success": 2,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.001621285977307707,
+          "cumulative_seconds": 0.0014251230168156326,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.286165728000924,
+          "cumulative_seconds": 0.04212247004033998,
+          "unavailable_reason": null,
+          "passed": 2,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.2708211919525638,
+          "cumulative_seconds": 0.011720230977516621,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 1,
+          "sat": 0,
+          "unsat": 1,
+          "unknown": 3,
+          "timeouts": 0,
+          "wall_seconds": 0.001941984985023737,
+          "cumulative_seconds": 0.0005033750785514712,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.001941984985023737,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.001621285977307707,
+        "profile_wall_seconds": 0.2708211919525638,
+        "validation_wall_seconds": 0.286165728000924,
+        "end_to_end_wall_seconds": 0.3000982579542324,
+        "best": {
+          "config": {
+            "block_DV": 16,
+            "direction": "fwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.15917441248893738,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 16,
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 0.15917441248893738,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/budget-raw__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 2
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 3,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 3,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.904434204101562,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "budget-raw",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/budget-raw__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "fwd",
+      "repetition": 2,
+      "arm": "budget-random",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "budget-random",
+        "metadata": {
+          "operator": "gdn_fwd",
+          "direction": "fwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "budget-random",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:25.258804+00:00"
+        },
+        "R": 4,
+        "U": 3,
+        "unknown": 3,
+        "duplicates": 0,
+        "selected": 2,
+        "candidate_count": 2,
+        "compile_attempts": 2,
+        "compile_success": 2,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0016671030316501856,
+          "cumulative_seconds": 0.0014874520129524171,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.29768767196219414,
+          "cumulative_seconds": 0.04280513699632138,
+          "unavailable_reason": null,
+          "passed": 2,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 2,
+          "success": 2,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.28203079500235617,
+          "cumulative_seconds": 0.01278850605012849,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 1,
+          "sat": 0,
+          "unsat": 1,
+          "unknown": 3,
+          "timeouts": 0,
+          "wall_seconds": 0.0019695599912665784,
+          "cumulative_seconds": 0.0005162690649740398,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.0019695599912665784,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.0016671030316501856,
+        "profile_wall_seconds": 0.28203079500235617,
+        "validation_wall_seconds": 0.29768767196219414,
+        "end_to_end_wall_seconds": 0.3112496919929981,
+        "best": {
+          "config": {
+            "block_DV": 16,
+            "direction": "fwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "c68c6131549d5c30d81838e85adb8519e5d9bf13175e37aa7ddb50cbf03faaa4",
+          "latency_ms": 0.1582976132631302,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 16,
+          "direction": "fwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 0.1582976132631302,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/budget-random__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 2
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 3,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 3,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "fwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": false,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "o",
+            "final_state"
+          ],
+          "forward_artifact_block_DV": null,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public forward only",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 17.973703384399414,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "budget-random",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/fwd/budget-random__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 1,
+      "arm": "stock-raw",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "stock-raw",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "stock-raw",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:58:25.619653+00:00"
+        },
+        "R": 9,
+        "U": null,
+        "unknown": null,
+        "duplicates": 0,
+        "selected": 9,
+        "candidate_count": 9,
+        "compile_attempts": 9,
+        "compile_success": 6,
+        "compile_fail": 3,
+        "compile": {
+          "attempts": 9,
+          "success": 6,
+          "fail": 3,
+          "unfinished": 0,
+          "wall_seconds": 41.578074913006276,
+          "cumulative_seconds": 41.57640868908493,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 1.1718124850303866,
+          "cumulative_seconds": 0.4574572490528226,
+          "unavailable_reason": null,
+          "passed": 6,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 1.0000794059596956,
+          "cumulative_seconds": 0.18594584689708427,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": false,
+          "completed": null,
+          "checks": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke solver pruning"
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": null,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 41.578074913006276,
+        "profile_wall_seconds": 1.0000794059596956,
+        "validation_wall_seconds": 1.1718124850303866,
+        "end_to_end_wall_seconds": 42.78584248403786,
+        "best": {
+          "config": {
+            "direction": "bwd",
+            "block_DV": 128,
+            "prepare_h_num_stages": 2,
+            "group_reduce_block_size": 16
+          },
+          "config_id": "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+          "latency_ms": 2.0432257652282715,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "direction": "bwd",
+          "block_DV": 128,
+          "prepare_h_num_stages": 2,
+          "group_reduce_block_size": 16
+        },
+        "best_latency_ms": 2.0432257652282715,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/stock-raw__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "compile_error": 3,
+          "ok": 6
+        },
+        "errors": [
+          {
+            "kind": "compile",
+            "config_id": "ad3b6157d07e6076ff48ee8574b5d32136ba97c1c46262a04cec4a847a417e4b",
+            "index": 6,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "trial",
+            "config_id": "ad3b6157d07e6076ff48ee8574b5d32136ba97c1c46262a04cec4a847a417e4b",
+            "index": 6,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "compile",
+            "config_id": "1a3d7a6075cffd411244883a0ea2ea9665e5c5dbf02d25e9eb3e958f829b5adf",
+            "index": 7,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "trial",
+            "config_id": "1a3d7a6075cffd411244883a0ea2ea9665e5c5dbf02d25e9eb3e958f829b5adf",
+            "index": 7,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "compile",
+            "config_id": "84a192fe4d7a72816b7f73b76b9d0acbf0ad271ca88e539b76e337399bebf201",
+            "index": 8,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "trial",
+            "config_id": "84a192fe4d7a72816b7f73b76b9d0acbf0ad271ca88e539b76e337399bebf201",
+            "index": 8,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          }
+        ],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "U": "stock-raw does not construct the Z3 legal universe",
+          "model": "this arm does not invoke the candidate cost model",
+          "solver": "this arm does not invoke solver pruning",
+          "unknown": "unknown solver verdicts are only defined for a completed pruning pass",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": null,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": null,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 41.267578125,
+        "candidate_failures": {
+          "compile": 3,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": true,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "stock-raw",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/stock-raw__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 1,
+      "arm": "z3-legal-exhaustive",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "z3-legal-exhaustive",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "z3-legal-exhaustive",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:08.456251+00:00"
+        },
+        "R": 9,
+        "U": 6,
+        "unknown": 6,
+        "duplicates": 0,
+        "selected": 6,
+        "candidate_count": 6,
+        "compile_attempts": 6,
+        "compile_success": 6,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.004834755032788962,
+          "cumulative_seconds": 0.004151492030359805,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 1.040728232008405,
+          "cumulative_seconds": 0.32073864398989826,
+          "unavailable_reason": null,
+          "passed": 6,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.9941324759856798,
+          "cumulative_seconds": 0.18666988488985226,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 3,
+          "sat": 0,
+          "unsat": 3,
+          "unknown": 6,
+          "timeouts": 0,
+          "wall_seconds": 0.0032788229873403907,
+          "cumulative_seconds": 0.0016443360946141183,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.0032788229873403907,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.004834755032788962,
+        "profile_wall_seconds": 0.9941324759856798,
+        "validation_wall_seconds": 1.040728232008405,
+        "end_to_end_wall_seconds": 1.0850805829977617,
+        "best": {
+          "config": {
+            "block_DV": 128,
+            "direction": "bwd",
+            "group_reduce_block_size": 8,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+          "latency_ms": 2.053311824798584,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 128,
+          "direction": "bwd",
+          "group_reduce_block_size": 8,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 2.053311824798584,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/z3-legal-exhaustive__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 6
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 6,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 6,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 42.43985366821289,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "z3-legal-exhaustive",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/z3-legal-exhaustive__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 1,
+      "arm": "z3-cm-topk",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "z3-cm-topk",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "z3-cm-topk",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:09.592642+00:00"
+        },
+        "R": 9,
+        "U": 6,
+        "unknown": 6,
+        "duplicates": 0,
+        "selected": 3,
+        "candidate_count": 3,
+        "compile_attempts": 3,
+        "compile_success": 3,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.003119111992418766,
+          "cumulative_seconds": 0.00279129296541214,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.8018214030307718,
+          "cumulative_seconds": 0.16888837498845533,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.7647117319866084,
+          "cumulative_seconds": 0.0917766320053488,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 3,
+          "sat": 0,
+          "unsat": 3,
+          "unknown": 6,
+          "timeouts": 0,
+          "wall_seconds": 0.0027309050201438367,
+          "cumulative_seconds": 0.0011587970075197518,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0019368379726074636,
+          "cumulative_seconds": 0.0013025090447627008,
+          "unavailable_reason": null,
+          "predictions": 6,
+          "unknown": 0
+        },
+        "solver_wall_seconds": 0.0027309050201438367,
+        "model_wall_seconds": 0.0019368379726074636,
+        "compile_wall_seconds": 0.003119111992418766,
+        "profile_wall_seconds": 0.7647117319866084,
+        "validation_wall_seconds": 0.8018214030307718,
+        "end_to_end_wall_seconds": 0.8472696190001443,
+        "best": {
+          "config": {
+            "block_DV": 128,
+            "direction": "bwd",
+            "group_reduce_block_size": 8,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+          "latency_ms": 2.0647358894348145,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 128,
+          "direction": "bwd",
+          "group_reduce_block_size": 8,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 2.0647358894348145,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/z3-cm-topk__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 3
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {},
+        "pruner_unknown": 6,
+        "model_unknown": 0,
+        "unknown_total": 6,
+        "unknown_sources": {
+          "pruner": 6,
+          "model": 0,
+          "overlap": 0,
+          "total": 6
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 43.45689010620117,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "z3-cm-topk",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/z3-cm-topk__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 1,
+      "arm": "budget-raw",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "budget-raw",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "budget-raw",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:10.500135+00:00"
+        },
+        "R": 9,
+        "U": 6,
+        "unknown": 6,
+        "duplicates": 0,
+        "selected": 3,
+        "candidate_count": 3,
+        "compile_attempts": 3,
+        "compile_success": 3,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.002916053985245526,
+          "cumulative_seconds": 0.002584251982625574,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.8090112089994363,
+          "cumulative_seconds": 0.17438846599543467,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.7650554539868608,
+          "cumulative_seconds": 0.09477044607046992,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 3,
+          "sat": 0,
+          "unsat": 3,
+          "unknown": 6,
+          "timeouts": 0,
+          "wall_seconds": 0.002701336983591318,
+          "cumulative_seconds": 0.0011380489449948072,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.002701336983591318,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.002916053985245526,
+        "profile_wall_seconds": 0.7650554539868608,
+        "validation_wall_seconds": 0.8090112089994363,
+        "end_to_end_wall_seconds": 0.8514486700296402,
+        "best": {
+          "config": {
+            "block_DV": 128,
+            "direction": "bwd",
+            "group_reduce_block_size": 8,
+            "prepare_h_num_stages": 1
+          },
+          "config_id": "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+          "latency_ms": 2.1443326473236084,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 128,
+          "direction": "bwd",
+          "group_reduce_block_size": 8,
+          "prepare_h_num_stages": 1
+        },
+        "best_latency_ms": 2.1443326473236084,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/budget-raw__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 3
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 6,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 6,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 43.292381286621094,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "budget-raw",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/budget-raw__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 1,
+      "arm": "budget-random",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "budget-random",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "budget-random",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:11.407278+00:00"
+        },
+        "R": 9,
+        "U": 6,
+        "unknown": 6,
+        "duplicates": 0,
+        "selected": 3,
+        "candidate_count": 3,
+        "compile_attempts": 3,
+        "compile_success": 3,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0027719049830920994,
+          "cumulative_seconds": 0.0024783589760772884,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.8007863409584388,
+          "cumulative_seconds": 0.16905324795516208,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.7627458369825035,
+          "cumulative_seconds": 0.09231685096165165,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 3,
+          "sat": 0,
+          "unsat": 3,
+          "unknown": 6,
+          "timeouts": 0,
+          "wall_seconds": 0.002618292986880988,
+          "cumulative_seconds": 0.0011014929041266441,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.002618292986880988,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.0027719049830920994,
+        "profile_wall_seconds": 0.7627458369825035,
+        "validation_wall_seconds": 0.8007863409584388,
+        "end_to_end_wall_seconds": 0.8413640880025923,
+        "best": {
+          "config": {
+            "block_DV": 128,
+            "direction": "bwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+          "latency_ms": 2.0384511947631836,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 128,
+          "direction": "bwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 2.0384511947631836,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/budget-random__rep-0001/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 3
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 6,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 6,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 41.77350616455078,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "budget-random",
+          "repetition": 1,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/budget-random__rep-0001",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 2,
+      "arm": "stock-raw",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "stock-raw",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "stock-raw",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:12.305779+00:00"
+        },
+        "R": 9,
+        "U": null,
+        "unknown": null,
+        "duplicates": 0,
+        "selected": 9,
+        "candidate_count": 9,
+        "compile_attempts": 9,
+        "compile_success": 6,
+        "compile_fail": 3,
+        "compile": {
+          "attempts": 9,
+          "success": 6,
+          "fail": 3,
+          "unfinished": 0,
+          "wall_seconds": 0.006480615003965795,
+          "cumulative_seconds": 0.0055242800153791904,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 1.053197805013042,
+          "cumulative_seconds": 0.3272124970681034,
+          "unavailable_reason": null,
+          "passed": 6,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 1.0120343239977956,
+          "cumulative_seconds": 0.1858154690125957,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": false,
+          "completed": null,
+          "checks": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke solver pruning"
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": null,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.006480615003965795,
+        "profile_wall_seconds": 1.0120343239977956,
+        "validation_wall_seconds": 1.053197805013042,
+        "end_to_end_wall_seconds": 1.0947299679974094,
+        "best": {
+          "config": {
+            "direction": "bwd",
+            "block_DV": 128,
+            "prepare_h_num_stages": 2,
+            "group_reduce_block_size": 32
+          },
+          "config_id": "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+          "latency_ms": 2.06166410446167,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "direction": "bwd",
+          "block_DV": 128,
+          "prepare_h_num_stages": 2,
+          "group_reduce_block_size": 32
+        },
+        "best_latency_ms": 2.06166410446167,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/stock-raw__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "compile_error": 3,
+          "ok": 6
+        },
+        "errors": [
+          {
+            "kind": "compile",
+            "config_id": "ad3b6157d07e6076ff48ee8574b5d32136ba97c1c46262a04cec4a847a417e4b",
+            "index": 6,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "trial",
+            "config_id": "ad3b6157d07e6076ff48ee8574b5d32136ba97c1c46262a04cec4a847a417e4b",
+            "index": 6,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "compile",
+            "config_id": "1a3d7a6075cffd411244883a0ea2ea9665e5c5dbf02d25e9eb3e958f829b5adf",
+            "index": 7,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "trial",
+            "config_id": "1a3d7a6075cffd411244883a0ea2ea9665e5c5dbf02d25e9eb3e958f829b5adf",
+            "index": 7,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "compile",
+            "config_id": "84a192fe4d7a72816b7f73b76b9d0acbf0ad271ca88e539b76e337399bebf201",
+            "index": 8,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          },
+          {
+            "kind": "trial",
+            "config_id": "84a192fe4d7a72816b7f73b76b9d0acbf0ad271ca88e539b76e337399bebf201",
+            "index": 8,
+            "error": "Failed to set the allowed dynamic shared memory size to 112640"
+          }
+        ],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "U": "stock-raw does not construct the Z3 legal universe",
+          "model": "this arm does not invoke the candidate cost model",
+          "solver": "this arm does not invoke solver pruning",
+          "unknown": "unknown solver verdicts are only defined for a completed pruning pass",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": null,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": null,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 42.21367645263672,
+        "candidate_failures": {
+          "compile": 3,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": true,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "stock-raw",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/stock-raw__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 2,
+      "arm": "z3-legal-exhaustive",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "z3-legal-exhaustive",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "z3-legal-exhaustive",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:13.448761+00:00"
+        },
+        "R": 9,
+        "U": 6,
+        "unknown": 6,
+        "duplicates": 0,
+        "selected": 6,
+        "candidate_count": 6,
+        "compile_attempts": 6,
+        "compile_success": 6,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.004663873987738043,
+          "cumulative_seconds": 0.004030979995150119,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 1.0575649220263585,
+          "cumulative_seconds": 0.3246081459801644,
+          "unavailable_reason": null,
+          "passed": 6,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 1.0154437129967846,
+          "cumulative_seconds": 0.18913135305047035,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 3,
+          "sat": 0,
+          "unsat": 3,
+          "unknown": 6,
+          "timeouts": 0,
+          "wall_seconds": 0.0025870719691738486,
+          "cumulative_seconds": 0.0010589970625005662,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.0025870719691738486,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.004663873987738043,
+        "profile_wall_seconds": 1.0154437129967846,
+        "validation_wall_seconds": 1.0575649220263585,
+        "end_to_end_wall_seconds": 1.1046194229857065,
+        "best": {
+          "config": {
+            "block_DV": 128,
+            "direction": "bwd",
+            "group_reduce_block_size": 32,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "bc5a6ce6151cdc4679609fe175891d4b4ec7456cd20ee05adc69802d98da4f5f",
+          "latency_ms": 2.043372869491577,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 128,
+          "direction": "bwd",
+          "group_reduce_block_size": 32,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 2.043372869491577,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/z3-legal-exhaustive__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 6
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 6,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 6,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 42.9469108581543,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "z3-legal-exhaustive",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/z3-legal-exhaustive__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 2,
+      "arm": "z3-cm-topk",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "z3-cm-topk",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "z3-cm-topk",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:14.603155+00:00"
+        },
+        "R": 9,
+        "U": 6,
+        "unknown": 6,
+        "duplicates": 0,
+        "selected": 3,
+        "candidate_count": 3,
+        "compile_attempts": 3,
+        "compile_success": 3,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0032075190101750195,
+          "cumulative_seconds": 0.002898460952565074,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.8013967930455692,
+          "cumulative_seconds": 0.1680588360177353,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.7643120039720088,
+          "cumulative_seconds": 0.0923239789553918,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 3,
+          "sat": 0,
+          "unsat": 3,
+          "unknown": 6,
+          "timeouts": 0,
+          "wall_seconds": 0.0027097139973193407,
+          "cumulative_seconds": 0.0011615959811024368,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": 6,
+          "success": 6,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.0016633240156807005,
+          "cumulative_seconds": 0.0010765190236270428,
+          "unavailable_reason": null,
+          "predictions": 6,
+          "unknown": 0
+        },
+        "solver_wall_seconds": 0.0027097139973193407,
+        "model_wall_seconds": 0.0016633240156807005,
+        "compile_wall_seconds": 0.0032075190101750195,
+        "profile_wall_seconds": 0.7643120039720088,
+        "validation_wall_seconds": 0.8013967930455692,
+        "end_to_end_wall_seconds": 0.8467737599858083,
+        "best": {
+          "config": {
+            "block_DV": 128,
+            "direction": "bwd",
+            "group_reduce_block_size": 8,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "95584e032b696e43b42e9eb097ed1f65363bc59fab2aecc6af2438333f4daa61",
+          "latency_ms": 2.0765888690948486,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 128,
+          "direction": "bwd",
+          "group_reduce_block_size": 8,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 2.0765888690948486,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/z3-cm-topk__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 3
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {},
+        "pruner_unknown": 6,
+        "model_unknown": 0,
+        "unknown_total": 6,
+        "unknown_sources": {
+          "pruner": 6,
+          "model": 0,
+          "overlap": 0,
+          "total": 6
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 43.17864990234375,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "z3-cm-topk",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/z3-cm-topk__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 2,
+      "arm": "budget-raw",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "budget-raw",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "budget-raw",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:15.506313+00:00"
+        },
+        "R": 9,
+        "U": 6,
+        "unknown": 6,
+        "duplicates": 0,
+        "selected": 3,
+        "candidate_count": 3,
+        "compile_attempts": 3,
+        "compile_success": 3,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.002803244045935571,
+          "cumulative_seconds": 0.002480466035194695,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.79091077495832,
+          "cumulative_seconds": 0.16710900695761666,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.7548621009918861,
+          "cumulative_seconds": 0.09442791895708069,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 3,
+          "sat": 0,
+          "unsat": 3,
+          "unknown": 6,
+          "timeouts": 0,
+          "wall_seconds": 0.0026426439872011542,
+          "cumulative_seconds": 0.0010846008663065732,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.0026426439872011542,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.002803244045935571,
+        "profile_wall_seconds": 0.7548621009918861,
+        "validation_wall_seconds": 0.79091077495832,
+        "end_to_end_wall_seconds": 0.833650869957637,
+        "best": {
+          "config": {
+            "block_DV": 128,
+            "direction": "bwd",
+            "group_reduce_block_size": 8,
+            "prepare_h_num_stages": 1
+          },
+          "config_id": "12199f632500192f2d35c88a6bcc9415d491d069f87aba994644973649870a5b",
+          "latency_ms": 2.1286206245422363,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 128,
+          "direction": "bwd",
+          "group_reduce_block_size": 8,
+          "prepare_h_num_stages": 1
+        },
+        "best_latency_ms": 2.1286206245422363,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/budget-raw__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 3
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 6,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 6,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 42.05147171020508,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "budget-raw",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/budget-raw__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    },
+    {
+      "direction": "bwd",
+      "repetition": 2,
+      "arm": "budget-random",
+      "summary": {
+        "schema_version": 1,
+        "status": "ok",
+        "arm": "budget-random",
+        "metadata": {
+          "operator": "gdn_bwd",
+          "direction": "bwd",
+          "seed": 42,
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "cache_track": "cold",
+          "arm": "budget-random",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "utc_started": "2026-10-26T19:59:16.397013+00:00"
+        },
+        "R": 9,
+        "U": 6,
+        "unknown": 6,
+        "duplicates": 0,
+        "selected": 3,
+        "candidate_count": 3,
+        "compile_attempts": 3,
+        "compile_success": 3,
+        "compile_fail": 0,
+        "compile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.002632043033372611,
+          "cumulative_seconds": 0.002312774013262242,
+          "unavailable_reason": null
+        },
+        "validation": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.7978288730373606,
+          "cumulative_seconds": 0.16684754396555945,
+          "unavailable_reason": null,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "profile": {
+          "attempts": 3,
+          "success": 3,
+          "fail": 0,
+          "unfinished": 0,
+          "wall_seconds": 0.7596927660051733,
+          "cumulative_seconds": 0.09247511596186087,
+          "unavailable_reason": null
+        },
+        "solver": {
+          "invoked": true,
+          "completed": true,
+          "checks": 3,
+          "sat": 0,
+          "unsat": 3,
+          "unknown": 6,
+          "timeouts": 0,
+          "wall_seconds": 0.0026888540014624596,
+          "cumulative_seconds": 0.0011235630372539163,
+          "unavailable_reason": null
+        },
+        "model": {
+          "attempts": null,
+          "success": null,
+          "fail": null,
+          "wall_seconds": null,
+          "cumulative_seconds": null,
+          "unavailable_reason": "this arm does not invoke the candidate cost model",
+          "predictions": null,
+          "unknown": null
+        },
+        "solver_wall_seconds": 0.0026888540014624596,
+        "model_wall_seconds": null,
+        "compile_wall_seconds": 0.002632043033372611,
+        "profile_wall_seconds": 0.7596927660051733,
+        "validation_wall_seconds": 0.7978288730373606,
+        "end_to_end_wall_seconds": 0.8388602560153231,
+        "best": {
+          "config": {
+            "block_DV": 128,
+            "direction": "bwd",
+            "group_reduce_block_size": 16,
+            "prepare_h_num_stages": 2
+          },
+          "config_id": "ba3642b5183d05d7cf21599a54af71aa8a24246cfea3d4fd0194b5d3f84367aa",
+          "latency_ms": 2.0614333152770996,
+          "unavailable_reason": null
+        },
+        "best_config": {
+          "block_DV": 128,
+          "direction": "bwd",
+          "group_reduce_block_size": 16,
+          "prepare_h_num_stages": 2
+        },
+        "best_latency_ms": 2.0614333152770996,
+        "cache_identity": null,
+        "cache": {
+          "identity": null,
+          "key": null,
+          "directory": null,
+          "enabled": false,
+          "hit": false,
+          "source": null,
+          "unavailable_reason": "cache key generation returned None (for example, because profile callbacks have no stable identity)",
+          "pipeline_cache_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/budget-random__rep-0002/cache",
+          "directory_scope": "directory/cache identity concern the AutoTuner result cache; pipeline_cache_directory is the real FlashQLA/TileLang cache root",
+          "requested_mode": "enabled"
+        },
+        "trials": {
+          "ok": 3
+        },
+        "errors": [],
+        "errors_omitted": 0,
+        "observer_errors": [],
+        "fully_instrumented": true,
+        "unavailable": {
+          "model": "this arm does not invoke the candidate cost model",
+          "unknown_total": "the deduplicated pruner/model unknown total is defined after successful z3-cm-topk scoring"
+        },
+        "pruner_unknown": 6,
+        "model_unknown": null,
+        "unknown_total": null,
+        "unknown_sources": {
+          "pruner": 6,
+          "model": null,
+          "overlap": null,
+          "total": null
+        },
+        "gdn": {
+          "direction": "bwd",
+          "shape": {
+            "B": 1,
+            "T": 4096,
+            "Hg": 4,
+            "H": 8,
+            "K": 128,
+            "DV": 128,
+            "chunk_size": 32,
+            "dtype": "bf16",
+            "output_dtype": "bf16",
+            "use_initial_state": true,
+            "use_dht": true,
+            "output_final_state": true,
+            "output_h": false,
+            "store_o": true,
+            "calc_mt": false
+          },
+          "seed": 42,
+          "cache_track": "cold",
+          "outputs": [
+            "dq",
+            "dk",
+            "dv",
+            "db",
+            "dg",
+            "dh0"
+          ],
+          "forward_artifact_block_DV": 64,
+          "forward_artifacts_in_search": false,
+          "timing_scope": "public backward only; fixed block_DV=64 public forward artifacts precomputed",
+          "compile_count_scope": "one complete public fwd or fwd+bwd initialization per candidate"
+        },
+        "reference_latency_ms": 42.65489196777344,
+        "candidate_failures": {
+          "compile": 0,
+          "validation": 0,
+          "profile": 0
+        },
+        "has_recorded_candidate_failures": false,
+        "failure_policy": "candidate failures remain in events/summary; factory/run exceptions are re-raised",
+        "experiment": {
+          "arm": "budget-random",
+          "repetition": 2,
+          "cache_mode": "enabled",
+          "run_directory": "/home/zhaosiying/codebase/tilelang-cuda-z3/evidence/G6/gdn-repetitions/bwd/budget-random__rep-0002",
+          "before": "before.json",
+          "after": "after.json",
+          "events": "events.jsonl"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,460 @@
+{
+  "root_index": 57,
+  "nodes": [
+    {
+      "type": "ffi.String",
+      "data": "dtype"
+    },
+    {
+      "type": "ffi.String",
+      "data": "bfloat16"
+    },
+    {
+      "type": "ffi.String",
+      "data": "shape"
+    },
+    {
+      "type": "None"
+    },
+    {
+      "type": "ffi.String",
+      "data": "batch_size"
+    },
+    {
+      "type": "ir.PrimType",
+      "data": {
+        "span": 3,
+        "dtype": "int32"
+      }
+    },
+    {
+      "type": "tirx.Var",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "name": 4,
+        "type_annotation": 5
+      }
+    },
+    {
+      "type": "ffi.String",
+      "data": "num_tokens"
+    },
+    {
+      "type": "ir.PrimType",
+      "data": {
+        "span": 3,
+        "dtype": "int32"
+      }
+    },
+    {
+      "type": "tirx.Var",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "name": 7,
+        "type_annotation": 8
+      }
+    },
+    {
+      "type": "int",
+      "data": 4
+    },
+    {
+      "type": "int",
+      "data": 128
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        12
+      ]
+    },
+    {
+      "type": "ffi.String",
+      "data": "float32"
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        10,
+        11,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        14,
+        2,
+        15
+      ]
+    },
+    {
+      "type": "int",
+      "data": 2
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        17,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        18
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        17,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        20
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        22
+      ]
+    },
+    {
+      "type": "int",
+      "data": 32
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10,
+        24
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        25
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        14,
+        2,
+        27
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        14,
+        2,
+        29
+      ]
+    },
+    {
+      "type": "ffi.String",
+      "data": "num_chunks"
+    },
+    {
+      "type": "ir.PrimType",
+      "data": {
+        "span": 3,
+        "dtype": "int32"
+      }
+    },
+    {
+      "type": "tirx.Var",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "name": 31,
+        "type_annotation": 32
+      }
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        33,
+        10,
+        11,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        34
+      ]
+    },
+    {
+      "type": "ffi.String",
+      "data": "int32"
+    },
+    {
+      "type": "ir.IntImm",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "value": 1
+      }
+    },
+    {
+      "type": "tirx.Add",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "a": 6,
+        "b": 37
+      }
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        38
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        36,
+        2,
+        39
+      ]
+    },
+    {
+      "type": "ir.IntImm",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "value": 1
+      }
+    },
+    {
+      "type": "tirx.Add",
+      "data": {
+        "span": 3,
+        "dtype": "int32",
+        "a": 6,
+        "b": 41
+      }
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        42
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        36,
+        2,
+        43
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        45
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        47
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        1,
+        2,
+        49
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        14,
+        2,
+        51
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        9,
+        10
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        14,
+        2,
+        53
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        6,
+        10,
+        11,
+        11
+      ]
+    },
+    {
+      "type": "ffi.Map",
+      "data": [
+        0,
+        14,
+        2,
+        55
+      ]
+    },
+    {
+      "type": "ffi.Array",
+      "data": [
+        13,
+        16,
+        19,
+        21,
+        23,
+        26,
+        28,
+        30,
+        35,
+        40,
+        44,
+        46,
+        48,
+        50,
+        52,
+        54,
+        56
+      ]
+    }
+  ],
+  "metadata": {
+    "tvm_version": "0.25.dev0"
+  }
+}
