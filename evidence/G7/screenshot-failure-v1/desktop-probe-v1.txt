@@ -1,0 +1,14 @@
+
+
+InputDesktop   : Default
+ForegroundHwnd : 328688
+ForegroundPid  : 7028
+
+
+
+
+ProcessName    Id MainWindowTitle
+-----------    -- ---------------
+LockApp     33688                
+
+

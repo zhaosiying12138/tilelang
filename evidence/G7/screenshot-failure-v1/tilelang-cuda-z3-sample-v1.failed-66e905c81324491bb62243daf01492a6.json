@@ -1,0 +1,11 @@
+{
+    "capture_status":  "failed",
+    "image_accepted":  false,
+    "failed_at":  "2026-10-26T23:06:06.9604055Z",
+    "script":  "/home/zhaosiying/shot_scripts/tilelang-cuda-z3-sample-v1.sh",
+    "intended_image":  "C:\\Users\\Admin1\\shot\\tilelang-cuda-z3-sample-v1.png",
+    "raw_log":  "C:\\Users\\Admin1\\shot\\tilelang-cuda-z3-sample-v1.log",
+    "reason":  "The bound Terminal is not a usable foreground window; no screenshot accepted.",
+    "command_completion_marker":  "0",
+    "note":  "Command completion and screen capture validity are independent; preserve the raw log. Do not rerun GPU work solely to repair a failed image."
+}

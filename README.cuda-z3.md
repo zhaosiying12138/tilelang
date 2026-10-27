@@ -4,7 +4,7 @@
 
 ## 一、交付范围与边界
 
-分支包含 CUDA 直线/循环 Z3 求解、task latency/II、整 kernel 解析排序、保守配置剪枝、五臂 GuidedAutoTuner、显式及自动 pipeline problem、逐 buffer 多版本投影、真实硬件标定，以及 GDN 和经典算子的证据驱动。
+分支包含 CUDA 直线/循环 Z3 求解、task latency/II、整 kernel 解析排序、保守配置剪枝、五种策略的 GuidedAutoTuner、显式及自动 pipeline problem、逐 buffer 多版本投影、真实硬件标定，以及 GDN 和经典算子的证据驱动。
 
 以下边界必须在复现和引用结果时保留：
 
@@ -118,11 +118,11 @@ python benchmark/z3_cost_model/gdn/analyze_predictions.py \
 
 `benchmark/z3_cost_model/gdn/repeat_search.py` 是早期同进程 pilot 入口，保留历史 warmup=2/repeat=5 默认值，只用于复现 pilot。正式 cold 数据必须使用上述 shell 驱动。
 
-T4096 的 `modal-winner` 确认曾暴露等预算对照未达标，因此保留为 validation。修订后的 `candidate-median` 对每个臂分别计算各候选在三次 cold 中的实测中位数，选择最低者，canonical JSON 仅处理并列；不增加候选、不改变 top-k，也不使用确认测量来选择 winner。新的 T8192 held-out 在 [`manifest/gdn-selection-v2-plan.json`](manifest/gdn-selection-v2-plan.json) 中预先登记。复现该 held-out 时设置 `NUM_TOKENS=8192`；早期 `modal-winner` 仍保留用于历史对照。
+T4096 的 `modal-winner` 确认曾暴露等预算对照未达标，因此保留为 validation。修订后的 `candidate-median` 对每种策略分别计算各候选在三次 cold 中的实测中位数，选择最低者，canonical JSON 仅处理并列；不增加候选、不改变 top-k，也不使用确认测量来选择 winner。新的 T8192 held-out 在 [`manifest/gdn-selection-v2-plan.json`](manifest/gdn-selection-v2-plan.json) 中预先登记。复现该 held-out 时设置 `NUM_TOKENS=8192`；早期 `modal-winner` 仍保留用于历史对照。
 
 ### 七轮独立确认
 
-确认脚本按各臂候选的三次 cold 实测中位数冻结配置，canonical JSON 只用于并列处理。不同配置按 ABBA 交错，warmup=50、每轮 200 个 L2-flushed CUDA-event 样本，共 7 轮。计时前后都校验公开 forward/backward 输出。分析与确认的 token 形状必须一致，否则在计时前报错。
+确认脚本按各策略候选的三次 cold 实测中位数冻结配置，canonical JSON 只用于并列处理。不同配置按 ABBA 交错，warmup=50、每轮 200 个 L2-flushed CUDA-event 样本，共 7 轮。计时前后都校验公开 forward/backward 输出。分析与确认的 token 形状必须一致，否则在计时前报错。
 
 ```bash
 CONFIRM=evidence/G6/gdn-confirmation-repro
@@ -142,7 +142,7 @@ python benchmark/z3_cost_model/gdn/confirm.py \
 
 ## 五、warm / no-cache 敏感性
 
-敏感性协议使用 fwd、bwd 两个方向和 `stock-raw`、`z3-cm-topk` 两个臂，每轨每次独立进程。输出目录必须不存在。
+敏感性协议使用 fwd、bwd 两个方向和 `stock-raw`、`z3-cm-topk` 两种策略，每轨每次独立进程。输出目录必须不存在。
 
 ```bash
 CACHE_RUN=evidence/G6/gdn-cache-sensitivity-repro
