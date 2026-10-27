@@ -1,0 +1,81 @@
+               total        used        free      shared  buff/cache   available
+Mem:              47           5          36           4          10          41
+Swap:             12          11           0
+GPU preflight: idle
+Loading tilelang libs from dev root: /home/zhaosiying/codebase/tilelang-cuda-z3/build
+[03:10:22] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/verify_buffer_init.cc:394: Warning: Buffer read before initialization: 2 buffer(s) read before anything writes them
+  [1] `dk_frag_l` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:604:1
+  [2] `dk_frag_r` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:605:1
+Initialize the buffer before its first read (for example with `T.clear`, `T.fill`, or a `T.copy` into it). If you believe this is a false positive, disable the check by setting `PassConfigKey.TL_DISABLE_BUFFER_INIT_CHECK` in the pass config.
+[03:10:31] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[03:10:31] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[03:10:31] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[03:10:31] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[03:11:07] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/verify_buffer_init.cc:394: Warning: Buffer read before initialization: 2 buffer(s) read before anything writes them
+  [1] `dk_frag_l` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:604:1
+  [2] `dk_frag_r` is read before anything writes it
+  --> /home/zhaosiying/codebase/tilelang-cuda-z3/benchmark/z3_cost_model/gdn/vendor/flash_qla/ops/gated_delta_rule/chunk/blackwell_sm120/fused_bwd.py:605:1
+Initialize the buffer before its first read (for example with `T.clear`, `T.fill`, or a `T.copy` into it). If you believe this is a false positive, disable the check by setting `PassConfigKey.TL_DISABLE_BUFFER_INIT_CHECK` in the pass config.
+[03:11:16] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[03:11:16] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[03:11:16] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[03:11:16] /home/zhaosiying/codebase/tilelang-cuda-z3/src/transform/legalize_vectorized_loop.cc:85: Warning: T.vectorized loop over `j_t_vec` with extent 2 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+2026-10-28 03:10:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 03:10:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 03:10:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel` with `out_idx=None`
+2026-10-28 03:10:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel`
+2026-10-28 03:10:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_group_reduce_vector_kernel` with `out_idx=None`
+2026-10-28 03:10:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_group_reduce_vector_kernel`
+2026-10-28 03:10:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-28 03:10:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+2026-10-28 03:10:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 03:10:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+2026-10-28 03:10:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 03:10:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 03:10:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel` with `out_idx=None`
+2026-10-28 03:11:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_fwd_kernel`
+2026-10-28 03:11:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_prepare_h_kernel` with `out_idx=None`
+2026-10-28 03:11:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_prepare_h_kernel`
+2026-10-28 03:11:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel` with `out_idx=None`
+2026-10-28 03:11:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_fused_chunk_gdr_bwd_kernel`
+2026-10-28 03:11:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_zero_bwd_padding_kernel` with `out_idx=None`
+2026-10-28 03:11:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_zero_bwd_padding_kernel`
+2026-10-28 03:11:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `tilelang_chunk_local_cumsum_kernel` with `out_idx=None`
+2026-10-28 03:11:27  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `tilelang_chunk_local_cumsum_kernel`
+{
+  "bwd": {
+    "auto_cp": false,
+    "cases": [
+      "dense-no-h0-no-dht",
+      "dense-h0-no-dht",
+      "padded-h0-dht"
+    ],
+    "determinism_iterations": 2,
+    "directions": [
+      "bwd"
+    ],
+    "reference": "pure PyTorch float64",
+    "rtol": 0.02,
+    "seed": 42,
+    "status": "passed"
+  },
+  "fwd": {
+    "auto_cp": false,
+    "cases": [
+      "dense-no-h0-no-dht",
+      "dense-h0-no-dht",
+      "padded-h0-dht"
+    ],
+    "determinism_iterations": 2,
+    "directions": [
+      "fwd"
+    ],
+    "reference": "pure PyTorch float64",
+    "rtol": 0.02,
+    "seed": 42,
+    "status": "passed"
+  }
+}
