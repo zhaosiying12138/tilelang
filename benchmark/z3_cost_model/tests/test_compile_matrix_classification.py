@@ -57,11 +57,11 @@ def test_unknown_all_skipped_exit_five_remains_infra():
     assert status == cm.FAIL_INFRA
 
 
-def test_import_failure_without_skip_line_is_not_relabelled_dependency_skip():
+def test_import_failure_without_skip_line_is_environment_failure():
     status, _ = cm.classify_result(
-        _row(), action="run", exit_code=5, text="ModuleNotFoundError: No module named 'fla'", counts=_counts()
+        _row(), action="run", exit_code=4, text="ModuleNotFoundError: No module named 'fla.ops'", counts=_counts()
     )
-    assert status == cm.FAIL_INFRA
+    assert status == cm.FAIL_ENV
 
 
 def test_unknown_zero_exit_skip_remains_not_run():

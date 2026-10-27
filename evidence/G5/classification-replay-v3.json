@@ -1,0 +1,26 @@
+[
+  {
+    "id": "examples/linear_attention/test_linear_attn.py::test_example_linear_attn_fwd",
+    "new_status": "FAIL_ENV",
+    "old_status": "FAIL_INFRA",
+    "reason": "pytest collection hit a required dependency/import failure; no tests are treated as passed",
+    "required_dependencies": [
+      "tilelang",
+      "torch",
+      "fla",
+      "einops"
+    ]
+  },
+  {
+    "id": "examples/linear_attention/test_linear_attn.py::test_example_linear_attn_bwd",
+    "new_status": "FAIL_ENV",
+    "old_status": "FAIL_INFRA",
+    "reason": "pytest collection hit a required dependency/import failure; no tests are treated as passed",
+    "required_dependencies": [
+      "tilelang",
+      "torch",
+      "fla",
+      "einops"
+    ]
+  }
+]

@@ -674,6 +674,8 @@ def classify_result(
             status, reason = classify_skip(text)
             if status in SKIP_STATUSES:
                 return status, reason + "; pytest exit 5 followed an all-skipped selection"
+        if _matches_any(text, (r"ModuleNotFoundError", r"No module named")):
+            return FAIL_ENV, "pytest collection hit a required dependency/import failure; no tests are treated as passed"
         return FAIL_INFRA, f"pytest infrastructure/usage exit {exit_code}; no tests are treated as passed"
     if exit_code != 0:
         status = classify_failure(text, numeric_gate=row.numeric_gate)
